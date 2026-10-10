@@ -9,7 +9,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "test": "vitest run",
-    "db:introspect": "drizzle-kit pull --config=drizzle.pull.config.ts"
+    "db:introspect": "node ./scripts/db-introspect.mjs"
   },
   "keywords": [],
   "author": "",
@@ -45,7 +45,7 @@
     "prettier": "^3.9.6",
     "supertest": "^7.2.2",
     "tsx": "^4.23.13",
-    "typescript": "^7.0.2",
+    "typescript": "5.9",
     "vitest": "^5.0.0"
   }
 }
