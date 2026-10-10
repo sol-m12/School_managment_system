@@ -1,0 +1,132 @@
+import { db, pool } from "../db/index.js";
+import { classes, students, tenants, users } from "../db/schema/index.js";
+import { hashPassword } from "../lib/password.js";
+
+export const SHARED_USERNAME = "shared_user";
+export const SHARED_PASSWORD = "TestPass123!";
+
+export type SeededTenant = {
+  id: number;
+  slug: string;
+  name: string;
+  userId: number;
+  classId: number;
+  studentId: number;
+};
+
+export type IsolationSeed = {
+  tenantA: SeededTenant;
+  tenantB: SeededTenant;
+  password: string;
+  username: string;
+};
+
+const TABLES_TO_EMPTY = ["students", "classes", "users", "tenants"] as const;
+
+/** Empty tables used by isolation tests (test DB only). */
+export async function emptyIsolationTables(): Promise<void> {
+  await pool.query("SET FOREIGN_KEY_CHECKS = 0");
+  try {
+    for (const table of TABLES_TO_EMPTY) {
+      await pool.query("TRUNCATE TABLE `" + table + "`");
+    }
+  } finally {
+    await pool.query("SET FOREIGN_KEY_CHECKS = 1");
+  }
+}
+
+async function insertTenant(slug: string, name: string): Promise<number> {
+  const result = await db.insert(tenants).values({
+    name,
+    slug,
+    status: "active",
+  });
+  return Number(result[0].insertId);
+}
+
+async function insertUser(
+  tenantId: number,
+  username: string,
+  passwordHash: string,
+): Promise<number> {
+  const result = await db.insert(users).values({
+    username,
+    passwordHash,
+    role: "Admin",
+    isActive: 1,
+    tenantId,
+    tokenVersion: 0,
+  });
+  return Number(result[0].insertId);
+}
+
+async function insertClass(tenantId: number, section: string): Promise<number> {
+  const result = await db.insert(classes).values({
+    gradeLevel: 9,
+    section,
+    tenantId,
+  });
+  return Number(result[0].insertId);
+}
+
+async function insertStudent(
+  tenantId: number,
+  fullName: string,
+): Promise<number> {
+  const result = await db.insert(students).values({
+    fullName,
+    gender: "M",
+    age: 15,
+    gradeLevel: 9,
+    academicYear: "2017",
+    tenantId,
+  });
+  return Number(result[0].insertId);
+}
+
+/**
+ * Truncates used tables, then seeds tenants A and B with the same username
+ * and a few tenant-scoped rows (classes, students).
+ */
+export async function seedTwoTenants(): Promise<IsolationSeed> {
+  await emptyIsolationTables();
+
+  const passwordHash = await hashPassword(SHARED_PASSWORD);
+
+  const tenantAId = await insertTenant("tenant-a-test", "Tenant A Test");
+  const tenantBId = await insertTenant("tenant-b-test", "Tenant B Test");
+
+  const userAId = await insertUser(tenantAId, SHARED_USERNAME, passwordHash);
+  const userBId = await insertUser(tenantBId, SHARED_USERNAME, passwordHash);
+
+  const classAId = await insertClass(tenantAId, "A");
+  const classBId = await insertClass(tenantBId, "B");
+
+  const studentAId = await insertStudent(tenantAId, "Student A");
+  const studentBId = await insertStudent(tenantBId, "Student B");
+
+  // Extra rows so list isolation is obvious
+  await insertStudent(tenantAId, "Student A2");
+  await insertClass(tenantAId, "C");
+
+  return {
+    username: SHARED_USERNAME,
+    password: SHARED_PASSWORD,
+    tenantA: {
+      id: tenantAId,
+      slug: "tenant-a-test",
+      name: "Tenant A Test",
+      userId: userAId,
+      classId: classAId,
+      studentId: studentAId,
+    },
+    tenantB: {
+      id: tenantBId,
+      slug: "tenant-b-test",
+      name: "Tenant B Test",
+      userId: userBId,
+      classId: classBId,
+      studentId: studentBId,
+    },
+  };
+}

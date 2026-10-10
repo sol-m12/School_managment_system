@@ -30,8 +30,10 @@ app.get("/health/db", async (_req, res) => {
 
 app.use("/auth", authRouter);
 
-app.listen(env.PORT, () => {
-  console.log(`API running on http://localhost:${env.PORT}`);
-});
+if (process.env.NODE_ENV !== "test" && process.env.VITEST !== "true") {
+  app.listen(env.PORT, () => {
+    console.log(`API running on http://localhost:${env.PORT}`);
+  });
+}
 
 export { app };

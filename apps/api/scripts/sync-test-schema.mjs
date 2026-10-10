@@ -107,9 +107,9 @@ async function main() {
     ...common,
     "--no-data",
     "--skip-triggers",
+    "--skip-routines",
+    "--skip-events",
     "--single-transaction",
-    "--routines=false",
-    "--events=false",
     SOURCE_DB,
   ];
 

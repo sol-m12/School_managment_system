@@ -1,5 +1,5 @@
-import { Router } from "express";
-import rateLimit from "express-rate-limit";
+import { Router, type Request } from "express";
+import rateLimit, { ipKeyGenerator } from "express-rate-limit";
 import {
   REFRESH_COOKIE_NAME,
   refreshCookieOptions,
@@ -16,18 +16,27 @@ import {
 
 export const authRouter = Router();
 
-const loginRateLimit = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  limit: 5,
-  standardHeaders: true,
-  legacyHeaders: false,
-  keyGenerator: (req) => {
-    const username =
-      typeof req.body?.username === "string" ? req.body.username.trim() : "";
-    return `${req.ip ?? "unknown"}:${username.toLowerCase()}`;
-  },
-  message: { code: "AUTH_RATE_LIMITED" },
-});
+/** Login rate-limit key: normalized IP + lowercased username. */
+export function loginRateLimitKey(req: Pick<Request, "ip" | "body">): string {
+  const username =
+    typeof req.body?.username === "string" ? req.body.username.trim() : "";
+  const ip = req.ip ?? "unknown";
+  return `${ipKeyGenerator(ip)}:${username.toLowerCase()}`;
+}
+
+export function createLoginRateLimit() {
+  return rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 5,
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: () => process.env.NODE_ENV === "test",
+    keyGenerator: loginRateLimitKey,
+    message: { code: "AUTH_RATE_LIMITED" },
+  });
+}
+
+const loginRateLimit = createLoginRateLimit();
 
 authRouter.post("/login", loginRateLimit, async (req, res) => {
   const parsed = loginBodySchema.safeParse(req.body);
