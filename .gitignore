@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+build/
+legacy-php/**/*.sql
+node_modules
+*.sql
+**/backups/
+**/uploads/
+legacy-php/
+.cursor/
+.cursorignore
+docs/
