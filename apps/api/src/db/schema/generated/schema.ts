@@ -1,4 +1,4 @@
-import { mysqlTable, mysqlSchema, AnyMySqlColumn, int, varchar, text, date, mysqlEnum, timestamp, datetime, unique, time, decimal, index, foreignKey, longtext, float, char, tinyint, bigint } from "drizzle-orm/mysql-core"
+import { mysqlTable, mysqlSchema, AnyMySqlColumn, index, foreignKey, int, varchar, text, date, mysqlEnum, timestamp, datetime, unique, time, decimal, longtext, float, char, tinyint, bigint } from "drizzle-orm/mysql-core"
 import { sql } from "drizzle-orm"
 
 export const adminTasks = mysqlTable("admin_tasks", {
@@ -10,7 +10,11 @@ export const adminTasks = mysqlTable("admin_tasks", {
 	dueDate: date("due_date", { mode: 'string' }),
 	status: mysqlEnum(['Pending','In Progress','Completed','Cancelled']).default('Pending'),
 	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_admin_tasks_tenant_id").on(table.tenantId),
+]);
 
 export const announcements = mysqlTable("announcements", {
 	announcementId: int("announcement_id").autoincrement().notNull(),
@@ -24,7 +28,11 @@ export const announcements = mysqlTable("announcements", {
 	isUrgent: tinyint("is_urgent").default(0),
 	postedBy: int("posted_by"),
 	postedAt: timestamp("posted_at", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_announcements_tenant_id").on(table.tenantId),
+]);
 
 export const annualLessonPlan = mysqlTable("annual_lesson_plan", {
 	planDetailId: int("plan_detail_id").autoincrement().notNull(),
@@ -38,7 +46,11 @@ export const annualLessonPlan = mysqlTable("annual_lesson_plan", {
 	assignedBy: int("assigned_by"),
 	status: mysqlEnum(['Draft','Approved']).default('Draft').notNull(),
 	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_annual_lesson_plan_tenant_id").on(table.tenantId),
+]);
 
 export const assignmentSubmissions = mysqlTable("assignment_submissions", {
 	submissionId: int("submission_id").autoincrement().notNull(),
@@ -47,7 +59,11 @@ export const assignmentSubmissions = mysqlTable("assignment_submissions", {
 	submissionDate: datetime("submission_date", { mode: 'string'}).default('CURRENT_TIMESTAMP'),
 	filePath: varchar("file_path", { length: 255 }),
 	status: mysqlEnum(['Pending','Graded']).default('Pending'),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_assignment_submissions_tenant_id").on(table.tenantId),
+]);
 
 export const attendance = mysqlTable("attendance", {
 	attId: int("att_id").autoincrement().notNull(),
@@ -61,7 +77,11 @@ export const attendance = mysqlTable("attendance", {
 	rejectionReason: text("rejection_reason"),
 	recordedBy: int("recorded_by").notNull(),
 	subjectId: int("subject_id"),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_attendance_tenant_id").on(table.tenantId),
+]);
 
 export const auditLog = mysqlTable("audit_log", {
 	logId: int("log_id").autoincrement().notNull(),
@@ -69,7 +89,11 @@ export const auditLog = mysqlTable("audit_log", {
 	actionType: varchar("action_type", { length: 100 }).notNull(),
 	description: text(),
 	timestamp: datetime({ mode: 'string'}).default('CURRENT_TIMESTAMP').notNull(),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_audit_log_tenant_id").on(table.tenantId),
+]);
 
 export const classes = mysqlTable("classes", {
 	classId: int("class_id").autoincrement().notNull(),
@@ -78,9 +102,11 @@ export const classes = mysqlTable("classes", {
 	section: varchar({ length: 10 }).notNull(),
 	classTeacherId: int("class_teacher_id"),
 	maxCapacity: int("max_capacity").default(59),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
-	unique("unique_class_section_stream").on(table.gradeLevel, table.section, table.stream),
+	index("idx_classes_tenant_id").on(table.tenantId),
+	unique("uq_classes_tenant_grade_section_stream").on(table.tenantId, table.gradeLevel, table.section, table.stream),
 ]);
 
 export const classSchedule = mysqlTable("class_schedule", {
@@ -95,7 +121,11 @@ export const classSchedule = mysqlTable("class_schedule", {
 	teacherStaffId: int("teacher_staff_id"),
 	type: mysqlEnum(['Class','Exam']).default('Class').notNull(),
 	createdBy: int("created_by"),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_class_schedule_tenant_id").on(table.tenantId),
+]);
 
 export const committeesClubs = mysqlTable("committees_clubs", {
 	structureId: int("structure_id").autoincrement().notNull(),
@@ -105,9 +135,11 @@ export const committeesClubs = mysqlTable("committees_clubs", {
 	year: varchar({ length: 10 }),
 	isActive: tinyint("is_active").default(1).notNull(),
 	createdBy: int("created_by"),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
-	unique("name").on(table.name),
+	index("idx_committees_clubs_tenant_id").on(table.tenantId),
+	unique("uq_committees_clubs_tenant_name").on(table.tenantId, table.name),
 ]);
 
 export const committeeMembers = mysqlTable("committee_members", {
@@ -117,7 +149,11 @@ export const committeeMembers = mysqlTable("committee_members", {
 	studentId: int("student_id"),
 	parentPgId: int("parent_pg_id"),
 	roleInStructure: varchar("role_in_structure", { length: 100 }),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_committee_members_tenant_id").on(table.tenantId),
+]);
 
 export const communicationGroups = mysqlTable("communication_groups", {
 	groupId: int("group_id").autoincrement().notNull(),
@@ -126,7 +162,11 @@ export const communicationGroups = mysqlTable("communication_groups", {
 	createdByStaffId: int("created_by_staff_id").notNull(),
 	isActive: tinyint("is_active").default(1).notNull(),
 	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_communication_groups_tenant_id").on(table.tenantId),
+]);
 
 export const evaluationCriteria = mysqlTable("evaluation_criteria", {
 	criteriaId: int("criteria_id").autoincrement().notNull(),
@@ -137,7 +177,11 @@ export const evaluationCriteria = mysqlTable("evaluation_criteria", {
 	maxScore: decimal("max_score", { precision: 4, scale: 2 }).notNull(),
 	isActive: tinyint("is_active").default(1),
 	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_evaluation_criteria_tenant_id").on(table.tenantId),
+]);
 
 export const evaluationDetails = mysqlTable("evaluation_details", {
 	detailId: int("detail_id").autoincrement().notNull(),
@@ -147,7 +191,11 @@ export const evaluationDetails = mysqlTable("evaluation_details", {
 	maxScore: decimal("max_score", { precision: 5, scale: 2 }).notNull(),
 	scoreGiven: decimal("score_given", { precision: 5, scale: 2 }).notNull(),
 	notes: text(),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_evaluation_details_tenant_id").on(table.tenantId),
+]);
 
 export const examQuestions = mysqlTable("exam_questions", {
 	questionId: int("question_id").autoincrement().notNull(),
@@ -160,9 +208,11 @@ export const examQuestions = mysqlTable("exam_questions", {
 	correctOption: mysqlEnum("correct_option", ['A','B','C','D']).notNull(),
 	point: decimal({ precision: 4, scale: 2 }).default('1.00'),
 	points: float().default(1),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
 	index("exam_id").on(table.examId),
+	index("idx_exam_questions_tenant_id").on(table.tenantId),
 ]);
 
 export const examResultsOnline = mysqlTable("exam_results_online", {
@@ -171,10 +221,12 @@ export const examResultsOnline = mysqlTable("exam_results_online", {
 	studentId: int("student_id").notNull().references(() => students.studentId, { onDelete: "cascade", onUpdate: "restrict" } ),
 	totalScore: decimal("total_score", { precision: 5, scale: 2 }).notNull(),
 	submittedAt: datetime("submitted_at", { mode: 'string'}).default('CURRENT_TIMESTAMP'),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
 	index("exam_id").on(table.examId),
 	index("student_id").on(table.studentId),
+	index("idx_exam_results_online_tenant_id").on(table.tenantId),
 ]);
 
 export const expenses = mysqlTable("expenses", {
@@ -186,7 +238,11 @@ export const expenses = mysqlTable("expenses", {
 	description: text(),
 	authorizedBy: int("authorized_by"),
 	recordedBy: int("recorded_by"),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_expenses_tenant_id").on(table.tenantId),
+]);
 
 export const externalInquiries = mysqlTable("external_inquiries", {
 	id: int().autoincrement().notNull(),
@@ -199,7 +255,11 @@ export const externalInquiries = mysqlTable("external_inquiries", {
 	message: text(),
 	status: mysqlEnum(['New','Read','Responded']).default('New'),
 	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_external_inquiries_tenant_id").on(table.tenantId),
+]);
 
 export const fileShares = mysqlTable("file_shares", {
 	shareId: int("share_id").autoincrement().notNull(),
@@ -207,7 +267,11 @@ export const fileShares = mysqlTable("file_shares", {
 	classId: int("class_id").notNull(),
 	senderId: int("sender_id").notNull(),
 	sharedAt: timestamp("shared_at", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_file_shares_tenant_id").on(table.tenantId),
+]);
 
 export const foreignPartners = mysqlTable("foreign_partners", {
 	partnerId: int("partner_id").autoincrement().notNull(),
@@ -223,7 +287,11 @@ export const foreignPartners = mysqlTable("foreign_partners", {
 	status: mysqlEnum(['Active','Inactive','Negotiation']).default('Active'),
 	description: text(),
 	managedBy: int("managed_by"),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_foreign_partners_tenant_id").on(table.tenantId),
+]);
 
 export const grades = mysqlTable("grades", {
 	gradeEntryId: int("grade_entry_id").autoincrement().notNull(),
@@ -241,7 +309,11 @@ export const grades = mysqlTable("grades", {
 	registrarAccepted: tinyint("registrar_accepted").default(0),
 	submissionStatus: mysqlEnum("submission_status", ['Draft','Submitted','Approved','Accepted']).default('Draft'),
 	status: mysqlEnum(['Complete','Incomplete','Absent']).default('Complete'),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_grades_tenant_id").on(table.tenantId),
+]);
 
 export const groupsInfo = mysqlTable("groups_info", {
 	groupId: int("group_id").autoincrement().notNull(),
@@ -253,10 +325,12 @@ export const groupsInfo = mysqlTable("groups_info", {
 	academicYear: varchar("academic_year", { length: 10 }).notNull(),
 	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
 	isOnline: tinyint("is_online").default(0),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
 	index("teacher_id").on(table.teacherId),
 	index("subject_id").on(table.subjectId),
+	index("idx_groups_info_tenant_id").on(table.tenantId),
 ]);
 
 export const groupChats = mysqlTable("group_chats", {
@@ -268,9 +342,11 @@ export const groupChats = mysqlTable("group_chats", {
 	fileType: mysqlEnum("file_type", ['text','image','video','pdf','other']).default('text'),
 	sentAt: timestamp("sent_at", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
 	isRead: tinyint("is_read").default(0),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
 	index("group_id").on(table.groupId),
+	index("idx_group_chats_tenant_id").on(table.tenantId),
 ]);
 
 export const groupMembers = mysqlTable("group_members", {
@@ -279,9 +355,11 @@ export const groupMembers = mysqlTable("group_members", {
 	studentId: int("student_id").notNull().references(() => students.studentId, { onDelete: "restrict", onUpdate: "restrict" } ),
 	isLeader: tinyint("is_leader").default(0),
 	isTyping: tinyint("is_typing").default(0),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
 	index("student_id").on(table.studentId),
+	index("idx_group_members_tenant_id").on(table.tenantId),
 ]);
 
 export const groupMessages = mysqlTable("group_messages", {
@@ -293,7 +371,11 @@ export const groupMessages = mysqlTable("group_messages", {
 	fileName: varchar("file_name", { length: 255 }),
 	fileType: varchar("file_type", { length: 50 }),
 	sentAt: timestamp("sent_at", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_group_messages_tenant_id").on(table.tenantId),
+]);
 
 export const groupResponses = mysqlTable("group_responses", {
 	resId: int("res_id").autoincrement().notNull(),
@@ -305,7 +387,11 @@ export const groupResponses = mysqlTable("group_responses", {
 	timeTaken: int("time_taken"),
 	pointsEarned: int("points_earned"),
 	submittedAt: timestamp("submitted_at", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_group_responses_tenant_id").on(table.tenantId),
+]);
 
 export const groupSubmissions = mysqlTable("group_submissions", {
 	submissionId: int("submission_id").autoincrement().notNull(),
@@ -320,10 +406,12 @@ export const groupSubmissions = mysqlTable("group_submissions", {
 	gradePoints: decimal("grade_points", { precision: 5, scale: 2 }),
 	feedback: text(),
 	gradedAt: timestamp("graded_at", { mode: 'string' }),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
 	index("task_id").on(table.taskId),
 	index("group_id").on(table.groupId),
+	index("idx_group_submissions_tenant_id").on(table.tenantId),
 ]);
 
 export const groupTasks = mysqlTable("group_tasks", {
@@ -337,10 +425,12 @@ export const groupTasks = mysqlTable("group_tasks", {
 	maxScore: decimal("max_score", { precision: 5, scale: 2 }).default('10.00'),
 	deadline: datetime({ mode: 'string'}),
 	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
 	index("teacher_id").on(table.teacherId),
 	index("subject_id").on(table.subjectId),
+	index("idx_group_tasks_tenant_id").on(table.tenantId),
 ]);
 
 export const income = mysqlTable("income", {
@@ -350,7 +440,11 @@ export const income = mysqlTable("income", {
 	// you can use { mode: 'date' }, if you want to have Date as type for this column
 	dateReceived: date("date_received", { mode: 'string' }).notNull(),
 	recordedBy: int("recorded_by"),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_income_tenant_id").on(table.tenantId),
+]);
 
 export const libraryAttendance = mysqlTable("library_attendance", {
 	attendanceId: int("attendance_id").autoincrement().notNull(),
@@ -359,9 +453,11 @@ export const libraryAttendance = mysqlTable("library_attendance", {
 	date: date({ mode: 'string' }),
 	shift: mysqlEnum(['Regular','Extra_Time']),
 	bookTitle: varchar("book_title", { length: 255 }),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
 	index("student_id").on(table.studentId),
+	index("idx_library_attendance_tenant_id").on(table.tenantId),
 ]);
 
 export const libraryBooks = mysqlTable("library_books", {
@@ -377,9 +473,11 @@ export const libraryBooks = mysqlTable("library_books", {
 	// you can use { mode: 'date' }, if you want to have Date as type for this column
 	entryDate: date("entry_date", { mode: 'string' }),
 	remarks: text(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
-	unique("accession_number").on(table.accessionNumber),
+	index("idx_library_books_tenant_id").on(table.tenantId),
+	unique("uq_library_books_tenant_accession_number").on(table.tenantId, table.accessionNumber),
 ]);
 
 export const libraryBorrowing = mysqlTable("library_borrowing", {
@@ -392,10 +490,12 @@ export const libraryBorrowing = mysqlTable("library_borrowing", {
 	returnDate: date("return_date", { mode: 'string' }),
 	status: mysqlEnum(['Borrowed','Returned']).default('Borrowed'),
 	receiverStaffId: int("receiver_staff_id"),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
 	index("book_id").on(table.bookId),
 	index("user_id").on(table.userId),
+	index("idx_library_borrowing_tenant_id").on(table.tenantId),
 ]);
 
 export const libraryHandovers = mysqlTable("library_handovers", {
@@ -407,9 +507,11 @@ export const libraryHandovers = mysqlTable("library_handovers", {
 	witness1: varchar("witness_1", { length: 255 }),
 	witness2: varchar("witness_2", { length: 255 }),
 	witness3: varchar("witness_3", { length: 255 }),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
 	index("book_id").on(table.bookId),
+	index("idx_library_handovers_tenant_id").on(table.tenantId),
 ]);
 
 export const liveQuizQuestions = mysqlTable("live_quiz_questions", {
@@ -430,7 +532,11 @@ export const liveQuizQuestions = mysqlTable("live_quiz_questions", {
 	points: int().default(1),
 	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
 	quizStatus: mysqlEnum("quiz_status", ['waiting','active','finished']).default('waiting'),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_live_quiz_questions_tenant_id").on(table.tenantId),
+]);
 
 export const liveQuizSessions = mysqlTable("live_quiz_sessions", {
 	sessionId: int("session_id").autoincrement().notNull(),
@@ -438,8 +544,10 @@ export const liveQuizSessions = mysqlTable("live_quiz_sessions", {
 	currentQuestionId: int("current_question_id").default(0),
 	status: mysqlEnum(['waiting','started','finished']).default('waiting'),
 	lastUpdated: timestamp("last_updated", { mode: 'string' }).default('CURRENT_TIMESTAMP').onUpdateNow(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
+	index("idx_live_quiz_sessions_tenant_id").on(table.tenantId),
 	unique("exam_id").on(table.examId),
 ]);
 
@@ -458,10 +566,12 @@ export const onlineExams = mysqlTable("online_exams", {
 	semester: varchar({ length: 10 }),
 	examPassword: varchar("exam_password", { length: 255 }),
 	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
 	index("subject_id").on(table.subjectId),
 	index("class_id").on(table.classId),
+	index("idx_online_exams_tenant_id").on(table.tenantId),
 ]);
 
 export const parentGuardian = mysqlTable("parent_guardian", {
@@ -475,7 +585,11 @@ export const parentGuardian = mysqlTable("parent_guardian", {
 	email: varchar({ length: 100 }),
 	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
 	updatedAt: timestamp("updated_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').onUpdateNow(),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_parent_guardian_tenant_id").on(table.tenantId),
+]);
 
 export const payroll = mysqlTable("payroll", {
 	payrollId: int("payroll_id").autoincrement().notNull(),
@@ -486,7 +600,11 @@ export const payroll = mysqlTable("payroll", {
 	deductions: decimal({ precision: 10, scale: 2 }).default('0.00').notNull(),
 	netSalary: decimal("net_salary", { precision: 10, scale: 2 }).notNull(),
 	processedBy: int("processed_by"),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_payroll_tenant_id").on(table.tenantId),
+]);
 
 export const peerAssessments = mysqlTable("peer_assessments", {
 	assessmentId: int("assessment_id").autoincrement().notNull(),
@@ -495,11 +613,13 @@ export const peerAssessments = mysqlTable("peer_assessments", {
 	evaluateeId: int("evaluatee_id").notNull().references(() => students.studentId, { onDelete: "restrict", onUpdate: "restrict" } ),
 	contributionRating: int("contribution_rating"),
 	comment: text(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
 	index("task_id").on(table.taskId),
 	index("evaluator_id").on(table.evaluatorId),
 	index("evaluatee_id").on(table.evaluateeId),
+	index("idx_peer_assessments_tenant_id").on(table.tenantId),
 ]);
 
 export const periodSettings = mysqlTable("period_settings", {
@@ -508,7 +628,20 @@ export const periodSettings = mysqlTable("period_settings", {
 	startTime: time("start_time"),
 	endTime: time("end_time"),
 	shift: varchar({ length: 20 }),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_period_settings_tenant_id").on(table.tenantId),
+]);
+
+export const schemaMigrations = mysqlTable("schema_migrations", {
+	id: int().autoincrement().notNull(),
+	filename: varchar({ length: 255 }).notNull(),
+	appliedAt: timestamp("applied_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	unique("schema_migrations_filename_unique").on(table.filename),
+]);
 
 export const schoolNews = mysqlTable("school_news", {
 	id: int().autoincrement().notNull(),
@@ -519,7 +652,11 @@ export const schoolNews = mysqlTable("school_news", {
 	videoUrl: varchar("video_url", { length: 255 }),
 	category: mysqlEnum(['General','Parents','Donors','Authorities']).default('General'),
 	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_school_news_tenant_id").on(table.tenantId),
+]);
 
 export const schoolPlans = mysqlTable("school_plans", {
 	planId: int("plan_id").autoincrement().notNull(),
@@ -533,7 +670,11 @@ export const schoolPlans = mysqlTable("school_plans", {
 	endDate: date("end_date", { mode: 'string' }),
 	status: mysqlEnum(['Draft','Approved','In_Progress','Completed']).default('Draft'),
 	createdBy: int("created_by"),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_school_plans_tenant_id").on(table.tenantId),
+]);
 
 export const schoolSettings = mysqlTable("school_settings", {
 	id: int().default(1).notNull(),
@@ -547,14 +688,22 @@ export const schoolSettings = mysqlTable("school_settings", {
 	schoolNeeds: text("school_needs"),
 	promoVideoUrl: varchar("promo_video_url", { length: 255 }),
 	updatedAt: timestamp("updated_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').onUpdateNow(),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_school_settings_tenant_id").on(table.tenantId),
+]);
 
 export const schoolStats = mysqlTable("school_stats", {
 	id: int().autoincrement().notNull(),
 	statLabel: varchar("stat_label", { length: 50 }).notNull(),
 	statValue: int("stat_value").notNull(),
 	icon: varchar({ length: 50 }),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_school_stats_tenant_id").on(table.tenantId),
+]);
 
 export const simulations = mysqlTable("simulations", {
 	id: int().autoincrement().notNull(),
@@ -566,7 +715,11 @@ export const simulations = mysqlTable("simulations", {
 	simUrl: text("sim_url"),
 	simFile: varchar("sim_file", { length: 255 }),
 	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_simulations_tenant_id").on(table.tenantId),
+]);
 
 export const staff = mysqlTable("staff", {
 	staffId: int("staff_id").autoincrement().notNull(),
@@ -588,8 +741,10 @@ export const staff = mysqlTable("staff", {
 	isApproved: tinyint("is_approved").default(0),
 	photo: varchar({ length: 255 }),
 	approvalDate: datetime("approval_date", { mode: 'string'}),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
+	index("idx_staff_tenant_id").on(table.tenantId),
 	unique("user_id").on(table.userId),
 ]);
 
@@ -607,7 +762,11 @@ export const staffFiles = mysqlTable("staff_files", {
 	priority: mysqlEnum(['Normal','Urgent','Confidential']).default('Normal'),
 	semester: varchar({ length: 20 }).default('1st Semester'),
 	academicYear: varchar("academic_year", { length: 10 }).default('2016'),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_staff_files_tenant_id").on(table.tenantId),
+]);
 
 export const staffFolders = mysqlTable("staff_folders", {
 	folderId: int("folder_id").autoincrement().notNull(),
@@ -616,7 +775,11 @@ export const staffFolders = mysqlTable("staff_folders", {
 	academicYear: varchar("academic_year", { length: 10 }),
 	semester: varchar({ length: 10 }),
 	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_staff_folders_tenant_id").on(table.tenantId),
+]);
 
 export const students = mysqlTable("students", {
 	studentId: int("student_id").autoincrement().notNull(),
@@ -645,8 +808,10 @@ export const students = mysqlTable("students", {
 	submissionStatus: mysqlEnum("submission_status", ['Draft','Submitted','Approved']).default('Draft'),
 	photo: varchar({ length: 255 }).default('default_profile.png'),
 	isTransfer: tinyint("is_transfer").default(0),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
+	index("idx_students_tenant_id").on(table.tenantId),
 	unique("user_id").on(table.userId),
 ]);
 
@@ -659,7 +824,11 @@ export const studentAssessments = mysqlTable("student_assessments", {
 	maxLimit: decimal("max_limit", { precision: 5, scale: 2 }),
 	academicYear: varchar("academic_year", { length: 10 }),
 	semester: mysqlEnum(['1','2']),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_student_assessments_tenant_id").on(table.tenantId),
+]);
 
 export const studentFinalReports = mysqlTable("student_final_reports", {
 	reportId: int("report_id").autoincrement().notNull(),
@@ -674,7 +843,11 @@ export const studentFinalReports = mysqlTable("student_final_reports", {
 	yearlyAvg: decimal("yearly_avg", { precision: 10, scale: 2 }),
 	finalRank: int("final_rank"),
 	remark: varchar({ length: 50 }),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_student_final_reports_tenant_id").on(table.tenantId),
+]);
 
 export const studentGroups = mysqlTable("student_groups", {
 	groupId: int("group_id").autoincrement().notNull(),
@@ -686,11 +859,13 @@ export const studentGroups = mysqlTable("student_groups", {
 	section: varchar({ length: 10 }).notNull(),
 	academicYear: varchar("academic_year", { length: 10 }).notNull(),
 	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
 	index("teacher_id").on(table.teacherId),
 	index("subject_id").on(table.subjectId),
 	index("student_id").on(table.studentId),
+	index("idx_student_groups_tenant_id").on(table.tenantId),
 ]);
 
 export const subjects = mysqlTable("subjects", {
@@ -705,9 +880,11 @@ export const subjects = mysqlTable("subjects", {
 	isOffered: tinyint("is_offered").default(0),
 	parentSubjectId: int("parent_subject_id"),
 	sortOrder: int("sort_order").default(0),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
-	unique("unique_subject_grade_stream").on(table.subjectName, table.gradeLevel, table.stream),
+	index("idx_subjects_tenant_id").on(table.tenantId),
+	unique("uq_subjects_tenant_name_grade_stream").on(table.tenantId, table.subjectName, table.gradeLevel, table.stream),
 ]);
 
 export const subjectWeightings = mysqlTable("subject_weightings", {
@@ -720,16 +897,22 @@ export const subjectWeightings = mysqlTable("subject_weightings", {
 	academicYear: varchar("academic_year", { length: 10 }).notNull(),
 	semester: varchar({ length: 10 }).default('1'),
 	staffId: int("staff_id").notNull(),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_subject_weightings_tenant_id").on(table.tenantId),
+]);
 
 export const systemSettings = mysqlTable("system_settings", {
 	settingId: int("setting_id").autoincrement().notNull(),
 	settingKey: varchar("setting_key", { length: 100 }).notNull(),
 	settingValue: varchar("setting_value", { length: 255 }).notNull(),
 	description: text(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
-	unique("setting_key").on(table.settingKey),
+	index("idx_system_settings_tenant_id").on(table.tenantId),
+	unique("uq_system_settings_tenant_setting_key").on(table.tenantId, table.settingKey),
 ]);
 
 export const teacherAssignments = mysqlTable("teacher_assignments", {
@@ -739,8 +922,10 @@ export const teacherAssignments = mysqlTable("teacher_assignments", {
 	gradeLevel: int("grade_level").notNull(),
 	section: varchar({ length: 10 }),
 	academicYear: varchar("academic_year", { length: 10 }).default('2025/2026').notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
+	index("idx_teacher_assignments_tenant_id").on(table.tenantId),
 	unique("unique_subject_assignment").on(table.subjectId, table.gradeLevel, table.section, table.academicYear),
 ]);
 
@@ -755,14 +940,33 @@ export const teacherEvaluations = mysqlTable("teacher_evaluations", {
 	comments: text(),
 	totalScore: decimal("total_score", { precision: 5, scale: 2 }),
 	isFinalized: tinyint("is_finalized").default(0),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_teacher_evaluations_tenant_id").on(table.tenantId),
+]);
 
 export const teacherRoleCredits = mysqlTable("teacher_role_credits", {
 	roleId: int("role_id").autoincrement().notNull(),
 	roleName: varchar("role_name", { length: 100 }),
 	maxCredit: int("max_credit"),
 	isActive: tinyint("is_active").default(1),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_teacher_role_credits_tenant_id").on(table.tenantId),
+]);
+
+export const tenants = mysqlTable("tenants", {
+	id: int().autoincrement().notNull(),
+	name: varchar({ length: 255 }).notNull(),
+	slug: varchar({ length: 100 }).notNull(),
+	status: varchar({ length: 32 }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	unique("tenants_slug_unique").on(table.slug),
+]);
 
 export const users = mysqlTable("users", {
 	userId: int("user_id").autoincrement().notNull(),
@@ -775,9 +979,12 @@ export const users = mysqlTable("users", {
 	resetExpiry: datetime("reset_expiry", { mode: 'string'}),
 	isActive: tinyint("is_active").default(1).notNull(),
 	lastSeen: timestamp("last_seen", { mode: 'string' }).default('CURRENT_TIMESTAMP').onUpdateNow(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	tokenVersion: int("token_version").default(0).notNull(),
 },
 (table) => [
-	unique("username").on(table.username),
+	index("idx_users_tenant_id").on(table.tenantId),
+	unique("uq_users_tenant_username").on(table.tenantId, table.username),
 ]);
 
 export const vocationalRequests = mysqlTable("vocational_requests", {
@@ -786,4 +993,8 @@ export const vocationalRequests = mysqlTable("vocational_requests", {
 	subjectId: int("subject_id"),
 	requestDate: timestamp("request_date", { mode: 'string' }).default('CURRENT_TIMESTAMP'),
 	status: mysqlEnum(['Pending','Assigned','Rejected']).default('Pending'),
-});
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+},
+(table) => [
+	index("idx_vocational_requests_tenant_id").on(table.tenantId),
+]);
