@@ -5,6 +5,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import { env } from "./config/env.js";
 import { pool } from "./db/index.js";
+import { authRouter } from "./modules/auth/auth.routes.js";
 
 const app = express();
 
@@ -27,6 +28,10 @@ app.get("/health/db", async (_req, res) => {
   }
 });
 
+app.use("/auth", authRouter);
+
 app.listen(env.PORT, () => {
   console.log(`API running on http://localhost:${env.PORT}`);
 });
+
+export { app };
