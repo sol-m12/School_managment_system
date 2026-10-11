@@ -1,0 +1,33 @@
+{
+  "groups": {
+    "main": "Main",
+    "academic": "Academics",
+    "homeroom": "Homeroom",
+    "administration": "Academic Administration",
+    "store": "Store / Property Office",
+    "account": "Account"
+  },
+  "items": {
+    "dashboard": "Dashboard",
+    "academicResults": "Academic Results",
+    "semesterReportCard": "Semester Report Card",
+    "gradeEntry": "Grade Entry",
+    "schedule": "Schedule / Timetable",
+    "fileManagement": "File Management",
+    "simulations": "Online Simulations",
+    "storeRequest": "Store Requests",
+    "roster": "Roster",
+    "reportCard": "Report Card",
+    "classReport": "Class Report",
+    "subjects": "Subjects",
+    "teachingLoad": "Teaching Load",
+    "sectionAssignment": "Section Assignment",
+    "admissions": "New Admissions",
+    "autoSchedule": "Auto-Scheduling",
+    "workloadHeatmap": "Workload Heatmap",
+    "receiveItems": "Receive Items",
+    "binCard": "Bin Card Ledger",
+    "accountSettings": "Account Settings",
+    "profile": "My Profile"
+  }
+}

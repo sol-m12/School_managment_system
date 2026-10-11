@@ -1,0 +1,11 @@
+{
+  "invalidCredentials": "Incorrect username or password.",
+  "rateLimited": "Too many attempts. Please try again in 15 minutes.",
+  "validation": "The information you entered is not valid. Please check it.",
+  "unauthorized": "Your session has ended. Please sign in again.",
+  "network": "Cannot reach the server. Check your internet connection.",
+  "server": "A server error occurred. Please try again later.",
+  "unknown": "An unknown error occurred. Please try again.",
+  "required": "This field is required.",
+  "tooLong": "The text you entered is too long."
+}

@@ -1,0 +1,52 @@
+{
+  "appName": "KEYIT MS",
+  "systemTitle": "KEYIT SCHOOL SYSTEM",
+  "documentTitle": "KEYIT MS - Dashboard",
+  "loading": "Loading...",
+  "close": "Close",
+  "toggleSidebar": "Toggle Sidebar",
+  "closeSidebar": "Close sidebar",
+  "mainNavigation": "Main navigation",
+  "logout": "Log out",
+  "noModules": "No permitted modules were found.",
+  "language": "Language",
+  "languages": {
+    "am": "አማርኛ",
+    "en": "English"
+  },
+  "languagesShort": {
+    "am": "አማ",
+    "en": "EN"
+  },
+  "pagination": {
+    "label": "Pagination",
+    "range": "{{from}}–{{to}} of {{total}}",
+    "page": "Page {{page}} / {{pageCount}}",
+    "previous": "Previous page",
+    "next": "Next page"
+  },
+  "notBuilt": {
+    "title": "This page is not built yet",
+    "description": "This section will be added in a later step."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or has moved."
+  },
+  "homePage": "Home page",
+  "backToDashboard": "Back to dashboard",
+  "backToLogin": "Back to login",
+  "roles": {
+    "Teacher": "Teacher",
+    "Admin": "School Admin",
+    "Technician": "IT Technician",
+    "Secretary": "Secretary",
+    "Counselor": "Counselor",
+    "Finance": "Finance",
+    "V_Principal": "Vice Principal",
+    "Registrar": "Record Office",
+    "Librarian": "Librarian",
+    "Store_Keeper": "Store Keeper",
+    "Student": "Student"
+  }
+}

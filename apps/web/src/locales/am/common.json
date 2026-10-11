@@ -1,0 +1,52 @@
+{
+  "appName": "KEYIT MS",
+  "systemTitle": "KEYIT SCHOOL SYSTEM",
+  "documentTitle": "KEYIT MS - Dashboard",
+  "loading": "በመጫን ላይ...",
+  "close": "ዝጋ",
+  "toggleSidebar": "ሳይድባሩን ክፈት / ዝጋ",
+  "closeSidebar": "ሳይድባሩን ዝጋ",
+  "mainNavigation": "ዋና ምናሌ",
+  "logout": "ውጣ",
+  "noModules": "ምንም የተፈቀደ ሞጁል አልተገኘም።",
+  "language": "ቋንቋ",
+  "languages": {
+    "am": "አማርኛ",
+    "en": "English"
+  },
+  "languagesShort": {
+    "am": "አማ",
+    "en": "EN"
+  },
+  "pagination": {
+    "label": "ገጾች",
+    "range": "{{from}}–{{to}} ከ {{total}}",
+    "page": "ገጽ {{page}} / {{pageCount}}",
+    "previous": "ቀዳሚ ገጽ",
+    "next": "ቀጣይ ገጽ"
+  },
+  "notBuilt": {
+    "title": "ይህ ገጽ ገና አልተሰራም",
+    "description": "ይህ ክፍል በሚቀጥሉት ደረጃዎች ይዘጋጃል።"
+  },
+  "notFound": {
+    "title": "ገጹ አልተገኘም",
+    "description": "የፈለጉት ገጽ የለም ወይም ተወስዷል።"
+  },
+  "homePage": "ዋናው ገጽ",
+  "backToDashboard": "ወደ ዳሽቦርድ ተመለስ",
+  "backToLogin": "ወደ መግቢያ ተመለስ",
+  "roles": {
+    "Teacher": "መምህር",
+    "Admin": "አድሚን",
+    "Technician": "አይቲ ቴክኒሻን",
+    "Secretary": "ሴክሬታሪ",
+    "Counselor": "አማካሪ",
+    "Finance": "ፋይናንስ",
+    "V_Principal": "ምክትል ርዕሰ መምህር",
+    "Registrar": "ማህደር ቤት",
+    "Librarian": "የቤተ-መጻሕፍት ባለሙያ",
+    "Store_Keeper": "የንብረት ክፍል",
+    "Student": "ተማሪ"
+  }
+}

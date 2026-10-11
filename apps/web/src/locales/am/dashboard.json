@@ -1,0 +1,19 @@
+{
+  "welcome": "እንኳን ደህና መጡ፣ {{name}}! 👋",
+  "today": "ዛሬ {{date}} ነው",
+  "jobTitle": "የሥራ መደብ፦",
+  "tenant": "ትምህርት ቤት፦",
+  "sampleData": "ናሙና መረጃ",
+  "stats": {
+    "itemTypes": "በስቶር ያሉ እቃዎች አይነት",
+    "lowStock": "ያለቁ / የቀነሱ እቃዎች (Low Stock)",
+    "todayTransactions": "የዛሬ እንቅስቃሴዎች (Transactions)"
+  },
+  "quickActions": "ፈጣን ተግባራት (Store Operations)",
+  "actions": {
+    "receiveItems": "Model 19 መመዝገቢያ",
+    "binCard": "የእቃዎች ብዛት ታሪክ",
+    "accountSettings": "የይለፍ ቃል ይቀይሩ",
+    "profile": "መረጃዎን ያሻሽሉ"
+  }
+}

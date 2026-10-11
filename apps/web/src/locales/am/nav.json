@@ -1,0 +1,33 @@
+{
+  "groups": {
+    "main": "ዋና ዋና",
+    "academic": "ትምህርት",
+    "homeroom": "የክፍል ኃላፊ",
+    "administration": "የትምህርት አስተዳደር",
+    "store": "የንብረት ክፍል",
+    "account": "አካውንት"
+  },
+  "items": {
+    "dashboard": "ዳሽቦርድ",
+    "academicResults": "የትምህርት ውጤት",
+    "semesterReportCard": "የሴሚስተር ሪፖርት ካርድ",
+    "gradeEntry": "ውጤት መመዝገቢያ",
+    "schedule": "የክፍል መርሃ-ግብር",
+    "fileManagement": "የፋይል አስተዳደር",
+    "simulations": "ኦንላይን ሲሙሌሽን",
+    "storeRequest": "የእቃ ጥያቄ",
+    "roster": "ሮስተር",
+    "reportCard": "ሪፖርት ካርድ",
+    "classReport": "የክፍል ሪፖርት",
+    "subjects": "የትምህርት አይነቶች",
+    "teachingLoad": "የማስተማር ጫና",
+    "sectionAssignment": "የሴክሽን ምደባ",
+    "admissions": "አዲስ ቅበላ",
+    "autoSchedule": "ራስ-ሰር መርሃ-ግብር",
+    "workloadHeatmap": "የሥራ ጫና ካርታ",
+    "receiveItems": "እቃ ገቢ ማድረግ",
+    "binCard": "የቢን ካርድ መዝገብ",
+    "accountSettings": "አካውንት ማስተካከል",
+    "profile": "የኔ ፕሮፋይል"
+  }
+}

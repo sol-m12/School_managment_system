@@ -1,1 +1,82 @@
 @import "tailwindcss";
+
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+@import "@fontsource/noto-sans-ethiopic/400.css";
+@import "@fontsource/noto-sans-ethiopic/500.css";
+@import "@fontsource/noto-sans-ethiopic/600.css";
+@import "@fontsource/noto-sans-ethiopic/700.css";
+
+/*
+ * Design tokens. Every page and component reads colors, fonts, radius,
+ * shadows and layout sizes from here. See docs/design-system.md.
+ */
+@theme {
+  /* Brand (from the legacy theme) */
+  --color-brand-50: #e8eef5;
+  --color-brand-100: #c9d7e6;
+  --color-brand-600: #0a4785;
+  --color-brand-700: #003366;
+  --color-brand-800: #002244;
+  --color-brand-900: #0b192c;
+  --color-gold: #ffcc00;
+
+  /* App shell (sidebar + header) */
+  --color-shell: #0f172a;
+  --color-shell-hover: #1e293b;
+  --color-shell-border: rgb(255 255 255 / 0.08);
+  --color-shell-text: #94a3b8;
+  --color-shell-title: #64748b;
+  --color-accent: #38bdf8;
+
+  /* Neutrals */
+  --color-canvas: #f8fafc;
+  --color-surface: #ffffff;
+  --color-border: #e2e8f0;
+  --color-ink: #334155;
+  --color-ink-muted: #64748b;
+  --color-ink-strong: #0f172a;
+
+  /* Status */
+  --color-success: #009b48;
+  --color-warning: #f59e0b;
+  --color-warning-strong: #b45309;
+  --color-danger: #dc2626;
+  --color-info: #0284c7;
+
+  /* Typography: Inter for Latin, Noto Sans Ethiopic for Ge'ez script */
+  --font-sans: "Inter", "Noto Sans Ethiopic", ui-sans-serif, system-ui, sans-serif;
+
+  /* Radius */
+  --radius-control: 0.5rem;
+  --radius-card: 0.75rem;
+  --radius-panel: 1.25rem;
+
+  /* Shadows */
+  --shadow-soft: 0 1px 2px rgb(15 23 42 / 0.04), 0 4px 12px rgb(15 23 42 / 0.05);
+  --shadow-raised: 0 8px 24px rgb(15 23 42 / 0.1);
+  --shadow-panel: 0 15px 35px rgb(0 0 0 / 0.35);
+
+  /* Layout */
+  --spacing-sidebar: 16.25rem;
+  --spacing-header: 4rem;
+  --spacing-tap: 2.5rem;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-canvas font-sans text-ink antialiased;
+    overflow-x: hidden;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}

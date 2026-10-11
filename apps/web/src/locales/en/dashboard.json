@@ -1,0 +1,19 @@
+{
+  "welcome": "Welcome, {{name}}! 👋",
+  "today": "Today is {{date}}",
+  "jobTitle": "Position:",
+  "tenant": "School:",
+  "sampleData": "Sample data",
+  "stats": {
+    "itemTypes": "Item types in store",
+    "lowStock": "Out of / low stock items (Low Stock)",
+    "todayTransactions": "Today's movements (Transactions)"
+  },
+  "quickActions": "Quick Actions (Store Operations)",
+  "actions": {
+    "receiveItems": "Model 19 entry",
+    "binCard": "Item quantity history",
+    "accountSettings": "Change your password",
+    "profile": "Update your information"
+  }
+}

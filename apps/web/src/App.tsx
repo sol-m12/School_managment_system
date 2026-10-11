@@ -1,9 +1,20 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { RouterProvider } from "react-router-dom";
+import { AuthProvider } from "@/features/auth/AuthProvider";
+import { router } from "./router";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { staleTime: 60_000, retry: 1, refetchOnWindowFocus: false },
+  },
+});
+
 export default function App() {
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold text-blue-600">
-        School Management System
-      </h1>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }

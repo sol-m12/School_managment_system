@@ -8,4 +8,6 @@ export default defineConfig({
   resolve: {
     alias: { "@": path.resolve(import.meta.dirname, "./src") },
   },
+  // The API's CORS allow-list expects this exact origin.
+  server: { port: 5173, strictPort: true },
 });
