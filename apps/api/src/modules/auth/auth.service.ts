@@ -10,6 +10,7 @@ import {
   dummyPasswordCompare,
   verifyPassword,
 } from "../../lib/password.js";
+import { permissionsForRole, type Permission } from "../../lib/permissions.js";
 import { isRole } from "../../lib/roles.js";
 import { scoped } from "../../lib/tenant.js";
 
@@ -26,6 +27,7 @@ export type AuthUserView = {
   role: string;
   tenantId: number;
   tenantName: string;
+  permissions: Permission[];
 };
 
 export type LoginResult = {
@@ -114,6 +116,7 @@ export async function loginWithPassword(input: {
       role: user.role,
       tenantId: user.tenantId,
       tenantName: tenant.name,
+      permissions: permissionsForRole(user.role),
     },
   };
 }
@@ -192,5 +195,6 @@ export async function getMe(
     role: row.role,
     tenantId: row.tenantId,
     tenantName: row.tenantName,
+    permissions: permissionsForRole(row.role),
   };
 }

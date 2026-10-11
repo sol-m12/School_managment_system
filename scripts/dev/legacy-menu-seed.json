@@ -1,0 +1,25 @@
+{
+  "roles": [
+    { "role_name": "Admin", "dashboard_url": "modules/admin/admin_dashboard.php" },
+    { "role_name": "Teacher", "dashboard_url": "academic_dashboard.php" },
+    { "role_name": "Technician", "dashboard_url": "staff_dashboard.php" },
+    { "role_name": "Secretary", "dashboard_url": null },
+    { "role_name": "Counselor", "dashboard_url": null },
+    { "role_name": "Finance", "dashboard_url": null },
+    { "role_name": "V_Principal", "dashboard_url": null },
+    { "role_name": "Registrar", "dashboard_url": null },
+    { "role_name": "Librarian", "dashboard_url": null },
+    { "role_name": "Store_Keeper", "dashboard_url": "staff_dashboard.php" },
+    { "role_name": "Student", "dashboard_url": "student/dashboard.php" }
+  ],
+  "modules": [
+    { "role": "Admin", "group_title": "ACADEMIC", "sort_order": 1, "title": "Approval dashboard", "url": "/keyt.com/hr/store/approval_dashboard.php", "icon": "fa-solid fa-link" },
+    { "role": "Admin", "group_title": "ACADEMIC", "sort_order": 2, "title": "StudentStatusReport", "url": "/keyt.com/modules/academics_grading/studentStatusReport.php", "icon": "fa-solid fa-link" },
+    { "role": "Admin", "group_title": "ሲስተም ሴቲንግ", "sort_order": 1, "title": "የትምህርት ዘመን", "url": "/keyt.com/setting/academic_settings.php", "icon": "fa-solid fa-sliders" },
+    { "role": "Admin", "group_title": "ሲስተም ሴቲንግ", "sort_order": 2, "title": "ዳታቤዝ ባክአፕ", "url": "/keyt.com/setting/database_backup.php", "icon": "fa-solid fa-database" },
+    { "role": "Admin", "group_title": "ሲስተም ሴቲንግ", "sort_order": 3, "title": "ዳታቤዝ መመለስ", "url": "/keyt.com/setting/restore.php", "icon": "fa-solid fa-rotate-left" },
+    { "role": "Admin", "group_title": "ሲስተም ሴቲንግ", "sort_order": 4, "title": "የተጠቃሚ ፓስወርድ መቆጣጠሪያ", "url": "/keyt.com/setting/admin_password_reset.php", "icon": "fa-solid fa-user-gear" },
+    { "role": "Admin", "group_title": "ሲስተም ሴቲንግ", "sort_order": 5, "title": "የትምህርት ቤት መረጃ", "url": "/keyt.com/modules/admin/school_settings.php", "icon": "fa-solid fa-building-columns" },
+    { "role": "Admin", "group_title": "ሲስተም ሴቲንግ", "sort_order": 6, "title": "የሞጁሎችና ሮል መቆጣጠሪያ", "url": "/keyt.com/manage_role_modules.php", "icon": "fa-solid fa-sliders" }
+  ]
+}

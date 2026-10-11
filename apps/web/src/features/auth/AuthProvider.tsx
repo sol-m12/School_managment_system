@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { setAccessToken, setSessionExpiredHandler } from "@/lib/api";
+import { isPermission } from "@/lib/permissions";
 import { isRole } from "@/lib/roles";
 import { loginRequest, logoutRequest, restoreSession, type AuthUser } from "./authApi";
 import { AuthContext, type AuthContextValue, type AuthState, type SessionUser } from "./authContext";
@@ -10,7 +11,7 @@ class UnknownRoleError extends Error {}
 
 function toSessionUser(user: AuthUser): SessionUser {
   if (!isRole(user.role)) throw new UnknownRoleError();
-  return { ...user, role: user.role };
+  return { ...user, role: user.role, permissions: (user.permissions ?? []).filter(isPermission) };
 }
 
 const ANONYMOUS: AuthState = { status: "anonymous", user: null };

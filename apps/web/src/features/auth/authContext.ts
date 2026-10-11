@@ -1,9 +1,10 @@
-import { createContext, useContext } from "react";
+import { createContext, useCallback, useContext } from "react";
+import { can, type Permission } from "@/lib/permissions";
 import type { Role } from "@/lib/roles";
 import type { AuthUser } from "./authApi";
 import type { LoginValues } from "./loginSchema";
 
-export type SessionUser = Omit<AuthUser, "role"> & { role: Role };
+export type SessionUser = Omit<AuthUser, "role" | "permissions"> & { role: Role; permissions: Permission[] };
 
 export type AuthState =
   | { status: "loading"; user: null }
@@ -27,4 +28,10 @@ export function useSessionUser(): SessionUser {
   const auth = useAuth();
   if (auth.status !== "authenticated") throw new Error("useSessionUser requires a signed-in user");
   return auth.user;
+}
+
+/** `const can = useCan(); can("subjects.create")` — hides UI only; the API still checks. */
+export function useCan(): (permission: Permission) => boolean {
+  const { permissions } = useSessionUser();
+  return useCallback((permission: Permission) => can(permissions, permission), [permissions]);
 }

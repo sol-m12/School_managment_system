@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAuth, useSessionUser } from "@/features/auth/authContext";
 import { cn } from "@/lib/cn";
-import { menuForRole } from "@/navigation/menu";
+import { menuForUser } from "@/navigation/menu";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 
@@ -17,7 +17,10 @@ export function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
 
-  const groups = useMemo(() => menuForRole(user.role), [user.role]);
+  const groups = useMemo(
+    () => menuForUser({ role: user.role, permissions: user.permissions }),
+    [user.role, user.permissions],
+  );
 
   useEffect(() => {
     document.title = t("documentTitle");

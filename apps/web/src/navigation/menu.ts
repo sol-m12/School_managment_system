@@ -28,6 +28,7 @@ import {
   UserPlus,
   Users,
 } from "lucide-react";
+import { can, type Permission } from "@/lib/permissions";
 import type { Role } from "@/lib/roles";
 import type amNav from "@/locales/am/nav.json";
 
@@ -41,8 +42,13 @@ export type MenuItem = {
   path: string;
   icon: LucideIcon;
   group: MenuGroupKey;
+  /** Used only when `permission` is not set (items not ported yet). */
   roles: readonly Role[] | "all";
+  /** Ported items are shown by permission key, not by role name. */
+  permission?: Permission;
 };
+
+type MenuUser = { role: Role; permissions: readonly Permission[] };
 
 export const MENU_GROUP_ORDER: readonly MenuGroupKey[] = [
   "main",
@@ -69,7 +75,15 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "reportCard", path: "/homeroom/report-cards", icon: FileText, group: "homeroom", roles: ["Teacher"] },
   { key: "classReport", path: "/homeroom/class-report", icon: FileBarChart, group: "homeroom", roles: ["Teacher"] },
 
-  { key: "subjects", path: "/academics/subjects", icon: Layers, group: "administration", roles: ["V_Principal", "Admin"] },
+  // TEMPORARY item (static menu). Owner: V_Principal. Access: subjects.read.
+  {
+    key: "subjects",
+    path: "/academics/subjects",
+    icon: Layers,
+    group: "administration",
+    roles: ["V_Principal", "Admin"],
+    permission: "subjects.read",
+  },
   { key: "teachingLoad", path: "/academics/teaching-load", icon: Users, group: "administration", roles: ["V_Principal", "Admin"] },
   { key: "sectionAssignment", path: "/academics/sections", icon: Grid3x3, group: "administration", roles: ["V_Principal", "Admin"] },
   { key: "admissions", path: "/academics/admissions", icon: UserPlus, group: "administration", roles: ["V_Principal", "Admin"] },
@@ -83,15 +97,16 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "profile", path: "/profile", icon: UserCircle, group: "account", roles: "all" },
 ];
 
-export function canAccess(item: MenuItem, role: Role): boolean {
-  return item.roles === "all" || item.roles.includes(role);
+export function canAccess(item: MenuItem, user: MenuUser): boolean {
+  if (item.permission) return can(user.permissions, item.permission);
+  return item.roles === "all" || item.roles.includes(user.role);
 }
 
 export type MenuGroup = { key: MenuGroupKey; items: MenuItem[] };
 
-export function menuForRole(role: Role): MenuGroup[] {
+export function menuForUser(user: MenuUser): MenuGroup[] {
   return MENU_GROUP_ORDER.map((group) => ({
     key: group,
-    items: MENU_ITEMS.filter((item) => item.group === group && canAccess(item, role)),
+    items: MENU_ITEMS.filter((item) => item.group === group && canAccess(item, user)),
   })).filter((group) => group.items.length > 0);
 }

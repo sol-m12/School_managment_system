@@ -1,0 +1,83 @@
+{
+  "gradeShort": "{{grade}}ኛ",
+  "gradeLong": "{{grade}}ኛ ክፍል",
+  "streams": {
+    "Common": "Common",
+    "Natural": "Natural",
+    "Social": "Social"
+  },
+  "create": {
+    "title": "አዲስ ትምህርት መመዝገቢያ",
+    "subjectName": "የትምህርት ስም",
+    "subjectNamePlaceholder": "ለምሳሌ፡ ፊዚክስ",
+    "gradeLevel": "ክፍል",
+    "stream": "ስትሪም",
+    "creditHours": "ክሬዲት",
+    "sortOrder": "ቅደም ተከተል",
+    "sortOrderTitle": "በሮስተር ላይ የሚወጣበት ቅደም ተከተል",
+    "isVocational": "ሙያ",
+    "submit": "መዝግብ",
+    "success": "ትምህርቱ በትክክል ተመዝግቧል!"
+  },
+  "list": {
+    "title": "የትምህርቶች ዝርዝር",
+    "count": "{{count}} ትምህርቶች",
+    "columns": {
+      "id": "ID",
+      "sortOrder": "ቅደም ተከተል",
+      "subject": "ትምህርት",
+      "grade": "ክፍል",
+      "stream": "ስትሪም",
+      "creditHours": "Cr.Hrs",
+      "type": "አይነት",
+      "actions": "ተግባር"
+    },
+    "vocational": "Vocational",
+    "academic": "Academic",
+    "view": "ዝርዝር እይ",
+    "edit": "አስተካክል",
+    "delete": "ሰርዝ"
+  },
+  "delete": {
+    "confirm": "እርግጠኛ ነህ?",
+    "confirmButton": "ሰርዝ",
+    "cancel": "ተመለስ",
+    "success": "ትምህርቱ በትክክል ተሰርዟል!"
+  },
+  "view": {
+    "back": "ወደ ዝርዝር ተመለስ",
+    "subjectId": "SUBJECT ID:",
+    "title": "የትምህርት ዝርዝር መረጃ",
+    "order": "ORDER",
+    "subjectName": "የትምህርት ስም",
+    "grade": "ክፍል (Grade)",
+    "stream": "ስትሪም (Stream)",
+    "sortOrder": "የሮስተር ቅደም ተከተል",
+    "sortOrderMissing": "አልተጠቀሰም",
+    "creditHours": "ክሬዲት (Credit Hours)",
+    "hours": "{{count}} ሰዓት",
+    "type": "የትምህርት አይነት",
+    "vocational": "የሙያ ትምህርት",
+    "academic": "አካዳሚክ",
+    "edit": "መረጃውን አድስ (Edit)",
+    "tipTitle": "ማሳሰቢያ",
+    "tipBody": "ይህ መረጃ በትምህርት ቤት ሮስተር እና በሪፖርት ካርድ ላይ ትምህርቶች የሚደረደሩበትን ቅደም ተከተል ይወስናል።",
+    "tipLowNumber": "በሮስተር ላይ ትምህርቱን ፊት ለፊት ለማምጣት ዝቅተኛ ቁጥር (ለምሳሌ 1) ይስጡ።",
+    "tipEditButton": "ለውጥ ለማድረግ ከታች ያለውን 'አድስ' የሚለውን ቁልፍ ይጠቀሙ።"
+  },
+  "edit": {
+    "title": "የትምህርት መረጃ ማስተካከያ",
+    "back": "ተመለስ",
+    "subjectName": "የትምህርት ስም",
+    "gradeLevel": "ክፍል",
+    "stream": "ስትሪም",
+    "creditHours": "ክሬዲት ሰዓት",
+    "sortOrder": "የሮስተር ቅደም ተከተል (Order)",
+    "sortOrderHint": "በትምህርት ዝርዝር ላይ የሚወጣበት ቁጥር",
+    "isVocational": "የሙያ ትምህርት (Vocational)",
+    "submit": "መረጃውን አድስ",
+    "success": "✓ መረጃው በትክክል ታድሷል!",
+    "failed": "⚠ ስህተት፡ መረጃውን መቀየር አልተቻለም።",
+    "duplicate": "ይህ ትምህርት በዚህ ክፍል እና ስትሪም ቀድሞ ተመዝግቧል! ሌላ ስም ይጠቀሙ።"
+  }
+}

@@ -26,9 +26,9 @@ export function DashboardPage() {
     () =>
       QUICK_ACTION_KEYS.flatMap((key) => {
         const item = MENU_ITEMS.find((menuItem) => menuItem.key === key);
-        return item && canAccess(item, user.role) ? [{ ...item, key }] : [];
+        return item && canAccess(item, user) ? [{ ...item, key }] : [];
       }),
-    [user.role],
+    [user],
   );
 
   return (

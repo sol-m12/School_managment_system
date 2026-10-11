@@ -8,14 +8,24 @@ export type ErrorKey =
   | "unauthorized"
   | "network"
   | "server"
-  | "unknown";
+  | "unknown"
+  | "forbidden"
+  | "subjectNotFound"
+  | "subjectDuplicate"
+  | "subjectInUse"
+  | "subjectStreamInvalid";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
   AUTH_RATE_LIMITED: "rateLimited",
   VALIDATION_ERROR: "validation",
   AUTH_UNAUTHORIZED: "unauthorized",
+  AUTH_FORBIDDEN: "forbidden",
   INTERNAL_ERROR: "server",
+  SUBJECT_NOT_FOUND: "subjectNotFound",
+  SUBJECT_DUPLICATE: "subjectDuplicate",
+  SUBJECT_IN_USE: "subjectInUse",
+  SUBJECT_STREAM_INVALID: "subjectStreamInvalid",
 };
 
 function readCode(data: unknown): string | null {

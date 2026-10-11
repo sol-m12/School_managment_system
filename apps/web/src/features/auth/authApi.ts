@@ -7,6 +7,7 @@ export type AuthUser = {
   role: string;
   tenantId: number;
   tenantName: string;
+  permissions: string[];
 };
 
 export async function loginRequest(values: LoginValues): Promise<AuthUser> {

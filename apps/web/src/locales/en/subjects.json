@@ -1,0 +1,83 @@
+{
+  "gradeShort": "Grade {{grade}}",
+  "gradeLong": "Grade {{grade}}",
+  "streams": {
+    "Common": "Common",
+    "Natural": "Natural",
+    "Social": "Social"
+  },
+  "create": {
+    "title": "Register a new subject",
+    "subjectName": "Subject name",
+    "subjectNamePlaceholder": "e.g. Physics",
+    "gradeLevel": "Grade",
+    "stream": "Stream",
+    "creditHours": "Credit",
+    "sortOrder": "Sort order",
+    "sortOrderTitle": "Position on the roster",
+    "isVocational": "Vocational",
+    "submit": "Register",
+    "success": "The subject was registered successfully!"
+  },
+  "list": {
+    "title": "Subject list",
+    "count": "{{count}} subjects",
+    "columns": {
+      "id": "ID",
+      "sortOrder": "Sort order",
+      "subject": "Subject",
+      "grade": "Grade",
+      "stream": "Stream",
+      "creditHours": "Cr.Hrs",
+      "type": "Type",
+      "actions": "Actions"
+    },
+    "vocational": "Vocational",
+    "academic": "Academic",
+    "view": "View details",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "delete": {
+    "confirm": "Are you sure?",
+    "confirmButton": "Delete",
+    "cancel": "Back",
+    "success": "The subject was deleted successfully!"
+  },
+  "view": {
+    "back": "Back to the list",
+    "subjectId": "SUBJECT ID:",
+    "title": "Subject details",
+    "order": "ORDER",
+    "subjectName": "Subject name",
+    "grade": "Grade",
+    "stream": "Stream",
+    "sortOrder": "Roster sort order",
+    "sortOrderMissing": "Not specified",
+    "creditHours": "Credit hours",
+    "hours": "{{count}} hours",
+    "type": "Subject type",
+    "vocational": "Vocational subject",
+    "academic": "Academic",
+    "edit": "Edit",
+    "tipTitle": "Note",
+    "tipBody": "This information decides the order in which subjects are listed on the school roster and the report card.",
+    "tipLowNumber": "Give a low number (for example 1) to bring the subject to the front of the roster.",
+    "tipEditButton": "To make a change, use the 'Edit' button below."
+  },
+  "edit": {
+    "title": "Edit subject information",
+    "back": "Back",
+    "subjectName": "Subject name",
+    "gradeLevel": "Grade",
+    "stream": "Stream",
+    "creditHours": "Credit hours",
+    "sortOrder": "Roster sort order (Order)",
+    "sortOrderHint": "The number used to place it in the subject list",
+    "isVocational": "Vocational subject",
+    "submit": "Update information",
+    "success": "✓ The information was updated successfully!",
+    "failed": "⚠ Error: the information could not be changed.",
+    "duplicate": "This subject is already registered for this grade and stream! Use a different name."
+  }
+}

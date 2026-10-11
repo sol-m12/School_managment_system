@@ -9,4 +9,5 @@ export { Modal } from "./Modal";
 export { PageHeader } from "./PageHeader";
 export { Select, type SelectOption } from "./Select";
 export { Spinner } from "./Spinner";
+export { Switch } from "./Switch";
 export { Table, type TableColumn, type TablePagination } from "./Table";

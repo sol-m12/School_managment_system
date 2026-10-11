@@ -1,5 +1,5 @@
 import { db, pool } from "../db/index.js";
-import { classes, students, tenants, users } from "../db/schema/index.js";
+import { classes, students, subjects, tenants, users } from "../db/schema/index.js";
 import { hashPassword } from "../lib/password.js";
 
 export const SHARED_USERNAME = "shared_user";
@@ -12,6 +12,7 @@ export type SeededTenant = {
   userId: number;
   classId: number;
   studentId: number;
+  subjectId: number;
 };
 
 export type IsolationSeed = {
@@ -21,7 +22,15 @@ export type IsolationSeed = {
   username: string;
 };
 
-const TABLES_TO_EMPTY = ["students", "classes", "users", "tenants"] as const;
+const TABLES_TO_EMPTY = [
+  "teacher_assignments",
+  "groups_info",
+  "subjects",
+  "students",
+  "classes",
+  "users",
+  "tenants",
+] as const;
 
 /** Empty tables used by isolation tests (test DB only). */
 export async function emptyIsolationTables(): Promise<void> {
@@ -84,9 +93,21 @@ async function insertStudent(
   return Number(result[0].insertId);
 }
 
+async function insertSubject(tenantId: number, subjectName: string): Promise<number> {
+  const result = await db.insert(subjects).values({
+    subjectName,
+    gradeLevel: 9,
+    stream: "Common",
+    creditHours: 3,
+    sortOrder: 1,
+    tenantId,
+  });
+  return Number(result[0].insertId);
+}
+
 /**
  * Truncates used tables, then seeds tenants A and B with the same username
- * and a few tenant-scoped rows (classes, students).
+ * and a few tenant-scoped rows (classes, students, subjects).
  */
 export async function seedTwoTenants(): Promise<IsolationSeed> {
   await emptyIsolationTables();
@@ -105,9 +126,14 @@ export async function seedTwoTenants(): Promise<IsolationSeed> {
   const studentAId = await insertStudent(tenantAId, "Student A");
   const studentBId = await insertStudent(tenantBId, "Student B");
 
+  // Same subject name in both tenants: the unique key is per tenant.
+  const subjectAId = await insertSubject(tenantAId, "Seed Subject");
+  const subjectBId = await insertSubject(tenantBId, "Seed Subject");
+
   // Extra rows so list isolation is obvious
   await insertStudent(tenantAId, "Student A2");
   await insertClass(tenantAId, "C");
+  await insertSubject(tenantAId, "Seed Subject A2");
 
   return {
     username: SHARED_USERNAME,
@@ -119,6 +145,7 @@ export async function seedTwoTenants(): Promise<IsolationSeed> {
       userId: userAId,
       classId: classAId,
       studentId: studentAId,
+      subjectId: subjectAId,
     },
     tenantB: {
       id: tenantBId,
@@ -127,6 +154,7 @@ export async function seedTwoTenants(): Promise<IsolationSeed> {
       userId: userBId,
       classId: classBId,
       studentId: studentBId,
+      subjectId: subjectBId,
     },
   };
 }

@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import { env } from "./config/env.js";
 import { pool } from "./db/index.js";
 import { authRouter } from "./modules/auth/auth.routes.js";
+import { subjectsRouter } from "./modules/subjects/subjects.routes.js";
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.get("/health/db", async (_req, res) => {
 });
 
 app.use("/auth", authRouter);
+app.use("/subjects", subjectsRouter);
 
 if (process.env.NODE_ENV !== "test" && process.env.VITEST !== "true") {
   app.listen(env.PORT, () => {
