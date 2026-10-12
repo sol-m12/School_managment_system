@@ -1,25 +1,16 @@
-import { eq, is } from "drizzle-orm";
-import { MySqlTable, getTableConfig } from "drizzle-orm/mysql-core";
+import { eq } from "drizzle-orm";
 import request from "supertest";
 import { beforeAll, describe, expect, it } from "vitest";
 import { db } from "../../db/index.js";
-import * as schema from "../../db/schema/index.js";
 import { groupsInfo, subjects, teacherAssignments } from "../../db/schema/index.js";
 import { createAccessToken } from "../../lib/jwt.js";
-import { PERMISSIONS, hasPermission } from "../../lib/permissions.js";
+import { PERMISSIONS, hasPermission, permissionsForRole } from "../../lib/permissions.js";
 import { ROLES, type Role } from "../../lib/roles.js";
 import { scoped } from "../../lib/tenant.js";
 import { createTestApp } from "../../test/createTestApp.js";
 import { describeTenantIsolation } from "../../test/describeTenantIsolation.js";
 import { seedTwoTenants, type IsolationSeed } from "../../test/seed.js";
-import {
-  SUBJECT_REFERENCES,
-  SubjectError,
-  deleteSubject,
-  getSubject,
-  listSubjects,
-  updateSubject,
-} from "./subjects.service.js";
+import { SubjectError, deleteSubject, getSubject, listSubjects, updateSubject } from "./subjects.service.js";
 
 const app = createTestApp();
 
@@ -57,7 +48,7 @@ async function rawSubject(tenantId: number, id: number) {
 
 describeTenantIsolation("subjects", {
   resourceId: (seed) => ({ aId: seed.tenantA.subjectId, bId: seed.tenantB.subjectId }),
-  list: async (tenantId) => (await listSubjects(tenantId, 1, 100)).rows,
+  list: async (tenantId) => (await listSubjects(tenantId)).rows,
   get: async (tenantId, id) => {
     try {
       return await getSubject(tenantId, id);
@@ -122,19 +113,39 @@ describe("subjects API: tenant from the token only", () => {
 
 describe("subjects API: permissions", () => {
   let seed: IsolationSeed;
-  const allowed: readonly Role[] = ["V_Principal", "Admin"];
-  const denied = ROLES.filter((role) => !allowed.includes(role));
+  const SUBJECT_KEYS = PERMISSIONS.filter((permission) => permission.startsWith("subjects."));
+  const fullAccess: readonly Role[] = ["V_Principal"];
+  const denied = ROLES.filter((role) => !fullAccess.includes(role));
 
   beforeAll(async () => {
     seed = await seedTwoTenants();
   });
 
-  it("grants every subjects key to V_Principal and Admin only", () => {
+  it("grants every subjects key to V_Principal only", () => {
+    expect(SUBJECT_KEYS).toEqual(["subjects.read", "subjects.create", "subjects.update", "subjects.delete"]);
     for (const role of ROLES) {
-      for (const permission of PERMISSIONS) {
-        expect(hasPermission(role, permission)).toBe(allowed.includes(role));
+      for (const permission of SUBJECT_KEYS) {
+        expect(hasPermission(role, permission)).toBe(fullAccess.includes(role));
       }
     }
+  });
+
+  it("gives Admin the legacy Admin menu and not subjects", () => {
+    expect(hasPermission("Admin", "approvals.read")).toBe(true);
+    expect(hasPermission("Admin", "academicYear.manage")).toBe(true);
+    expect(hasPermission("Admin", "subjects.read")).toBe(false);
+  });
+
+  it("gives Technician its menu and not the Admin system settings", () => {
+    expect(hasPermission("Technician", "announcements.manage")).toBe(true);
+    expect(hasPermission("Technician", "files.manage")).toBe(true);
+    expect(hasPermission("Technician", "academicYear.manage")).toBe(false);
+  });
+
+  it("gives Teacher and a homeroom teacher the same teacher keys", () => {
+    expect(hasPermission("Teacher", "attendance.take")).toBe(true);
+    expect(hasPermission("Teacher", "files.manage")).toBe(true);
+    expect(hasPermission("Teacher", "subjects.read")).toBe(false);
   });
 
   it("returns 401 without a token", async () => {
@@ -159,7 +170,7 @@ describe("subjects API: permissions", () => {
     expect((await rawSubject(seed.tenantA.id, id))?.subjectName).toBe("Seed Subject");
   });
 
-  it.each(allowed)("lets %s create, read, update and delete", async (role) => {
+  it.each(fullAccess)("lets %s create, read, update and delete", async (role) => {
     const auth = bearer(seed.tenantA.id, role);
     const created = await request(app)
       .post("/subjects")
@@ -181,12 +192,14 @@ describe("subjects API: permissions", () => {
       .post("/auth/login")
       .send({ tenantSlug: seed.tenantA.slug, username: seed.username, password: seed.password })
       .expect(200);
-    expect(login.body.user.permissions).toEqual([...PERMISSIONS]);
+    const expected = permissionsForRole("V_Principal");
+    expect(expected).toEqual(expect.arrayContaining([...SUBJECT_KEYS]));
+    expect(login.body.user.permissions).toEqual(expected);
     const me = await request(app)
       .get("/auth/me")
       .set("Authorization", `Bearer ${login.body.accessToken as string}`)
       .expect(200);
-    expect(me.body.user.permissions).toEqual([...PERMISSIONS]);
+    expect(me.body.user.permissions).toEqual(expected);
   });
 });
 
@@ -202,18 +215,12 @@ describe("subjects API: validation", () => {
     ["blank name", { subjectName: "   " }],
     ["name over 100 characters", { subjectName: "ሀ".repeat(101) }],
     ["missing name", { subjectName: undefined }],
-    ["grade 8", { gradeLevel: 8 }],
-    ["grade 13", { gradeLevel: 13 }],
     ["unknown stream", { stream: "Technical" }],
-    ["credit -1", { creditHours: -1 }],
-    ["credit 21", { creditHours: 21 }],
     ["credit 2.5", { creditHours: 2.5 }],
     ["empty credit", { creditHours: "" }],
     ["null credit", { creditHours: null }],
     ["missing credit", { creditHours: undefined }],
     ["credit as text", { creditHours: "3" }],
-    ["order -1", { sortOrder: -1 }],
-    ["order 1000", { sortOrder: 1000 }],
     ["order 1.5", { sortOrder: 1.5 }],
     ["missing order", { sortOrder: undefined }],
     ["vocational not boolean", { isVocational: "on" }],
@@ -231,9 +238,10 @@ describe("subjects API: validation", () => {
     expect(edit.body).toEqual({ code: "VALIDATION_ERROR" });
   });
 
-  it("accepts the limits 0 and 20 credit, 0 and 999 order, and a 100-character Amharic name", async () => {
-    await createViaApi(seed.tenantA.id, validBody({ subjectName: "Limit Low", creditHours: 0, sortOrder: 0 }));
-    await createViaApi(seed.tenantA.id, validBody({ subjectName: "Limit High", creditHours: 20, sortOrder: 999 }));
+  it("accepts grade 9 with Natural, credit outside 0-20, order outside 0-999, and a 100-character name", async () => {
+    await createViaApi(seed.tenantA.id, validBody({ subjectName: "Grade Nine Natural", gradeLevel: 9, stream: "Natural" }));
+    await createViaApi(seed.tenantA.id, validBody({ subjectName: "Wide Credit", creditHours: 21, sortOrder: 1000 }));
+    await createViaApi(seed.tenantA.id, validBody({ subjectName: "Negative Order", creditHours: -1, sortOrder: -1 }));
     const id = await createViaApi(seed.tenantA.id, validBody({ subjectName: "ሀ".repeat(100) }));
     expect((await rawSubject(seed.tenantA.id, id))?.subjectName).toBe("ሀ".repeat(100));
   });
@@ -245,49 +253,6 @@ describe("subjects API: validation", () => {
 
   it("returns 404 for a non-numeric id", async () => {
     await request(app).get("/subjects/abc").set("Authorization", bearer(seed.tenantA.id)).expect(404);
-  });
-});
-
-describe("subjects API: grade 9-10 stream rule", () => {
-  let seed: IsolationSeed;
-
-  beforeAll(async () => {
-    seed = await seedTwoTenants();
-  });
-
-  it.each([
-    [9, "Natural"],
-    [9, "Social"],
-    [10, "Natural"],
-    [10, "Social"],
-  ])("rejects grade %i with stream %s on create", async (gradeLevel, stream) => {
-    const res = await request(app)
-      .post("/subjects")
-      .set("Authorization", bearer(seed.tenantA.id))
-      .send(validBody({ gradeLevel, stream }));
-    expect(res.status).toBe(400);
-    expect(res.body).toEqual({ code: "SUBJECT_STREAM_INVALID" });
-  });
-
-  it("rejects moving a subject to grade 10 with a non-Common stream on edit", async () => {
-    const id = await createViaApi(seed.tenantA.id, validBody({ subjectName: "Stream Edit", gradeLevel: 11 }));
-    const res = await request(app)
-      .put(`/subjects/${id}`)
-      .set("Authorization", bearer(seed.tenantA.id))
-      .send(validBody({ subjectName: "Stream Edit", gradeLevel: 10, stream: "Natural" }));
-    expect(res.status).toBe(400);
-    expect(res.body).toEqual({ code: "SUBJECT_STREAM_INVALID" });
-    expect((await rawSubject(seed.tenantA.id, id))?.gradeLevel).toBe(11);
-  });
-
-  it.each([
-    [9, "Common"],
-    [10, "Common"],
-    [11, "Common"],
-    [11, "Natural"],
-    [12, "Social"],
-  ])("accepts grade %i with stream %s", async (gradeLevel, stream) => {
-    await createViaApi(seed.tenantA.id, validBody({ subjectName: `Ok ${gradeLevel} ${stream}`, gradeLevel, stream }));
   });
 });
 
@@ -383,30 +348,12 @@ describe("subjects API: delete", () => {
     seed = await seedTwoTenants();
   });
 
-  it("checks every column that references subjects in the generated schema", () => {
-    const expected = new Set<string>();
-    for (const value of Object.values(schema)) {
-      if (!is(value, MySqlTable)) continue;
-      const config = getTableConfig(value);
-      for (const column of config.columns) {
-        const isReference = column.name === "subject_id" || column.name === "parent_subject_id";
-        if (isReference && !(config.name === "subjects" && column.name === "subject_id")) {
-          expected.add(`${config.name}.${column.name}`);
-        }
-      }
-    }
-    const checked = new Set(SUBJECT_REFERENCES.map((ref) => `${getTableConfig(ref.table).name}.${ref.subjectId.name}`));
-    expect(checked).toEqual(expected);
-  });
-
-  it("blocks delete when a table without a foreign key uses the subject (teacher_assignments)", async () => {
+  it("deletes a subject that is only referenced by a table without a foreign key", async () => {
     const id = await createViaApi(seed.tenantA.id, validBody({ subjectName: "Used By Assignment" }));
     await db.insert(teacherAssignments).values({ staffId: 1, subjectId: id, gradeLevel: 11, section: "A", tenantId: seed.tenantA.id });
 
-    const res = await request(app).delete(`/subjects/${id}`).set("Authorization", bearer(seed.tenantA.id));
-    expect(res.status).toBe(409);
-    expect(res.body).toEqual({ code: "SUBJECT_IN_USE" });
-    expect(await rawSubject(seed.tenantA.id, id)).toBeDefined();
+    await request(app).delete(`/subjects/${id}`).set("Authorization", bearer(seed.tenantA.id)).expect(204);
+    expect(await rawSubject(seed.tenantA.id, id)).toBeUndefined();
   });
 
   it("blocks delete when a table with a foreign key uses the subject (groups_info)", async () => {
@@ -427,7 +374,7 @@ describe("subjects API: delete", () => {
     expect(await rawSubject(seed.tenantA.id, id)).toBeDefined();
   });
 
-  it("blocks delete of a parent subject", async () => {
+  it("deletes a parent subject when parent_subject_id has no foreign key", async () => {
     const parentId = await createViaApi(seed.tenantA.id, validBody({ subjectName: "Parent Subject" }));
     const childId = await createViaApi(seed.tenantA.id, validBody({ subjectName: "Child Subject" }));
     await db
@@ -435,9 +382,9 @@ describe("subjects API: delete", () => {
       .set({ parentSubjectId: parentId })
       .where(scoped(subjects, seed.tenantA.id, eq(subjects.subjectId, childId)));
 
-    const res = await request(app).delete(`/subjects/${parentId}`).set("Authorization", bearer(seed.tenantA.id));
-    expect(res.status).toBe(409);
-    expect(res.body).toEqual({ code: "SUBJECT_IN_USE" });
+    await request(app).delete(`/subjects/${parentId}`).set("Authorization", bearer(seed.tenantA.id)).expect(204);
+    expect(await rawSubject(seed.tenantA.id, parentId)).toBeUndefined();
+    expect(await rawSubject(seed.tenantA.id, childId)).toBeDefined();
   });
 
   it("deletes a subject that is not used", async () => {
@@ -448,7 +395,7 @@ describe("subjects API: delete", () => {
   });
 });
 
-describe("subjects API: pagination with a few hundred rows", () => {
+describe("subjects API: full list", () => {
   let seed: IsolationSeed;
   const TENANT_A_EXTRA = 400;
   const TENANT_B_EXTRA = 150;
@@ -475,27 +422,13 @@ describe("subjects API: pagination with a few hundred rows", () => {
     await db.insert(subjects).values(bulkRows(seed.tenantB.id, TENANT_B_EXTRA, "Bulk B"));
   });
 
-  it("returns one page at a time with the server total", async () => {
+  it("returns every row for the tenant, ordered by grade then sort order", async () => {
     const started = Date.now();
-    const res = await request(app)
-      .get("/subjects")
-      .query({ page: 1, pageSize: 25 })
-      .set("Authorization", bearer(seed.tenantA.id))
-      .expect(200);
+    const res = await request(app).get("/subjects").set("Authorization", bearer(seed.tenantA.id)).expect(200);
     expect(Date.now() - started).toBeLessThan(2000);
-    expect(res.body.rows).toHaveLength(25);
-    expect(res.body.total).toBe(TENANT_A_EXTRA + 2);
-    expect(res.body).toMatchObject({ page: 1, pageSize: 25 });
-  });
-
-  it("walks every page, sorted by grade, sort order, then name, with no other-tenant rows", async () => {
-    const auth = bearer(seed.tenantA.id);
-    const rows: { id: number; subjectName: string; gradeLevel: number; sortOrder: number | null }[] = [];
-    for (let page = 1; page <= 5; page += 1) {
-      const res = await request(app).get("/subjects").query({ page, pageSize: 100 }).set("Authorization", auth).expect(200);
-      rows.push(...res.body.rows);
-    }
+    const rows = res.body.rows as { id: number; subjectName: string; gradeLevel: number; sortOrder: number | null }[];
     expect(rows).toHaveLength(TENANT_A_EXTRA + 2);
+    expect(res.body.total).toBe(rows.length);
     expect(new Set(rows.map((r) => r.id)).size).toBe(rows.length);
     expect(rows.some((r) => r.subjectName.startsWith("Bulk B"))).toBe(false);
     expect(rows.map((r) => r.id)).not.toContain(seed.tenantB.subjectId);
@@ -505,33 +438,8 @@ describe("subjects API: pagination with a few hundred rows", () => {
       const cur = rows[i];
       const order = [prev.gradeLevel - cur.gradeLevel, (prev.sortOrder ?? 0) - (cur.sortOrder ?? 0)];
       const firstDifference = order.find((d) => d !== 0);
-      if (firstDifference !== undefined) {
-        expect(firstDifference).toBeLessThan(0);
-      } else {
-        expect(prev.subjectName.toLowerCase() <= cur.subjectName.toLowerCase()).toBe(true);
-      }
+      if (firstDifference !== undefined) expect(firstDifference).toBeLessThan(0);
     }
-  });
-
-  it("returns an empty page past the end and keeps the total", async () => {
-    const res = await request(app)
-      .get("/subjects")
-      .query({ page: 99, pageSize: 25 })
-      .set("Authorization", bearer(seed.tenantA.id))
-      .expect(200);
-    expect(res.body.rows).toEqual([]);
-    expect(res.body.total).toBe(TENANT_A_EXTRA + 2);
-  });
-
-  it.each([
-    [{ page: 0 }],
-    [{ pageSize: 0 }],
-    [{ pageSize: 101 }],
-    [{ page: "x" }],
-  ])("rejects bad paging %j", async (query) => {
-    const res = await request(app).get("/subjects").query(query).set("Authorization", bearer(seed.tenantA.id));
-    expect(res.status).toBe(400);
-    expect(res.body).toEqual({ code: "VALIDATION_ERROR" });
   });
 
   it("tenant B sees only its own total", async () => {

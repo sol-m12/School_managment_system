@@ -1,12 +1,6 @@
 import { Router, type Request, type Response } from "express";
 import { requirePermission } from "../../middleware/requirePermission.js";
-import {
-  isStreamAllowed,
-  listQuerySchema,
-  subjectBodySchema,
-  subjectIdParamSchema,
-  type SubjectInput,
-} from "./subjects.schema.js";
+import { subjectBodySchema, subjectIdParamSchema, type SubjectInput } from "./subjects.schema.js";
 import {
   SubjectError,
   createSubject,
@@ -45,10 +39,6 @@ function parseBody(req: Request, res: Response): SubjectInput | null {
     res.status(400).json({ code: "VALIDATION_ERROR" });
     return null;
   }
-  if (!isStreamAllowed(parsed.data)) {
-    res.status(400).json({ code: "SUBJECT_STREAM_INVALID" });
-    return null;
-  }
   return parsed.data;
 }
 
@@ -62,13 +52,8 @@ function parseId(req: Request, res: Response): number | null {
 }
 
 subjectsRouter.get("/", ...requirePermission("subjects.read"), async (req, res) => {
-  const query = listQuerySchema.safeParse(req.query);
-  if (!query.success) {
-    res.status(400).json({ code: "VALIDATION_ERROR" });
-    return;
-  }
   try {
-    res.json(await listSubjects(tenantOf(req), query.data.page, query.data.pageSize));
+    res.json(await listSubjects(tenantOf(req)));
   } catch (error) {
     sendError(res, error);
   }

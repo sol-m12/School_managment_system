@@ -16,14 +16,13 @@ const BUILT_ITEMS: readonly NavItemKey[] = ["dashboard", "subjects"];
 
 const placeholderRoutes: RouteObject[] = MENU_ITEMS.filter((item) => !BUILT_ITEMS.includes(item.key)).map((item) => ({
   path: item.path.slice(1),
-  element:
-    item.roles === "all" ? (
+  element: item.permission ? (
+    <ProtectedRoute permission={item.permission}>
       <PlaceholderPage titleKey={item.key} />
-    ) : (
-      <ProtectedRoute roles={item.roles}>
-        <PlaceholderPage titleKey={item.key} />
-      </ProtectedRoute>
-    ),
+    </ProtectedRoute>
+  ) : (
+    <PlaceholderPage titleKey={item.key} />
+  ),
 }));
 
 const subjectRoutes: RouteObject[] = [

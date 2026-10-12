@@ -76,8 +76,12 @@ export async function loginWithPassword(input: {
     .where(scoped(users, tenant.id, eq(users.username, input.username)))
     .limit(1);
 
-  if (!user || user.isActive !== 1) {
+  if (!user) {
     return rejectCredentials();
+  }
+
+  if (user.isActive !== 1) {
+    throw new AuthError("AUTH_INACTIVE");
   }
 
   if (!isRole(user.role)) {

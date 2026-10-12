@@ -2,14 +2,31 @@
   "welcome": "Welcome, {{name}}! 👋",
   "today": "Today is {{date}}",
   "jobTitle": "Position:",
-  "tenant": "School:",
-  "sampleData": "Sample data",
+  "controlTitle": "Control center (Dashboard)",
+  "controlSubtitle": "Welcome! Current school information and statistics.",
+  "academicYear": "{{year}} Academic Year",
+  "studentsLabel": "Students this year",
+  "studentsHint": "Confirmed and active students",
+  "teachersLabel": "Teachers",
+  "teacherRole": "Role: Teacher",
+  "staffLabel": "All staff",
+  "staffHint": "Total of every position",
+  "otherStaffLabel": "Administration and support",
+  "otherStaffHint": "Staff other than teachers",
+  "rolesTitle": "Staff by role",
+  "noRoles": "No role information was found.",
   "stats": {
     "itemTypes": "Item types in store",
     "lowStock": "Out of / low stock items (Low Stock)",
     "todayTransactions": "Today's movements (Transactions)"
   },
   "quickActions": "Quick Actions (Store Operations)",
+  "actionTitles": {
+    "receiveItems": "Receive Items",
+    "binCard": "Bin Card Ledger",
+    "accountSettings": "Account Settings",
+    "profile": "My Profile"
+  },
   "actions": {
     "receiveItems": "Model 19 entry",
     "binCard": "Item quantity history",

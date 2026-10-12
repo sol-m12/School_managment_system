@@ -10,14 +10,7 @@ import type { SubjectInput } from "./api/useSubjects";
 import { SubjectForm } from "./components/SubjectForm";
 
 /** Errors with their own message; everything else shows the legacy "could not change" text. */
-const SPECIFIC_ERRORS: readonly ErrorKey[] = [
-  "validation",
-  "forbidden",
-  "unauthorized",
-  "network",
-  "subjectNotFound",
-  "subjectStreamInvalid",
-];
+const SPECIFIC_ERRORS: readonly ErrorKey[] = ["validation", "forbidden", "unauthorized", "network", "subjectNotFound"];
 
 type Result = { status: "success" } | { status: "error"; key: ErrorKey };
 
@@ -47,7 +40,6 @@ export function SubjectEditPage() {
   const message = (() => {
     if (!result) return null;
     if (result.status === "success") return <Alert tone="success">{t("subjects:edit.success")}</Alert>;
-    if (result.key === "subjectDuplicate") return <Alert tone="danger">{t("subjects:edit.duplicate")}</Alert>;
     if (SPECIFIC_ERRORS.includes(result.key)) return <Alert tone="danger">{t(`errors:${result.key}`)}</Alert>;
     return <Alert tone="danger">{t("subjects:edit.failed")}</Alert>;
   })();

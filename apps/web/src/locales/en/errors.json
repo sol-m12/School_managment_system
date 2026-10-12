@@ -9,11 +9,9 @@
   "required": "This field is required.",
   "tooLong": "The text you entered is too long.",
   "wholeNumber": "Enter a whole number only.",
-  "creditRange": "Credit hours must be between 0 and 20.",
-  "orderRange": "Sort order must be between 0 and 999.",
   "forbidden": "You do not have permission to do this.",
+  "accountInactive": "The account has not been approved by an admin yet. Please wait.",
   "subjectNotFound": "Sorry, the requested subject was not found!",
   "subjectDuplicate": "This subject is already registered!",
-  "subjectInUse": "This subject is used by other records (grades, schedule, assignments...) and cannot be deleted!",
-  "subjectStreamInvalid": "Grades 9 and 10 can only use the Common stream!"
+  "subjectInUse": "Error:"
 }

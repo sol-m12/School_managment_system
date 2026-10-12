@@ -9,11 +9,9 @@
   "required": "ይህ መስክ ያስፈልጋል።",
   "tooLong": "ያስገቡት ጽሁፍ በጣም ረጅም ነው።",
   "wholeNumber": "ሙሉ ቁጥር ብቻ ያስገቡ።",
-  "creditRange": "ክሬዲት ከ0 እስከ 20 መሆን አለበት።",
-  "orderRange": "ቅደም ተከተል ከ0 እስከ 999 መሆን አለበት።",
   "forbidden": "ይህንን ተግባር ለመፈጸም ፈቃድ የለዎትም።",
+  "accountInactive": "አካውንቱ ገና በአድሚን አልጸደቀም። እባክዎ በትዕግስት ይጠብቁ።",
   "subjectNotFound": "ይቅርታ፣ የተፈለገው ትምህርት አልተገኘም!",
   "subjectDuplicate": "ይህ ትምህርት ቀድሞ ተመዝግቧል!",
-  "subjectInUse": "ይህ ትምህርት በሌሎች መረጃዎች (ውጤት፣ መርሃ-ግብር፣ ምደባ...) ላይ ስለተጠቀመ መሰረዝ አይቻልም!",
-  "subjectStreamInvalid": "ለ9ኛ እና 10ኛ ክፍል ስትሪም Common ብቻ ነው!"
+  "subjectInUse": "ስህተት፦"
 }

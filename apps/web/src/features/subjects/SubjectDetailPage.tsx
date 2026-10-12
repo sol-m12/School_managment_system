@@ -115,6 +115,11 @@ export function SubjectDetailPage() {
                     </span>
                   )}
                 </DetailRow>
+                <DetailRow label={t("subjects:view.registeredOn")}>
+                  <span className="text-xs text-ink-muted">
+                    {new Intl.DateTimeFormat("en-US", { month: "short", day: "2-digit", year: "numeric" }).format(new Date())}
+                  </span>
+                </DetailRow>
               </tbody>
             </table>
           </div>

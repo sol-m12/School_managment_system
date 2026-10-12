@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Save } from "lucide-react";
@@ -38,11 +38,13 @@ export function SubjectForm({ variant, defaultValues, onSubmit }: SubjectFormPro
   } = useForm({ resolver: zodResolver(subjectFormSchema), defaultValues });
 
   const gradeLevel = useWatch({ control, name: "gradeLevel" });
-  const commonOnly = isCommonOnlyGrade(Number(gradeLevel));
+  const previousGrade = useRef(gradeLevel);
 
   useEffect(() => {
-    if (commonOnly) setValue("stream", "Common");
-  }, [commonOnly, setValue]);
+    if (previousGrade.current === gradeLevel) return;
+    previousGrade.current = gradeLevel;
+    if (isCommonOnlyGrade(Number(gradeLevel))) setValue("stream", "Common");
+  }, [gradeLevel, setValue]);
 
   const gradeOptions = useMemo(
     () =>
@@ -89,15 +91,11 @@ export function SubjectForm({ variant, defaultValues, onSubmit }: SubjectFormPro
         className={cn("col-span-6", isCreate ? "md:col-span-2" : "md:col-span-3")}
         label={t(`${labels}.stream`)}
         options={streamOptions}
-        disabled={commonOnly}
         {...register("stream")}
       />
       <Input
         type="number"
-        inputMode="numeric"
-        min={0}
-        max={20}
-        step={1}
+        inputMode="decimal"
         className={cn("col-span-6", isCreate ? "md:col-span-1" : "md:col-span-4")}
         label={t(`${labels}.creditHours`)}
         error={fieldError(errors.creditHours?.message)}
@@ -105,10 +103,7 @@ export function SubjectForm({ variant, defaultValues, onSubmit }: SubjectFormPro
       />
       <Input
         type="number"
-        inputMode="numeric"
-        min={0}
-        max={999}
-        step={1}
+        inputMode="decimal"
         className={cn("col-span-6", isCreate ? "md:col-span-2" : "md:col-span-4")}
         label={t(`${labels}.sortOrder`)}
         title={isCreate ? t("subjects:create.sortOrderTitle") : undefined}

@@ -1,24 +1,6 @@
-import { and, asc, count, eq, ne, sql } from "drizzle-orm";
-import type { AnyMySqlColumn, MySqlTable } from "drizzle-orm/mysql-core";
+import { and, asc, eq, ne } from "drizzle-orm";
 import { db } from "../../db/index.js";
-import {
-  annualLessonPlan,
-  attendance,
-  classSchedule,
-  grades,
-  groupTasks,
-  groupsInfo,
-  libraryBooks,
-  liveQuizQuestions,
-  onlineExams,
-  staff,
-  studentAssessments,
-  studentGroups,
-  subjectWeightings,
-  subjects,
-  teacherAssignments,
-  vocationalRequests,
-} from "../../db/schema/index.js";
+import { subjects } from "../../db/schema/index.js";
 import { ER_DUP_ENTRY, ER_ROW_IS_REFERENCED, mysqlErrno } from "../../lib/mysqlError.js";
 import { scoped, withTenant } from "../../lib/tenant.js";
 import type { SubjectInput } from "./subjects.schema.js";
@@ -45,38 +27,7 @@ export type SubjectView = {
 export type SubjectPage = {
   rows: SubjectView[];
   total: number;
-  page: number;
-  pageSize: number;
 };
-
-type SubjectReference = {
-  table: MySqlTable;
-  tenantId: AnyMySqlColumn;
-  subjectId: AnyMySqlColumn;
-};
-
-/**
- * Every column that points at subjects.subject_id. Only the four marked FK have a
- * database foreign key; the rest are checked here only, so keep this list complete.
- */
-export const SUBJECT_REFERENCES: readonly SubjectReference[] = [
-  { table: annualLessonPlan, tenantId: annualLessonPlan.tenantId, subjectId: annualLessonPlan.subjectId },
-  { table: attendance, tenantId: attendance.tenantId, subjectId: attendance.subjectId },
-  { table: classSchedule, tenantId: classSchedule.tenantId, subjectId: classSchedule.subjectId },
-  { table: grades, tenantId: grades.tenantId, subjectId: grades.subjectId },
-  { table: groupsInfo, tenantId: groupsInfo.tenantId, subjectId: groupsInfo.subjectId }, // FK
-  { table: groupTasks, tenantId: groupTasks.tenantId, subjectId: groupTasks.subjectId }, // FK
-  { table: libraryBooks, tenantId: libraryBooks.tenantId, subjectId: libraryBooks.subjectId },
-  { table: liveQuizQuestions, tenantId: liveQuizQuestions.tenantId, subjectId: liveQuizQuestions.subjectId },
-  { table: onlineExams, tenantId: onlineExams.tenantId, subjectId: onlineExams.subjectId }, // FK
-  { table: staff, tenantId: staff.tenantId, subjectId: staff.subjectId },
-  { table: studentAssessments, tenantId: studentAssessments.tenantId, subjectId: studentAssessments.subjectId },
-  { table: studentGroups, tenantId: studentGroups.tenantId, subjectId: studentGroups.subjectId }, // FK
-  { table: subjectWeightings, tenantId: subjectWeightings.tenantId, subjectId: subjectWeightings.subjectId },
-  { table: teacherAssignments, tenantId: teacherAssignments.tenantId, subjectId: teacherAssignments.subjectId },
-  { table: vocationalRequests, tenantId: vocationalRequests.tenantId, subjectId: vocationalRequests.subjectId },
-  { table: subjects, tenantId: subjects.tenantId, subjectId: subjects.parentSubjectId },
-];
 
 const subjectColumns = {
   id: subjects.subjectId,
@@ -114,22 +65,13 @@ function toColumns(input: SubjectInput) {
   };
 }
 
-export async function listSubjects(
-  tenantId: number,
-  page: number,
-  pageSize: number,
-): Promise<SubjectPage> {
-  const [rows, [totalRow]] = await Promise.all([
-    db
-      .select(subjectColumns)
-      .from(subjects)
-      .where(scoped(subjects, tenantId))
-      .orderBy(asc(subjects.gradeLevel), asc(subjects.sortOrder), asc(subjects.subjectName), asc(subjects.subjectId))
-      .limit(pageSize)
-      .offset((page - 1) * pageSize),
-    db.select({ total: count() }).from(subjects).where(scoped(subjects, tenantId)),
-  ]);
-  return { rows: rows.map(toView), total: totalRow?.total ?? 0, page, pageSize };
+export async function listSubjects(tenantId: number): Promise<SubjectPage> {
+  const rows = await db
+    .select(subjectColumns)
+    .from(subjects)
+    .where(scoped(subjects, tenantId))
+    .orderBy(asc(subjects.gradeLevel), asc(subjects.sortOrder));
+  return { rows: rows.map(toView), total: rows.length };
 }
 
 export async function getSubject(tenantId: number, id: number): Promise<SubjectView> {
@@ -187,26 +129,9 @@ export async function updateSubject(tenantId: number, id: number, input: Subject
 }
 
 export async function deleteSubject(tenantId: number, id: number): Promise<void> {
+  await getSubject(tenantId, id);
   try {
-    await db.transaction(async (tx) => {
-      const [row] = await tx
-        .select({ id: subjects.subjectId })
-        .from(subjects)
-        .where(scoped(subjects, tenantId, eq(subjects.subjectId, id)))
-        .for("update");
-      if (!row) throw new SubjectError("SUBJECT_NOT_FOUND");
-
-      for (const ref of SUBJECT_REFERENCES) {
-        const [used] = await tx
-          .select({ one: sql<number>`1` })
-          .from(ref.table)
-          .where(scoped(ref, tenantId, eq(ref.subjectId, id)))
-          .limit(1);
-        if (used) throw new SubjectError("SUBJECT_IN_USE");
-      }
-
-      await tx.delete(subjects).where(scoped(subjects, tenantId, eq(subjects.subjectId, id)));
-    });
+    await db.delete(subjects).where(scoped(subjects, tenantId, eq(subjects.subjectId, id)));
   } catch (error) {
     if (mysqlErrno(error) === ER_ROW_IS_REFERENCED) throw new SubjectError("SUBJECT_IN_USE");
     throw error;

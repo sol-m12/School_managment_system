@@ -61,7 +61,7 @@ async function insertUser(
   const result = await db.insert(users).values({
     username,
     passwordHash,
-    role: "Admin",
+    role: "V_Principal",
     isActive: 1,
     tenantId,
     tokenVersion: 0,

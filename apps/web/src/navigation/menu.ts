@@ -1,32 +1,40 @@
 /**
- * TEMPORARY static sidebar menu (UNVERIFIED items and order).
+ * Sidebar transcribed from docs/legacy-menu.
+ * Teacher and Technician screenshots are complete.
+ * TEMPORARY: the Admin and V_Principal screenshots are cut off below the last
+ * item listed here. Do not add items for that missing part.
+ * Student and Store_Keeper items are TEMPORARY: those screenshots were not taken.
  *
- * TODO: replace with GET /menu (modules + role_modules tables) — see
- * docs/backlog.md "Menu from database". Legacy builds the menu from those
- * tables in includes/header_sidebar.php; the live data is not available yet.
+ * TODO: replace with GET /menu once modules and role_modules exist.
+ * docs/backlog.md "Menu from database".
  */
 import type { LucideIcon } from "lucide-react";
 import {
   ArrowDownCircle,
+  BookOpen,
   BookOpenCheck,
   CalendarDays,
-  CalendarRange,
+  ChartLine,
+  CheckCheck,
   ClipboardList,
-  ClipboardPen,
-  FileBarChart,
+  Database,
+  FileDown,
   FileText,
-  FlaskConical,
   FolderOpen,
   Gauge,
-  Grid3x3,
-  LayoutDashboard,
-  Layers,
+  GraduationCap,
+  IdCard,
+  KeyRound,
+  Landmark,
+  Link,
   ListChecks,
-  ShoppingCart,
-  UserCircle,
+  Megaphone,
+  RotateCcw,
+  SlidersHorizontal,
+  SquarePen,
+  UserCheck,
   UserCog,
-  UserPlus,
-  Users,
+  UsersRound,
 } from "lucide-react";
 import { can, type Permission } from "@/lib/permissions";
 import type { Role } from "@/lib/roles";
@@ -34,7 +42,15 @@ import type amNav from "@/locales/am/nav.json";
 
 export type NavItemKey = keyof (typeof amNav)["items"];
 
-export type MenuGroupKey = "main" | "academic" | "homeroom" | "administration" | "store" | "account";
+export type MenuGroupKey =
+  | "academic"
+  | "administration"
+  | "academicAdmin"
+  | "academicTasks"
+  | "techRegistration"
+  | "systemSettings"
+  | "store"
+  | "main";
 
 export type MenuItem = {
   /** Locale key in the `nav` namespace, also used as React key. */
@@ -42,71 +58,114 @@ export type MenuItem = {
   path: string;
   icon: LucideIcon;
   group: MenuGroupKey;
-  /** Used only when `permission` is not set (items not ported yet). */
-  roles: readonly Role[] | "all";
-  /** Ported items are shown by permission key, not by role name. */
+  /** Omit only for items every signed-in user with this role sees (dashboard, profile). */
   permission?: Permission;
+  /** When set, the item is shown only for these roles. */
+  roles?: readonly Role[];
+  /** Legacy shows a different label for the same item per role. */
+  labelByRole?: Partial<Record<Role, NavItemKey>>;
 };
 
 type MenuUser = { role: Role; permissions: readonly Permission[] };
 
 export const MENU_GROUP_ORDER: readonly MenuGroupKey[] = [
-  "main",
   "academic",
-  "homeroom",
   "administration",
+  "academicAdmin",
+  "academicTasks",
+  "techRegistration",
+  "systemSettings",
   "store",
-  "account",
+  "main",
 ];
 
 export const MENU_ITEMS: readonly MenuItem[] = [
-  { key: "dashboard", path: "/dashboard", icon: LayoutDashboard, group: "main", roles: "all" },
+  // Admin (Admin.png) — ACADEMIC
+  { key: "approvalDashboard", path: "/admin/approvals", icon: Link, group: "academic", permission: "approvals.read" },
+  { key: "studentStatusReport", path: "/admin/student-status", icon: Link, group: "academic", permission: "studentStatusReport.read" },
 
-  { key: "academicResults", path: "/student/results", icon: BookOpenCheck, group: "academic", roles: ["Student"] },
-  { key: "semesterReportCard", path: "/student/report-card", icon: FileText, group: "academic", roles: ["Student"] },
+  // Teacher
+  { key: "takeAttendance", path: "/teacher/take-attendance", icon: Link, group: "academic", permission: "attendance.take" },
 
-  { key: "gradeEntry", path: "/teacher/grades", icon: ClipboardPen, group: "academic", roles: ["Teacher"] },
-  { key: "schedule", path: "/teacher/schedule", icon: CalendarDays, group: "academic", roles: ["Teacher"] },
-  { key: "fileManagement", path: "/teacher/files", icon: FolderOpen, group: "academic", roles: ["Teacher"] },
-  { key: "simulations", path: "/teacher/simulations", icon: FlaskConical, group: "academic", roles: ["Teacher"] },
-  { key: "storeRequest", path: "/teacher/store-requests", icon: ShoppingCart, group: "academic", roles: ["Teacher"] },
+  // Student (TEMPORARY: no screenshot)
+  { key: "academicResults", path: "/student/results", icon: BookOpenCheck, group: "academic", permission: "results.readOwn" },
+  { key: "semesterReportCard", path: "/student/report-card", icon: FileText, group: "academic", permission: "reportCard.readOwn" },
 
-  { key: "roster", path: "/homeroom/roster", icon: ListChecks, group: "homeroom", roles: ["Teacher"] },
-  { key: "reportCard", path: "/homeroom/report-cards", icon: FileText, group: "homeroom", roles: ["Teacher"] },
-  { key: "classReport", path: "/homeroom/class-report", icon: FileBarChart, group: "homeroom", roles: ["Teacher"] },
+  { key: "requestItem", path: "/teacher/store-requests", icon: Link, group: "administration", permission: "storeRequests.create" },
 
-  // TEMPORARY item (static menu). Owner: V_Principal. Access: subjects.read.
+  // V_Principal (V_Principal.png) — አስተዳደር
+  { key: "students", path: "/academics/students", icon: GraduationCap, group: "administration", permission: "students.manage" },
+  { key: "subjects", path: "/academics/subjects", icon: BookOpen, group: "administration", permission: "subjects.read" },
+  { key: "teachingLoad", path: "/academics/teaching-load", icon: UsersRound, group: "administration", permission: "teachingLoad.manage" },
+
+  // V_Principal — አካዳሚክ (ADMIN). Lower part of the screenshot is missing.
+  { key: "selectedRoster", path: "/academics/selected-roster", icon: ListChecks, group: "academicAdmin", permission: "selectedRoster.read" },
+  { key: "gradeCorrection", path: "/academics/grade-correction", icon: Landmark, group: "academicAdmin", permission: "gradeCorrection.approve" },
+  { key: "academicApprovals", path: "/academics/approvals", icon: CheckCheck, group: "academicAdmin", permission: "academicApprovals.manage" },
+  { key: "periodSchedule", path: "/academics/schedule", icon: CalendarDays, group: "academicAdmin", permission: "periodSchedule.manage" },
+  { key: "academicReports", path: "/academics/reports", icon: ChartLine, group: "academicAdmin", permission: "academicReports.read" },
+
+  // Teacher (same menu for homeroom teachers)
+  { key: "assignedWorks", path: "/teacher/assigned-works", icon: ListChecks, group: "academicTasks", permission: "assignedWork.read" },
+  { key: "gradeEntry", path: "/teacher/grades", icon: SquarePen, group: "academicTasks", permission: "grades.enter" },
+  { key: "onlineExams", path: "/teacher/online-exams", icon: SquarePen, group: "academicTasks", permission: "onlineExams.manage" },
+  { key: "examResults", path: "/teacher/exam-results", icon: SquarePen, group: "academicTasks", permission: "examResults.manage" },
+  { key: "bestTeaching", path: "/teacher/best-teaching", icon: SquarePen, group: "academicTasks", permission: "bestTeaching.manage" },
+  { key: "attendanceRegistration", path: "/teacher/attendance", icon: UserCheck, group: "academicTasks", permission: "attendance.register" },
+  { key: "studentRegistration", path: "/teacher/student-registration", icon: FileText, group: "academicTasks", permission: "studentRegistration.manage" },
+  { key: "classRoster", path: "/teacher/class-roster", icon: FileDown, group: "academicTasks", permission: "classRoster.read" },
+  { key: "reportCard", path: "/teacher/report-cards", icon: FileDown, group: "academicTasks", permission: "reportCards.generate" },
+  { key: "simulations", path: "/teacher/simulations", icon: FileDown, group: "academicTasks", permission: "simulations.create" },
+  { key: "studentReports", path: "/teacher/student-reports", icon: FileDown, group: "academicTasks", permission: "studentReports.read" },
+
+  // Technician (Technician.png)
+  { key: "announcements", path: "/system/announcements", icon: Megaphone, group: "techRegistration", permission: "announcements.manage" },
+  { key: "staffRegistration", path: "/system/staff-registration", icon: IdCard, group: "techRegistration", permission: "staffRegistration.manage" },
+  { key: "accountManagement", path: "/account/manage", icon: KeyRound, group: "techRegistration", permission: "accounts.manage" },
+
+  // Admin — ሲስተም ሴቲንግ. The screenshot text is small; labels follow the earlier reading of Admin.png.
+  { key: "academicYear", path: "/system/academic-year", icon: SlidersHorizontal, group: "systemSettings", permission: "academicYear.manage" },
+  { key: "databaseBackup", path: "/system/backup", icon: Database, group: "systemSettings", permission: "backup.create" },
+  { key: "databaseRestore", path: "/system/restore", icon: RotateCcw, group: "systemSettings", permission: "backup.restore" },
+  { key: "passwordManagement", path: "/system/passwords", icon: UserCog, group: "systemSettings", permission: "passwords.reset" },
+  { key: "schoolInfo", path: "/system/school-info", icon: Landmark, group: "systemSettings", permission: "schoolInfo.manage" },
+  { key: "roleModules", path: "/system/role-modules", icon: SlidersHorizontal, group: "systemSettings", permission: "roleModules.manage" },
+
+  // Store_Keeper (TEMPORARY: no screenshot)
+  { key: "receiveItems", path: "/store/receive", icon: ArrowDownCircle, group: "store", permission: "store.receive" },
+  { key: "binCard", path: "/store/bin-card", icon: ClipboardList, group: "store", permission: "store.binCard" },
+
   {
-    key: "subjects",
-    path: "/academics/subjects",
-    icon: Layers,
-    group: "administration",
-    roles: ["V_Principal", "Admin"],
-    permission: "subjects.read",
+    key: "dashboard",
+    path: "/dashboard",
+    icon: Gauge,
+    group: "main",
+    roles: ["Teacher", "Technician"],
+    labelByRole: { Teacher: "dashboardAcademic", Technician: "dashboardStaff" },
   },
-  { key: "teachingLoad", path: "/academics/teaching-load", icon: Users, group: "administration", roles: ["V_Principal", "Admin"] },
-  { key: "sectionAssignment", path: "/academics/sections", icon: Grid3x3, group: "administration", roles: ["V_Principal", "Admin"] },
-  { key: "admissions", path: "/academics/admissions", icon: UserPlus, group: "administration", roles: ["V_Principal", "Admin"] },
-  { key: "autoSchedule", path: "/academics/schedule", icon: CalendarRange, group: "administration", roles: ["V_Principal", "Admin"] },
-  { key: "workloadHeatmap", path: "/academics/workload", icon: Gauge, group: "administration", roles: ["V_Principal", "Admin"] },
-
-  { key: "receiveItems", path: "/store/receive", icon: ArrowDownCircle, group: "store", roles: ["Store_Keeper", "Admin"] },
-  { key: "binCard", path: "/store/bin-card", icon: ClipboardList, group: "store", roles: ["Store_Keeper", "Admin"] },
-
-  { key: "accountSettings", path: "/account/manage", icon: UserCog, group: "account", roles: ["Technician", "Admin"] },
-  { key: "profile", path: "/profile", icon: UserCircle, group: "account", roles: "all" },
+  { key: "fileManagement", path: "/files", icon: FolderOpen, group: "main", permission: "files.manage" },
+  { key: "profile", path: "/profile", icon: UserCog, group: "main", roles: ["Teacher", "Technician"] },
 ];
 
-export function canAccess(item: MenuItem, user: MenuUser): boolean {
-  if (item.permission) return can(user.permissions, item.permission);
-  return item.roles === "all" || item.roles.includes(user.role);
+export function canAccess(item: MenuItem, user: Pick<MenuUser, "permissions">): boolean {
+  return !item.permission || can(user.permissions, item.permission);
 }
 
-export type MenuGroup = { key: MenuGroupKey; items: MenuItem[] };
+export type MenuEntry = MenuItem & { labelKey: NavItemKey };
+
+export type MenuGroup = { key: MenuGroupKey; items: MenuEntry[] };
+
+function visibleTo(item: MenuItem, user: MenuUser): boolean {
+  if (item.roles && !item.roles.includes(user.role)) return false;
+  return canAccess(item, user);
+}
 
 export function menuForUser(user: MenuUser): MenuGroup[] {
   return MENU_GROUP_ORDER.map((group) => ({
     key: group,
-    items: MENU_ITEMS.filter((item) => item.group === group && canAccess(item, user)),
+    items: MENU_ITEMS.filter((item) => item.group === group && visibleTo(item, user)).map((item) => ({
+      ...item,
+      labelKey: item.labelByRole?.[user.role] ?? item.key,
+    })),
   })).filter((group) => group.items.length > 0);
 }

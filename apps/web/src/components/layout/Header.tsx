@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { LogOut, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "@/components/ui";
 import type { SessionUser } from "@/features/auth/authContext";
@@ -9,10 +9,9 @@ type HeaderProps = {
   user: SessionUser;
   sidebarOpen: boolean;
   onToggleSidebar: () => void;
-  onLogout: () => void;
 };
 
-export const Header = memo(function Header({ user, sidebarOpen, onToggleSidebar, onLogout }: HeaderProps) {
+export const Header = memo(function Header({ user, sidebarOpen, onToggleSidebar }: HeaderProps) {
   const { t } = useTranslation("common");
   const initial = user.username.trim().charAt(0).toUpperCase() || "?";
 
@@ -34,7 +33,7 @@ export const Header = memo(function Header({ user, sidebarOpen, onToggleSidebar,
         <LanguageSwitcher />
         <div className="hidden min-w-0 text-right md:block">
           <div className="max-w-[12rem] truncate text-sm leading-tight font-bold text-white">{user.username}</div>
-          <div className="max-w-[12rem] truncate text-xs text-accent">{t(`roles.${user.role}`)}</div>
+          <div className="max-w-[12rem] truncate text-xs text-accent">{user.role}</div>
         </div>
         <div
           aria-hidden="true"
@@ -42,12 +41,6 @@ export const Header = memo(function Header({ user, sidebarOpen, onToggleSidebar,
         >
           {initial}
         </div>
-        <IconButton
-          tone="shell"
-          label={t("logout")}
-          icon={<LogOut className="size-5" />}
-          onClick={onLogout}
-        />
       </div>
     </header>
   );

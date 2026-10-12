@@ -63,7 +63,7 @@ export function LoginPage() {
   });
 
   return (
-    <div className="relative flex min-h-dvh flex-col items-center justify-center bg-gradient-to-br from-brand-700/95 via-brand-700/85 to-brand-900 px-4 py-6 sm:py-10">
+    <div className="relative flex min-h-dvh flex-col items-center justify-center bg-[linear-gradient(135deg,rgba(0,51,102,0.85),rgba(0,51,102,0.7))] px-4 py-5 font-[Segoe_UI,Tahoma,Geneva,Verdana,sans-serif]">
       <div className="absolute top-3 right-3 sm:top-4 sm:right-4">
         <LanguageSwitcher tone="light" />
       </div>
@@ -80,7 +80,7 @@ export function LoginPage() {
 
       <main className="w-full max-w-[400px] overflow-hidden rounded-panel bg-white/[0.98] shadow-panel">
         <header className="bg-brand-700 px-5 py-6 text-center text-white sm:px-6">
-          <div className="mx-auto mb-4 flex size-15 items-center justify-center rounded-full bg-gold text-brand-700">
+          <div className="mx-auto mb-4 flex size-[60px] items-center justify-center rounded-full bg-gold text-brand-700">
             <UserLock aria-hidden="true" className="size-6" />
           </div>
           <h1 className="text-lg font-bold break-words sm:text-xl">{t("schoolName")}</h1>

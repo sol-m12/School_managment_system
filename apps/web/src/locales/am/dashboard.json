@@ -2,14 +2,31 @@
   "welcome": "እንኳን ደህና መጡ፣ {{name}}! 👋",
   "today": "ዛሬ {{date}} ነው",
   "jobTitle": "የሥራ መደብ፦",
-  "tenant": "ትምህርት ቤት፦",
-  "sampleData": "ናሙና መረጃ",
+  "controlTitle": "የቁጥጥር ማዕከል (Dashboard)",
+  "controlSubtitle": "እንኳን ደህና መጡ! የትምህርት ቤቱ ወቅታዊ መረጃዎች እና ስታቲስቲክስ።",
+  "academicYear": "{{year}} Academic Year",
+  "studentsLabel": "የአመቱ ተማሪዎች",
+  "studentsHint": "የተረጋገጡ እና ንቁ ተማሪዎች",
+  "teachersLabel": "መምህራን",
+  "teacherRole": "Role: Teacher",
+  "staffLabel": "አጠቃላይ ሰራተኞች",
+  "staffHint": "ሁሉም የስራ መደቦች ድምር",
+  "otherStaffLabel": "አስተዳደር እና ድጋፍ ሰጪ",
+  "otherStaffHint": "ከ শিক্ষক ውጪ ያሉት ሰራተኞች",
+  "rolesTitle": "የሰራተኞች በроль (Roles) ስርጭት",
+  "noRoles": "ምንም የሮል መረጃ አልተገኘም።",
   "stats": {
     "itemTypes": "በስቶር ያሉ እቃዎች አይነት",
     "lowStock": "ያለቁ / የቀነሱ እቃዎች (Low Stock)",
     "todayTransactions": "የዛሬ እንቅስቃሴዎች (Transactions)"
   },
   "quickActions": "ፈጣን ተግባራት (Store Operations)",
+  "actionTitles": {
+    "receiveItems": "እቃ ገቢ ማድረግ",
+    "binCard": "የቢን ካርድ መዝገብ",
+    "accountSettings": "አካውንት ማስተካከል",
+    "profile": "የኔ ፕሮፋይል"
+  },
   "actions": {
     "receiveItems": "Model 19 መመዝገቢያ",
     "binCard": "የእቃዎች ብዛት ታሪክ",

@@ -54,6 +54,7 @@
     "stream": "Stream",
     "sortOrder": "Roster sort order",
     "sortOrderMissing": "Not specified",
+    "registeredOn": "Date registered",
     "creditHours": "Credit hours",
     "hours": "{{count}} hours",
     "type": "Subject type",
@@ -77,7 +78,6 @@
     "isVocational": "Vocational subject",
     "submit": "Update information",
     "success": "✓ The information was updated successfully!",
-    "failed": "⚠ Error: the information could not be changed.",
-    "duplicate": "This subject is already registered for this grade and stream! Use a different name."
+    "failed": "⚠ Error: the information could not be changed."
   }
 }

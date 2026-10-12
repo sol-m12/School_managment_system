@@ -36,6 +36,10 @@
   "homePage": "ዋናው ገጽ",
   "backToDashboard": "ወደ ዳሽቦርድ ተመለስ",
   "backToLogin": "ወደ መግቢያ ተመለስ",
+  "footerKeyit": "KEYIT",
+  "footerMs": "MS",
+  "footerPatent": "© {{year}} | Patent Protected",
+  "footerVersion": "የቀይት ትምህርት ቤት አስተዳደር ሲስተም v2.0",
   "roles": {
     "Teacher": "መምህር",
     "Admin": "አድሚን",

@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-@import "@fontsource/inter/400.css";
-@import "@fontsource/inter/500.css";
-@import "@fontsource/inter/600.css";
-@import "@fontsource/inter/700.css";
 @import "@fontsource/noto-sans-ethiopic/400.css";
 @import "@fontsource/noto-sans-ethiopic/500.css";
 @import "@fontsource/noto-sans-ethiopic/600.css";
@@ -46,8 +42,8 @@
   --color-danger: #dc2626;
   --color-info: #0284c7;
 
-  /* Typography: Inter for Latin, Noto Sans Ethiopic for Ge'ez script */
-  --font-sans: "Inter", "Noto Sans Ethiopic", ui-sans-serif, system-ui, sans-serif;
+  /* Typography: Segoe UI, then Noto Sans Ethiopic for Ge'ez script */
+  --font-sans: "Segoe UI", "Noto Sans Ethiopic", system-ui, sans-serif;
 
   /* Radius */
   --radius-control: 0.5rem;
@@ -61,7 +57,7 @@
 
   /* Layout */
   --spacing-sidebar: 16.25rem;
-  --spacing-header: 4rem;
+  --spacing-header: 4.0625rem;
   --spacing-tap: 2.5rem;
 }
 

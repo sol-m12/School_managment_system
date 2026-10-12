@@ -4,11 +4,10 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { Alert, Badge, Card, CardBody, CardHeader, IconButton, Table, type TableColumn } from "@/components/ui";
 import { useCan } from "@/features/auth/authContext";
-import { toErrorKey, type ErrorKey } from "@/lib/apiError";
+import { toErrorKey } from "@/lib/apiError";
 import { useDeleteSubject } from "./api/useDeleteSubject";
 import { useSaveSubject } from "./api/useSaveSubject";
-import { SUBJECTS_PAGE_SIZE, useSubjects, type Subject, type SubjectInput } from "./api/useSubjects";
-import { DeleteSubjectModal } from "./components/DeleteSubjectModal";
+import { useSubjects, type Subject, type SubjectInput } from "./api/useSubjects";
 import { StreamBadge } from "./components/StreamBadge";
 import { SubjectForm } from "./components/SubjectForm";
 import { CREATE_DEFAULTS } from "./subjectSchema";
@@ -19,15 +18,12 @@ export function SubjectsPage() {
   const { t } = useTranslation(["subjects", "errors"]);
   const can = useCan();
   const navigate = useNavigate();
-  const [page, setPage] = useState(1);
   const [createNotice, setCreateNotice] = useState<Notice | null>(null);
   const [listNotice, setListNotice] = useState<Notice | null>(null);
-  const [pendingDelete, setPendingDelete] = useState<Subject | null>(null);
-  const [deleteError, setDeleteError] = useState<ErrorKey | null>(null);
 
-  const subjects = useSubjects(page);
+  const subjects = useSubjects();
   const { mutateAsync: createSubject } = useSaveSubject(null);
-  const { mutate: deleteSubject, isPending: deleting } = useDeleteSubject();
+  const { mutate: deleteSubject } = useDeleteSubject();
 
   const rows = subjects.data?.rows ?? [];
   const total = subjects.data?.total ?? 0;
@@ -47,28 +43,15 @@ export function SubjectsPage() {
     [createSubject, t],
   );
 
-  const openDelete = useCallback((subject: Subject) => {
-    setDeleteError(null);
-    setPendingDelete(subject);
-  }, []);
-
-  const closeDelete = useCallback(() => {
-    if (!deleting) setPendingDelete(null);
-  }, [deleting]);
-
-  const confirmDelete = useCallback(
+  const openDelete = useCallback(
     (subject: Subject) => {
-      setDeleteError(null);
+      if (!window.confirm(t("subjects:delete.confirm"))) return;
+      setListNotice(null);
       deleteSubject(subject.id, {
-        onSuccess: () => {
-          setPendingDelete(null);
-          setListNotice({ tone: "success", text: t("subjects:delete.success") });
-          if (rows.length === 1 && page > 1) setPage(page - 1);
-        },
-        onError: (error) => setDeleteError(toErrorKey(error)),
+        onError: (error) => setListNotice({ tone: "danger", text: t(`errors:${toErrorKey(error)}`) }),
       });
     },
-    [deleteSubject, page, rows.length, t],
+    [deleteSubject, t],
   );
 
   const columns = useMemo<TableColumn<Subject>[]>(
@@ -187,18 +170,9 @@ export function SubjectsPage() {
             rows={rows}
             rowKey={(s) => s.id}
             loading={subjects.isPending}
-            pagination={{ page, pageSize: SUBJECTS_PAGE_SIZE, total, onPageChange: setPage }}
           />
         )}
       </Card>
-
-      <DeleteSubjectModal
-        subject={pendingDelete}
-        deleting={deleting}
-        errorKey={deleteError}
-        onCancel={closeDelete}
-        onConfirm={confirmDelete}
-      />
     </>
   );
 }

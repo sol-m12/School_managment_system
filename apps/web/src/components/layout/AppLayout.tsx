@@ -7,7 +7,7 @@ import { menuForUser } from "@/navigation/menu";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 
-const DESKTOP_QUERY = "(min-width: 1024px)";
+const DESKTOP_QUERY = "(min-width: 992px)";
 
 export function AppLayout() {
   const { t } = useTranslation("common");
@@ -55,7 +55,7 @@ export function AppLayout() {
         aria-hidden="true"
         onClick={closeSidebar}
         className={cn(
-          "fixed inset-0 z-[1040] bg-shell/60 backdrop-blur-sm transition-opacity duration-300 lg:hidden",
+          "fixed inset-0 z-[1040] bg-shell/60 backdrop-blur-sm transition-opacity duration-300 min-[992px]:hidden",
           mobileOpen ? "opacity-100" : "pointer-events-none opacity-0",
         )}
       />
@@ -71,18 +71,25 @@ export function AppLayout() {
       <div
         className={cn(
           "flex min-h-dvh min-w-0 flex-col transition-[margin] duration-300",
-          desktopCollapsed ? "lg:ml-0" : "lg:ml-sidebar",
+          desktopCollapsed ? "min-[992px]:ml-0" : "min-[992px]:ml-sidebar",
         )}
       >
-        <Header
-          user={user}
-          sidebarOpen={mobileOpen || !desktopCollapsed}
-          onToggleSidebar={toggleSidebar}
-          onLogout={onLogout}
-        />
+        <Header user={user} sidebarOpen={mobileOpen || !desktopCollapsed} onToggleSidebar={toggleSidebar} />
         <main id="main-content" className="min-w-0 flex-1 p-3 sm:p-4 md:p-6">
           <Outlet />
         </main>
+        <footer className="border-t border-border bg-surface px-4 py-4 text-sm">
+          <div className="flex flex-col items-center gap-2 md:flex-row md:justify-between">
+            <div className="flex items-center justify-center md:justify-start">
+              <span className="font-bold text-ink-strong">{t("footerKeyit")}</span>
+              <span className="ms-1 me-2 font-bold text-brand-700">{t("footerMs")}</span>
+              <span className="border-s border-border ps-2 text-ink-muted">
+                {t("footerPatent", { year: new Date().getFullYear() })}
+              </span>
+            </div>
+            <p className="text-ink-muted">{t("footerVersion")}</p>
+          </div>
+        </footer>
       </div>
     </div>
   );

@@ -34,7 +34,7 @@ export const Sidebar = memo(function Sidebar({
         "fixed inset-y-0 left-0 z-[1050] flex w-sidebar max-w-[85vw] flex-col bg-shell text-shell-text shadow-panel",
         "transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
         mobileOpen ? "translate-x-0" : "-translate-x-full",
-        desktopCollapsed ? "lg:-translate-x-full" : "lg:translate-x-0",
+        desktopCollapsed ? "min-[992px]:-translate-x-full" : "min-[992px]:translate-x-0",
       )}
     >
       <div className="flex h-header shrink-0 items-center justify-between border-b border-shell-border bg-white/[0.02] px-5">
@@ -46,7 +46,7 @@ export const Sidebar = memo(function Sidebar({
           label={t("common:closeSidebar")}
           icon={<X className="size-5" />}
           onClick={onClose}
-          className="text-shell-text hover:bg-shell-hover hover:text-white lg:hidden"
+          className="text-shell-text hover:bg-shell-hover hover:text-white min-[992px]:hidden"
         />
       </div>
 
@@ -77,7 +77,7 @@ export const Sidebar = memo(function Sidebar({
                         }
                       >
                         <Icon aria-hidden="true" className="size-[1.1rem] shrink-0" />
-                        <span className="min-w-0 break-words">{t(`nav:items.${item.key}`)}</span>
+                        <span className="min-w-0 break-words">{t(`nav:items.${item.labelKey}`)}</span>
                       </NavLink>
                     </li>
                   );
