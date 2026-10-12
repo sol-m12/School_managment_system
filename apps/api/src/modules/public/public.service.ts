@@ -12,7 +12,7 @@ export class PublicError extends Error {
   }
 }
 
-export type PublicLeader = { name: string };
+export type PublicLeader = { name: string; photoFile: string | null };
 
 export type PublicNewsItem = { title: string; content: string };
 
@@ -54,7 +54,7 @@ async function tenantIdForSlug(slug: string): Promise<number> {
 
 async function leader(tenantId: number, role: Extract<Role, "Admin" | "V_Principal">): Promise<PublicLeader | null> {
   const [row] = await db
-    .select({ firstName: staff.firstName, lastName: staff.lastName })
+    .select({ firstName: staff.firstName, lastName: staff.lastName, photo: staff.photo })
     .from(staff)
     .innerJoin(users, eq(staff.userId, users.userId))
     .where(and(scoped(staff, tenantId), scoped(users, tenantId), eq(users.role, role)))
@@ -62,7 +62,7 @@ async function leader(tenantId: number, role: Extract<Role, "Admin" | "V_Princip
     .limit(1);
   if (!row) return null;
   const name = `${row.firstName} ${row.lastName}`.trim();
-  return name ? { name } : null;
+  return name ? { name, photoFile: logoBasename(row.photo) } : null;
 }
 
 export async function publicHome(slug: string): Promise<PublicHome> {

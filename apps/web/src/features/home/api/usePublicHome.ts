@@ -3,7 +3,7 @@ import { api } from "@/lib/api";
 
 const SCHOOL_SLUG = "keyit";
 
-export type PublicLeader = { name: string };
+export type PublicLeader = { name: string; photoFile: string | null };
 
 export type PublicHome = {
   schoolName: string | null;

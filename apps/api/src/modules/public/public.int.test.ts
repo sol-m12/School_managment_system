@@ -93,8 +93,8 @@ describe("public home", () => {
     expect(homeA.body.students).toBe(2);
     expect(homeA.body.staff).toBe(2);
     expect(homeA.body.news).toEqual([{ title: "News A", content: "Only A" }]);
-    expect(homeA.body.principal).toEqual({ name: "Principal A" });
-    expect(homeA.body.vicePrincipal).toEqual({ name: "Vice A" });
+    expect(homeA.body.principal).toEqual({ name: "Principal A", photoFile: null });
+    expect(homeA.body.vicePrincipal).toEqual({ name: "Vice A", photoFile: null });
     expect(JSON.stringify(homeA.body)).not.toContain("School B");
     expect(JSON.stringify(homeA.body)).not.toContain("Only B");
 

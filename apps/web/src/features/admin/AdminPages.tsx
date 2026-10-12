@@ -1,5 +1,6 @@
 import { useState, type FormEvent, type ReactNode } from "react";
 import type { UseQueryResult } from "@tanstack/react-query";
+import type { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
 import { Alert, Button, Card, CardBody, CardHeader, Input, PageHeader, Select, Spinner, Table, type TableColumn } from "@/components/ui";
 import { toErrorKey } from "@/lib/apiError";
@@ -54,14 +55,14 @@ function Notice({ tone, text }: { tone: "success" | "danger" | null; text: strin
   );
 }
 
-const studentColumns = (t: (key: string) => string): TableColumn<StudentRow>[] => [
-  { key: "name", header: t("admin:name"), render: (row) => row.fullName },
-  { key: "gender", header: t("admin:gender"), render: (row) => (row.gender === "M" ? t("admin:male") : t("admin:female")) },
-  { key: "grade", header: t("admin:grade"), render: (row) => row.gradeLevel },
-  { key: "section", header: t("admin:section"), render: (row) => row.section ?? "" },
-  { key: "year", header: t("admin:year"), render: (row) => row.academicYear },
-  { key: "type", header: t("admin:type"), render: (row) => row.registrationType ?? "" },
-  { key: "status", header: t("admin:status"), render: (row) => row.submissionStatus ?? "" },
+const studentColumns = (t: TFunction<"admin">): TableColumn<StudentRow>[] => [
+  { key: "name", header: t("name"), render: (row) => row.fullName },
+  { key: "gender", header: t("gender"), render: (row) => (row.gender === "M" ? t("male") : t("female")) },
+  { key: "grade", header: t("grade"), render: (row) => row.gradeLevel },
+  { key: "section", header: t("section"), render: (row) => row.section ?? "" },
+  { key: "year", header: t("year"), render: (row) => row.academicYear },
+  { key: "type", header: t("type"), render: (row) => row.registrationType ?? "" },
+  { key: "status", header: t("status"), render: (row) => row.submissionStatus ?? "" },
 ];
 
 export function StudentStatusPage() {

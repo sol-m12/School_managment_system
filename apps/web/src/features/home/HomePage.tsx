@@ -63,7 +63,8 @@ function Field({
 }
 
 export function HomePage() {
-  const { t } = useTranslation(["home", "errors", "common"]);
+  const { t, i18n } = useTranslation(["home", "errors", "common"]);
+  const english = (i18n.resolvedLanguage ?? i18n.language).startsWith("en");
   const home = usePublicHome();
   const send = useSendInquiry();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -71,7 +72,9 @@ export function HomePage() {
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof HomeFormValues, HomeFieldError>>>({});
   const [formError, setFormError] = useState<string | null>(null);
 
-  const schoolName = textOr(home.data?.schoolName ?? null, t("home:fallbacks.name"));
+  const schoolName = english
+    ? t("home:content.name")
+    : textOr(home.data?.schoolName ?? null, t("home:fallbacks.name"));
 
   useEffect(() => {
     document.title = t("home:pageTitle", { name: schoolName });
@@ -97,15 +100,25 @@ export function HomePage() {
   }
 
   const data = home.data;
-  const vision = textOr(data.schoolVision, t("home:fallbacks.vision"));
-  const about = textOr(data.aboutText, t("home:fallbacks.about"));
-  const needs = textOr(data.schoolNeeds, t("home:fallbacks.needs"));
+  const vision = english
+    ? t("home:fallbacks.vision")
+    : data.schoolVision == null
+      ? t("home:fallbacks.vision")
+      : data.schoolVision.trim();
+  const about = english ? t("home:content.about") : textOr(data.aboutText, t("home:fallbacks.about"));
+  const needs = english ? t("home:content.needs") : textOr(data.schoolNeeds, t("home:fallbacks.needs"));
   const email = textOr(data.schoolEmail, t("home:fallbacks.email"));
   const phone = textOr(data.schoolPhone, t("home:fallbacks.phone"));
-  const address = textOr(data.schoolAddress, t("home:fallbacks.address"));
+  const address = english ? t("home:content.address") : textOr(data.schoolAddress, t("home:fallbacks.address"));
+  const newsLine = (index: number, item: { title: string; content: string }) => {
+    if (!english) return `${item.title}: ${item.content}`;
+    if (index === 0) return `${t("home:content.news1Title")}: ${t("home:content.news1Body")}`;
+    if (index === 1) return `${t("home:content.news2Title")}: ${t("home:content.news2Body")}`;
+    return `${item.title}: ${item.content}`;
+  };
   const ticker =
     data.news.length > 0
-      ? data.news.map((item) => `${item.title}: ${item.content}`)
+      ? data.news.map((item, index) => newsLine(index, item))
       : [t("home:tickerWelcome", { name: schoolName }), t("home:tickerQuality")];
 
   const fieldError = (key: keyof HomeFormValues) => {
@@ -145,7 +158,10 @@ export function HomePage() {
   const closeMenu = () => setMenuOpen(false);
 
   return (
-    <div className="min-h-dvh bg-[#fdfdfd] text-ink">
+    <div
+      className="min-h-dvh bg-[#fdfdfd] text-ink"
+      style={{ fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif" }}
+    >
       <div className="overflow-hidden bg-[#ce0000] py-2.5 font-bold text-white shadow-[0_2px_10px_rgb(0_0_0/0.2)]">
         <div className="flex w-max animate-[ticker_45s_linear_infinite] whitespace-nowrap">
           {ticker.map((item) => (
@@ -184,7 +200,12 @@ export function HomePage() {
           </button>
           <nav className={`${menuOpen ? "flex" : "hidden"} absolute inset-x-0 top-full flex-col gap-2 bg-[#003366] px-4 py-4 lg:static lg:flex lg:flex-row lg:items-center lg:bg-transparent lg:p-0`}>
             {NAV.map((item) => (
-              <a key={item.key} href={item.href} onClick={closeMenu} className="px-2.5 py-2 font-medium text-white/90">
+              <a
+                key={item.key}
+                href={item.href}
+                onClick={closeMenu}
+                className="relative px-2.5 py-2 font-medium text-white/90 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-[#ffcc00] after:transition-all hover:after:w-full"
+              >
                 {t(`home:nav.${item.key}`)}
               </a>
             ))}
@@ -200,10 +221,16 @@ export function HomePage() {
         </div>
       </header>
 
-      <section id="home" className="flex min-h-[95vh] items-center bg-[#003366] text-center text-white">
+      <section
+        id="home"
+        className="flex min-h-[95vh] items-center bg-[#003366] bg-cover bg-center text-center text-white"
+        style={{
+          backgroundImage: "linear-gradient(rgba(0,51,102,0.7), rgba(0,51,102,0.7)), url(/portal/hero_bg.jpg)",
+        }}
+      >
         <div className="mx-auto w-full max-w-4xl px-4 py-16">
-          <h1 className="mb-3 text-4xl font-black [text-shadow:2px_2px_10px_rgb(0_0_0/0.5)] sm:text-6xl">{schoolName}</h1>
-          <p className="mb-10 text-2xl opacity-90 sm:text-3xl">{vision}</p>
+          <h1 className="mb-3 text-4xl font-black [text-shadow:2px_2px_10px_rgb(0_0_0/0.5)] sm:text-[4rem] sm:leading-tight">{schoolName}</h1>
+          {vision ? <p className="mb-10 text-2xl opacity-90 sm:text-3xl">{vision}</p> : <div className="mb-10" />}
           <div className="flex flex-wrap justify-center gap-4">
             <a href="#portals" className="rounded-full bg-[#ffcc00] px-8 py-3 text-lg font-bold text-[#003366] shadow">
               {t("home:services")}
@@ -223,7 +250,7 @@ export function HomePage() {
             { icon: BookOpen, value: t("home:stats.booksValue"), label: t("home:stats.books"), gold: false },
             { icon: Medal, value: t("home:stats.rankValue"), label: t("home:stats.rank"), gold: true },
           ].map((card) => (
-            <article key={card.label} className="rounded-[20px] border-b-[6px] border-[#ffcc00] bg-white p-8 text-center shadow-[0_15px_35px_rgb(0_0_0/0.1)]">
+            <article key={card.label} className="rounded-[20px] border-b-[6px] border-[#ffcc00] bg-white p-8 text-center shadow-[0_15px_35px_rgb(0_0_0/0.1)] transition-transform duration-300 hover:-translate-y-3 hover:shadow-[0_20px_45px_rgb(0_0_0/0.15)]">
               <card.icon aria-hidden="true" className={`mx-auto mb-3 size-12 ${card.gold ? "text-[#ffcc00]" : "text-[#003366]"}`} />
               <h2 className="text-4xl font-bold">{card.value}</h2>
               <p className="font-bold text-ink-muted">{card.label}</p>
@@ -235,7 +262,9 @@ export function HomePage() {
       <section id="about" className="bg-white py-16">
         <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-4 pt-10 lg:grid-cols-2">
           <div>
-            <h2 className="mb-8 text-left text-4xl font-extrabold text-[#003366]">{t("home:aboutTitle")}</h2>
+            <h2 className="relative mb-8 pb-5 text-left text-4xl font-extrabold text-[#003366] after:absolute after:bottom-0 after:left-1/2 after:h-1.5 after:w-20 after:-translate-x-1/2 after:rounded-full after:bg-[#ffcc00] after:content-['']">
+              {t("home:aboutTitle")}
+            </h2>
             <div className="rounded-r-[25px] border-l-[10px] border-[#ffcc00] bg-white p-8 shadow-[0_10px_30px_rgb(0_0_0/0.05)]">
               <p className="text-lg leading-loose whitespace-pre-line text-ink-muted">
                 <Quote aria-hidden="true" className="me-2 inline size-5 text-[#ffcc00]" />
@@ -243,7 +272,8 @@ export function HomePage() {
               </p>
             </div>
           </div>
-          <div className="relative min-h-64 rounded-[2rem] bg-[#003366]/10">
+          <div className="relative min-h-64 overflow-hidden rounded-[2rem] bg-[#003366]/10 shadow-lg">
+            <img src="/portal/sc.jpg" alt="" className="h-full min-h-64 w-full object-cover" onError={(event) => { event.currentTarget.style.display = "none"; }} />
             <div className="absolute start-4 bottom-4 hidden rounded-2xl bg-[#ffcc00] p-4 text-[#003366] shadow md:block">
               <h3 className="font-bold">{t("home:years")}</h3>
               <p className="text-sm">{t("home:yearsHint")}</p>
@@ -254,7 +284,7 @@ export function HomePage() {
 
       <section id="portals" className="bg-[#f8f9fa] py-16">
         <div className="mx-auto w-full max-w-6xl px-4">
-          <h2 className="mb-12 text-center text-4xl font-extrabold text-[#003366] after:mx-auto after:mt-4 after:block after:h-1.5 after:w-20 after:rounded-full after:bg-[#ffcc00] after:content-['']">
+          <h2 className="relative mb-12 pb-5 text-center text-4xl font-extrabold text-[#003366] after:absolute after:bottom-0 after:left-1/2 after:h-1.5 after:w-20 after:-translate-x-1/2 after:rounded-full after:bg-[#ffcc00] after:content-['']">
             {t("home:portalsTitle")}
           </h2>
           <div className="grid gap-6 md:grid-cols-3">
@@ -267,10 +297,20 @@ export function HomePage() {
 
       <section id="leaders" className="bg-white py-16">
         <div className="mx-auto w-full max-w-6xl px-4">
-          <h2 className="mb-12 text-center text-4xl font-extrabold text-[#003366]">{t("home:leadersTitle")}</h2>
+          <h2 className="relative mb-12 pb-5 text-center text-4xl font-extrabold text-[#003366] after:absolute after:bottom-0 after:left-1/2 after:h-1.5 after:w-20 after:-translate-x-1/2 after:rounded-full after:bg-[#ffcc00] after:content-['']">
+            {t("home:leadersTitle")}
+          </h2>
           <div className="grid justify-center gap-10 md:grid-cols-2">
-            <Leader name={data.principal?.name ?? t("home:principalBadge")} badge={t("home:principalBadge")} />
-            <Leader name={data.vicePrincipal?.name ?? t("home:viceBadge")} badge={t("home:viceBadge")} />
+            <Leader
+              name={data.principal ? (english ? t("home:content.principalName") : data.principal.name) : t("home:principalBadge")}
+              badge={t("home:principalBadge")}
+              photoFile={data.principal?.photoFile ?? null}
+            />
+            <Leader
+              name={data.vicePrincipal ? (english ? t("home:content.viceName") : data.vicePrincipal.name) : t("home:viceBadge")}
+              badge={t("home:viceBadge")}
+              photoFile={data.vicePrincipal?.photoFile ?? null}
+            />
           </div>
         </div>
       </section>
@@ -326,7 +366,7 @@ export function HomePage() {
                 <MessageSquare aria-hidden="true" className="mt-2 size-4 shrink-0 self-start text-[#003366]" />
                 <textarea rows={4} className="w-full resize-y bg-transparent py-2.5 outline-none" placeholder={t("home:messagePlaceholder")} value={values.message} onChange={(event) => setField("message", event.target.value)} />
               </Field>
-              <button type="submit" disabled={send.isPending} className="flex w-full items-center justify-center gap-2 rounded-[15px] bg-[#ffcc00] px-4 py-4 font-extrabold tracking-wide text-[#003366] uppercase disabled:opacity-70">
+              <button type="submit" disabled={send.isPending} className="flex w-full items-center justify-center gap-2 rounded-[15px] bg-[#ffcc00] px-4 py-4 font-extrabold tracking-wide text-[#003366] uppercase transition hover:scale-[1.02] hover:bg-[#003366] hover:text-white disabled:opacity-70">
                 <Send aria-hidden="true" className="size-4" />
                 {t("home:send")}
               </button>
@@ -337,7 +377,9 @@ export function HomePage() {
 
       <section id="contact" className="bg-[#0a0a0a] py-16 text-center text-white">
         <div className="mx-auto w-full max-w-6xl px-4">
-          <h2 className="mb-10 text-4xl font-extrabold">{t("home:nav.contact")}</h2>
+          <h2 className="relative mb-10 pb-5 text-4xl font-extrabold after:absolute after:bottom-0 after:left-1/2 after:h-1.5 after:w-20 after:-translate-x-1/2 after:rounded-full after:bg-[#ffcc00] after:content-['']">
+            {t("home:nav.contact")}
+          </h2>
           <div className="grid gap-6 md:grid-cols-3">
             <ContactCard icon={<MapPin className="size-10 text-[#ffcc00]" />} title={t("home:address")} value={address} />
             <ContactCard icon={<Phone className="size-10 text-[#ffcc00]" />} title={t("home:phoneLabel")} value={phone} />
