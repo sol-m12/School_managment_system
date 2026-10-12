@@ -53,26 +53,29 @@ export const PERMISSIONS = [
 
   "store.receive",
   "store.binCard",
+
+  "finance.income",
+  "finance.expense",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
 
 const GRANTS: Record<Permission, readonly Role[]> = {
-  "subjects.read": ["V_Principal"],
-  "subjects.create": ["V_Principal"],
-  "subjects.update": ["V_Principal"],
-  "subjects.delete": ["V_Principal"],
+  "subjects.read": ["Admin", "V_Principal"],
+  "subjects.create": ["Admin", "V_Principal"],
+  "subjects.update": ["Admin", "V_Principal"],
+  "subjects.delete": ["Admin", "V_Principal"],
 
   "approvals.read": ["Admin"],
   "studentStatusReport.read": ["Admin"],
 
-  "students.manage": ["V_Principal"],
-  "teachingLoad.manage": ["V_Principal"],
-  "selectedRoster.read": ["V_Principal"],
-  "gradeCorrection.approve": ["V_Principal"],
-  "academicApprovals.manage": ["V_Principal"],
-  "periodSchedule.manage": ["V_Principal"],
-  "academicReports.read": ["V_Principal"],
+  "students.manage": ["Admin", "V_Principal"],
+  "teachingLoad.manage": ["Admin", "V_Principal"],
+  "selectedRoster.read": ["Admin", "V_Principal"],
+  "gradeCorrection.approve": ["Admin", "V_Principal"],
+  "academicApprovals.manage": ["Admin", "V_Principal"],
+  "periodSchedule.manage": ["Admin", "V_Principal"],
+  "academicReports.read": ["Admin", "V_Principal"],
 
   "announcements.manage": ["Technician"],
   "staffRegistration.manage": ["Technician"],
@@ -98,13 +101,16 @@ const GRANTS: Record<Permission, readonly Role[]> = {
   "simulations.create": ["Teacher"],
   "studentReports.read": ["Teacher"],
 
-  "files.manage": ["Teacher", "Technician"],
+  "files.manage": ["Admin", "Teacher", "Technician"],
 
   // No screenshot yet. Placeholder menu only.
   "results.readOwn": ["Student"],
   "reportCard.readOwn": ["Student"],
   "store.receive": ["Store_Keeper"],
   "store.binCard": ["Store_Keeper"],
+
+  "finance.income": ["Admin"],
+  "finance.expense": ["Admin"],
 };
 
 export function hasPermission(role: Role, permission: Permission): boolean {

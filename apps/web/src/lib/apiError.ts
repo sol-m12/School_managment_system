@@ -13,7 +13,11 @@ export type ErrorKey =
   | "subjectNotFound"
   | "subjectDuplicate"
   | "subjectInUse"
-  | "accountInactive";
+  | "accountInactive"
+  | "notFound"
+  | "usernameTaken"
+  | "gradeNotFound"
+  | "backupBlocked";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -26,6 +30,10 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   SUBJECT_DUPLICATE: "subjectDuplicate",
   SUBJECT_IN_USE: "subjectInUse",
   AUTH_INACTIVE: "accountInactive",
+  NOT_FOUND: "notFound",
+  USERNAME_TAKEN: "usernameTaken",
+  GRADE_NOT_FOUND: "gradeNotFound",
+  BACKUP_BLOCKED: "backupBlocked",
 };
 
 function readCode(data: unknown): string | null {

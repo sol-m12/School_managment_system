@@ -13,5 +13,9 @@
   "accountInactive": "አካውንቱ ገና በአድሚን አልጸደቀም። እባክዎ በትዕግስት ይጠብቁ።",
   "subjectNotFound": "ይቅርታ፣ የተፈለገው ትምህርት አልተገኘም!",
   "subjectDuplicate": "ይህ ትምህርት ቀድሞ ተመዝግቧል!",
-  "subjectInUse": "ስህተት፦"
+  "subjectInUse": "ስህተት፦",
+  "notFound": "አልተገኘም።",
+  "usernameTaken": "ይህ የተጠቃሚ ስም ቀድሞ ተይዟል።",
+  "gradeNotFound": "ምንም አይነት የተቀመጠ (Submitted) ውጤት በዚህ መረጃ አልተገኘም። እባክዎ መረጃዎቹን ያረጋግጡ።",
+  "backupBlocked": "ሙሉ የSQL ባክአፕ የይለፍ ቃል ሃሾችን ስለሚይዝ፣ እና መመለሻው የተጫነውን SQL ስለሚያስኬድ፣ ይህ ገጽ ፋይል አያወርድም እና SQL አያስኬድም።"
 }

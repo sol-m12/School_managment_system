@@ -114,14 +114,14 @@ describe("subjects API: tenant from the token only", () => {
 describe("subjects API: permissions", () => {
   let seed: IsolationSeed;
   const SUBJECT_KEYS = PERMISSIONS.filter((permission) => permission.startsWith("subjects."));
-  const fullAccess: readonly Role[] = ["V_Principal"];
+  const fullAccess: readonly Role[] = ["Admin", "V_Principal"];
   const denied = ROLES.filter((role) => !fullAccess.includes(role));
 
   beforeAll(async () => {
     seed = await seedTwoTenants();
   });
 
-  it("grants every subjects key to V_Principal only", () => {
+  it("grants every subjects key to Admin and V_Principal", () => {
     expect(SUBJECT_KEYS).toEqual(["subjects.read", "subjects.create", "subjects.update", "subjects.delete"]);
     for (const role of ROLES) {
       for (const permission of SUBJECT_KEYS) {
@@ -130,10 +130,11 @@ describe("subjects API: permissions", () => {
     }
   });
 
-  it("gives Admin the legacy Admin menu and not subjects", () => {
+  it("gives Admin the live Admin menu, including subjects", () => {
     expect(hasPermission("Admin", "approvals.read")).toBe(true);
     expect(hasPermission("Admin", "academicYear.manage")).toBe(true);
-    expect(hasPermission("Admin", "subjects.read")).toBe(false);
+    expect(hasPermission("Admin", "subjects.read")).toBe(true);
+    expect(hasPermission("Admin", "students.manage")).toBe(true);
   });
 
   it("gives Technician its menu and not the Admin system settings", () => {

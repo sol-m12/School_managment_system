@@ -50,6 +50,7 @@ export type MenuGroupKey =
   | "techRegistration"
   | "systemSettings"
   | "store"
+  | "finance"
   | "main";
 
 export type MenuItem = {
@@ -77,6 +78,7 @@ export const MENU_GROUP_ORDER: readonly MenuGroupKey[] = [
   "systemSettings",
   "store",
   "main",
+  "finance",
 ];
 
 export const MENU_ITEMS: readonly MenuItem[] = [
@@ -140,11 +142,13 @@ export const MENU_ITEMS: readonly MenuItem[] = [
     path: "/dashboard",
     icon: Gauge,
     group: "main",
-    roles: ["Teacher", "Technician"],
-    labelByRole: { Teacher: "dashboardAcademic", Technician: "dashboardStaff" },
+    roles: ["Admin", "Teacher", "Technician"],
+    labelByRole: { Admin: "dashboardAdmin", Teacher: "dashboardAcademic", Technician: "dashboardStaff" },
   },
   { key: "fileManagement", path: "/files", icon: FolderOpen, group: "main", permission: "files.manage" },
-  { key: "profile", path: "/profile", icon: UserCog, group: "main", roles: ["Teacher", "Technician"] },
+  { key: "profile", path: "/profile", icon: UserCog, group: "main", roles: ["Admin", "Teacher", "Technician"] },
+  { key: "payments", path: "/finance/payments", icon: Landmark, group: "finance", permission: "finance.income" },
+  { key: "incomeExpense", path: "/finance/income", icon: Landmark, group: "finance", permission: "finance.expense" },
 ];
 
 export function canAccess(item: MenuItem, user: Pick<MenuUser, "permissions">): boolean {

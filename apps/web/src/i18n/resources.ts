@@ -1,17 +1,21 @@
+import amAdmin from "@/locales/am/admin.json";
 import amAuth from "@/locales/am/auth.json";
 import amCommon from "@/locales/am/common.json";
 import amDashboard from "@/locales/am/dashboard.json";
 import amErrors from "@/locales/am/errors.json";
+import amHome from "@/locales/am/home.json";
 import amNav from "@/locales/am/nav.json";
 import amSubjects from "@/locales/am/subjects.json";
+import enAdmin from "@/locales/en/admin.json";
 import enAuth from "@/locales/en/auth.json";
 import enCommon from "@/locales/en/common.json";
 import enDashboard from "@/locales/en/dashboard.json";
 import enErrors from "@/locales/en/errors.json";
+import enHome from "@/locales/en/home.json";
 import enNav from "@/locales/en/nav.json";
 import enSubjects from "@/locales/en/subjects.json";
 
-export const NAMESPACES = ["common", "auth", "nav", "dashboard", "subjects", "errors"] as const;
+export const NAMESPACES = ["common", "auth", "nav", "dashboard", "subjects", "admin", "errors", "home"] as const;
 
 export const resources = {
   am: {
@@ -20,7 +24,9 @@ export const resources = {
     nav: amNav,
     dashboard: amDashboard,
     subjects: amSubjects,
+    admin: amAdmin,
     errors: amErrors,
+    home: amHome,
   },
   en: {
     common: enCommon,
@@ -28,7 +34,9 @@ export const resources = {
     nav: enNav,
     dashboard: enDashboard,
     subjects: enSubjects,
+    admin: enAdmin,
     errors: enErrors,
+    home: enHome,
   },
 } as const;
 

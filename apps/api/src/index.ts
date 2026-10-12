@@ -7,6 +7,8 @@ import { env } from "./config/env.js";
 import { pool } from "./db/index.js";
 import { authRouter } from "./modules/auth/auth.routes.js";
 import { dashboardRouter } from "./modules/dashboard/dashboard.routes.js";
+import { adminRouter } from "./modules/admin/admin.routes.js";
+import { publicRouter } from "./modules/public/public.routes.js";
 import { subjectsRouter } from "./modules/subjects/subjects.routes.js";
 
 const app = express();
@@ -30,9 +32,11 @@ app.get("/health/db", async (_req, res) => {
   }
 });
 
+app.use("/public", publicRouter);
 app.use("/auth", authRouter);
 app.use("/dashboard", dashboardRouter);
 app.use("/subjects", subjectsRouter);
+app.use("/admin", adminRouter);
 
 if (process.env.NODE_ENV !== "test" && process.env.VITEST !== "true") {
   app.listen(env.PORT, () => {

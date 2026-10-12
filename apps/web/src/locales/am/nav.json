@@ -2,11 +2,12 @@
   "groups": {
     "academic": "ACADEMIC",
     "administration": "አስተዳደር",
-    "academicAdmin": "አካዳሚክ (ADMIN)",
+    "academicAdmin": "አካዳሚክ (Admin)",
     "academicTasks": "አካዳሚክ ተግባራት",
     "techRegistration": "ቴክኒክና ምዝገባ",
     "systemSettings": "ሲስተም ሴቲንግ",
     "store": "የንብረት ክፍል",
+    "finance": "ፋይናንስ",
     "main": "ዋና"
   },
   "items": {
@@ -20,9 +21,9 @@
     "subjects": "ትምህርቶች",
     "teachingLoad": "መምህራን ድልድል",
     "selectedRoster": "የተመረጡ ተማሪዎች ሮስተር",
-    "gradeCorrection": "ለተማሪዎች ውጤት መስተካከል ፍቃድ",
+    "gradeCorrection": "ለተማሪዎች ውጤት መስተካከል ፍቀድ",
     "academicApprovals": "ማጽደቂያ",
-    "periodSchedule": "ክፍለ ጊዜ ድልድል",
+    "periodSchedule": "ክፍለ ጊዜ ድልደላ",
     "academicReports": "ሪፖርት",
     "assignedWorks": "የተመደቡ ስራዎች",
     "gradeEntry": "ውጤት ማስገቢያ",
@@ -49,6 +50,9 @@
     "dashboard": "ዳሽቦርድ",
     "dashboardAcademic": "ዋና ዳሽቦርድ (Academic)",
     "dashboardStaff": "ዋና ዳሽቦርድ (Staff)",
+    "dashboardAdmin": "ዋና ዳሽቦርድ (Admin)",
+    "payments": "ክፍያ",
+    "incomeExpense": "ገቢና ወጪ",
     "fileManagement": "file_management",
     "profile": "ፕሮፋይል (ፎቶ ቀይር)"
   }

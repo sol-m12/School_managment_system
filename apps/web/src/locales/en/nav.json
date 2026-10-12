@@ -7,6 +7,7 @@
     "techRegistration": "Technical and Registration",
     "systemSettings": "System Settings",
     "store": "Store / Property Office",
+    "finance": "Finance",
     "main": "Main"
   },
   "items": {
@@ -49,6 +50,9 @@
     "dashboard": "Dashboard",
     "dashboardAcademic": "Main Dashboard (Academic)",
     "dashboardStaff": "Main Dashboard (Staff)",
+    "dashboardAdmin": "Main Dashboard (Admin)",
+    "payments": "Payments",
+    "incomeExpense": "Income and Expense",
     "fileManagement": "File Management",
     "profile": "Profile (Change Photo)"
   }

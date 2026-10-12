@@ -76,3 +76,12 @@
     outline-offset: 2px;
   }
 }
+
+@keyframes ticker {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}

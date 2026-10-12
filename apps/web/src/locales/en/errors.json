@@ -13,5 +13,9 @@
   "accountInactive": "The account has not been approved by an admin yet. Please wait.",
   "subjectNotFound": "Sorry, the requested subject was not found!",
   "subjectDuplicate": "This subject is already registered!",
-  "subjectInUse": "Error:"
+  "subjectInUse": "Error:",
+  "notFound": "Nothing matched that request.",
+  "usernameTaken": "That username is already in use.",
+  "gradeNotFound": "No submitted marks were found for this information.",
+  "backupBlocked": "This screen does not download a SQL file or run an uploaded SQL file."
 }

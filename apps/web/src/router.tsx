@@ -3,16 +3,59 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { LoginPage } from "@/features/auth/LoginPage";
 import { ProtectedRoute } from "@/features/auth/ProtectedRoute";
 import { DashboardPage } from "@/features/dashboard/DashboardPage";
+import {
+  AcademicYearPage,
+  ApprovalsPage,
+  BackupPage,
+  ExpensePage,
+  FilesPage,
+  GradeUnlockPage,
+  IncomePage,
+  PasswordPage,
+  ProfilePage,
+  ReportsPage,
+  RoleModulesPage,
+  RosterPage,
+  SchedulePage,
+  SchoolInfoPage,
+  StoreApprovalsPage,
+  StudentStatusPage,
+  StudentsPage,
+  TeachersPage,
+} from "@/features/admin/AdminPages";
 import { SubjectDetailPage } from "@/features/subjects/SubjectDetailPage";
 import { SubjectEditPage } from "@/features/subjects/SubjectEditPage";
 import { SubjectsPage } from "@/features/subjects/SubjectsPage";
 import { MENU_ITEMS, type NavItemKey } from "@/navigation/menu";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
+import { HomePage } from "@/features/home/HomePage";
 import { PublicPlaceholderPage } from "@/pages/PublicPlaceholderPage";
 
 /** Menu items with real pages; every other item still shows the placeholder. */
-const BUILT_ITEMS: readonly NavItemKey[] = ["dashboard", "subjects"];
+const BUILT_ITEMS: readonly NavItemKey[] = [
+  "dashboard",
+  "subjects",
+  "approvalDashboard",
+  "studentStatusReport",
+  "students",
+  "teachingLoad",
+  "selectedRoster",
+  "gradeCorrection",
+  "academicApprovals",
+  "periodSchedule",
+  "academicReports",
+  "academicYear",
+  "databaseBackup",
+  "databaseRestore",
+  "passwordManagement",
+  "schoolInfo",
+  "roleModules",
+  "fileManagement",
+  "profile",
+  "payments",
+  "incomeExpense",
+];
 
 const placeholderRoutes: RouteObject[] = MENU_ITEMS.filter((item) => !BUILT_ITEMS.includes(item.key)).map((item) => ({
   path: item.path.slice(1),
@@ -54,7 +97,7 @@ const subjectRoutes: RouteObject[] = [
 
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
-  { path: "/home", element: <PublicPlaceholderPage title="homePage" /> },
+  { path: "/home", element: <HomePage /> },
   { path: "/forgot-password", element: <PublicPlaceholderPage title="forgotPassword" /> },
   {
     path: "/",
@@ -67,6 +110,25 @@ export const router = createBrowserRouter([
       { index: true, element: <Navigate to="/dashboard" replace /> },
       { path: "dashboard", element: <DashboardPage /> },
       ...subjectRoutes,
+      { path: "admin/approvals", element: <ProtectedRoute permission="approvals.read"><StoreApprovalsPage /></ProtectedRoute> },
+      { path: "admin/student-status", element: <ProtectedRoute permission="studentStatusReport.read"><StudentStatusPage /></ProtectedRoute> },
+      { path: "academics/students", element: <ProtectedRoute permission="students.manage"><StudentsPage /></ProtectedRoute> },
+      { path: "academics/teaching-load", element: <ProtectedRoute permission="teachingLoad.manage"><TeachersPage /></ProtectedRoute> },
+      { path: "academics/selected-roster", element: <ProtectedRoute permission="selectedRoster.read"><RosterPage /></ProtectedRoute> },
+      { path: "academics/grade-correction", element: <ProtectedRoute permission="gradeCorrection.approve"><GradeUnlockPage /></ProtectedRoute> },
+      { path: "academics/approvals", element: <ProtectedRoute permission="academicApprovals.manage"><ApprovalsPage /></ProtectedRoute> },
+      { path: "academics/schedule", element: <ProtectedRoute permission="periodSchedule.manage"><SchedulePage /></ProtectedRoute> },
+      { path: "academics/reports", element: <ProtectedRoute permission="academicReports.read"><ReportsPage /></ProtectedRoute> },
+      { path: "system/academic-year", element: <ProtectedRoute permission="academicYear.manage"><AcademicYearPage /></ProtectedRoute> },
+      { path: "system/backup", element: <ProtectedRoute permission="backup.create"><BackupPage /></ProtectedRoute> },
+      { path: "system/restore", element: <ProtectedRoute permission="backup.restore"><BackupPage restore /></ProtectedRoute> },
+      { path: "system/passwords", element: <ProtectedRoute permission="passwords.reset"><PasswordPage /></ProtectedRoute> },
+      { path: "system/school-info", element: <ProtectedRoute permission="schoolInfo.manage"><SchoolInfoPage /></ProtectedRoute> },
+      { path: "system/role-modules", element: <ProtectedRoute permission="roleModules.manage"><RoleModulesPage /></ProtectedRoute> },
+      { path: "files", element: <ProtectedRoute permission="files.manage"><FilesPage /></ProtectedRoute> },
+      { path: "profile", element: <ProfilePage /> },
+      { path: "finance/payments", element: <ProtectedRoute permission="finance.income"><IncomePage /></ProtectedRoute> },
+      { path: "finance/income", element: <ProtectedRoute permission="finance.expense"><ExpensePage /></ProtectedRoute> },
       ...placeholderRoutes,
       { path: "*", element: <NotFoundPage /> },
     ],

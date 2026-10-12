@@ -48,6 +48,9 @@ export const PERMISSIONS = [
 
   "store.receive",
   "store.binCard",
+
+  "finance.income",
+  "finance.expense",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
