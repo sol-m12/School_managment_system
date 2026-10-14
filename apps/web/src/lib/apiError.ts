@@ -51,7 +51,8 @@ export type ErrorKey =
   | "examNotFound"
   | "examPassword"
   | "examWeight"
-  | "storeUnavailable";
+  | "storeUnavailable"
+  | "roleUnknown";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -102,6 +103,7 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   EXAM_PASSWORD: "examPassword",
   EXAM_WEIGHT: "examWeight",
   STORE_UNAVAILABLE: "storeUnavailable",
+  ROLE_UNKNOWN: "roleUnknown",
 };
 
 function readCode(data: unknown): string | null {

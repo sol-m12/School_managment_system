@@ -54,6 +54,9 @@ import {
   StudentRegistrationPage,
 } from "@/features/teacher/TeacherTaskPages";
 import { PublicPlaceholderPage } from "@/pages/PublicPlaceholderPage";
+import { AnnouncementsPage } from "@/features/technician/AnnouncementsPage";
+import { StaffRegistrationPage } from "@/features/technician/StaffRegistrationPage";
+import { StudentIdPage } from "@/features/technician/StudentIdPage";
 
 /** Menu items with real pages; every other item still shows the placeholder. */
 const BUILT_ITEMS: readonly NavItemKey[] = [
@@ -91,6 +94,9 @@ const BUILT_ITEMS: readonly NavItemKey[] = [
   "reportCard",
   "simulations",
   "studentReports",
+  "announcements",
+  "staffRegistration",
+  "accountManagement",
 ];
 
 const placeholderRoutes: RouteObject[] = MENU_ITEMS.filter((item) => !BUILT_ITEMS.includes(item.key)).map((item) => ({
@@ -188,6 +194,9 @@ export const router = createBrowserRouter([
       { path: "teacher/report-cards", element: <ProtectedRoute permission="reportCards.generate"><ReportCardsPage /></ProtectedRoute> },
       { path: "teacher/simulations", element: <ProtectedRoute permission="simulations.create"><SimulationsPage /></ProtectedRoute> },
       { path: "teacher/student-reports", element: <ProtectedRoute permission="studentReports.read"><StudentReportsPage /></ProtectedRoute> },
+      { path: "system/announcements", element: <ProtectedRoute permission="announcements.manage"><AnnouncementsPage /></ProtectedRoute> },
+      { path: "system/staff-registration", element: <ProtectedRoute permission="staffRegistration.manage"><StaffRegistrationPage /></ProtectedRoute> },
+      { path: "account/manage", element: <ProtectedRoute permission="accounts.manage"><StudentIdPage /></ProtectedRoute> },
       ...placeholderRoutes,
       { path: "*", element: <NotFoundPage /> },
     ],

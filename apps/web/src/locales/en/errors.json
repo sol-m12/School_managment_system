@@ -51,5 +51,6 @@
   "examNotFound": "The exam was not found.",
   "examPassword": "The exam code is not correct.",
   "examWeight": "The subject total must not pass 100.",
-  "storeUnavailable": "The store records are not in this database."
+  "storeUnavailable": "The store records are not in this database.",
+  "roleUnknown": "Error: this role is not in the system list."
 }

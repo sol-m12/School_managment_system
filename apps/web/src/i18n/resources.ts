@@ -7,6 +7,7 @@ import amHome from "@/locales/am/home.json";
 import amNav from "@/locales/am/nav.json";
 import amSubjects from "@/locales/am/subjects.json";
 import amTeacher from "@/locales/am/teacher.json";
+import amTechnician from "@/locales/am/technician.json";
 import enAdmin from "@/locales/en/admin.json";
 import enAuth from "@/locales/en/auth.json";
 import enCommon from "@/locales/en/common.json";
@@ -16,8 +17,9 @@ import enHome from "@/locales/en/home.json";
 import enNav from "@/locales/en/nav.json";
 import enSubjects from "@/locales/en/subjects.json";
 import enTeacher from "@/locales/en/teacher.json";
+import enTechnician from "@/locales/en/technician.json";
 
-export const NAMESPACES = ["common", "auth", "nav", "dashboard", "subjects", "admin", "errors", "home", "teacher"] as const;
+export const NAMESPACES = ["common", "auth", "nav", "dashboard", "subjects", "admin", "errors", "home", "teacher", "technician"] as const;
 
 export const resources = {
   am: {
@@ -30,6 +32,7 @@ export const resources = {
     errors: amErrors,
     home: amHome,
     teacher: amTeacher,
+    technician: amTechnician,
   },
   en: {
     common: enCommon,
@@ -41,6 +44,7 @@ export const resources = {
     errors: enErrors,
     home: enHome,
     teacher: enTeacher,
+    technician: enTechnician,
   },
 } as const;
 
