@@ -21,6 +21,7 @@ import { MENU_ITEMS, type NavItemKey } from "@/navigation/menu";
 import { useDashboard } from "./api/useDashboardStats";
 import { QuickActionCard } from "./components/QuickActionCard";
 import { StatCard } from "./components/StatCard";
+import { TeacherHome } from "./components/TeacherHome";
 import { WelcomeBanner } from "./components/WelcomeBanner";
 
 const QUICK_ACTIONS = [
@@ -65,6 +66,7 @@ export function DashboardPage() {
 
   const data = dashboard.data;
   if (data.kind === "empty") return null;
+  if (data.kind === "academic") return <TeacherHome data={data} />;
 
   if (data.kind === "control") {
     const cards = [

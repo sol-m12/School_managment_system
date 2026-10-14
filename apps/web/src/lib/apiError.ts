@@ -41,7 +41,17 @@ export type ErrorKey =
   | "scheduleSubjectDays"
   | "schedulePacking"
   | "scheduleUnsolved"
-  | "scheduleMove";
+  | "scheduleMove"
+  | "notAssigned"
+  | "gradesLocked"
+  | "gradesNoPlan"
+  | "scoreOver"
+  | "planNotFound"
+  | "attendanceLocked"
+  | "examNotFound"
+  | "examPassword"
+  | "examWeight"
+  | "storeUnavailable";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -82,6 +92,16 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   SCHEDULE_PACKING: "schedulePacking",
   SCHEDULE_UNSOLVED: "scheduleUnsolved",
   SCHEDULE_MOVE: "scheduleMove",
+  NOT_ASSIGNED: "notAssigned",
+  GRADES_LOCKED: "gradesLocked",
+  GRADES_NO_PLAN: "gradesNoPlan",
+  SCORE_OVER: "scoreOver",
+  PLAN_NOT_FOUND: "planNotFound",
+  ATTENDANCE_LOCKED: "attendanceLocked",
+  EXAM_NOT_FOUND: "examNotFound",
+  EXAM_PASSWORD: "examPassword",
+  EXAM_WEIGHT: "examWeight",
+  STORE_UNAVAILABLE: "storeUnavailable",
 };
 
 function readCode(data: unknown): string | null {

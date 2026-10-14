@@ -41,5 +41,15 @@
   "scheduleSubjectDays": "A subject's credit hours cannot fit in 5 days.",
   "schedulePacking": "The subject hours for a class cannot fit the daily limits.",
   "scheduleUnsolved": "No complete timetable was found within the search time.",
-  "scheduleMove": "That move is not allowed."
+  "scheduleMove": "That move is not allowed.",
+  "notAssigned": "This class or subject is not assigned to you.",
+  "gradesLocked": "These marks are approved and cannot be changed.",
+  "gradesNoPlan": "No assessment plan was found. Create a plan first.",
+  "scoreOver": "The mark cannot be higher than its weight.",
+  "planNotFound": "The assessment plan was not found.",
+  "attendanceLocked": "This attendance is approved and cannot be changed.",
+  "examNotFound": "The exam was not found.",
+  "examPassword": "The exam code is not correct.",
+  "examWeight": "The subject total must not pass 100.",
+  "storeUnavailable": "The store records are not in this database."
 }

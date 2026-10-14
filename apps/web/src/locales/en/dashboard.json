@@ -32,5 +32,19 @@
     "binCard": "Item quantity history",
     "accountSettings": "Change your password",
     "profile": "Update your information"
-  }
+  },
+  "academicHello": "Hello, teacher {{name}}!",
+  "academicMeta": "Have a good {{weekday}} | Academic year: {{year}}",
+  "academicStudents": "Students",
+  "academicClasses": "Classes",
+  "academicToday": "Today's periods",
+  "todayProgram": "Today's class program",
+  "period": "Period",
+  "subject": "Subject",
+  "classRoom": "Class",
+  "action": "Action",
+  "noPeriods": "You have no period today.",
+  "academicQuick": "Quick actions",
+  "enterGrades": "Enter marks",
+  "printRoster": "Print roster"
 }

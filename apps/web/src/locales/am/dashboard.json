@@ -32,5 +32,19 @@
     "binCard": "የእቃዎች ብዛት ታሪክ",
     "accountSettings": "የይለፍ ቃል ይቀይሩ",
     "profile": "መረጃዎን ያሻሽሉ"
-  }
+  },
+  "academicHello": "ሰላም፣ መምህር {{name}}!",
+  "academicMeta": "መልካም {{weekday}} ይሁንልዎ | ትምህርት ዘመን፡ {{year}}",
+  "academicStudents": "ተማሪዎች",
+  "academicClasses": "ክፍሎች",
+  "academicToday": "የዛሬ ክፍለ ጊዜ",
+  "todayProgram": "የዛሬ የክፍል ፕሮግራም",
+  "period": "ፔሬድ",
+  "subject": "ትምህርት",
+  "classRoom": "ክፍል",
+  "action": "ተግባር",
+  "noPeriods": "ዛሬ ክፍለ ጊዜ የለዎትም።",
+  "academicQuick": "ፈጣን ተግባራት",
+  "enterGrades": "ውጤት መመዝገብ",
+  "printRoster": "ሮስተር አውጣ"
 }

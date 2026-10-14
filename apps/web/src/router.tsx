@@ -39,6 +39,20 @@ import { MENU_ITEMS, type NavItemKey } from "@/navigation/menu";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
 import { HomePage } from "@/features/home/HomePage";
+import { AssignedWorksPage } from "@/features/teacher/AssignedWorksPage";
+import { AttendanceRegisterPage, TakeAttendancePage } from "@/features/teacher/AttendancePages";
+import { ExamResultsPage } from "@/features/teacher/ExamResultsPage";
+import { GradeEntryPage } from "@/features/teacher/GradeEntryPage";
+import { OnlineExamsPage } from "@/features/teacher/OnlineExamsPage";
+import {
+  BestTeachingPage,
+  ClassRosterPage,
+  ReportCardsPage,
+  SimulationsPage,
+  StoreRequestPage,
+  StudentRegistrationPage,
+  StudentReportsPage,
+} from "@/features/teacher/TeacherTaskPages";
 import { PublicPlaceholderPage } from "@/pages/PublicPlaceholderPage";
 
 /** Menu items with real pages; every other item still shows the placeholder. */
@@ -64,6 +78,19 @@ const BUILT_ITEMS: readonly NavItemKey[] = [
   "profile",
   "payments",
   "incomeExpense",
+  "assignedWorks",
+  "gradeEntry",
+  "takeAttendance",
+  "requestItem",
+  "onlineExams",
+  "examResults",
+  "bestTeaching",
+  "attendanceRegistration",
+  "studentRegistration",
+  "classRoster",
+  "reportCard",
+  "simulations",
+  "studentReports",
 ];
 
 const placeholderRoutes: RouteObject[] = MENU_ITEMS.filter((item) => !BUILT_ITEMS.includes(item.key)).map((item) => ({
@@ -148,6 +175,19 @@ export const router = createBrowserRouter([
       { path: "profile", element: <ProfilePage /> },
       { path: "finance/payments", element: <ProtectedRoute permission="finance.income"><IncomePage /></ProtectedRoute> },
       { path: "finance/income", element: <ProtectedRoute permission="finance.expense"><ExpensePage /></ProtectedRoute> },
+      { path: "teacher/assigned-works", element: <ProtectedRoute permission="assignedWork.read"><AssignedWorksPage /></ProtectedRoute> },
+      { path: "teacher/grades", element: <ProtectedRoute permission="grades.enter"><GradeEntryPage /></ProtectedRoute> },
+      { path: "teacher/take-attendance", element: <ProtectedRoute permission="attendance.take"><TakeAttendancePage /></ProtectedRoute> },
+      { path: "teacher/store-requests", element: <ProtectedRoute permission="storeRequests.create"><StoreRequestPage /></ProtectedRoute> },
+      { path: "teacher/online-exams", element: <ProtectedRoute permission="onlineExams.manage"><OnlineExamsPage /></ProtectedRoute> },
+      { path: "teacher/exam-results", element: <ProtectedRoute permission="examResults.manage"><ExamResultsPage /></ProtectedRoute> },
+      { path: "teacher/best-teaching", element: <ProtectedRoute permission="bestTeaching.manage"><BestTeachingPage /></ProtectedRoute> },
+      { path: "teacher/attendance", element: <ProtectedRoute permission="attendance.register"><AttendanceRegisterPage /></ProtectedRoute> },
+      { path: "teacher/student-registration", element: <ProtectedRoute permission="studentRegistration.manage"><StudentRegistrationPage /></ProtectedRoute> },
+      { path: "teacher/class-roster", element: <ProtectedRoute permission="classRoster.read"><ClassRosterPage /></ProtectedRoute> },
+      { path: "teacher/report-cards", element: <ProtectedRoute permission="reportCards.generate"><ReportCardsPage /></ProtectedRoute> },
+      { path: "teacher/simulations", element: <ProtectedRoute permission="simulations.create"><SimulationsPage /></ProtectedRoute> },
+      { path: "teacher/student-reports", element: <ProtectedRoute permission="studentReports.read"><StudentReportsPage /></ProtectedRoute> },
       ...placeholderRoutes,
       { path: "*", element: <NotFoundPage /> },
     ],

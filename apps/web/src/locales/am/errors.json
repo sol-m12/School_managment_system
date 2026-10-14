@@ -41,5 +41,15 @@
   "scheduleSubjectDays": "የCredit Hour መጠን በ5 days ውስጥ ሊደረግ አይችልም።",
   "schedulePacking": "Subject/Credit-hour ውቅር አዋጭ አይደለም።",
   "scheduleUnsolved": "Backtracking Solver ለተሰጠው ጊዜ 0-pending timetable አላገኘም።",
-  "scheduleMove": "ይህ ለውጥ አይፈቀድም።"
+  "scheduleMove": "ይህ ለውጥ አይፈቀድም።",
+  "notAssigned": "ይህ ክፍል ወይም ትምህርት ለእርስዎ አልተመደበም።",
+  "gradesLocked": "ውጤቱ ጸድቋል። መቀየር አይቻልም።",
+  "gradesNoPlan": "ምንም አይነት የአሰስመንት እቅድ አልተገኘም! እባክዎ መጀመሪያ እቅድ ያውጡ።",
+  "scoreOver": "ስህተት፡ ውጤቱ ከክብደቱ መብለጥ አይችልም!",
+  "planNotFound": "የአሰስመንት እቅዱ አልተገኘም።",
+  "attendanceLocked": "ይህ አቴንዳንስ ጸድቋል። መቀየር አይቻልም።",
+  "examNotFound": "ፈተናው አልተገኘም።",
+  "examPassword": "የሚስጥር ቁጥሩ ትክክል አይደለም።",
+  "examWeight": "ጠቅላላ የትምህርቱ ድምር ከ100 መብለጥ የለበትም።",
+  "storeUnavailable": "የዕቃ መዝገቡ በዚህ ዳታቤዝ ውስጥ አልተገኘም።"
 }

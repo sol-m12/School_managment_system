@@ -22,6 +22,21 @@ export type DashboardView =
       lowStock: number;
       todayTransactions: number;
     }
+  | {
+      kind: "academic";
+      firstName: string;
+      academicYear: string;
+      weekday: string;
+      students: number;
+      classes: number;
+      todayPeriods: {
+        periodNumber: number;
+        subjectName: string;
+        gradeLevel: number;
+        section: string;
+        classId: number;
+      }[];
+    }
   | { kind: "empty" };
 
 export const dashboardKeys = {

@@ -5,6 +5,7 @@ import { dashboardRouter } from "../modules/dashboard/dashboard.routes.js";
 import { adminRouter } from "../modules/admin/admin.routes.js";
 import { publicRouter } from "../modules/public/public.routes.js";
 import { subjectsRouter } from "../modules/subjects/subjects.routes.js";
+import { teacherRouter } from "../modules/teacher/teacher.routes.js";
 
 /** Minimal Express app for integration tests (no listen). */
 export function createTestApp(): Express {
@@ -16,5 +17,6 @@ export function createTestApp(): Express {
   app.use("/dashboard", dashboardRouter);
   app.use("/subjects", subjectsRouter);
   app.use("/admin", adminRouter);
+  app.use("/teacher", teacherRouter);
   return app;
 }
