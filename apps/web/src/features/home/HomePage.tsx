@@ -266,7 +266,7 @@ export function HomePage() {
               {t("home:aboutTitle")}
             </h2>
             <div className="rounded-r-[25px] border-l-[10px] border-[#ffcc00] bg-white p-8 shadow-[0_10px_30px_rgb(0_0_0/0.05)]">
-              <p className="text-lg leading-loose whitespace-pre-line text-ink-muted">
+              <p className="text-justify text-lg leading-loose whitespace-pre-line text-ink-muted">
                 <Quote aria-hidden="true" className="me-2 inline size-5 text-[#ffcc00]" />
                 {about}
               </p>
@@ -393,12 +393,11 @@ export function HomePage() {
           <img src={`/portal/${data.logoFile}`} alt="" className="mx-auto mb-4 size-20 rounded-md bg-white p-2" />
         ) : null}
         <h2 className="mb-6 text-2xl font-bold text-[#ffcc00]">{schoolName}</h2>
-        <div className="mb-8 flex justify-center gap-8 text-lg text-white/70">
-          {(["facebook", "telegram", "youtube", "x"] as const).map((network) => (
-            <a key={network} href="#" className="hover:text-[#ffcc00]">
-              {t(`home:social.${network}`)}
-            </a>
-          ))}
+        <div className="mb-8 flex justify-center gap-8 text-2xl text-white/70">
+          <SocialLink label={t("home:social.facebook")} path="M14 8h2V5h-2c-2.8 0-5 2.2-5 5v2H7v3h2v7h3v-7h2.2l.8-3H12v-2c0-.6.4-1 1-1z" />
+          <SocialLink label={t("home:social.telegram")} path="M21 4 3 11.2l5.2 1.7L18.2 7.2 10.4 14l-.2 4.2 2.6-2.4 4.4 3.2L21 4z" />
+          <SocialLink label={t("home:social.youtube")} path="M23 12.2s0-3.2-.4-4.6c-.2-.9-.9-1.6-1.8-1.8C19.2 5.4 12 5.4 12 5.4s-7.2 0-8.8.4c-.9.2-1.6.9-1.8 1.8C1 9 1 12.2 1 12.2s0 3.2.4 4.6c.2.9.9 1.6 1.8 1.8 1.6.4 8.8.4 8.8.4s7.2 0 8.8-.4c.9-.2 1.6-.9 1.8-1.8.4-1.4.4-4.6.4-4.6zM9.8 15.5v-6.6l6.2 3.3-6.2 3.3z" />
+          <SocialLink label={t("home:social.x")} path="M17.5 3h3.1l-6.8 7.8L22 21h-6.2l-4.8-6.3L5.7 21H2.6l7.3-8.4L2 3h6.3l4.4 5.8L17.5 3zm-1.1 16.2h1.7L7.7 4.7H5.9l10.5 14.5z" />
         </div>
         <p className="border-t border-white/25 pt-6 opacity-50">{t("home:rights", { year: new Date().getFullYear() })}</p>
       </footer>
@@ -413,8 +412,8 @@ export function HomePage() {
 function PortalCard({ icon, title, body, action, href }: { icon: ReactNode; title: string; body: string; action: string; href: string }) {
   const className = "mt-4 inline-block rounded-full border border-[#003366] px-8 py-2 font-semibold text-[#003366]";
   return (
-    <article className="rounded-[25px] border border-[#f0f0f0] bg-white px-6 py-10 text-center">
-      <div className="mx-auto mb-6 flex size-[90px] items-center justify-center rounded-full bg-[#f0f4f8] text-[#003366]">{icon}</div>
+    <article className="group rounded-[25px] border border-[#f0f0f0] bg-white px-6 py-10 text-center transition duration-300 hover:-translate-y-2.5 hover:border-[#ffcc00] hover:shadow-[0_25px_50px_rgb(0_0_0/0.1)]">
+      <div className="mx-auto mb-6 flex size-[90px] items-center justify-center rounded-full bg-[#f0f4f8] text-[#003366] transition group-hover:bg-[#003366] group-hover:text-white">{icon}</div>
       <h3 className="text-xl font-bold">{title}</h3>
       <p className="mt-3 text-ink-muted">{body}</p>
       {href.startsWith("/") ? (
@@ -426,15 +425,36 @@ function PortalCard({ icon, title, body, action, href }: { icon: ReactNode; titl
   );
 }
 
-function Leader({ name, badge }: { name: string; badge: string }) {
+function Leader({ name, badge, photoFile }: { name: string; badge: string; photoFile: string | null }) {
+  const [photoFailed, setPhotoFailed] = useState(false);
+  const showPhoto = Boolean(photoFile) && !photoFailed;
   return (
     <div className="text-center">
-      <div className="mx-auto mb-4 flex size-[200px] items-center justify-center rounded-full border-[6px] border-[#ffcc00] bg-[#f0f4f8] text-[#003366] shadow-[0_10px_25px_rgb(0_0_0/0.2)]">
-        <User aria-hidden="true" className="size-20" />
-      </div>
+      {showPhoto ? (
+        <img
+          src={`/portal/${photoFile}`}
+          alt=""
+          className="mx-auto mb-4 size-[200px] rounded-full border-[6px] border-[#ffcc00] object-cover shadow-[0_10px_25px_rgb(0_0_0/0.2)] transition duration-300 hover:scale-105 hover:rotate-3"
+          onError={() => setPhotoFailed(true)}
+        />
+      ) : (
+        <div className="mx-auto mb-4 flex size-[200px] items-center justify-center rounded-full border-[6px] border-[#ffcc00] bg-[#f0f4f8] text-[#003366] shadow-[0_10px_25px_rgb(0_0_0/0.2)]">
+          <User aria-hidden="true" className="size-20" />
+        </div>
+      )}
       <h3 className="text-xl font-bold">{name}</h3>
       <span className="mt-2 inline-block rounded-full bg-[#003366] px-3 py-1 text-sm text-white">{badge}</span>
     </div>
+  );
+}
+
+function SocialLink({ label, path }: { label: string; path: string }) {
+  return (
+    <a href="#" aria-label={label} className="opacity-70 transition hover:text-[#ffcc00] hover:opacity-100">
+      <svg viewBox="0 0 24 24" className="size-6 fill-current" aria-hidden="true">
+        <path d={path} />
+      </svg>
+    </a>
   );
 }
 

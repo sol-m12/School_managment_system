@@ -107,13 +107,13 @@ export function DashboardPage() {
     ] as const;
 
     return (
-      <>
-        <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div className="-m-3 min-h-full bg-[linear-gradient(135deg,#f8fafc_0%,#e2e8f0_100%)] p-5 sm:-m-4 sm:p-8 md:-m-6 md:p-10">
+        <div className="mb-8 flex flex-col gap-4 md:mb-12 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-2xl font-extrabold tracking-tight text-[#1e293b]">{t("dashboard:controlTitle")}</h1>
             <p className="mt-1 font-medium text-ink-muted">{t("dashboard:controlSubtitle")}</p>
           </div>
-          <div className="inline-flex items-center self-start rounded-card bg-surface p-3 text-sm font-bold text-brand-700 shadow-soft">
+          <div className="inline-flex items-center self-start rounded-[1rem] bg-white p-3 text-sm font-bold text-brand-700 shadow-soft">
             <CalendarCheck aria-hidden="true" className="mr-2 size-4" />
             {t("dashboard:academicYear", { year: data.academicYear })}
           </div>
@@ -124,13 +124,18 @@ export function DashboardPage() {
             const Icon = card.icon;
             const HintIcon = card.hintIcon;
             return (
-              <article key={card.label} className="relative overflow-hidden rounded-card bg-surface p-6 shadow-soft">
+              <article
+                key={card.label}
+                className="relative flex h-full flex-col justify-between overflow-hidden rounded-[24px] bg-white/85 p-5 shadow-[0_10px_30px_rgb(0_0_0/0.04)] backdrop-blur-md transition duration-300 hover:-translate-y-2.5 hover:shadow-[0_20px_40px_rgb(0_0_0/0.08)] sm:p-[30px]"
+              >
                 <span aria-hidden="true" className={`absolute inset-x-0 top-0 h-1.5 ${card.bar}`} />
-                <div className={`mb-4 flex size-14 items-center justify-center rounded-card ${card.iconWrap}`}>
-                  <Icon aria-hidden="true" className="size-7" />
+                <div>
+                  <div className={`mb-5 flex size-[60px] items-center justify-center rounded-[18px] ${card.iconWrap}`}>
+                    <Icon aria-hidden="true" className="size-7" />
+                  </div>
+                  <p className="text-sm font-bold tracking-wide text-ink-muted uppercase">{card.label}</p>
+                  <p className="text-[2.4rem] leading-none font-black text-[#0f172a]">{numberFormat.format(card.value)}</p>
                 </div>
-                <p className="text-sm font-bold tracking-wide text-ink-muted uppercase">{card.label}</p>
-                <p className="text-4xl font-black text-ink-strong">{numberFormat.format(card.value)}</p>
                 <p className="mt-3 flex items-center gap-1 text-xs text-ink-muted">
                   {HintIcon ? <HintIcon aria-hidden="true" className="size-3.5 text-brand-700" /> : null}
                   {card.hint}
@@ -140,7 +145,7 @@ export function DashboardPage() {
           })}
         </div>
 
-        <section className="mt-8 rounded-card bg-surface p-4 shadow-soft sm:p-5">
+        <section className="mt-8 rounded-[1rem] bg-white p-4 shadow-soft sm:mt-12 sm:p-5">
           <h2 className="mb-3 flex items-center gap-2 font-bold text-ink-strong">
             <ChartPie aria-hidden="true" className="size-4 text-brand-700" />
             {t("dashboard:rolesTitle")}
@@ -160,7 +165,7 @@ export function DashboardPage() {
             </div>
           )}
         </section>
-      </>
+      </div>
     );
   }
 

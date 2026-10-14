@@ -1,8 +1,8 @@
 /**
  * Sidebar transcribed from docs/legacy-menu.
  * Teacher and Technician screenshots are complete.
- * TEMPORARY: the Admin and V_Principal screenshots are cut off below the last
- * item listed here. Do not add items for that missing part.
+ * V_Principal lower group is the live menu (2026-10-13): dashboard, file management, profile.
+ * TEMPORARY: the Admin screenshot is still cut off below the last item listed here.
  * Student and Store_Keeper items are TEMPORARY: those screenshots were not taken.
  *
  * TODO: replace with GET /menu once modules and role_modules exist.
@@ -100,7 +100,7 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "subjects", path: "/academics/subjects", icon: BookOpen, group: "administration", permission: "subjects.read" },
   { key: "teachingLoad", path: "/academics/teaching-load", icon: UsersRound, group: "administration", permission: "teachingLoad.manage" },
 
-  // V_Principal — አካዳሚክ (ADMIN). Lower part of the screenshot is missing.
+  // V_Principal — አካዳሚክ (Admin)
   { key: "selectedRoster", path: "/academics/selected-roster", icon: ListChecks, group: "academicAdmin", permission: "selectedRoster.read" },
   { key: "gradeCorrection", path: "/academics/grade-correction", icon: Landmark, group: "academicAdmin", permission: "gradeCorrection.approve" },
   { key: "academicApprovals", path: "/academics/approvals", icon: CheckCheck, group: "academicAdmin", permission: "academicApprovals.manage" },
@@ -142,11 +142,16 @@ export const MENU_ITEMS: readonly MenuItem[] = [
     path: "/dashboard",
     icon: Gauge,
     group: "main",
-    roles: ["Admin", "Teacher", "Technician"],
-    labelByRole: { Admin: "dashboardAdmin", Teacher: "dashboardAcademic", Technician: "dashboardStaff" },
+    roles: ["Admin", "Teacher", "Technician", "V_Principal"],
+    labelByRole: {
+      Admin: "dashboardAdmin",
+      Teacher: "dashboardAcademic",
+      Technician: "dashboardStaff",
+      V_Principal: "dashboardAdmin",
+    },
   },
   { key: "fileManagement", path: "/files", icon: FolderOpen, group: "main", permission: "files.manage" },
-  { key: "profile", path: "/profile", icon: UserCog, group: "main", roles: ["Admin", "Teacher", "Technician"] },
+  { key: "profile", path: "/profile", icon: UserCog, group: "main", roles: ["Admin", "Teacher", "Technician", "V_Principal"] },
   { key: "payments", path: "/finance/payments", icon: Landmark, group: "finance", permission: "finance.income" },
   { key: "incomeExpense", path: "/finance/income", icon: Landmark, group: "finance", permission: "finance.expense" },
 ];

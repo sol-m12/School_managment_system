@@ -28,6 +28,7 @@ const TABLES_TO_EMPTY = [
   "subjects",
   "students",
   "classes",
+  "staff",
   "users",
   "tenants",
 ] as const;

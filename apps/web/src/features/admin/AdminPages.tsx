@@ -1,8 +1,9 @@
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import type { UseQueryResult } from "@tanstack/react-query";
 import type { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
 import { Alert, Button, Card, CardBody, CardHeader, Input, PageHeader, Select, Spinner, Table, type TableColumn } from "@/components/ui";
+import { api } from "@/lib/api";
 import { toErrorKey } from "@/lib/apiError";
 import {
   useAcademicYear,
@@ -25,7 +26,6 @@ import {
   useSchedule,
   useSchoolInfo,
   useStudents,
-  useTeachers,
   useUnlockGrades,
   useUsers,
   type StudentRow,
@@ -111,24 +111,6 @@ export function StudentStatusPage() {
   );
 }
 
-export function StudentsPage() {
-  const { t } = useTranslation("admin");
-  const query = useStudents({});
-  return (
-    <>
-      <PageHeader title={t("studentsTitle")} />
-      <Panel query={query}>
-        {(data) => (
-          <Card>
-            <CardHeader title={`${t("total")}: ${data.total}`} />
-            <Table columns={studentColumns(t)} rows={data.rows} rowKey={(row) => row.id} />
-          </Card>
-        )}
-      </Panel>
-    </>
-  );
-}
-
 export function RosterPage() {
   const { t } = useTranslation("admin");
   const [gradeLevel, setGradeLevel] = useState("");
@@ -157,32 +139,6 @@ export function RosterPage() {
         {(data) => (
           <Card>
             <Table columns={studentColumns(t)} rows={data.rows} rowKey={(row) => row.id} />
-          </Card>
-        )}
-      </Panel>
-    </>
-  );
-}
-
-export function TeachersPage() {
-  const { t } = useTranslation("admin");
-  const query = useTeachers();
-  return (
-    <>
-      <PageHeader title={t("teachersTitle")} />
-      <Panel query={query}>
-        {(data) => (
-          <Card>
-            <Table
-              columns={[
-                { key: "name", header: t("name"), render: (row) => `${row.firstName} ${row.lastName}` },
-                { key: "job", header: t("jobTitle"), render: (row) => row.jobTitle },
-                { key: "phone", header: t("phoneNumber"), render: (row) => row.phoneNumber ?? "" },
-                { key: "home", header: t("homeroom"), render: (row) => (row.isHomeroomAssigned ? t("yes") : t("no")) },
-              ]}
-              rows={data.rows}
-              rowKey={(row) => row.id}
-            />
           </Card>
         )}
       </Panel>
@@ -609,6 +565,28 @@ export function ProfilePage() {
   const query = useProfile();
   const save = useSaveProfile();
   const [notice, setNotice] = useState<{ tone: "success" | "danger"; text: string } | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const photoName = query.data?.profile.photo;
+  useEffect(() => {
+    if (!photoName || photoName === "default_profile.png") {
+      setPhotoUrl(null);
+      return;
+    }
+    let url = "";
+    let cancel = false;
+    void api
+      .get("/admin/profile/photo", { responseType: "blob" })
+      .then((response) => {
+        if (cancel) return;
+        url = URL.createObjectURL(response.data);
+        setPhotoUrl(url);
+      })
+      .catch(() => setPhotoUrl(null));
+    return () => {
+      cancel = true;
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [photoName]);
   return (
     <>
       <PageHeader title={t("profileTitle")} />
@@ -617,7 +595,37 @@ export function ProfilePage() {
         {(data) => (
           <Card>
             <CardBody>
-              <p className="mb-4 font-semibold">{data.profile.name}</p>
+              <div className="mb-4 flex items-center gap-4">
+                {photoUrl ? (
+                  <img src={photoUrl} alt="" className="size-20 rounded-full object-cover" />
+                ) : (
+                  <div className="flex size-20 items-center justify-center rounded-full bg-brand-700 font-bold text-white">{data.profile.name.slice(0, 1)}</div>
+                )}
+                <div>
+                  <p className="font-semibold">{data.profile.name}</p>
+                  <label className="mt-2 block text-sm font-bold">
+                    {t("profilePhoto")}
+                    <input
+                      className="mt-1 block text-sm"
+                      type="file"
+                      accept="image/*"
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        if (!file) return;
+                        const body = new FormData();
+                        body.append("photo", file);
+                        void api
+                          .post("/admin/profile/photo", body)
+                          .then(() => {
+                            setNotice({ tone: "success", text: t("profilePhotoSaved") });
+                            void query.refetch();
+                          })
+                          .catch((error: unknown) => setNotice({ tone: "danger", text: t(`errors:${toErrorKey(error)}`) }));
+                      }}
+                    />
+                  </label>
+                </div>
+              </div>
               <form
                 className="grid max-w-lg gap-4"
                 onSubmit={(event: FormEvent<HTMLFormElement>) => {

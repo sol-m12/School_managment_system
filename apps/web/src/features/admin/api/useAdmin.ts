@@ -6,11 +6,14 @@ export type StudentRow = {
   id: number;
   fullName: string;
   gender: "M" | "F";
+  age: number;
   gradeLevel: number;
+  stream: string | null;
   section: string | null;
   academicYear: string;
   registrationType: string | null;
   submissionStatus: string | null;
+  isActive?: number | null;
   kebele: string | null;
   gote: string | null;
 };
@@ -40,28 +43,8 @@ export function useStudents(filters: Record<string, string>) {
   const { tenantId } = useSessionUser();
   return useQuery({
     queryKey: [...key(tenantId, "students"), filters],
-    queryFn: async () => (await api.get<{ rows: StudentRow[]; total: number }>("/admin/students", { params: filters })).data,
-  });
-}
-
-export function useTeachers() {
-  const { tenantId } = useSessionUser();
-  return useQuery({
-    queryKey: key(tenantId, "teachers"),
     queryFn: async () =>
-      (
-        await api.get<{
-          rows: {
-            id: number;
-            firstName: string;
-            lastName: string;
-            jobTitle: string;
-            phoneNumber: string | null;
-            isHomeroomAssigned: boolean;
-            isApproved: boolean;
-          }[];
-        }>("/admin/teachers")
-      ).data,
+      (await api.get<{ rows: StudentRow[]; total: number; academicYear: string }>("/admin/students", { params: filters })).data,
   });
 }
 

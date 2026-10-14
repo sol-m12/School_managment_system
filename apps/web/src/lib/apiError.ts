@@ -17,7 +17,31 @@ export type ErrorKey =
   | "notFound"
   | "usernameTaken"
   | "gradeNotFound"
-  | "backupBlocked";
+  | "backupBlocked"
+  | "classExists"
+  | "gradeSectionExists"
+  | "teacherAssigned"
+  | "teacherInUse"
+  | "classInUse"
+  | "studentInUse"
+  | "photoType"
+  | "photoSize"
+  | "placementGrade"
+  | "placementNoSection"
+  | "placementFull"
+  | "placementNone"
+  | "placementConflict"
+  | "placementScope"
+  | "teacherLimit"
+  | "assignmentExists"
+  | "scheduleNoClass"
+  | "scheduleOverCapacity"
+  | "scheduleTeacherWeek"
+  | "scheduleTeacherDaily"
+  | "scheduleSubjectDays"
+  | "schedulePacking"
+  | "scheduleUnsolved"
+  | "scheduleMove";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -34,6 +58,30 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   USERNAME_TAKEN: "usernameTaken",
   GRADE_NOT_FOUND: "gradeNotFound",
   BACKUP_BLOCKED: "backupBlocked",
+  CLASS_EXISTS: "classExists",
+  GRADE_SECTION_EXISTS: "gradeSectionExists",
+  TEACHER_ASSIGNED: "teacherAssigned",
+  TEACHER_IN_USE: "teacherInUse",
+  CLASS_IN_USE: "classInUse",
+  STUDENT_IN_USE: "studentInUse",
+  PHOTO_TYPE: "photoType",
+  PHOTO_SIZE: "photoSize",
+  PLACEMENT_GRADE: "placementGrade",
+  PLACEMENT_NO_SECTION: "placementNoSection",
+  PLACEMENT_FULL: "placementFull",
+  PLACEMENT_NONE: "placementNone",
+  PLACEMENT_CONFLICT: "placementConflict",
+  PLACEMENT_SCOPE: "placementScope",
+  TEACHER_LIMIT: "teacherLimit",
+  ASSIGNMENT_EXISTS: "assignmentExists",
+  SCHEDULE_NO_CLASS: "scheduleNoClass",
+  SCHEDULE_OVER_CAPACITY: "scheduleOverCapacity",
+  SCHEDULE_TEACHER_WEEK: "scheduleTeacherWeek",
+  SCHEDULE_TEACHER_DAILY: "scheduleTeacherDaily",
+  SCHEDULE_SUBJECT_DAYS: "scheduleSubjectDays",
+  SCHEDULE_PACKING: "schedulePacking",
+  SCHEDULE_UNSOLVED: "scheduleUnsolved",
+  SCHEDULE_MOVE: "scheduleMove",
 };
 
 function readCode(data: unknown): string | null {

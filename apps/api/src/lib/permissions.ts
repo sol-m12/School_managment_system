@@ -101,7 +101,7 @@ const GRANTS: Record<Permission, readonly Role[]> = {
   "simulations.create": ["Teacher"],
   "studentReports.read": ["Teacher"],
 
-  "files.manage": ["Admin", "Teacher", "Technician"],
+  "files.manage": ["Admin", "Teacher", "Technician", "V_Principal"],
 
   // No screenshot yet. Placeholder menu only.
   "results.readOwn": ["Student"],

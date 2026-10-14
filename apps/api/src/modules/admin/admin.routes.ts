@@ -4,9 +4,12 @@ import { authenticate } from "../../middleware/authenticate.js";
 import { requirePermission } from "../../middleware/requirePermission.js";
 import {
   academicYearBodySchema,
+  baseClassBodySchema,
+  classBodySchema,
   approveAttendanceBodySchema,
   approveGradeBodySchema,
   expenseBodySchema,
+  homeroomBodySchema,
   gradeUnlockBodySchema,
   idParamSchema,
   incomeBodySchema,
@@ -14,8 +17,11 @@ import {
   profileBodySchema,
   schoolInfoBodySchema,
   studentQuerySchema,
+  teacherToggleBodySchema,
+  teacherUpdateBodySchema,
   userQuerySchema,
 } from "./admin.schema.js";
+import { academicsRouter } from "../academics/academics.routes.js";
 import { AdminError, type AdminErrorCode } from "./admin.service.js";
 import * as admin from "./admin.service.js";
 
@@ -26,6 +32,11 @@ const STATUS: Record<AdminErrorCode, number> = {
   USERNAME_TAKEN: 409,
   GRADE_NOT_FOUND: 404,
   BACKUP_BLOCKED: 403,
+  CLASS_EXISTS: 409,
+  GRADE_SECTION_EXISTS: 409,
+  TEACHER_ASSIGNED: 409,
+  TEACHER_IN_USE: 409,
+  CLASS_IN_USE: 409,
 };
 
 function sendError(res: Response, error: unknown): void {
@@ -162,6 +173,124 @@ adminRouter.get("/repeaters", ...requirePermission("studentStatusReport.read"), 
 adminRouter.get("/teachers", ...requirePermission("teachingLoad.manage"), async (req, res) => {
   try {
     res.json(await admin.listTeachers(tenantOf(req)));
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+adminRouter.put("/teachers/:id", ...requirePermission("teachingLoad.manage"), async (req, res) => {
+  const params = idParamSchema.safeParse(req.params);
+  if (!params.success) {
+    res.status(404).json({ code: "NOT_FOUND" });
+    return;
+  }
+  const input = parseBody(teacherUpdateBodySchema, req, res);
+  if (!input) return;
+  try {
+    await admin.updateTeacher(tenantOf(req), params.data.id, input);
+    res.json({ firstName: input.firstName });
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+adminRouter.post("/teachers/:id/toggle-status", ...requirePermission("teachingLoad.manage"), async (req, res) => {
+  const params = idParamSchema.safeParse(req.params);
+  if (!params.success) {
+    res.status(404).json({ code: "NOT_FOUND" });
+    return;
+  }
+  const input = parseBody(teacherToggleBodySchema, req, res);
+  if (!input) return;
+  try {
+    res.json(await admin.toggleTeacherStatus(tenantOf(req), params.data.id, input.currentStatus));
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+adminRouter.delete("/teachers/:id", ...requirePermission("teachingLoad.manage"), async (req, res) => {
+  const params = idParamSchema.safeParse(req.params);
+  if (!params.success) {
+    res.status(404).json({ code: "NOT_FOUND" });
+    return;
+  }
+  try {
+    res.json(await admin.deleteTeacher(tenantOf(req), params.data.id));
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+adminRouter.get("/classes", ...requirePermission("teachingLoad.manage"), async (req, res) => {
+  try {
+    res.json(await admin.listClasses(tenantOf(req)));
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+adminRouter.post("/classes/base", ...requirePermission("teachingLoad.manage"), async (req, res) => {
+  const input = parseBody(baseClassBodySchema, req, res);
+  if (!input) return;
+  try {
+    res.status(201).json(await admin.createBaseClass(tenantOf(req), input));
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+adminRouter.post("/classes", ...requirePermission("teachingLoad.manage"), async (req, res) => {
+  const input = parseBody(classBodySchema, req, res);
+  if (!input) return;
+  try {
+    res.status(201).json(await admin.createClass(tenantOf(req), input));
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+adminRouter.put("/classes/:id", ...requirePermission("teachingLoad.manage"), async (req, res) => {
+  const params = idParamSchema.safeParse(req.params);
+  if (!params.success) {
+    res.status(404).json({ code: "NOT_FOUND" });
+    return;
+  }
+  const input = parseBody(classBodySchema, req, res);
+  if (!input) return;
+  try {
+    await admin.updateClass(tenantOf(req), params.data.id, input);
+    res.json({ ok: true });
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+adminRouter.delete("/classes/:id", ...requirePermission("teachingLoad.manage"), async (req, res) => {
+  const params = idParamSchema.safeParse(req.params);
+  if (!params.success) {
+    res.status(404).json({ code: "NOT_FOUND" });
+    return;
+  }
+  try {
+    await admin.deleteClass(tenantOf(req), params.data.id);
+    res.json({ ok: true });
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+adminRouter.post("/classes/:id/homeroom", ...requirePermission("teachingLoad.manage"), async (req, res) => {
+  const params = idParamSchema.safeParse(req.params);
+  if (!params.success) {
+    res.status(404).json({ code: "NOT_FOUND" });
+    return;
+  }
+  const input = parseBody(homeroomBodySchema, req, res);
+  if (!input) return;
+  try {
+    await admin.assignHomeroom(tenantOf(req), params.data.id, input);
+    res.json({ ok: true });
   } catch (error) {
     sendError(res, error);
   }
@@ -312,6 +441,8 @@ adminRouter.post("/backup", ...requirePermission("backup.create"), (_req, res) =
     sendError(res, error);
   }
 });
+
+adminRouter.use(academicsRouter);
 
 adminRouter.post("/restore", ...requirePermission("backup.restore"), (_req, res) => {
   try {

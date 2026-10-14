@@ -14,28 +14,38 @@ import {
   students,
   subjects,
   systemSettings,
+  teacherAssignments,
   users,
 } from "../../db/schema/index.js";
-import { ER_DUP_ENTRY, mysqlErrno } from "../../lib/mysqlError.js";
+import { ER_DUP_ENTRY, ER_ROW_IS_REFERENCED, mysqlErrno } from "../../lib/mysqlError.js";
 import { hashPassword } from "../../lib/password.js";
 import { PERMISSIONS, permissionsForRole } from "../../lib/permissions.js";
 import { ROLES } from "../../lib/roles.js";
 import { scoped, withTenant } from "../../lib/tenant.js";
 import type {
   AcademicYearInput,
+  BaseClassInput,
+  ClassInput,
   ExpenseInput,
   GradeUnlockInput,
+  HomeroomInput,
   IncomeInput,
   ProfileInput,
   SchoolInfoInput,
   StudentQuery,
+  TeacherUpdateInput,
 } from "./admin.schema.js";
 
 export type AdminErrorCode =
   | "NOT_FOUND"
   | "USERNAME_TAKEN"
   | "GRADE_NOT_FOUND"
-  | "BACKUP_BLOCKED";
+  | "BACKUP_BLOCKED"
+  | "CLASS_EXISTS"
+  | "GRADE_SECTION_EXISTS"
+  | "TEACHER_ASSIGNED"
+  | "TEACHER_IN_USE"
+  | "CLASS_IN_USE";
 
 export class AdminError extends Error {
   constructor(readonly code: AdminErrorCode) {
@@ -208,7 +218,9 @@ const studentColumns = {
   id: students.studentId,
   fullName: students.fullName,
   gender: students.gender,
+  age: students.age,
   gradeLevel: students.gradeLevel,
+  stream: students.stream,
   section: students.section,
   academicYear: students.academicYear,
   registrationType: students.registrationType,
@@ -218,12 +230,16 @@ const studentColumns = {
 };
 
 export async function listStudents(tenantId: number, query: StudentQuery) {
-  const rows = await db
-    .select(studentColumns)
-    .from(students)
-    .where(scoped(students, tenantId, studentFilters(query)))
-    .orderBy(asc(students.gradeLevel), asc(students.section), asc(students.fullName));
-  return { rows, total: rows.length };
+  const [rows, academicYear] = await Promise.all([
+    db
+      .select({ ...studentColumns, isActive: users.isActive })
+      .from(students)
+      .leftJoin(users, and(eq(users.userId, students.userId), eq(users.tenantId, tenantId)))
+      .where(scoped(students, tenantId, studentFilters(query)))
+      .orderBy(asc(students.gradeLevel), asc(students.section), asc(students.fullName)),
+    settingValue(tenantId, YEAR_KEY),
+  ]);
+  return { rows, total: rows.length, academicYear: academicYear ?? "" };
 }
 
 export async function listRepeaters(tenantId: number, query: StudentQuery) {
@@ -265,28 +281,146 @@ export async function listRepeaters(tenantId: number, query: StudentQuery) {
 }
 
 export async function listTeachers(tenantId: number) {
+  const academicYear = (await settingValue(tenantId, YEAR_KEY)) ?? "";
   const rows = await db
     .select({
       id: staff.staffId,
       firstName: staff.firstName,
       lastName: staff.lastName,
+      gender: staff.gender,
       jobTitle: staff.jobTitle,
       phoneNumber: staff.phoneNumber,
+      salary: staff.salary,
+      experienceYears: staff.experienceYears,
       isHomeroomAssigned: staff.isHomeroomAssigned,
       isApproved: staff.isApproved,
+      isActive: users.isActive,
     })
     .from(staff)
     .innerJoin(users, and(eq(users.userId, staff.userId), eq(users.tenantId, tenantId)))
-    .where(scoped(staff, tenantId, eq(users.role, "Teacher")))
+    // Legacy filter: role Teacher OR job title contains "Teacher".
+    .where(scoped(staff, tenantId, or(eq(users.role, "Teacher"), like(staff.jobTitle, "%Teacher%"))))
     .orderBy(asc(staff.firstName), asc(staff.lastName));
+
+  const yearFilter = academicYear ? eq(teacherAssignments.academicYear, academicYear) : undefined;
+  const assignments = await db
+    .select({
+      staffId: teacherAssignments.staffId,
+      subjectName: subjects.subjectName,
+      creditHours: subjects.creditHours,
+    })
+    .from(teacherAssignments)
+    .innerJoin(subjects, and(eq(subjects.subjectId, teacherAssignments.subjectId), eq(subjects.tenantId, tenantId)))
+    .where(scoped(teacherAssignments, tenantId, yearFilter));
+
+  const homes = await db
+    .select({
+      classTeacherId: classes.classTeacherId,
+      gradeLevel: classes.gradeLevel,
+      section: classes.section,
+    })
+    .from(classes)
+    .where(scoped(classes, tenantId));
+
+  const loadByStaff = new Map<number, { subjects: Set<string>; hours: number }>();
+  for (const row of assignments) {
+    const entry = loadByStaff.get(row.staffId) ?? { subjects: new Set<string>(), hours: 0 };
+    if (row.subjectName) entry.subjects.add(row.subjectName);
+    entry.hours += row.creditHours;
+    loadByStaff.set(row.staffId, entry);
+  }
+  const homeroomByStaff = new Map<number, string>();
+  for (const row of homes) {
+    if (row.classTeacherId != null && !homeroomByStaff.has(row.classTeacherId)) {
+      homeroomByStaff.set(row.classTeacherId, `Grade ${row.gradeLevel} ${row.section}`);
+    }
+  }
+
   return {
-    rows: rows.map((row) => ({
-      ...row,
-      isHomeroomAssigned: row.isHomeroomAssigned === 1,
-      isApproved: row.isApproved === 1,
-    })),
+    academicYear,
     total: rows.length,
+    rows: rows.map((row) => {
+      const load = loadByStaff.get(row.id);
+      return {
+        id: row.id,
+        firstName: row.firstName,
+        lastName: row.lastName,
+        gender: row.gender,
+        jobTitle: row.jobTitle,
+        phoneNumber: row.phoneNumber,
+        salary: Number(row.salary ?? 0),
+        experienceYears: Number(row.experienceYears ?? 0),
+        subjects: load ? [...load.subjects].join(", ") : "",
+        loadHours: load?.hours ?? 0,
+        homeroom: homeroomByStaff.get(row.id) ?? null,
+        isHomeroomAssigned: row.isHomeroomAssigned === 1,
+        isApproved: row.isApproved === 1,
+        isActive: row.isActive === 1,
+      };
+    }),
   };
+}
+
+export async function updateTeacher(tenantId: number, staffId: number, input: TeacherUpdateInput): Promise<void> {
+  const [member] = await db
+    .select({ id: staff.staffId })
+    .from(staff)
+    .where(scoped(staff, tenantId, eq(staff.staffId, staffId)))
+    .limit(1);
+  if (!member) throw new AdminError("NOT_FOUND");
+  await db
+    .update(staff)
+    .set({
+      firstName: input.firstName,
+      lastName: input.lastName,
+      phoneNumber: input.phoneNumber,
+      gender: input.gender,
+      jobTitle: input.jobTitle,
+      salary: input.salary.toFixed(2),
+      experienceYears: input.experienceYears.toFixed(2),
+    })
+    .where(scoped(staff, tenantId, eq(staff.staffId, staffId)));
+}
+
+/** Legacy toggle: the client sends the current status and the new status is the opposite. */
+export async function toggleTeacherStatus(tenantId: number, staffId: number, currentStatus: 0 | 1) {
+  const [member] = await db
+    .select({ userId: staff.userId, firstName: staff.firstName })
+    .from(staff)
+    .where(scoped(staff, tenantId, eq(staff.staffId, staffId)))
+    .limit(1);
+  if (!member) throw new AdminError("NOT_FOUND");
+  const nextStatus = currentStatus === 1 ? 0 : 1;
+  if (member.userId != null) {
+    await db
+      .update(users)
+      .set({ isActive: nextStatus })
+      .where(scoped(users, tenantId, eq(users.userId, member.userId)));
+  }
+  return { firstName: member.firstName, isActive: nextStatus === 1 };
+}
+
+/** Legacy delete: free the homeroom, remove assignments, the staff row and the login user. */
+export async function deleteTeacher(tenantId: number, staffId: number) {
+  const [member] = await db
+    .select({ userId: staff.userId, firstName: staff.firstName, lastName: staff.lastName })
+    .from(staff)
+    .where(scoped(staff, tenantId, eq(staff.staffId, staffId)))
+    .limit(1);
+  if (!member) throw new AdminError("NOT_FOUND");
+
+  await db.transaction(async (tx) => {
+    await tx
+      .update(classes)
+      .set({ classTeacherId: null })
+      .where(scoped(classes, tenantId, eq(classes.classTeacherId, staffId)));
+    await tx.delete(teacherAssignments).where(scoped(teacherAssignments, tenantId, eq(teacherAssignments.staffId, staffId)));
+    await tx.delete(staff).where(scoped(staff, tenantId, eq(staff.staffId, staffId)));
+    if (member.userId != null) {
+      await tx.delete(users).where(scoped(users, tenantId, eq(users.userId, member.userId)));
+    }
+  });
+  return { name: `${member.firstName} ${member.lastName}` };
 }
 
 export async function listSchedule(tenantId: number) {
@@ -602,6 +736,296 @@ export async function createExpense(tenantId: number, userId: number, input: Exp
     ),
   );
   return { id: Number(result[0].insertId) };
+}
+
+type ClassStream = "Natural" | "Social";
+
+async function teacherOwnsAnotherClass(tenantId: number, teacherId: number, exceptClassId?: number): Promise<boolean> {
+  const except = exceptClassId === undefined ? undefined : ne(classes.classId, exceptClassId);
+  const [row] = await db
+    .select({ id: classes.classId })
+    .from(classes)
+    .where(scoped(classes, tenantId, and(eq(classes.classTeacherId, teacherId), except)))
+    .limit(1);
+  return row !== undefined;
+}
+
+async function setHomeroomFlag(tenantId: number, teacherId: number | null, value: 0 | 1): Promise<void> {
+  if (!teacherId) return;
+  await db
+    .update(staff)
+    .set({ isHomeroomAssigned: value })
+    .where(scoped(staff, tenantId, eq(staff.staffId, teacherId)));
+}
+
+async function releaseHomeroom(tenantId: number, teacherId: number | null): Promise<void> {
+  if (!teacherId) return;
+  if (!(await teacherOwnsAnotherClass(tenantId, teacherId))) {
+    await setHomeroomFlag(tenantId, teacherId, 0);
+  }
+}
+
+async function requireStaff(tenantId: number, staffId: number): Promise<void> {
+  const [member] = await db
+    .select({ id: staff.staffId })
+    .from(staff)
+    .where(scoped(staff, tenantId, eq(staff.staffId, staffId)))
+    .limit(1);
+  if (!member) throw new AdminError("NOT_FOUND");
+}
+
+function duplicateClassCode(error: unknown, code: "CLASS_EXISTS" | "GRADE_SECTION_EXISTS"): never {
+  if (mysqlErrno(error) === ER_DUP_ENTRY) throw new AdminError(code);
+  throw error;
+}
+
+export async function listClasses(tenantId: number) {
+  const academicYear = (await settingValue(tenantId, YEAR_KEY)) ?? "";
+  const yearFilter = academicYear ? eq(students.academicYear, academicYear) : undefined;
+  const assignmentYear = academicYear ? eq(teacherAssignments.academicYear, academicYear) : undefined;
+
+  const [classRows, studentRows, teacherRows, assignmentRows] = await Promise.all([
+    db
+      .select({
+        id: classes.classId,
+        gradeLevel: classes.gradeLevel,
+        section: classes.section,
+        stream: classes.stream,
+        classTeacherId: classes.classTeacherId,
+        maxCapacity: classes.maxCapacity,
+        teacherFirstName: staff.firstName,
+        teacherLastName: staff.lastName,
+      })
+      .from(classes)
+      .leftJoin(staff, and(eq(staff.staffId, classes.classTeacherId), eq(staff.tenantId, tenantId)))
+      .where(scoped(classes, tenantId))
+      .orderBy(asc(classes.gradeLevel), asc(classes.section), asc(classes.stream)),
+    db
+      .select({ gradeLevel: students.gradeLevel, section: students.section, stream: students.stream })
+      .from(students)
+      .where(scoped(students, tenantId, yearFilter)),
+    db
+      .select({ id: staff.staffId, firstName: staff.firstName, lastName: staff.lastName })
+      .from(staff)
+      .innerJoin(users, and(eq(users.userId, staff.userId), eq(users.tenantId, tenantId)))
+      .where(scoped(staff, tenantId, eq(users.role, "Teacher")))
+      .orderBy(asc(staff.firstName), asc(staff.lastName)),
+    db
+      .select({
+        staffId: teacherAssignments.staffId,
+        gradeLevel: teacherAssignments.gradeLevel,
+        section: teacherAssignments.section,
+        subjectName: subjects.subjectName,
+        subjectGrade: subjects.gradeLevel,
+        subjectStream: subjects.stream,
+        creditHours: subjects.creditHours,
+        firstName: staff.firstName,
+        lastName: staff.lastName,
+      })
+      .from(teacherAssignments)
+      .innerJoin(subjects, and(eq(subjects.subjectId, teacherAssignments.subjectId), eq(subjects.tenantId, tenantId)))
+      .innerJoin(staff, and(eq(staff.staffId, teacherAssignments.staffId), eq(staff.tenantId, tenantId)))
+      .where(scoped(teacherAssignments, tenantId, assignmentYear)),
+  ]);
+
+  const workload = new Map<number, { assignments: number; credits: number }>();
+  for (const row of assignmentRows) {
+    const current = workload.get(row.staffId) ?? { assignments: 0, credits: 0 };
+    current.assignments += 1;
+    current.credits += row.creditHours;
+    workload.set(row.staffId, current);
+  }
+
+  const homeroomOwner = new Map<number, number>();
+  for (const row of classRows) {
+    if (row.classTeacherId != null) homeroomOwner.set(row.classTeacherId, row.id);
+  }
+
+  const rows = classRows.map((row) => {
+    const stream = row.stream;
+    const studentCount = studentRows.filter((student) => {
+      if (student.gradeLevel !== row.gradeLevel || (student.section ?? "") !== row.section) return false;
+      if (stream == null) return student.stream == null || student.stream === "";
+      return student.stream == null || student.stream === "" || student.stream === stream;
+    }).length;
+    const load = row.classTeacherId == null ? undefined : workload.get(row.classTeacherId);
+    const recommendations = recommendationsFor(row.id, row.gradeLevel, row.section, stream, assignmentRows, workload, homeroomOwner);
+    return {
+      id: row.id,
+      gradeLevel: row.gradeLevel,
+      section: row.section,
+      stream,
+      classTeacherId: row.classTeacherId,
+      teacherName: [row.teacherFirstName, row.teacherLastName].filter(Boolean).join(" ").trim(),
+      maxCapacity: row.maxCapacity ?? 59,
+      studentCount,
+      yearAssignmentCount: load?.assignments ?? 0,
+      yearTotalCredits: load?.credits ?? 0,
+      recommendations,
+    };
+  });
+
+  return {
+    academicYear,
+    teachers: teacherRows.map((row) => ({ id: row.id, name: `${row.firstName} ${row.lastName}`.trim() })),
+    rows,
+  };
+}
+
+type AssignmentPick = {
+  staffId: number;
+  gradeLevel: number;
+  section: string | null;
+  subjectName: string;
+  subjectGrade: number;
+  subjectStream: "Natural" | "Social" | "Common";
+  creditHours: number;
+  firstName: string;
+  lastName: string;
+};
+
+function recommendationsFor(
+  classId: number,
+  gradeLevel: number,
+  section: string,
+  stream: ClassStream | null,
+  assignments: AssignmentPick[],
+  workload: Map<number, { assignments: number; credits: number }>,
+  homeroomOwner: Map<number, number>,
+) {
+  const byStaff = new Map<number, { name: string; subjects: Map<string, number> }>();
+  for (const row of assignments) {
+    if (row.gradeLevel !== gradeLevel || (row.section ?? "") !== section) continue;
+    if (row.subjectGrade !== gradeLevel) continue;
+    if (row.subjectStream !== "Common" && row.subjectStream !== stream) continue;
+    const owner = homeroomOwner.get(row.staffId);
+    if (owner !== undefined && owner !== classId) continue;
+    const entry = byStaff.get(row.staffId) ?? { name: `${row.firstName} ${row.lastName}`.trim(), subjects: new Map() };
+    entry.subjects.set(row.subjectName, row.creditHours);
+    byStaff.set(row.staffId, entry);
+  }
+
+  return [...byStaff.entries()]
+    .map(([staffId, entry]) => {
+      const load = workload.get(staffId) ?? { assignments: 0, credits: 0 };
+      return {
+        staffId,
+        teacherName: entry.name,
+        totalYearAssignments: load.assignments,
+        totalYearCredits: load.credits,
+        matchingSubjectCount: entry.subjects.size,
+        matchingSubjects: [...entry.subjects.entries()].map(([name, credits]) => `${name} (${credits} cr)`).join(", "),
+      };
+    })
+    .sort(
+      (left, right) =>
+        left.totalYearCredits - right.totalYearCredits ||
+        left.totalYearAssignments - right.totalYearAssignments ||
+        right.matchingSubjectCount - left.matchingSubjectCount ||
+        left.teacherName.localeCompare(right.teacherName),
+    );
+}
+
+export async function createBaseClass(tenantId: number, input: BaseClassInput) {
+  try {
+    const result = await db.insert(classes).values(
+      withTenant({ gradeLevel: input.gradeLevel, section: input.section, stream: null, maxCapacity: 59 }, tenantId),
+    );
+    return { id: Number(result[0].insertId) };
+  } catch (error) {
+    duplicateClassCode(error, "GRADE_SECTION_EXISTS");
+  }
+}
+
+export async function createClass(tenantId: number, input: ClassInput) {
+  if (input.classTeacherId) {
+    await requireStaff(tenantId, input.classTeacherId);
+    if (await teacherOwnsAnotherClass(tenantId, input.classTeacherId)) throw new AdminError("TEACHER_ASSIGNED");
+  }
+  try {
+    const result = await db.insert(classes).values(
+      withTenant(
+        {
+          gradeLevel: input.gradeLevel,
+          section: input.section,
+          stream: input.stream,
+          classTeacherId: input.classTeacherId,
+          maxCapacity: input.maxCapacity,
+        },
+        tenantId,
+      ),
+    );
+    if (input.classTeacherId) await setHomeroomFlag(tenantId, input.classTeacherId, 1);
+    return { id: Number(result[0].insertId) };
+  } catch (error) {
+    duplicateClassCode(error, "CLASS_EXISTS");
+  }
+}
+
+export async function updateClass(tenantId: number, classId: number, input: ClassInput) {
+  const [current] = await db
+    .select({ classTeacherId: classes.classTeacherId })
+    .from(classes)
+    .where(scoped(classes, tenantId, eq(classes.classId, classId)))
+    .limit(1);
+  if (!current) throw new AdminError("NOT_FOUND");
+  if (input.classTeacherId) {
+    await requireStaff(tenantId, input.classTeacherId);
+    if (await teacherOwnsAnotherClass(tenantId, input.classTeacherId, classId)) throw new AdminError("TEACHER_ASSIGNED");
+  }
+  try {
+    await db
+      .update(classes)
+      .set({
+        gradeLevel: input.gradeLevel,
+        section: input.section,
+        stream: input.stream,
+        classTeacherId: input.classTeacherId,
+        maxCapacity: input.maxCapacity,
+      })
+      .where(scoped(classes, tenantId, eq(classes.classId, classId)));
+  } catch (error) {
+    duplicateClassCode(error, "CLASS_EXISTS");
+  }
+  const previous = current.classTeacherId;
+  if (previous && previous !== input.classTeacherId) await releaseHomeroom(tenantId, previous);
+  if (input.classTeacherId) await setHomeroomFlag(tenantId, input.classTeacherId, 1);
+}
+
+export async function deleteClass(tenantId: number, classId: number) {
+  const [current] = await db
+    .select({ classTeacherId: classes.classTeacherId })
+    .from(classes)
+    .where(scoped(classes, tenantId, eq(classes.classId, classId)))
+    .limit(1);
+  if (!current) throw new AdminError("NOT_FOUND");
+  try {
+    await db.delete(classes).where(scoped(classes, tenantId, eq(classes.classId, classId)));
+  } catch (error) {
+    if (mysqlErrno(error) === ER_ROW_IS_REFERENCED) throw new AdminError("CLASS_IN_USE");
+    throw error;
+  }
+  await releaseHomeroom(tenantId, current.classTeacherId);
+}
+
+export async function assignHomeroom(tenantId: number, classId: number, input: HomeroomInput) {
+  const [current] = await db
+    .select({ classTeacherId: classes.classTeacherId })
+    .from(classes)
+    .where(scoped(classes, tenantId, eq(classes.classId, classId)))
+    .limit(1);
+  if (!current) throw new AdminError("NOT_FOUND");
+  if (input.teacherId) {
+    await requireStaff(tenantId, input.teacherId);
+    if (await teacherOwnsAnotherClass(tenantId, input.teacherId, classId)) throw new AdminError("TEACHER_IN_USE");
+  }
+  await db
+    .update(classes)
+    .set({ classTeacherId: input.teacherId })
+    .where(scoped(classes, tenantId, eq(classes.classId, classId)));
+  const previous = current.classTeacherId;
+  if (previous && previous !== input.teacherId) await releaseHomeroom(tenantId, previous);
+  if (input.teacherId) await setHomeroomFlag(tenantId, input.teacherId, 1);
 }
 
 export function listRoleModules() {

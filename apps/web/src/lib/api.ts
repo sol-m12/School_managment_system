@@ -45,6 +45,9 @@ api.interceptors.request.use((config) => {
   if (accessToken) {
     config.headers.set("Authorization", `Bearer ${accessToken}`);
   }
+  if (typeof FormData !== "undefined" && config.data instanceof FormData) {
+    config.headers.delete("Content-Type");
+  }
   return config;
 });
 

@@ -16,13 +16,22 @@ import {
   ReportsPage,
   RoleModulesPage,
   RosterPage,
-  SchedulePage,
   SchoolInfoPage,
   StoreApprovalsPage,
   StudentStatusPage,
-  StudentsPage,
-  TeachersPage,
 } from "@/features/admin/AdminPages";
+import { ScheduleBoardPage } from "@/features/admin/ScheduleBoardPage";
+import { ClassesPage } from "@/features/teachers/ClassesPage";
+import { HomeroomPage } from "@/features/teachers/HomeroomPage";
+import { TeacherListPage } from "@/features/teachers/TeacherListPage";
+import { SystemAssignmentPage } from "@/features/teachers/SystemAssignmentPage";
+import { TeacherTabPage } from "@/features/teachers/TeacherTabPage";
+import { StudentDirectoryPage } from "@/features/students/StudentDirectoryPage";
+import { StudentFormPage } from "@/features/students/StudentFormPage";
+import { StudentHubPage } from "@/features/students/StudentHubPage";
+import { StudentSectionsPage } from "@/features/students/StudentSectionsPage";
+import { StudentViewPage } from "@/features/students/StudentViewPage";
+import { StudentWatchPage } from "@/features/students/StudentWatchPage";
 import { SubjectDetailPage } from "@/features/subjects/SubjectDetailPage";
 import { SubjectEditPage } from "@/features/subjects/SubjectEditPage";
 import { SubjectsPage } from "@/features/subjects/SubjectsPage";
@@ -112,12 +121,22 @@ export const router = createBrowserRouter([
       ...subjectRoutes,
       { path: "admin/approvals", element: <ProtectedRoute permission="approvals.read"><StoreApprovalsPage /></ProtectedRoute> },
       { path: "admin/student-status", element: <ProtectedRoute permission="studentStatusReport.read"><StudentStatusPage /></ProtectedRoute> },
-      { path: "academics/students", element: <ProtectedRoute permission="students.manage"><StudentsPage /></ProtectedRoute> },
-      { path: "academics/teaching-load", element: <ProtectedRoute permission="teachingLoad.manage"><TeachersPage /></ProtectedRoute> },
+      { path: "academics/students", element: <ProtectedRoute permission="students.manage"><StudentHubPage /></ProtectedRoute> },
+      { path: "academics/students/directory", element: <ProtectedRoute permission="students.manage"><StudentDirectoryPage /></ProtectedRoute> },
+      { path: "academics/students/new", element: <ProtectedRoute permission="students.manage"><StudentFormPage /></ProtectedRoute> },
+      { path: "academics/students/:studentId/edit", element: <ProtectedRoute permission="students.manage"><StudentFormPage /></ProtectedRoute> },
+      { path: "academics/students/:studentId", element: <ProtectedRoute permission="students.manage"><StudentViewPage /></ProtectedRoute> },
+      { path: "academics/students/all", element: <ProtectedRoute permission="students.manage"><StudentWatchPage /></ProtectedRoute> },
+      { path: "academics/students/sections", element: <ProtectedRoute permission="students.manage"><StudentSectionsPage /></ProtectedRoute> },
+      { path: "academics/teaching-load", element: <ProtectedRoute permission="teachingLoad.manage"><TeacherListPage /></ProtectedRoute> },
+      { path: "academics/classes", element: <ProtectedRoute permission="teachingLoad.manage"><ClassesPage /></ProtectedRoute> },
+      { path: "academics/homeroom", element: <ProtectedRoute permission="teachingLoad.manage"><HomeroomPage /></ProtectedRoute> },
+      { path: "academics/vocational", element: <ProtectedRoute permission="teachingLoad.manage"><TeacherTabPage /></ProtectedRoute> },
+      { path: "academics/system-assignment", element: <ProtectedRoute permission="teachingLoad.manage"><SystemAssignmentPage /></ProtectedRoute> },
       { path: "academics/selected-roster", element: <ProtectedRoute permission="selectedRoster.read"><RosterPage /></ProtectedRoute> },
       { path: "academics/grade-correction", element: <ProtectedRoute permission="gradeCorrection.approve"><GradeUnlockPage /></ProtectedRoute> },
       { path: "academics/approvals", element: <ProtectedRoute permission="academicApprovals.manage"><ApprovalsPage /></ProtectedRoute> },
-      { path: "academics/schedule", element: <ProtectedRoute permission="periodSchedule.manage"><SchedulePage /></ProtectedRoute> },
+      { path: "academics/schedule", element: <ProtectedRoute permission="periodSchedule.manage"><ScheduleBoardPage /></ProtectedRoute> },
       { path: "academics/reports", element: <ProtectedRoute permission="academicReports.read"><ReportsPage /></ProtectedRoute> },
       { path: "system/academic-year", element: <ProtectedRoute permission="academicYear.manage"><AcademicYearPage /></ProtectedRoute> },
       { path: "system/backup", element: <ProtectedRoute permission="backup.create"><BackupPage /></ProtectedRoute> },

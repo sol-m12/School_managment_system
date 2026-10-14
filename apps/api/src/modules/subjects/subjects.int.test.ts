@@ -146,6 +146,7 @@ describe("subjects API: permissions", () => {
   it("gives Teacher and a homeroom teacher the same teacher keys", () => {
     expect(hasPermission("Teacher", "attendance.take")).toBe(true);
     expect(hasPermission("Teacher", "files.manage")).toBe(true);
+    expect(hasPermission("V_Principal", "files.manage")).toBe(true);
     expect(hasPermission("Teacher", "subjects.read")).toBe(false);
   });
 
