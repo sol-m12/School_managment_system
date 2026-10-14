@@ -292,25 +292,63 @@ export function useSaveRegistration() {
   });
 }
 
+export type RosterTerm = {
+  incomplete: boolean;
+  marks: string[];
+  vocational: string | null;
+  total: string;
+  average: string;
+  rank: string;
+};
+
+export type RosterStudent = {
+  id: number;
+  fullName: string;
+  sex: string;
+  age: string;
+  transfer: boolean;
+  remark: "Promoted" | "Detained" | "Pending" | "Incomplete";
+  yearRemark: "Promoted" | "Detained" | "Incomplete";
+  yearAverage: number;
+  sem1: RosterTerm;
+  sem2: RosterTerm;
+  year: RosterTerm;
+  cardSubjects: { name: string; first: string; second: string; average: string }[];
+  cardTotals: {
+    firstTotal: string;
+    secondTotal: string;
+    yearTotal: string;
+    firstAverage: string;
+    secondAverage: string;
+    yearAverage: string;
+    firstRank: string;
+    secondRank: string;
+    yearRank: string;
+  };
+};
+
+export type OfficialRoster =
+  | { allowed: false }
+  | {
+      allowed: true;
+      academicYear: string;
+      teacherName: string;
+      classes: { id: number; label: string }[];
+      classId: number;
+      gradeLevel: number;
+      section: string;
+      stream: string;
+      subjects: { id: number; name: string }[];
+      showVocational: boolean;
+      students: RosterStudent[];
+    };
+
 export function useRoster(classId: string) {
   const { tenantId } = useSessionUser();
   return useQuery({
     queryKey: teacherKey(tenantId, ["roster", classId]),
     queryFn: async () =>
-      (
-        await api.get<
-          | { allowed: false }
-          | {
-              allowed: true;
-              academicYear: string;
-              classes: { id: number; label: string }[];
-              classId: number;
-              gradeLevel: number;
-              section: string;
-              students: { id: number; fullName: string; gender: "M" | "F"; age: number; kebele: string | null; gote: string | null; houseNumber: string | null }[];
-            }
-        >("/teacher/roster", { params: { classId: classId || undefined } })
-      ).data,
+      (await api.get<OfficialRoster>("/teacher/roster", { params: { classId: classId || undefined } })).data,
   });
 }
 
@@ -319,43 +357,32 @@ export function useReportCards(classId: string) {
   return useQuery({
     queryKey: teacherKey(tenantId, ["cards", classId]),
     queryFn: async () =>
-      (
-        await api.get<
-          | { allowed: false }
-          | {
-              allowed: true;
-              academicYear: string;
-              semester: string;
-              gradeLevel: number;
-              section: string;
-              classes: { id: number; label: string }[];
-              cards: {
-                id: number;
-                fullName: string;
-                average: number;
-                rank: number;
-                subjects: { name: string; score: number }[];
-              }[];
-            }
-        >("/teacher/report-cards", { params: { classId: classId || undefined } })
-      ).data,
+      (await api.get<OfficialRoster>("/teacher/report-cards", { params: { classId: classId || undefined } })).data,
   });
 }
 
-export function useSubjectReport(classSelect: string, subjectId: string, enabled: boolean) {
+export function useSubjectReport(combined: string, academicYear: string, semester: string) {
   const { tenantId } = useSessionUser();
   return useQuery({
-    queryKey: teacherKey(tenantId, ["subject-report", classSelect, subjectId, enabled]),
+    queryKey: teacherKey(tenantId, ["subject-report", combined, academicYear, semester]),
     queryFn: async () =>
       (
         await api.get<{
           academicYear: string;
-          semester: string;
-          classes: { value: string; label: string }[];
-          subjects: { id: number; name: string }[];
-          rows: { id: number; fullName: string; total: number }[];
+          semester: "1" | "2";
+          years: string[];
+          teacherName: string;
+          options: { value: string; label: string }[];
+          sheet: {
+            subjectName: string;
+            classLabel: string;
+            weights: { label: string; percent: string }[];
+            rows: { id: number; fullName: string; sex: string; scores: string[]; missing: boolean[]; total: string }[];
+          } | null;
         }>("/teacher/subject-report", {
-          params: enabled ? { classSelect, subjectId } : {},
+          params: combined
+            ? { combined, academicYear: academicYear || undefined, semester: semester || undefined }
+            : {},
         })
       ).data,
   });

@@ -7,13 +7,10 @@ import {
   useAddSimulation,
   useLessonPlans,
   useRegistration,
-  useReportCards,
-  useRoster,
   useSaveRegistration,
   useSimulations,
   useStoreBoard,
   useStoreRequest,
-  useSubjectReport,
 } from "./api/useTeacherPages";
 
 const field = "mt-1 w-full rounded-control border border-border bg-surface px-3 py-2 font-normal";
@@ -282,155 +279,6 @@ export function StudentRegistrationPage() {
           </table>
         )}
       </section>
-    </div>
-  );
-}
-
-export function ClassRosterPage() {
-  const { t } = useTranslation(["teacher", "errors", "common"]);
-  const [classId, setClassId] = useState("");
-  const roster = useRoster(classId);
-  if (roster.isPending) return <Loading />;
-  if (roster.isError || !roster.data) return <Alert tone="danger">{t(`errors:${toErrorKey(roster.error)}`)}</Alert>;
-  if (!roster.data.allowed) return <Alert tone="danger">{t("teacher:unauthorizedAccess")}</Alert>;
-  const data = roster.data;
-  return (
-    <div>
-      <h1 className="mb-3 text-xl font-bold">{t("teacher:rosterTitle")}</h1>
-      <label className="mb-3 block text-sm font-bold">
-        {t("teacher:pickClass")}
-        <select value={String(data.classId)} onChange={(event) => setClassId(event.target.value)} className={field}>
-          {data.classes.map((room) => <option key={room.id} value={room.id}>{room.label}</option>)}
-        </select>
-      </label>
-      <p className="mb-2 text-sm">{t("teacher:printYear", { year: data.academicYear })} · {t("teacher:printGrade", { grade: data.gradeLevel })} {t("teacher:printSec", { section: data.section })}</p>
-      <table className="w-full text-sm">
-        <thead className="text-left">
-          <tr>
-            <th className="px-2 py-1">{t("teacher:number")}</th>
-            <th className="px-2 py-1">{t("teacher:fullName")}</th>
-            <th className="px-2 py-1">{t("teacher:sex")}</th>
-            <th className="px-2 py-1">{t("teacher:ageCol")}</th>
-            <th className="px-2 py-1">{t("teacher:kebele")}</th>
-            <th className="px-2 py-1">{t("teacher:gote")}</th>
-            <th className="px-2 py-1">{t("teacher:houseNumber")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.students.map((student, index) => (
-            <tr key={student.id} className="border-t border-border">
-              <td className="px-2 py-2">{index + 1}</td>
-              <td className="px-2 py-2">{student.fullName}</td>
-              <td className="px-2 py-2">{student.gender}</td>
-              <td className="px-2 py-2">{student.age}</td>
-              <td className="px-2 py-2">{student.kebele}</td>
-              <td className="px-2 py-2">{student.gote}</td>
-              <td className="px-2 py-2">{student.houseNumber}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-export function ReportCardsPage() {
-  const { t } = useTranslation(["teacher", "errors", "common"]);
-  const [classId, setClassId] = useState("");
-  const cards = useReportCards(classId);
-  if (cards.isPending) return <Loading />;
-  if (cards.isError || !cards.data) return <Alert tone="danger">{t(`errors:${toErrorKey(cards.error)}`)}</Alert>;
-  if (!cards.data.allowed) return <Alert tone="danger">{t("teacher:unauthorizedAccess")}</Alert>;
-  const data = cards.data;
-  return (
-    <div className="space-y-4">
-      <h1 className="text-xl font-bold">{t("teacher:cardsTitle")}</h1>
-      <label className="block text-sm font-bold">
-        {t("teacher:pickClass")}
-        <select value={classId || String(data.classes[0]?.id ?? "")} onChange={(event) => setClassId(event.target.value)} className={field}>
-          {data.classes.map((room) => <option key={room.id} value={room.id}>{room.label}</option>)}
-        </select>
-      </label>
-      <p className="text-sm">{t("teacher:yearSemester", { year: data.academicYear, semester: data.semester })} · {t("teacher:printGrade", { grade: data.gradeLevel })} {data.section}</p>
-      {data.cards.map((card) => (
-        <article key={card.id} className="rounded-xl border border-border bg-surface p-4">
-          <h2 className="font-bold">{card.fullName}</h2>
-          <p className="text-sm">{t("teacher:average")}: {card.average.toFixed(2)} · {t("teacher:rank")}: {card.rank}</p>
-          <table className="mt-2 w-full text-sm">
-            <tbody>
-              {card.subjects.map((subject) => (
-                <tr key={subject.name} className="border-t border-border">
-                  <td className="py-1">{subject.name}</td>
-                  <td className="py-1 text-right">{subject.score.toFixed(2)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </article>
-      ))}
-    </div>
-  );
-}
-
-export function StudentReportsPage() {
-  const { t } = useTranslation(["teacher", "errors", "common"]);
-  const [classSelect, setClassSelect] = useState("");
-  const [subjectId, setSubjectId] = useState("");
-  const [load, setLoad] = useState(false);
-  const report = useSubjectReport(classSelect, subjectId, load);
-  if (report.isPending) return <Loading />;
-  if (report.isError || !report.data) return <Alert tone="danger">{t(`errors:${toErrorKey(report.error)}`)}</Alert>;
-  const data = report.data;
-  return (
-    <div>
-      <h1 className="mb-3 text-xl font-bold">{t("teacher:reportTitle")}</h1>
-      <form
-        className="mb-4 grid gap-3 md:grid-cols-3"
-        onSubmit={(event) => {
-          event.preventDefault();
-          if (classSelect && subjectId) setLoad(true);
-        }}
-      >
-        <label className="text-sm font-bold">
-          {t("teacher:pickClass")}
-          <select value={classSelect} onChange={(event) => { setClassSelect(event.target.value); setLoad(false); }} className={field}>
-            <option value="">{t("teacher:choose")}</option>
-            {data.classes.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
-          </select>
-        </label>
-        <label className="text-sm font-bold">
-          {t("teacher:subject")}
-          <select value={subjectId} onChange={(event) => { setSubjectId(event.target.value); setLoad(false); }} className={field}>
-            <option value="">{t("teacher:choose")}</option>
-            {data.subjects.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
-          </select>
-        </label>
-        <div className="flex items-end">
-          <Button type="submit">{t("teacher:showReport")}</Button>
-        </div>
-      </form>
-      {load ? (
-        <table className="w-full text-sm">
-          <thead className="text-left">
-            <tr>
-              <th className="px-2 py-1">{t("teacher:number")}</th>
-              <th className="px-2 py-1">{t("teacher:fullName")}</th>
-              <th className="px-2 py-1">{t("teacher:totalMark")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.rows.length === 0 ? (
-              <tr><td colSpan={3} className="px-2 py-4 text-ink-muted">{t("teacher:noStudents")}</td></tr>
-            ) : data.rows.map((row, index) => (
-              <tr key={row.id} className="border-t border-border">
-                <td className="px-2 py-2">{index + 1}</td>
-                <td className="px-2 py-2">{row.fullName}</td>
-                <td className="px-2 py-2">{row.total.toFixed(2)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : null}
     </div>
   );
 }

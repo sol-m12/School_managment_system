@@ -18,6 +18,7 @@ import {
 import { scoped, withTenant } from "../../lib/tenant.js";
 import { AcademicsError, createStudent } from "../academics/students.service.js";
 import type { StudentBody } from "../academics/academics.schema.js";
+import { loadOfficialRoster } from "./officialRoster.js";
 import { parseClassSelect, TeacherError, loadTeacherContext, type TeacherContext } from "./teacher.service.js";
 
 type Mark = "X" | "A" | "P" | "L";
@@ -875,96 +876,104 @@ export async function saveRegistration(
 }
 
 export async function classRoster(tenantId: number, userId: number, classId: number | undefined) {
-  const context = await loadTeacherContext(tenantId, userId);
-  if (!context) return { allowed: false as const };
-  const rooms = await homeroomClasses(tenantId, context.staffId);
-  if (rooms.length === 0) return { allowed: false as const };
-  const selected = rooms.find((room) => room.id === classId) ?? rooms[0];
-  if (!selected) return { allowed: false as const };
-  const people = await classStudents(tenantId, context.academicYear, selected.gradeLevel, selected.section, selected.stream);
-  return {
-    allowed: true as const,
-    academicYear: context.academicYear,
-    classes: rooms.map((room) => ({ id: room.id, label: `${room.gradeLevel}${room.section}` })),
-    classId: selected.id,
-    gradeLevel: selected.gradeLevel,
-    section: selected.section,
-    students: people,
-  };
+  return loadOfficialRoster(tenantId, userId, classId);
 }
 
 export async function reportCards(tenantId: number, userId: number, classId: number | undefined) {
-  const roster = await classRoster(tenantId, userId, classId);
-  if (!roster.allowed) return roster;
-  const context = await requireContext(tenantId, userId);
-  const ids = roster.students.map((student) => student.id);
-  const markRows =
-    ids.length === 0
-      ? []
-      : await db
-          .select({
-            studentId: grades.studentId,
-            subjectName: subjects.subjectName,
-            score: grades.score,
-          })
-          .from(grades)
-          .innerJoin(subjects, and(eq(subjects.subjectId, grades.subjectId), eq(subjects.tenantId, tenantId)))
-          .where(
-            scoped(
-              grades,
-              tenantId,
-              and(
-                inArray(grades.studentId, ids),
-                eq(grades.academicYear, context.academicYear),
-                eq(grades.semester, context.semester),
-              ),
-            ),
-          );
-  const byStudent = new Map<number, Map<string, number>>();
-  for (const row of markRows) {
-    const subjectsOf = byStudent.get(row.studentId) ?? new Map<string, number>();
-    subjectsOf.set(row.subjectName, (subjectsOf.get(row.subjectName) ?? 0) + Number(row.score));
-    byStudent.set(row.studentId, subjectsOf);
-  }
-  const cards = roster.students.map((student) => {
-    const subjectMarks = [...(byStudent.get(student.id) ?? new Map()).entries()].map(([name, score]) => ({
-      name,
-      score: Number(score.toFixed(2)),
-    }));
-    const average =
-      subjectMarks.length === 0
-        ? 0
-        : Number((subjectMarks.reduce((sum, item) => sum + item.score, 0) / subjectMarks.length).toFixed(2));
-    return { ...student, subjects: subjectMarks, average, rank: 0 };
-  });
-  const order = [...cards].sort((a, b) => b.average - a.average);
-  let rank = 0;
-  let last = Number.NaN;
-  order.forEach((card, index) => {
-    if (card.average !== last) {
-      rank = index + 1;
-      last = card.average;
-    }
-    card.rank = rank;
-  });
-  return { ...roster, semester: context.semester, cards };
+  return loadOfficialRoster(tenantId, userId, classId);
+}
+
+function reportYears(current: string): string[] {
+  const year = Number.parseInt(current, 10);
+  if (!Number.isInteger(year)) return [current];
+  return [0, 1, 2, 3].map((offset) => String(year - offset));
 }
 
 export async function subjectReport(
   tenantId: number,
   userId: number,
-  query: { classSelect?: string; subjectId?: number },
+  query: { combined?: string; academicYear?: string; semester?: "1" | "2" },
 ) {
-  const board = await subjectAttendance(tenantId, userId, query);
-  if (!board.classSelect || !board.subjectId) return { ...board, rows: [] };
   const context = await loadTeacherContext(tenantId, userId);
-  if (!context) return { ...board, rows: [] };
-  const ids = board.students.map((student) => student.id);
+  const empty = {
+    academicYear: context?.academicYear ?? "",
+    semester: context?.semester ?? "1",
+    years: reportYears(context?.academicYear ?? ""),
+    teacherName: context?.teacherName ?? "",
+    options: [] as { value: string; label: string }[],
+    sheet: null,
+  };
+  if (!context) return empty;
+  const rows = await taughtRows(tenantId, context.staffId, context.academicYear);
+  const options = rows.map((row) => {
+    const parsed = classValue(row.gradeLevel, row.section);
+    return {
+      value: `${row.subjectId}|${parsed.value}`,
+      label: `${row.subjectName} (Grade ${parsed.value})`,
+      subjectId: row.subjectId,
+      subjectName: row.subjectName,
+      gradeLevel: row.gradeLevel,
+      section: parsed.section,
+      vocational: row.isVocational === 1,
+    };
+  });
+  const years = reportYears(context.academicYear);
+  const year = query.academicYear && years.includes(query.academicYear) ? query.academicYear : context.academicYear;
+  const semester = query.semester ?? context.semester;
+  const owned = options.find((option) => option.value === query.combined);
+  if (!owned) {
+    return {
+      academicYear: year,
+      semester,
+      years,
+      teacherName: context.teacherName,
+      options: options.map(({ value, label }) => ({ value, label })),
+      sheet: null,
+    };
+  }
+
+  const people = await db
+    .select({ id: students.studentId, fullName: students.fullName, gender: students.gender })
+    .from(students)
+    .where(
+      scoped(
+        students,
+        tenantId,
+        owned.vocational
+          ? and(eq(students.gradeLevel, owned.gradeLevel), eq(students.vocationalId, owned.subjectId))
+          : and(eq(students.gradeLevel, owned.gradeLevel), eq(students.section, owned.section)),
+      ),
+    )
+    .orderBy(asc(students.fullName));
+
+  const classKey = `${owned.gradeLevel}-${owned.section}`;
+  const weights = await db
+    .select({ name: subjectWeightings.weightingType, percent: subjectWeightings.percentage })
+    .from(subjectWeightings)
+    .where(
+      scoped(
+        subjectWeightings,
+        tenantId,
+        and(
+          eq(subjectWeightings.subjectId, owned.subjectId),
+          eq(subjectWeightings.semester, semester),
+          like(subjectWeightings.weightingType, `${classKey}:%`),
+        ),
+      ),
+    )
+    .orderBy(asc(subjectWeightings.weightingId));
+
+  const ids = people.map((person) => person.id);
+  const weightNames = weights.map((weight) => weight.name);
   const markRows =
-    ids.length === 0
+    ids.length === 0 || weightNames.length === 0
       ? []
       : await db
-          .select({ studentId: grades.studentId, score: grades.score })
+          .select({
+            studentId: grades.studentId,
+            weightingType: grades.weightingType,
+            score: grades.score,
+          })
           .from(grades)
           .where(
             scoped(
@@ -972,21 +981,54 @@ export async function subjectReport(
               tenantId,
               and(
                 inArray(grades.studentId, ids),
-                eq(grades.subjectId, board.subjectId),
-                eq(grades.academicYear, context.academicYear),
-                eq(grades.semester, context.semester),
+                eq(grades.subjectId, owned.subjectId),
+                eq(grades.semester, semester),
+                eq(grades.academicYear, year),
+                inArray(grades.weightingType, weightNames),
               ),
             ),
           );
-  const totals = new Map<number, number>();
-  for (const row of markRows) totals.set(row.studentId, (totals.get(row.studentId) ?? 0) + Number(row.score));
+  const byStudent = new Map<number, Map<string, number>>();
+  for (const row of markRows) {
+    const scores = byStudent.get(row.studentId) ?? new Map<string, number>();
+    scores.set(row.weightingType, Number(row.score));
+    byStudent.set(row.studentId, scores);
+  }
+
+  const sheetRows = people.map((person) => {
+    const scores = byStudent.get(person.id) ?? new Map<string, number>();
+    let total = 0;
+    const cells = weights.map((weight) => {
+      const value = scores.get(weight.name);
+      if (value == null) return { score: "-", missing: true };
+      total += value;
+      return { score: String(value), missing: false };
+    });
+    return {
+      id: person.id,
+      fullName: person.fullName,
+      sex: person.gender.charAt(0),
+      scores: cells.map((cell) => cell.score),
+      missing: cells.map((cell) => cell.missing),
+      total: total.toFixed(1),
+    };
+  });
+
   return {
-    ...board,
-    rows: board.students.map((student) => ({
-      id: student.id,
-      fullName: student.fullName,
-      total: Number((totals.get(student.id) ?? 0).toFixed(2)),
-    })),
+    academicYear: year,
+    semester,
+    years,
+    teacherName: context.teacherName,
+    options: options.map(({ value, label }) => ({ value, label })),
+    sheet: {
+      subjectName: owned.subjectName,
+      classLabel: classKey,
+      weights: weights.map((weight) => ({
+        label: weight.name.startsWith(`${classKey}:`) ? weight.name.slice(classKey.length + 1) : weight.name,
+        percent: String(weight.percent),
+      })),
+      rows: sheetRows,
+    },
   };
 }
 

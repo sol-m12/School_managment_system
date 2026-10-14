@@ -44,14 +44,14 @@ import { AttendanceRegisterPage, TakeAttendancePage } from "@/features/teacher/A
 import { ExamResultsPage } from "@/features/teacher/ExamResultsPage";
 import { GradeEntryPage } from "@/features/teacher/GradeEntryPage";
 import { OnlineExamsPage } from "@/features/teacher/OnlineExamsPage";
+import { ClassRosterPage } from "@/features/teacher/OfficialRosterPage";
+import { ReportCardsPage } from "@/features/teacher/ReportCardsPage";
+import { StudentReportsPage } from "@/features/teacher/StudentReportsPage";
 import {
   BestTeachingPage,
-  ClassRosterPage,
-  ReportCardsPage,
   SimulationsPage,
   StoreRequestPage,
   StudentRegistrationPage,
-  StudentReportsPage,
 } from "@/features/teacher/TeacherTaskPages";
 import { PublicPlaceholderPage } from "@/pages/PublicPlaceholderPage";
 

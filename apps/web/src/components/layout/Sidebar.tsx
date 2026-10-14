@@ -31,7 +31,7 @@ export const Sidebar = memo(function Sidebar({
       id="app-sidebar"
       aria-label={t("common:mainNavigation")}
       className={cn(
-        "fixed inset-y-0 left-0 z-[1050] flex w-sidebar max-w-[85vw] flex-col bg-shell text-shell-text shadow-panel",
+        "fixed inset-y-0 left-0 z-[1050] flex w-sidebar max-w-[85vw] flex-col bg-shell text-shell-text shadow-panel print:hidden",
         "transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
         mobileOpen ? "translate-x-0" : "-translate-x-full",
         desktopCollapsed ? "min-[992px]:-translate-x-full" : "min-[992px]:translate-x-0",

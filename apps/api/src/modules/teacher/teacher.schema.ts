@@ -142,8 +142,9 @@ export const simulationBodySchema = z.object({
 });
 
 export const subjectReportQuerySchema = z.object({
-  classSelect: classSelectSchema.optional(),
-  subjectId: z.coerce.number().int().positive().optional(),
+  combined: z.string().trim().max(80).optional(),
+  academicYear: z.string().trim().max(10).optional(),
+  semester: z.enum(["1", "2"]).optional(),
 });
 
 export const reportCardQuerySchema = z.object({

@@ -16,7 +16,7 @@ export const Header = memo(function Header({ user, sidebarOpen, onToggleSidebar 
   const initial = user.username.trim().charAt(0).toUpperCase() || "?";
 
   return (
-    <header className="sticky top-0 z-[1030] flex h-header shrink-0 items-center justify-between gap-2 border-b border-shell-border bg-shell px-3 shadow-[0_1px_3px_rgb(0_0_0/0.2)] sm:px-6">
+    <header className="sticky top-0 z-[1030] flex h-header shrink-0 items-center justify-between gap-2 border-b border-shell-border bg-shell px-3 shadow-[0_1px_3px_rgb(0_0_0/0.2)] print:hidden sm:px-6">
       <div className="flex min-w-0 items-center gap-3">
         <IconButton
           tone="shell"

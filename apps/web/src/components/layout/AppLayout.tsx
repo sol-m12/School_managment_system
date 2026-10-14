@@ -60,7 +60,7 @@ export function AppLayout() {
           aria-hidden="true"
           onClick={closeSidebar}
           className={cn(
-            "fixed inset-0 z-[1040] bg-shell/60 backdrop-blur-sm transition-opacity duration-300 min-[992px]:hidden",
+            "fixed inset-0 z-[1040] bg-shell/60 backdrop-blur-sm transition-opacity duration-300 print:hidden min-[992px]:hidden",
             mobileOpen ? "opacity-100" : "pointer-events-none opacity-0",
           )}
         />
@@ -75,15 +75,15 @@ export function AppLayout() {
   
         <div
           className={cn(
-            "flex min-h-dvh min-w-0 flex-col transition-[margin] duration-300",
+            "flex min-h-dvh min-w-0 flex-col transition-[margin] duration-300 print:ml-0",
             desktopCollapsed ? "min-[992px]:ml-0" : "min-[992px]:ml-sidebar",
           )}
         >
           <Header user={user} sidebarOpen={mobileOpen || !desktopCollapsed} onToggleSidebar={toggleSidebar} />
-          <main id="main-content" className="min-w-0 flex-1 p-4 md:p-6">
+          <main id="main-content" className="min-w-0 flex-1 p-4 print:p-0 md:p-6">
             <Outlet />
           </main>
-          <footer className="border-t border-border bg-surface px-4 py-4 text-sm">
+          <footer className="border-t border-border bg-surface px-4 py-4 text-sm print:hidden">
             <div className="flex flex-col items-center gap-2 md:flex-row md:justify-between">
               <div className="flex items-center justify-center md:justify-start">
                 <span className="font-bold text-ink-strong">{t("footerKeyit")}</span>
