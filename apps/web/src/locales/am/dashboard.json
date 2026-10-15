@@ -17,10 +17,10 @@
   "noRoles": "ምንም የሮል መረጃ አልተገኘም።",
   "stats": {
     "itemTypes": "በስቶር ያሉ እቃዎች አይነት",
-    "lowStock": "ያለቁ / የቀነሱ እቃዎች (Low Stock)",
-    "todayTransactions": "የዛሬ እንቅስቃሴዎች (Transactions)"
+    "lowStock": "ያለቁ / የቀነሱ እቃዎች",
+    "todayTransactions": "የዛሬ እንቅስቃሴዎች"
   },
-  "quickActions": "ፈጣን ተግባራት (Store Operations)",
+  "quickActions": "ፈጣን ተግባራት",
   "actionTitles": {
     "receiveItems": "እቃ ገቢ ማድረግ",
     "issueItems": "እቃ ወጪ ማድረግ",
@@ -29,8 +29,8 @@
     "profile": "የኔ ፕሮፋይል"
   },
   "actions": {
-    "receiveItems": "Model 19 መመዝገቢያ",
-    "issueItems": "Model 22 መመዝገቢያ",
+    "receiveItems": "ሞዴል 19 መመዝገቢያ",
+    "issueItems": "ሞዴል 22 መመዝገቢያ",
     "binCard": "የእቃዎች ብዛት ታሪክ",
     "accountSettings": "የይለፍ ቃል ይቀይሩ",
     "profile": "መረጃዎን ያሻሽሉ"

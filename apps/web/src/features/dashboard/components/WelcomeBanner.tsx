@@ -9,17 +9,18 @@ type WelcomeBannerProps = {
 };
 
 export const WelcomeBanner = memo(function WelcomeBanner({ firstName, jobTitle, role }: WelcomeBannerProps) {
-  const { t } = useTranslation("dashboard");
+  const { t, i18n } = useTranslation(["dashboard", "common"]);
+  const locale = i18n.language.startsWith("am") ? "am-ET" : "en-US";
 
   const today = useMemo(
     () =>
-      new Intl.DateTimeFormat("en-US", {
+      new Intl.DateTimeFormat(locale, {
         weekday: "long",
         year: "numeric",
         month: "long",
         day: "2-digit",
       }).format(new Date()),
-    [],
+    [locale],
   );
 
   return (
@@ -37,7 +38,7 @@ export const WelcomeBanner = memo(function WelcomeBanner({ firstName, jobTitle, 
         </p>
       </div>
       <Badge tone="brand" className="self-start rounded-full px-3 py-2 text-sm md:self-center">
-        {role.replace(/_/g, " ")}
+        {t(`common:roles.${role}`, { defaultValue: role.replaceAll("_", " ") })}
       </Badge>
     </section>
   );

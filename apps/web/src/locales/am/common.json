@@ -1,7 +1,7 @@
 {
   "appName": "KEYIT MS",
-  "systemTitle": "KEYIT SCHOOL SYSTEM",
-  "documentTitle": "KEYIT MS - Dashboard",
+  "systemTitle": "የቀይት ትምህርት ቤት ሲስተም",
+  "documentTitle": "KEYIT MS - ዳሽቦርድ",
   "loading": "በመጫን ላይ...",
   "close": "ዝጋ",
   "toggleSidebar": "ሳይድባሩን ክፈት / ዝጋ",
@@ -38,7 +38,7 @@
   "backToLogin": "ወደ መግቢያ ተመለስ",
   "footerKeyit": "KEYIT",
   "footerMs": "MS",
-  "footerPatent": "© {{year}} | Patent Protected",
+  "footerPatent": "© {{year}} | የፈጠራ መብት የተጠበቀ",
   "footerVersion": "የቀይት ትምህርት ቤት አስተዳደር ሲስተም v2.0",
   "roles": {
     "Teacher": "መምህር",

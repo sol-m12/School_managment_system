@@ -33,7 +33,9 @@ export const Header = memo(function Header({ user, sidebarOpen, onToggleSidebar 
         <LanguageSwitcher />
         <div className="hidden min-w-0 text-right md:block">
           <div className="max-w-[12rem] truncate text-sm leading-tight font-bold text-white">{user.username}</div>
-          <div className="max-w-[12rem] truncate text-xs text-accent">{user.role}</div>
+          <div className="max-w-[12rem] truncate text-xs text-accent">
+            {t(`roles.${user.role}`, { defaultValue: user.role.replaceAll("_", " ") })}
+          </div>
         </div>
         <div
           aria-hidden="true"

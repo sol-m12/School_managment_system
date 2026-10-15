@@ -124,7 +124,7 @@ export function Model19Page() {
           </label>
         </div>
         <p className="mt-3 text-end font-bold text-[#15803d]">
-          {t("store:totalCost")}: {etb.format(total)} ETB
+          {t("store:totalCost")}: {etb.format(total)} {t("store:currency")}
         </p>
         <div className="text-end">
           <Button type="submit" loading={receive.isPending}>
@@ -143,8 +143,8 @@ export function Model19Page() {
             { key: "date", header: t("store:colDate"), render: (row) => row.dateReceived },
             { key: "item", header: t("store:colItem"), render: (row) => `[${row.itemCode}] ${row.itemName}` },
             { key: "qty", header: t("store:colQtyIn"), render: (row) => `+${row.quantityReceived.toFixed(2)}` },
-            { key: "price", header: t("store:colUnit"), render: (row) => `${etb.format(row.unitPrice)} ETB` },
-            { key: "total", header: t("store:colLineTotal"), render: (row) => `${etb.format(row.totalPrice)} ETB` },
+            { key: "price", header: t("store:colUnit"), render: (row) => `${etb.format(row.unitPrice)} ${t("store:currency")}` },
+            { key: "total", header: t("store:colLineTotal"), render: (row) => `${etb.format(row.totalPrice)} ${t("store:currency")}` },
             { key: "state", header: t("store:colState"), render: () => t("store:binUpdated") },
           ]}
         />
@@ -415,7 +415,7 @@ export function ApprovalsPage() {
           rowKey={(row) => row.id}
           empty={t("store:emptyApprovals")}
           columns={[
-            { key: "ref", header: "Ref Code", render: (row) => row.refCode },
+            { key: "ref", header: t("store:colRef"), render: (row) => row.refCode },
             { key: "who", header: t("store:source"), render: (row) => row.requesterName },
             { key: "dept", header: t("store:department"), render: (row) => row.department },
             { key: "item", header: t("store:colItem"), render: (row) => `${row.itemName} [${row.itemCode}]` },
@@ -490,7 +490,7 @@ export function IssuePage() {
           rowKey={(row) => row.id}
           empty={t("store:emptyIssues")}
           columns={[
-            { key: "ref", header: "Ref Code", render: (row) => row.refCode },
+            { key: "ref", header: t("store:colRef"), render: (row) => row.refCode },
             { key: "who", header: t("store:source"), render: (row) => `${row.requesterName} / ${row.department}` },
             { key: "item", header: t("store:colItem"), render: (row) => `${row.itemName} [${row.itemCode}]` },
             { key: "qty", header: t("store:quantity"), render: (row) => `${row.quantityRequested} ${row.unitOfMeasure}` },
@@ -525,14 +525,14 @@ export function IssuePage() {
         <Table
           rows={query.data.history}
           rowKey={(row) => row.id}
-          empty={t("store:emptyIssues")}
+          empty={t("store:emptyIssueHistory")}
           columns={[
             { key: "no", header: t("store:voucherPlaceholder"), render: (row) => row.voucherNo },
             { key: "date", header: t("store:colDate"), render: (row) => row.issueDate },
             { key: "item", header: t("store:colItem"), render: (row) => `[${row.itemCode}] ${row.itemName}` },
             { key: "qty", header: t("store:quantity"), render: (row) => row.quantityIssued },
             { key: "who", header: t("store:source"), render: (row) => row.requesterName },
-            { key: "cost", header: t("store:colLineTotal"), render: (row) => `${etb.format(row.totalCost)} ETB` },
+            { key: "cost", header: t("store:colLineTotal"), render: (row) => `${etb.format(row.totalCost)} ${t("store:currency")}` },
           ]}
         />
       </div>
@@ -623,7 +623,7 @@ export function RegisterPage() {
               { key: "code", header: t("store:colCode"), render: (row) => row.code },
               { key: "name", header: t("store:colName"), render: (row) => row.name },
               { key: "stock", header: t("store:colStock"), render: (row) => row.currentStock },
-              { key: "value", header: t("store:colTotal"), render: (row) => `ETB ${etb.format(row.totalValue)}` },
+              { key: "value", header: t("store:colTotal"), render: (row) => `${t("store:currency")} ${etb.format(row.totalValue)}` },
             ]}
           />
         </div>

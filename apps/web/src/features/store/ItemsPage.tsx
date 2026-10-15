@@ -124,7 +124,7 @@ export function ItemsPage() {
           <span className="text-sm text-ink-muted">{t("store:directive")}</span>
         </div>
         <p className="text-sm text-ink-muted">
-          {t("store:keeperValue")} <strong className="text-[#2563eb]">ETB {etb.format(stats.totalValue)}</strong>
+          {t("store:keeperValue")} <strong className="text-[#2563eb]">{t("store:currency")} {etb.format(stats.totalValue)}</strong>
         </p>
       </div>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
@@ -216,7 +216,7 @@ export function ItemsPage() {
         <Stat title={t("store:adequate")} value={String(stats.adequate)} hint={t("store:wellStocked")} tone="text-[#15803d]" />
         <Stat title={t("store:lowStock")} value={String(stats.low)} hint={t("store:needsReorder")} tone="text-[#b45309]" />
         <Stat title={t("store:critical")} value={String(stats.critical)} hint={t("store:urgent")} tone="text-[#b91c1c]" />
-        <Stat title={t("store:totalValue")} value={`ETB ${whole.format(stats.totalValue)}`} hint={t("store:atCost")} tone="text-[#1e40af]" />
+        <Stat title={t("store:totalValue")} value={`${t("store:currency")} ${whole.format(stats.totalValue)}`} hint={t("store:atCost")} tone="text-[#1e40af]" />
       </div>
       <div className="rounded-xl border border-[#e2e8f0] bg-white">
         <div className="flex flex-wrap gap-2 border-b border-[#e2e8f0] p-3">
@@ -255,8 +255,8 @@ export function ItemsPage() {
             { key: "category", header: t("store:colCategory"), render: (row) => row.categoryName || t("store:uncategorized") },
             { key: "stock", header: t("store:colStock"), render: (row) => row.currentStock },
             { key: "minmax", header: t("store:colMinMax"), render: (row) => `${row.reorderLevel} / ${row.maxLevel}` },
-            { key: "cost", header: t("store:colUnitCost"), render: (row) => `ETB ${etb.format(row.unitCost)}` },
-            { key: "value", header: t("store:colTotal"), render: (row) => `ETB ${etb.format(row.totalValue)}` },
+            { key: "cost", header: t("store:colUnitCost"), render: (row) => `${t("store:currency")} ${etb.format(row.unitCost)}` },
+            { key: "value", header: t("store:colTotal"), render: (row) => `${t("store:currency")} ${etb.format(row.totalValue)}` },
             { key: "location", header: t("store:colLocation"), render: (row) => `${row.storeNo} - ${row.shelfNo}` },
             {
               key: "status",
