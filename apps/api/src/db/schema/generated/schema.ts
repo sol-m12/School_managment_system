@@ -1,4 +1,4 @@
-import { mysqlTable, mysqlSchema, AnyMySqlColumn, index, foreignKey, int, varchar, text, date, mysqlEnum, timestamp, datetime, unique, time, decimal, longtext, float, char, tinyint, bigint } from "drizzle-orm/mysql-core"
+import { mysqlTable, mysqlSchema, AnyMySqlColumn, index, foreignKey, int, varchar, text, date, mysqlEnum, timestamp, datetime, decimal, unique, time, longtext, float, char, tinyint, bigint } from "drizzle-orm/mysql-core"
 import { sql } from "drizzle-orm"
 
 export const adminTasks = mysqlTable("admin_tasks", {
@@ -93,6 +93,23 @@ export const auditLog = mysqlTable("audit_log", {
 },
 (table) => [
 	index("idx_audit_log_tenant_id").on(table.tenantId),
+]);
+
+export const binCardLedger = mysqlTable("bin_card_ledger", {
+	ledgerId: int("ledger_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	itemId: int("item_id").notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	transactionDate: date("transaction_date", { mode: 'string' }).notNull(),
+	referenceDocument: varchar("reference_document", { length: 100 }),
+	receivedQty: decimal("received_qty", { precision: 12, scale: 2 }).default('0.00').notNull(),
+	issuedQty: decimal("issued_qty", { precision: 12, scale: 2 }).default('0.00').notNull(),
+	balanceQty: decimal("balance_qty", { precision: 12, scale: 2 }).default('0.00').notNull(),
+	remark: varchar({ length: 255 }),
+},
+(table) => [
+	index("idx_bin_card_ledger_tenant_id").on(table.tenantId),
+	index("idx_bin_card_ledger_item").on(table.tenantId, table.itemId, table.ledgerId),
 ]);
 
 export const classes = mysqlTable("classes", {
@@ -446,6 +463,58 @@ export const income = mysqlTable("income", {
 	index("idx_income_tenant_id").on(table.tenantId),
 ]);
 
+export const issueModel22 = mysqlTable("issue_model22", {
+	issueId: int("issue_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	requisitionId: int("requisition_id").notNull(),
+	itemId: int("item_id").notNull(),
+	issueNo: varchar("issue_no", { length: 100 }).notNull(),
+	quantityIssued: decimal("quantity_issued", { precision: 12, scale: 2 }).notNull(),
+	issuedToStaffId: int("issued_to_staff_id").notNull(),
+	issuedByStaffId: int("issued_by_staff_id").notNull(),
+	issueDate: timestamp("issue_date", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_issue_model22_tenant_id").on(table.tenantId),
+]);
+
+export const items = mysqlTable("items", {
+	itemId: int("item_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	itemCode: varchar("item_code", { length: 50 }).notNull(),
+	itemName: varchar("item_name", { length: 255 }).notNull(),
+	categoryId: int("category_id").references(() => itemCategories.categoryId, { onDelete: "restrict", onUpdate: "restrict" } ),
+	modelNo: varchar("model_no", { length: 100 }),
+	unitOfMeasure: varchar("unit_of_measure", { length: 50 }).notNull(),
+	reorderLevel: int("reorder_level").default(5).notNull(),
+	unitCost: decimal("unit_cost", { precision: 12, scale: 2 }).default('0.00').notNull(),
+	currentStock: decimal("current_stock", { precision: 12, scale: 2 }).default('0.00').notNull(),
+	isPerishable: tinyint("is_perishable").default(0).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	expiryDate: date("expiry_date", { mode: 'string' }),
+	defaultStoreNo: varchar("default_store_no", { length: 100 }),
+	defaultShelfNo: varchar("default_shelf_no", { length: 100 }),
+	specification: text(),
+	itemType: varchar("item_type", { length: 30 }),
+},
+(table) => [
+	index("idx_items_tenant_id").on(table.tenantId),
+	index("idx_items_category_id").on(table.categoryId),
+	unique("uq_items_tenant_code").on(table.tenantId, table.itemCode),
+]);
+
+export const itemCategories = mysqlTable("item_categories", {
+	categoryId: int("category_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	categoryCode: varchar("category_code", { length: 50 }).notNull(),
+	categoryName: varchar("category_name", { length: 150 }).notNull(),
+	description: text(),
+},
+(table) => [
+	index("idx_item_categories_tenant_id").on(table.tenantId),
+	unique("uq_item_categories_tenant_code").on(table.tenantId, table.categoryCode),
+]);
+
 export const libraryAttendance = mysqlTable("library_attendance", {
 	attendanceId: int("attendance_id").autoincrement().notNull(),
 	studentId: int("student_id").references(() => students.studentId, { onDelete: "restrict", onUpdate: "restrict" } ),
@@ -551,6 +620,37 @@ export const liveQuizSessions = mysqlTable("live_quiz_sessions", {
 	unique("exam_id").on(table.examId),
 ]);
 
+export const model19Grn = mysqlTable("model_19_grn", {
+	grnId: int("grn_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	grnNumber: varchar("grn_number", { length: 50 }).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	dateReceived: date("date_received", { mode: 'string' }).notNull(),
+	department: varchar({ length: 150 }),
+	supplierId: int("supplier_id"),
+	delivererName: varchar("deliverer_name", { length: 150 }),
+	receivedByStaffId: int("received_by_staff_id"),
+},
+(table) => [
+	index("idx_model_19_grn_tenant_id").on(table.tenantId),
+]);
+
+export const model19Items = mysqlTable("model_19_items", {
+	lineId: int("line_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	grnId: int("grn_id").notNull().references(() => model19Grn.grnId, { onDelete: "restrict", onUpdate: "restrict" } ),
+	itemId: int("item_id").notNull(),
+	stockClassification: varchar("stock_classification", { length: 150 }),
+	storeNo: varchar("store_no", { length: 100 }),
+	shelfNo: varchar("shelf_no", { length: 100 }),
+	quantityReceived: decimal("quantity_received", { precision: 12, scale: 2 }).notNull(),
+	unitPrice: decimal("unit_price", { precision: 12, scale: 2 }).notNull(),
+},
+(table) => [
+	index("idx_model_19_items_tenant_id").on(table.tenantId),
+	index("idx_model_19_items_grn_id").on(table.grnId),
+]);
+
 export const onlineExams = mysqlTable("online_exams", {
 	examId: int("exam_id").autoincrement().notNull(),
 	examTitle: varchar("exam_title", { length: 255 }).notNull(),
@@ -632,6 +732,26 @@ export const periodSettings = mysqlTable("period_settings", {
 },
 (table) => [
 	index("idx_period_settings_tenant_id").on(table.tenantId),
+]);
+
+export const requisitionsModel20 = mysqlTable("requisitions_model20", {
+	requisitionId: int("requisition_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	refCode: varchar("ref_code", { length: 80 }).notNull(),
+	requesterStaffId: int("requester_staff_id").notNull(),
+	department: varchar({ length: 150 }),
+	itemId: int("item_id").notNull(),
+	quantityRequested: decimal("quantity_requested", { precision: 12, scale: 2 }).notNull(),
+	estimatedUnitPrice: decimal("estimated_unit_price", { precision: 12, scale: 2 }).default('0.00').notNull(),
+	estimatedTotalPrice: decimal("estimated_total_price", { precision: 14, scale: 2 }).default('0.00').notNull(),
+	purpose: varchar({ length: 255 }),
+	status: varchar({ length: 30 }).default('Pending').notNull(),
+	approvedByStaffId: int("approved_by_staff_id"),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_requisitions_model20_tenant_id").on(table.tenantId),
+	index("idx_requisitions_model20_status").on(table.tenantId, table.status),
 ]);
 
 export const schemaMigrations = mysqlTable("schema_migrations", {
@@ -781,6 +901,24 @@ export const staffFolders = mysqlTable("staff_folders", {
 	index("idx_staff_folders_tenant_id").on(table.tenantId),
 ]);
 
+export const stockLedgerCard = mysqlTable("stock_ledger_card", {
+	ledgerId: int("ledger_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	itemId: int("item_id").notNull(),
+	transactionDate: datetime("transaction_date", { mode: 'string'}).notNull(),
+	refNo: varchar("ref_no", { length: 100 }),
+	receivedQty: decimal("received_qty", { precision: 12, scale: 2 }).default('0.00').notNull(),
+	issuedQty: decimal("issued_qty", { precision: 12, scale: 2 }).default('0.00').notNull(),
+	issuePrice: decimal("issue_price", { precision: 12, scale: 2 }),
+	balanceQty: decimal("balance_qty", { precision: 12, scale: 2 }).default('0.00').notNull(),
+	balancePrice: decimal("balance_price", { precision: 14, scale: 2 }),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_stock_ledger_card_tenant_id").on(table.tenantId),
+	index("idx_stock_ledger_card_date").on(table.tenantId, table.transactionDate),
+]);
+
 export const students = mysqlTable("students", {
 	studentId: int("student_id").autoincrement().notNull(),
 	fullName: varchar("full_name", { length: 255 }).notNull(),
@@ -901,6 +1039,15 @@ export const subjectWeightings = mysqlTable("subject_weightings", {
 },
 (table) => [
 	index("idx_subject_weightings_tenant_id").on(table.tenantId),
+]);
+
+export const suppliers = mysqlTable("suppliers", {
+	supplierId: int("supplier_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	supplierName: varchar("supplier_name", { length: 200 }).notNull(),
+},
+(table) => [
+	index("idx_suppliers_tenant_id").on(table.tenantId),
 ]);
 
 export const systemSettings = mysqlTable("system_settings", {

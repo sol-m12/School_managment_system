@@ -3,7 +3,8 @@
  * Teacher and Technician screenshots are complete.
  * V_Principal lower group is the live menu (2026-10-13): dashboard, file management, profile.
  * TEMPORARY: the Admin screenshot is still cut off below the last item listed here.
- * Student and Store_Keeper items are TEMPORARY: those screenshots were not taken.
+ * Student items match the live haymi menu (2026-10-15).
+ * Store_Keeper items match the live yekte menu (2026-10-15).
  *
  * TODO: replace with GET /menu once modules and role_modules exist.
  * docs/backlog.md "Menu from database".
@@ -12,14 +13,20 @@ import type { LucideIcon } from "lucide-react";
 import {
   ArrowDownCircle,
   BookOpen,
-  BookOpenCheck,
   CalendarDays,
+  ChartColumn,
   ChartLine,
   CheckCheck,
   ClipboardList,
+  Boxes,
+  ArrowUpCircle,
+  ScrollText,
+  Wallet,
   Database,
   FileDown,
   FileText,
+  FlaskConical,
+  Laptop,
   FolderOpen,
   Gauge,
   GraduationCap,
@@ -32,6 +39,8 @@ import {
   RotateCcw,
   SlidersHorizontal,
   SquarePen,
+  TestTube,
+  Trophy,
   UserCheck,
   UserCog,
   UsersRound,
@@ -51,6 +60,7 @@ export type MenuGroupKey =
   | "systemSettings"
   | "store"
   | "finance"
+  | "studentInfo"
   | "main";
 
 export type MenuItem = {
@@ -77,6 +87,7 @@ export const MENU_GROUP_ORDER: readonly MenuGroupKey[] = [
   "techRegistration",
   "systemSettings",
   "store",
+  "studentInfo",
   "main",
   "finance",
 ];
@@ -89,9 +100,14 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   // Teacher
   { key: "takeAttendance", path: "/teacher/take-attendance", icon: Link, group: "academic", permission: "attendance.take" },
 
-  // Student (TEMPORARY: no screenshot)
-  { key: "academicResults", path: "/student/results", icon: BookOpenCheck, group: "academic", permission: "results.readOwn" },
-  { key: "semesterReportCard", path: "/student/report-card", icon: FileText, group: "academic", permission: "reportCard.readOwn" },
+  // Student live menu (haymi, 2026-10-15) — ተማሪ መረጃ
+  { key: "onlineExam", path: "/student/exams", icon: Laptop, group: "studentInfo", permission: "exams.readOwn" },
+  { key: "groupParticipation", path: "/student/groups", icon: UsersRound, group: "studentInfo", permission: "groups.readOwn" },
+  { key: "groupCompetition", path: "/student/quiz", icon: Trophy, group: "studentInfo", permission: "quiz.readOwn" },
+  { key: "teacherFiles", path: "/student/resources", icon: FileText, group: "studentInfo", permission: "resources.readOwn" },
+  { key: "sentSimulation", path: "/student/simulations", icon: FlaskConical, group: "studentInfo", permission: "simulations.readOwn" },
+  { key: "virtualLab", path: "/student/virtual-lab", icon: TestTube, group: "studentInfo", permission: "simulations.readOwn" },
+  { key: "myResults", path: "/student/results", icon: ChartColumn, group: "studentInfo", permission: "results.readOwn" },
 
   { key: "requestItem", path: "/teacher/store-requests", icon: Link, group: "administration", permission: "storeRequests.create" },
 
@@ -133,25 +149,41 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "schoolInfo", path: "/system/school-info", icon: Landmark, group: "systemSettings", permission: "schoolInfo.manage" },
   { key: "roleModules", path: "/system/role-modules", icon: SlidersHorizontal, group: "systemSettings", permission: "roleModules.manage" },
 
-  // Store_Keeper (TEMPORARY: no screenshot)
-  { key: "receiveItems", path: "/store/receive", icon: ArrowDownCircle, group: "store", permission: "store.receive" },
-  { key: "binCard", path: "/store/bin-card", icon: ClipboardList, group: "store", permission: "store.binCard" },
+  // Store_Keeper live menu (yekte, 2026-10-15) — ACADEMIC
+  { key: "storeApprovals", path: "/store/approvals", icon: Link, group: "academic", permission: "store.approvals" },
+  { key: "profileSettings", path: "/profile", icon: UserCog, group: "academic", roles: ["Store_Keeper"] },
+  { key: "mehi16", path: "/store/mehi-16", icon: ScrollText, group: "academic", permission: "store.finance" },
+  { key: "ledgerCards", path: "/store/ledger-cards", icon: ScrollText, group: "academic", permission: "store.finance" },
+
+  // Store_Keeper — አስተዳደር
+  { key: "propertyInflow", path: "/store/inflow", icon: ArrowDownCircle, group: "administration", permission: "store.inflow" },
+  { key: "storeItems", path: "/store/items", icon: Boxes, group: "administration", permission: "store.items" },
+  { key: "model19", path: "/store/model-19", icon: ArrowDownCircle, group: "administration", permission: "store.receive" },
+  { key: "itemHub", path: "/store/register", icon: ClipboardList, group: "administration", permission: "store.items" },
+  { key: "binCard", path: "/store/bin-card", icon: ClipboardList, group: "administration", permission: "store.binCard" },
+  { key: "storeDashboard", path: "/dashboard", icon: Gauge, group: "administration", roles: ["Store_Keeper"] },
+  { key: "issueModel22", path: "/store/issue", icon: ArrowUpCircle, group: "administration", permission: "store.issue" },
+  { key: "saveBudget", path: "/store/budget", icon: Wallet, group: "administration", permission: "store.finance" },
+  { key: "mehi17Ledger", path: "/store/mehi-17", icon: ScrollText, group: "administration", permission: "store.finance" },
+  { key: "mehi17Setup", path: "/store/mehi-17-setup", icon: ScrollText, group: "administration", permission: "store.finance" },
+  { key: "mehi7", path: "/store/mehi-7", icon: ScrollText, group: "administration", permission: "store.finance" },
 
   {
     key: "dashboard",
     path: "/dashboard",
     icon: Gauge,
     group: "main",
-    roles: ["Admin", "Teacher", "Technician", "V_Principal"],
+    roles: ["Admin", "Teacher", "Technician", "V_Principal", "Student"],
     labelByRole: {
       Admin: "dashboardAdmin",
       Teacher: "dashboardAcademic",
       Technician: "dashboardStaff",
       V_Principal: "dashboardAdmin",
+      Student: "dashboardStudent",
     },
   },
   { key: "fileManagement", path: "/files", icon: FolderOpen, group: "main", permission: "files.manage" },
-  { key: "profile", path: "/profile", icon: UserCog, group: "main", roles: ["Admin", "Teacher", "Technician", "V_Principal"] },
+  { key: "profile", path: "/profile", icon: UserCog, group: "main", roles: ["Admin", "Teacher", "Technician", "V_Principal", "Student", "Store_Keeper"] },
   { key: "payments", path: "/finance/payments", icon: Landmark, group: "finance", permission: "finance.income" },
   { key: "incomeExpense", path: "/finance/income", icon: Landmark, group: "finance", permission: "finance.expense" },
 ];

@@ -45,9 +45,19 @@ export const PERMISSIONS = [
 
   "results.readOwn",
   "reportCard.readOwn",
+  "exams.readOwn",
+  "groups.readOwn",
+  "quiz.readOwn",
+  "resources.readOwn",
+  "simulations.readOwn",
 
+  "store.items",
   "store.receive",
   "store.binCard",
+  "store.inflow",
+  "store.issue",
+  "store.approvals",
+  "store.finance",
 
   "finance.income",
   "finance.expense",

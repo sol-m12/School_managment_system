@@ -23,12 +23,14 @@
   "quickActions": "ፈጣን ተግባራት (Store Operations)",
   "actionTitles": {
     "receiveItems": "እቃ ገቢ ማድረግ",
+    "issueItems": "እቃ ወጪ ማድረግ",
     "binCard": "የቢን ካርድ መዝገብ",
     "accountSettings": "አካውንት ማስተካከል",
     "profile": "የኔ ፕሮፋይል"
   },
   "actions": {
     "receiveItems": "Model 19 መመዝገቢያ",
+    "issueItems": "Model 22 መመዝገቢያ",
     "binCard": "የእቃዎች ብዛት ታሪክ",
     "accountSettings": "የይለፍ ቃል ይቀይሩ",
     "profile": "መረጃዎን ያሻሽሉ"

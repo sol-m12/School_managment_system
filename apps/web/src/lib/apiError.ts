@@ -52,6 +52,9 @@ export type ErrorKey =
   | "examPassword"
   | "examWeight"
   | "storeUnavailable"
+  | "duplicateCode"
+  | "insufficientStock"
+  | "staffRequired"
   | "roleUnknown";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
@@ -103,6 +106,9 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   EXAM_PASSWORD: "examPassword",
   EXAM_WEIGHT: "examWeight",
   STORE_UNAVAILABLE: "storeUnavailable",
+  DUPLICATE_CODE: "duplicateCode",
+  INSUFFICIENT_STOCK: "insufficientStock",
+  STAFF_REQUIRED: "staffRequired",
   ROLE_UNKNOWN: "roleUnknown",
 };
 

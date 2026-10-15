@@ -50,9 +50,19 @@ export const PERMISSIONS = [
 
   "results.readOwn",
   "reportCard.readOwn",
+  "exams.readOwn",
+  "groups.readOwn",
+  "quiz.readOwn",
+  "resources.readOwn",
+  "simulations.readOwn",
 
+  "store.items",
   "store.receive",
   "store.binCard",
+  "store.inflow",
+  "store.issue",
+  "store.approvals",
+  "store.finance",
 
   "finance.income",
   "finance.expense",
@@ -103,11 +113,20 @@ const GRANTS: Record<Permission, readonly Role[]> = {
 
   "files.manage": ["Admin", "Teacher", "Technician", "V_Principal"],
 
-  // No screenshot yet. Placeholder menu only.
   "results.readOwn": ["Student"],
   "reportCard.readOwn": ["Student"],
+  "exams.readOwn": ["Student"],
+  "groups.readOwn": ["Student"],
+  "quiz.readOwn": ["Student"],
+  "resources.readOwn": ["Student"],
+  "simulations.readOwn": ["Student"],
+  "store.items": ["Store_Keeper"],
   "store.receive": ["Store_Keeper"],
   "store.binCard": ["Store_Keeper"],
+  "store.inflow": ["Store_Keeper"],
+  "store.issue": ["Store_Keeper"],
+  "store.approvals": ["Store_Keeper"],
+  "store.finance": ["Store_Keeper"],
 
   "finance.income": ["Admin"],
   "finance.expense": ["Admin"],

@@ -1,6 +1,17 @@
-import { and, asc, count, desc, eq, inArray, isNull, or, type SQL } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, isNull, lte, or, sql, type SQL } from "drizzle-orm";
 import { db } from "../../db/index.js";
-import { classes, classSchedule, staff, students, subjects, systemSettings, teacherAssignments, users } from "../../db/schema/index.js";
+import {
+  classes,
+  classSchedule,
+  items,
+  staff,
+  stockLedgerCard,
+  students,
+  subjects,
+  systemSettings,
+  teacherAssignments,
+  users,
+} from "../../db/schema/index.js";
 import type { Role } from "../../lib/roles.js";
 import { scoped } from "../../lib/tenant.js";
 
@@ -123,14 +134,23 @@ async function storeHome(tenantId: number, userId: number): Promise<StoreDashboa
     .where(scoped(staff, tenantId, eq(staff.userId, userId)))
     .limit(1);
 
+  const [itemRow] = await db.select({ total: count() }).from(items).where(scoped(items, tenantId));
+  const [lowRow] = await db
+    .select({ total: count() })
+    .from(items)
+    .where(scoped(items, tenantId, lte(items.currentStock, items.reorderLevel)));
+  const [trxRow] = await db
+    .select({ total: count() })
+    .from(stockLedgerCard)
+    .where(scoped(stockLedgerCard, tenantId, sql`DATE(${stockLedgerCard.transactionDate}) = CURDATE()`));
+
   return {
     kind: "store",
     firstName: member?.firstName ?? "",
     jobTitle: member?.jobTitle ?? "Store Keeper",
-    // items and stock_ledger_card are not in this database, so the cards stay at 0.
-    itemTypes: 0,
-    lowStock: 0,
-    todayTransactions: 0,
+    itemTypes: asNumber(itemRow?.total),
+    lowStock: asNumber(lowRow?.total),
+    todayTransactions: asNumber(trxRow?.total),
   };
 }
 

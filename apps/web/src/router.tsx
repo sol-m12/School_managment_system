@@ -35,6 +35,15 @@ import { StudentWatchPage } from "@/features/students/StudentWatchPage";
 import { SubjectDetailPage } from "@/features/subjects/SubjectDetailPage";
 import { SubjectEditPage } from "@/features/subjects/SubjectEditPage";
 import { SubjectsPage } from "@/features/subjects/SubjectsPage";
+import { ItemsPage } from "@/features/store/ItemsPage";
+import {
+  ApprovalsPage as StoreApprovalQueuePage,
+  BinCardPage,
+  InflowPage,
+  IssuePage,
+  Model19Page,
+  RegisterPage,
+} from "@/features/store/StoreFlows";
 import { MENU_ITEMS, type NavItemKey } from "@/navigation/menu";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
@@ -54,6 +63,9 @@ import {
   StudentRegistrationPage,
 } from "@/features/teacher/TeacherTaskPages";
 import { PublicPlaceholderPage } from "@/pages/PublicPlaceholderPage";
+import { GroupHubPage, GroupsPage } from "@/features/student/GroupsPage";
+import { ExamsPage, QuizPage, ResourcesPage, SimulationsPage as StudentSimulationsPage, VirtualLabPage } from "@/features/student/LearnPages";
+import { ResultsPage } from "@/features/student/ResultsPage";
 import { AnnouncementsPage } from "@/features/technician/AnnouncementsPage";
 import { StaffRegistrationPage } from "@/features/technician/StaffRegistrationPage";
 import { StudentIdPage } from "@/features/technician/StudentIdPage";
@@ -97,6 +109,22 @@ const BUILT_ITEMS: readonly NavItemKey[] = [
   "announcements",
   "staffRegistration",
   "accountManagement",
+  "onlineExam",
+  "groupParticipation",
+  "groupCompetition",
+  "teacherFiles",
+  "sentSimulation",
+  "virtualLab",
+  "myResults",
+  "storeApprovals",
+  "profileSettings",
+  "propertyInflow",
+  "storeItems",
+  "model19",
+  "itemHub",
+  "binCard",
+  "storeDashboard",
+  "issueModel22",
 ];
 
 const placeholderRoutes: RouteObject[] = MENU_ITEMS.filter((item) => !BUILT_ITEMS.includes(item.key)).map((item) => ({
@@ -179,6 +207,13 @@ export const router = createBrowserRouter([
       { path: "system/role-modules", element: <ProtectedRoute permission="roleModules.manage"><RoleModulesPage /></ProtectedRoute> },
       { path: "files", element: <ProtectedRoute permission="files.manage"><FilesPage /></ProtectedRoute> },
       { path: "profile", element: <ProfilePage /> },
+      { path: "store/items", element: <ProtectedRoute permission="store.items"><ItemsPage /></ProtectedRoute> },
+      { path: "store/model-19", element: <ProtectedRoute permission="store.receive"><Model19Page /></ProtectedRoute> },
+      { path: "store/bin-card", element: <ProtectedRoute permission="store.binCard"><BinCardPage /></ProtectedRoute> },
+      { path: "store/inflow", element: <ProtectedRoute permission="store.inflow"><InflowPage /></ProtectedRoute> },
+      { path: "store/approvals", element: <ProtectedRoute permission="store.approvals"><StoreApprovalQueuePage /></ProtectedRoute> },
+      { path: "store/issue", element: <ProtectedRoute permission="store.issue"><IssuePage /></ProtectedRoute> },
+      { path: "store/register", element: <ProtectedRoute permission="store.items"><RegisterPage /></ProtectedRoute> },
       { path: "finance/payments", element: <ProtectedRoute permission="finance.income"><IncomePage /></ProtectedRoute> },
       { path: "finance/income", element: <ProtectedRoute permission="finance.expense"><ExpensePage /></ProtectedRoute> },
       { path: "teacher/assigned-works", element: <ProtectedRoute permission="assignedWork.read"><AssignedWorksPage /></ProtectedRoute> },
@@ -197,6 +232,14 @@ export const router = createBrowserRouter([
       { path: "system/announcements", element: <ProtectedRoute permission="announcements.manage"><AnnouncementsPage /></ProtectedRoute> },
       { path: "system/staff-registration", element: <ProtectedRoute permission="staffRegistration.manage"><StaffRegistrationPage /></ProtectedRoute> },
       { path: "account/manage", element: <ProtectedRoute permission="accounts.manage"><StudentIdPage /></ProtectedRoute> },
+      { path: "student/results", element: <ProtectedRoute permission="results.readOwn"><ResultsPage /></ProtectedRoute> },
+      { path: "student/groups", element: <ProtectedRoute permission="groups.readOwn"><GroupsPage /></ProtectedRoute> },
+      { path: "student/groups/:groupId", element: <ProtectedRoute permission="groups.readOwn"><GroupHubPage /></ProtectedRoute> },
+      { path: "student/simulations", element: <ProtectedRoute permission="simulations.readOwn"><StudentSimulationsPage /></ProtectedRoute> },
+      { path: "student/resources", element: <ProtectedRoute permission="resources.readOwn"><ResourcesPage /></ProtectedRoute> },
+      { path: "student/exams", element: <ProtectedRoute permission="exams.readOwn"><ExamsPage /></ProtectedRoute> },
+      { path: "student/quiz", element: <ProtectedRoute permission="quiz.readOwn"><QuizPage /></ProtectedRoute> },
+      { path: "student/virtual-lab", element: <ProtectedRoute permission="simulations.readOwn"><VirtualLabPage /></ProtectedRoute> },
       ...placeholderRoutes,
       { path: "*", element: <NotFoundPage /> },
     ],

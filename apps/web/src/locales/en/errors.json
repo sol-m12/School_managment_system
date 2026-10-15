@@ -52,5 +52,8 @@
   "examPassword": "The exam code is not correct.",
   "examWeight": "The subject total must not pass 100.",
   "storeUnavailable": "The store records are not in this database.",
+  "duplicateCode": "This code is already registered.",
+  "insufficientStock": "The bin card does not have enough quantity.",
+  "staffRequired": "No staff record was found for this account.",
   "roleUnknown": "Error: this role is not in the system list."
 }

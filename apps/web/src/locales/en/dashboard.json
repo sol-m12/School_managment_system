@@ -22,13 +22,15 @@
   },
   "quickActions": "Quick Actions (Store Operations)",
   "actionTitles": {
-    "receiveItems": "Receive Items",
-    "binCard": "Bin Card Ledger",
+    "receiveItems": "Receive items",
+    "issueItems": "Issue items",
+    "binCard": "Bin card ledger",
     "accountSettings": "Account Settings",
     "profile": "My Profile"
   },
   "actions": {
     "receiveItems": "Model 19 entry",
+    "issueItems": "Model 22 entry",
     "binCard": "Item quantity history",
     "accountSettings": "Change your password",
     "profile": "Update your information"

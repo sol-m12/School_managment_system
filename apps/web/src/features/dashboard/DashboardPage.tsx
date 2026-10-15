@@ -23,9 +23,11 @@ import { QuickActionCard } from "./components/QuickActionCard";
 import { StatCard } from "./components/StatCard";
 import { TeacherHome } from "./components/TeacherHome";
 import { WelcomeBanner } from "./components/WelcomeBanner";
+import { StudentHome } from "@/features/student/StudentHome";
 
 const QUICK_ACTIONS = [
-  { key: "receiveItems", item: "receiveItems" },
+  { key: "receiveItems", item: "model19" },
+  { key: "issueItems", item: "issueModel22" },
   { key: "binCard", item: "binCard" },
   { key: "accountSettings", item: "accountManagement" },
   { key: "profile", item: "profile" },
@@ -34,6 +36,12 @@ const QUICK_ACTIONS = [
 const numberFormat = new Intl.NumberFormat("en-US");
 
 export function DashboardPage() {
+  const user = useSessionUser();
+  if (user.role === "Student") return <StudentHome />;
+  return <StaffDashboard />;
+}
+
+function StaffDashboard() {
   const { t } = useTranslation(["dashboard", "nav", "errors", "common"]);
   const user = useSessionUser();
   const can = useCan();
