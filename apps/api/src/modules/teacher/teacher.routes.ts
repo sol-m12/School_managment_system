@@ -18,7 +18,9 @@ import {
   reportCardQuerySchema,
   scoreBodySchema,
   sheetQuerySchema,
+  courseFileBodySchema,
   simulationBodySchema,
+  storeRequestBodySchema,
   subjectAttendanceBodySchema,
   subjectAttendanceQuerySchema,
   subjectReportQuerySchema,
@@ -46,8 +48,11 @@ import {
   saveRegistration,
   saveSubjectAttendance,
   setExamStatus,
+  addCourseFile,
+  courseFileBoard,
   simulationBoard,
   storeBoard,
+  teacherProfile,
   subjectAttendance,
   subjectReport,
   submitStoreRequest,
@@ -82,7 +87,10 @@ function sendError(res: Response, error: unknown): void {
   }
   if (error instanceof TeacherError) {
     const status =
-      error.code === "NOT_ASSIGNED" || error.code === "PLAN_NOT_FOUND" || error.code === "EXAM_NOT_FOUND"
+      error.code === "NOT_ASSIGNED" ||
+      error.code === "PLAN_NOT_FOUND" ||
+      error.code === "EXAM_NOT_FOUND" ||
+      error.code === "ITEM_NOT_FOUND"
         ? 404
         : error.code === "GRADES_LOCKED" || error.code === "ATTENDANCE_LOCKED" || error.code === "STORE_UNAVAILABLE"
           ? 409
@@ -459,8 +467,36 @@ teacherRouter.get("/store-requests", ...requirePermission("storeRequests.create"
 });
 
 teacherRouter.post("/store-requests", ...requirePermission("storeRequests.create"), async (req, res) => {
+  const input = parseBody(storeRequestBodySchema, req, res);
+  if (!input) return;
   try {
-    res.json(await submitStoreRequest());
+    res.status(201).json(await submitStoreRequest(tenantOf(req), userOf(req), input));
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+teacherRouter.get("/profile", ...requirePermission("assignedWork.read"), async (req, res) => {
+  try {
+    res.json(await teacherProfile(tenantOf(req), userOf(req)));
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+teacherRouter.get("/course-files", ...requirePermission("files.manage"), async (req, res) => {
+  try {
+    res.json(await courseFileBoard(tenantOf(req), userOf(req)));
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+teacherRouter.post("/course-files", ...requirePermission("files.manage"), async (req, res) => {
+  const input = parseBody(courseFileBodySchema, req, res);
+  if (!input) return;
+  try {
+    res.status(201).json(await addCourseFile(tenantOf(req), userOf(req), input));
   } catch (error) {
     sendError(res, error);
   }

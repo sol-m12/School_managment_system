@@ -106,6 +106,7 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   EXAM_PASSWORD: "examPassword",
   EXAM_WEIGHT: "examWeight",
   STORE_UNAVAILABLE: "storeUnavailable",
+  ITEM_NOT_FOUND: "notFound",
   DUPLICATE_CODE: "duplicateCode",
   INSUFFICIENT_STOCK: "insufficientStock",
   STAFF_REQUIRED: "staffRequired",

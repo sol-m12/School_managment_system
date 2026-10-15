@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import request from "supertest";
 import { beforeAll, describe, expect, it } from "vitest";
 import { db } from "../../db/index.js";
-import { classes, grades, staff, students, subjects, systemSettings, teacherAssignments } from "../../db/schema/index.js";
+import { classes, grades, items, staff, students, subjects, systemSettings, teacherAssignments } from "../../db/schema/index.js";
 import { createAccessToken } from "../../lib/jwt.js";
 import type { Role } from "../../lib/roles.js";
 import { scoped, withTenant } from "../../lib/tenant.js";
@@ -233,5 +233,59 @@ describe("teacher pages", () => {
       .set("Authorization", bearer(seed.tenantB.id, "Teacher", seed.tenantB.userId))
       .expect(200);
     expect(JSON.stringify(hidden.body)).not.toContain("Isolated Pupil");
+  });
+
+  it("keeps a store request, a shared file, and the locked profile inside this school", async () => {
+    const itemA = await db.insert(items).values(
+      withTenant({ itemCode: "TCH-A", itemName: "Teacher Paper A", unitOfMeasure: "Ream" }, seed.tenantA.id),
+    );
+    await db.insert(items).values(
+      withTenant({ itemCode: "TCH-B", itemName: "Secret Store Item", unitOfMeasure: "Ream" }, seed.tenantB.id),
+    );
+    const itemAId = Number(itemA[0].insertId);
+
+    const sent = await request(app)
+      .post("/teacher/store-requests")
+      .set("Authorization", teacherA())
+      .send({ itemId: itemAId, quantity: 2, purpose: "For the ICT class" })
+      .expect(201);
+    expect(sent.body.requests.map((row: { name: string }) => row.name)).toContain("Teacher Paper A");
+    expect(JSON.stringify(sent.body)).not.toContain("Secret Store Item");
+
+    await request(app)
+      .post("/teacher/store-requests")
+      .set("Authorization", teacherA())
+      .send({ itemId: itemAId + 99999, quantity: 1, purpose: "Missing item" })
+      .expect(404);
+
+    const otherStore = await request(app)
+      .get("/teacher/store-requests")
+      .set("Authorization", bearer(seed.tenantB.id, "Teacher", seed.tenantB.userId))
+      .expect(200);
+    expect(otherStore.body.available).toBe(false);
+    expect(JSON.stringify(otherStore.body)).not.toContain("Teacher Paper A");
+
+    const profile = await request(app).get("/teacher/profile").set("Authorization", teacherA()).expect(200);
+    expect(profile.body.profile.firstName).toBe("Yonas");
+    expect(profile.body.profile.username).toBe(seed.username);
+    expect(profile.body.profile.password).toBeUndefined();
+
+    const shared = await request(app)
+      .post("/teacher/course-files")
+      .set("Authorization", teacherA())
+      .send({
+        classSelect: "9-A",
+        category: "Lecture notes",
+        title: "Chapter One Note",
+        content: "Only class A should read this.",
+      })
+      .expect(201);
+    expect(shared.body.rows.map((row: { title: string }) => row.title)).toContain("Chapter One Note");
+
+    const otherFiles = await request(app)
+      .get("/teacher/course-files")
+      .set("Authorization", bearer(seed.tenantB.id, "Teacher", seed.tenantB.userId))
+      .expect(200);
+    expect(JSON.stringify(otherFiles.body)).not.toContain("Chapter One Note");
   });
 });

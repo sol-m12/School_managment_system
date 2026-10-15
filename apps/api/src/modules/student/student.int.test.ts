@@ -129,4 +129,42 @@ describe("student API", () => {
     expect(ownIds).toContain(groupAId);
     expect(otherIds).not.toContain(groupAId);
   });
+
+  it("keeps home, quiz, and the exam lock inside the signed-in school", async () => {
+    const homeA = await request(app)
+      .get("/student/home")
+      .set("Authorization", bearer(seed.tenantA.id, studentAUserId, "Student"))
+      .expect(200);
+    const homeB = await request(app)
+      .get("/student/home")
+      .set("Authorization", bearer(seed.tenantB.id, studentBUserId, "Student"))
+      .expect(200);
+    expect(homeA.body.fullName).toBe("Student A");
+    expect(homeB.body.fullName).toBe("Student B");
+    expect(JSON.stringify(homeB.body)).not.toContain("Student A");
+
+    const quizA = await request(app)
+      .get("/student/quiz")
+      .set("Authorization", bearer(seed.tenantA.id, studentAUserId, "Student"))
+      .expect(200);
+    const quizB = await request(app)
+      .get("/student/quiz")
+      .set("Authorization", bearer(seed.tenantB.id, studentBUserId, "Student"))
+      .expect(200);
+    expect(quizA.body.inGroup).toBe(true);
+    expect(quizA.body.groupName).toBe("Group A only");
+    expect(quizB.body.inGroup).toBe(false);
+
+    const exams = await request(app)
+      .get("/student/exams")
+      .set("Authorization", bearer(seed.tenantA.id, studentAUserId, "Student"))
+      .expect(200);
+    expect(exams.body.locked).toBe(true);
+
+    const labs = await request(app)
+      .get("/student/labs")
+      .set("Authorization", bearer(seed.tenantA.id, studentAUserId, "Student"))
+      .expect(200);
+    expect(labs.body.labs.map((lab: { id: string }) => lab.id)).toEqual(["physics", "chemistry", "biology"]);
+  });
 });

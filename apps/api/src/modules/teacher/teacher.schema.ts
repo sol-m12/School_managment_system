@@ -133,6 +133,21 @@ export const registrationBodySchema = z.object({
   phoneNumber: z.string().trim().max(20).optional(),
 });
 
+export const storeRequestBodySchema = z.object({
+  itemId: z.number().int().positive(),
+  customItemName: z.string().trim().max(150).optional(),
+  estimatedUnitPrice: z.number().min(0).max(999_999_999).optional(),
+  quantity: z.number().positive().max(999_999),
+  purpose: z.string().trim().min(1).max(255),
+});
+
+export const courseFileBodySchema = z.object({
+  classSelect: z.string().trim().min(3).max(80),
+  category: z.enum(["Course material", "Lecture notes", "Assignment"]),
+  title: z.string().trim().min(1).max(255),
+  content: z.string().trim().min(1).max(20_000),
+});
+
 export const simulationBodySchema = z.object({
   gradeLevel: z.number().int().min(9).max(12),
   section: z.string().trim().min(1).max(50),

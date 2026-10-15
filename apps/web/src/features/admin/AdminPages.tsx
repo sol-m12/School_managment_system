@@ -5,6 +5,9 @@ import { useTranslation } from "react-i18next";
 import { Alert, Button, Card, CardBody, CardHeader, Input, PageHeader, Select, Spinner, Table, type TableColumn } from "@/components/ui";
 import { api } from "@/lib/api";
 import { toErrorKey } from "@/lib/apiError";
+import { useSessionUser } from "@/features/auth/authContext";
+import { CourseFilesPage } from "@/features/teacher/CourseFilesPage";
+import { LockedProfilePage } from "@/features/teacher/LockedProfilePage";
 import {
   useAcademicYear,
   useAddExpense,
@@ -534,6 +537,12 @@ export function ReportsPage() {
 }
 
 export function FilesPage() {
+  const user = useSessionUser();
+  if (user.role === "Teacher") return <CourseFilesPage />;
+  return <SchoolFilesPage />;
+}
+
+function SchoolFilesPage() {
   const { t } = useTranslation("admin");
   const query = useFiles();
   return (
@@ -561,6 +570,12 @@ export function FilesPage() {
 }
 
 export function ProfilePage() {
+  const user = useSessionUser();
+  if (user.role === "Teacher") return <LockedProfilePage />;
+  return <EditableProfilePage />;
+}
+
+function EditableProfilePage() {
   const { t } = useTranslation(["admin", "errors"]);
   const query = useProfile();
   const save = useSaveProfile();

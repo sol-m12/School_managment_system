@@ -1,4 +1,4 @@
-import { and, asc, eq, inArray, isNull, like, or } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, like, or } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import {
   annualLessonPlan,
@@ -6,14 +6,21 @@ import {
   classes,
   examQuestions,
   examResultsOnline,
+  fileShares,
   grades,
+  issueModel22,
+  items,
   onlineExams,
   parentGuardian,
+  requisitionsModel20,
   simulations,
+  staff,
+  staffFiles,
   students,
   subjectWeightings,
   subjects,
   teacherAssignments,
+  users,
 } from "../../db/schema/index.js";
 import { scoped, withTenant } from "../../lib/tenant.js";
 import { AcademicsError, createStudent } from "../academics/students.service.js";
@@ -1034,7 +1041,15 @@ export async function subjectReport(
 
 export async function simulationBoard(tenantId: number, userId: number) {
   const context = await loadTeacherContext(tenantId, userId);
-  if (!context) return { items: [] };
+  if (!context) return { academicYear: "", classes: [], items: [] };
+  const taught = await taughtRows(tenantId, context.staffId, context.academicYear);
+  const grouped = new Map<string, { value: string; label: string; subjects: string[] }>();
+  for (const row of taught) {
+    const parsed = classValue(row.gradeLevel, row.section);
+    const current = grouped.get(parsed.value) ?? { value: parsed.value, label: parsed.value, subjects: [] };
+    if (!current.subjects.includes(row.subjectName)) current.subjects.push(row.subjectName);
+    grouped.set(parsed.value, current);
+  }
   const rows = await db
     .select({
       id: simulations.id,
@@ -1048,7 +1063,7 @@ export async function simulationBoard(tenantId: number, userId: number) {
     .from(simulations)
     .where(scoped(simulations, tenantId, eq(simulations.teacherId, context.staffId)))
     .orderBy(asc(simulations.simTitle));
-  return { academicYear: context.academicYear, items: rows };
+  return { academicYear: context.academicYear, classes: [...grouped.values()], items: rows };
 }
 
 export async function addSimulation(
@@ -1089,18 +1104,237 @@ export async function removeSimulation(tenantId: number, userId: number, id: num
   return { deleted: true };
 }
 
-export async function storeBoard(tenantId: number, userId: number) {
-  const context = await loadTeacherContext(tenantId, userId);
+function money(value: number): string {
+  return value.toFixed(2);
+}
+
+function stampDay(value: string): string {
+  return value.slice(0, 10);
+}
+
+function requestStatus(status: string, approvedByStaffId: number | null): string {
+  if (status === "Pending" && approvedByStaffId != null) return "Forwarded";
+  return status;
+}
+
+export async function teacherProfile(tenantId: number, userId: number) {
+  const [row] = await db
+    .select({
+      firstName: staff.firstName,
+      lastName: staff.lastName,
+      gender: staff.gender,
+      role: staff.role,
+      jobTitle: staff.jobTitle,
+      specialization: staff.specialization,
+      phoneNumber: staff.phoneNumber,
+      email: staff.email,
+      hireDate: staff.hireDate,
+      photo: staff.photo,
+      username: users.username,
+    })
+    .from(staff)
+    .innerJoin(users, and(eq(users.userId, staff.userId), eq(users.tenantId, tenantId)))
+    .where(scoped(staff, tenantId, eq(staff.userId, userId)))
+    .limit(1);
+  if (!row) throw new TeacherError("NOT_ASSIGNED");
   return {
-    teacherName: context?.teacherName ?? "",
-    available: false,
-    stats: { total: 0, pending: 0, approved: 0, holdings: 0 },
-    items: [] as { id: number; label: string }[],
-    requests: [] as { ref: string; name: string; quantity: string; requestedAt: string; status: string }[],
-    holdings: [] as { code: string; name: string; kind: string; quantity: string; issuedAt: string; status: string }[],
+    profile: {
+      firstName: row.firstName,
+      lastName: row.lastName,
+      gender: row.gender,
+      role: row.role,
+      jobTitle: row.jobTitle,
+      specialization: row.specialization,
+      phoneNumber: row.phoneNumber,
+      email: row.email,
+      hireDate: row.hireDate,
+      photo: row.photo && row.photo !== "default_profile.png" ? row.photo : null,
+      username: row.username,
+    },
   };
 }
 
-export async function submitStoreRequest(): Promise<never> {
-  throw new TeacherError("STORE_UNAVAILABLE");
+export async function storeBoard(tenantId: number, userId: number) {
+  const context = await loadTeacherContext(tenantId, userId);
+  if (!context) {
+    return {
+      teacherName: "",
+      available: false,
+      stats: { total: 0, pending: 0, approved: 0, holdings: 0 },
+      items: [],
+      requests: [],
+      holdings: [],
+    };
+  }
+
+  const catalog = await db
+    .select({ id: items.itemId, name: items.itemName, code: items.itemCode, unitCost: items.unitCost })
+    .from(items)
+    .where(scoped(items, tenantId))
+    .orderBy(asc(items.itemName));
+
+  const requests = await db
+    .select({
+      ref: requisitionsModel20.refCode,
+      name: items.itemName,
+      quantity: requisitionsModel20.quantityRequested,
+      requestedAt: requisitionsModel20.createdAt,
+      status: requisitionsModel20.status,
+      approvedByStaffId: requisitionsModel20.approvedByStaffId,
+    })
+    .from(requisitionsModel20)
+    .innerJoin(items, and(eq(items.itemId, requisitionsModel20.itemId), eq(items.tenantId, tenantId)))
+    .where(scoped(requisitionsModel20, tenantId, eq(requisitionsModel20.requesterStaffId, context.staffId)))
+    .orderBy(desc(requisitionsModel20.createdAt));
+
+  const holdings = await db
+    .select({
+      code: issueModel22.issueNo,
+      name: items.itemName,
+      kind: items.itemType,
+      quantity: issueModel22.quantityIssued,
+      issuedAt: issueModel22.issueDate,
+    })
+    .from(issueModel22)
+    .innerJoin(items, and(eq(items.itemId, issueModel22.itemId), eq(items.tenantId, tenantId)))
+    .where(scoped(issueModel22, tenantId, eq(issueModel22.issuedToStaffId, context.staffId)))
+    .orderBy(desc(issueModel22.issueDate));
+
+  const pending = requests.filter((row) => row.status === "Pending").length;
+  const approved = requests.filter((row) => row.status === "Approved").length;
+  return {
+    teacherName: context.teacherName,
+    available: true,
+    stats: { total: requests.length, pending, approved, holdings: holdings.length },
+    items: catalog.map((item) => ({ id: item.id, label: `${item.code} — ${item.name}`, unitCost: Number(item.unitCost) })),
+    requests: requests.map((row) => ({
+      ref: row.ref,
+      name: row.name,
+      quantity: String(Number(row.quantity)),
+      requestedAt: stampDay(row.requestedAt),
+      status: requestStatus(row.status, row.approvedByStaffId),
+    })),
+    holdings: holdings.map((row) => ({
+      code: row.code,
+      name: row.name,
+      kind: row.kind ?? "",
+      quantity: String(Number(row.quantity)),
+      issuedAt: stampDay(row.issuedAt),
+      status: "Issued",
+    })),
+  };
+}
+
+export async function submitStoreRequest(
+  tenantId: number,
+  userId: number,
+  input: { itemId: number; customItemName?: string; estimatedUnitPrice?: number; quantity: number; purpose: string },
+) {
+  const context = await requireContext(tenantId, userId);
+  const [item] = await db
+    .select({ id: items.itemId, unitCost: items.unitCost })
+    .from(items)
+    .where(scoped(items, tenantId, eq(items.itemId, input.itemId)))
+    .limit(1);
+  if (!item) throw new TeacherError("ITEM_NOT_FOUND");
+  const unit = input.estimatedUnitPrice ?? Number(item.unitCost);
+  const note = [input.customItemName?.trim(), input.purpose.trim()].filter(Boolean).join(" — ").slice(0, 255);
+  const refCode = `M20-${context.staffId}-${Date.now()}`.slice(0, 80);
+  await db.insert(requisitionsModel20).values(
+    withTenant(
+      {
+        refCode,
+        requesterStaffId: context.staffId,
+        department: "Teaching",
+        itemId: item.id,
+        quantityRequested: money(input.quantity),
+        estimatedUnitPrice: money(unit),
+        estimatedTotalPrice: money(unit * input.quantity),
+        purpose: note,
+        status: "Pending",
+      },
+      tenantId,
+    ),
+  );
+  return storeBoard(tenantId, userId);
+}
+
+export async function courseFileBoard(tenantId: number, userId: number) {
+  const context = await loadTeacherContext(tenantId, userId);
+  if (!context) return { classes: [], rows: [] };
+  const taught = await taughtRows(tenantId, context.staffId, context.academicYear);
+  const grouped = new Map<string, { value: string; label: string }>();
+  for (const row of taught) {
+    const parsed = classValue(row.gradeLevel, row.section);
+    if (!grouped.has(parsed.value)) grouped.set(parsed.value, { value: parsed.value, label: parsed.value });
+  }
+  const rows = await db
+    .select({
+      id: staffFiles.fileId,
+      title: staffFiles.fileTitle,
+      category: staffFiles.fileCategory,
+      classId: fileShares.classId,
+      gradeLevel: classes.gradeLevel,
+      section: classes.section,
+      sharedAt: fileShares.sharedAt,
+    })
+    .from(staffFiles)
+    .innerJoin(fileShares, and(eq(fileShares.fileId, staffFiles.fileId), eq(fileShares.tenantId, tenantId)))
+    .innerJoin(classes, and(eq(classes.classId, fileShares.classId), eq(classes.tenantId, tenantId)))
+    .where(scoped(staffFiles, tenantId, eq(staffFiles.uploadedBy, context.staffId)))
+    .orderBy(desc(fileShares.sharedAt));
+  return {
+    classes: [...grouped.values()],
+    rows: rows.map((row) => ({
+      id: row.id,
+      title: row.title ?? "",
+      category: row.category ?? "",
+      classLabel: `${row.gradeLevel}-${row.section}`,
+      sharedAt: row.sharedAt ? stampDay(row.sharedAt) : "",
+    })),
+  };
+}
+
+export async function addCourseFile(
+  tenantId: number,
+  userId: number,
+  input: { classSelect: string; category: string; title: string; content: string },
+) {
+  const context = await requireContext(tenantId, userId);
+  const parsed = parseClassSelect(input.classSelect);
+  if (!parsed) throw new TeacherError("NOT_ASSIGNED");
+  const taught = await taughtRows(tenantId, context.staffId, context.academicYear);
+  const owns = taught.some(
+    (row) => row.gradeLevel === parsed.gradeLevel && classValue(row.gradeLevel, row.section).section === parsed.section,
+  );
+  if (!owns) throw new TeacherError("NOT_ASSIGNED");
+  const [room] = await db
+    .select({ id: classes.classId })
+    .from(classes)
+    .where(scoped(classes, tenantId, and(eq(classes.gradeLevel, parsed.gradeLevel), eq(classes.section, parsed.section))))
+    .limit(1);
+  if (!room) throw new TeacherError("NOT_ASSIGNED");
+  const semester = context.semester === "2" ? "2nd Semester" : "1st Semester";
+  const inserted = await db.insert(staffFiles).values(
+    withTenant(
+      {
+        fileTitle: input.title,
+        content: input.content,
+        fileType: "EDITOR",
+        fileCategory: input.category,
+        uploadedBy: context.staffId,
+        targetRole: "Student",
+        semester,
+        academicYear: context.academicYear,
+      },
+      tenantId,
+    ),
+  );
+  await db.insert(fileShares).values(
+    withTenant(
+      { fileId: Number(inserted[0].insertId), classId: room.id, senderId: context.staffId },
+      tenantId,
+    ),
+  );
+  return courseFileBoard(tenantId, userId);
 }

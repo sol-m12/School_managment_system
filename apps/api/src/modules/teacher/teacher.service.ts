@@ -41,7 +41,8 @@ export type TeacherCode =
   | "EXAM_NOT_FOUND"
   | "EXAM_PASSWORD"
   | "EXAM_WEIGHT"
-  | "STORE_UNAVAILABLE";
+  | "STORE_UNAVAILABLE"
+  | "ITEM_NOT_FOUND";
 
 export class TeacherError extends Error {
   constructor(

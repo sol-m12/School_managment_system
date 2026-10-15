@@ -2,8 +2,10 @@ import { CalendarCheck, FlaskConical, Play } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Button, Card, CardBody, EmptyState } from "@/components/ui";
-import { openStudentFile, shortDate, useStudentHome, type SimRow } from "./studentApi";
-import { StudentPanel } from "./StudentPanel";
+import { openStudentFile, shortDate } from "./api/format";
+import type { SimRow } from "./api/types";
+import { useStudentHome } from "./api/useStudentHome";
+import { StudentPanel } from "./components/StudentPanel";
 
 function openSim(row: SimRow): void {
   if (row.externalUrl) {

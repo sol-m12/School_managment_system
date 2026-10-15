@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Badge, Button, Card, CardBody } from "@/components/ui";
-import { points, shortDate, useStudentResults, type SubjectBlock } from "./studentApi";
-import { StudentPanel } from "./StudentPanel";
+import { points, shortDate } from "./api/format";
+import type { SubjectBlock } from "./api/types";
+import { useStudentResults } from "./api/useStudentResults";
+import { StudentPanel } from "./components/StudentPanel";
 
 const INSIGHTS = {
   draftHigh: ["draftHighTitle", "draftHighBody"],

@@ -58,14 +58,19 @@ import { ReportCardsPage } from "@/features/teacher/ReportCardsPage";
 import { StudentReportsPage } from "@/features/teacher/StudentReportsPage";
 import {
   BestTeachingPage,
-  SimulationsPage,
-  StoreRequestPage,
   StudentRegistrationPage,
 } from "@/features/teacher/TeacherTaskPages";
+import { SimulationsPage } from "@/features/teacher/SimulationsPage";
+import { StoreRequestPage } from "@/features/teacher/StoreRequestPage";
 import { PublicPlaceholderPage } from "@/pages/PublicPlaceholderPage";
-import { GroupHubPage, GroupsPage } from "@/features/student/GroupsPage";
-import { ExamsPage, QuizPage, ResourcesPage, SimulationsPage as StudentSimulationsPage, VirtualLabPage } from "@/features/student/LearnPages";
+import { ExamsPage } from "@/features/student/ExamsPage";
+import { GroupHubPage } from "@/features/student/GroupHubPage";
+import { GroupsPage } from "@/features/student/GroupsPage";
+import { QuizPage } from "@/features/student/QuizPage";
+import { ResourcesPage } from "@/features/student/ResourcesPage";
 import { ResultsPage } from "@/features/student/ResultsPage";
+import { SimulationsPage as StudentSimulationsPage } from "@/features/student/SimulationsPage";
+import { VirtualLabPage } from "@/features/student/VirtualLabPage";
 import { AnnouncementsPage } from "@/features/technician/AnnouncementsPage";
 import { StaffRegistrationPage } from "@/features/technician/StaffRegistrationPage";
 import { StudentIdPage } from "@/features/technician/StudentIdPage";
