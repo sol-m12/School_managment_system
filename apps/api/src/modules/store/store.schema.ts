@@ -40,10 +40,12 @@ export const grnBodySchema = z.object({
   unitPrice: money,
 });
 
+const optionalDate = z.union([z.literal(""), z.string().regex(/^\d{4}-\d{2}-\d{2}$/)]).optional().default("");
+
 export const binQuerySchema = z.object({
   itemId: z.coerce.number().int().min(0).optional().default(0),
-  fromDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().default(""),
-  toDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().default(""),
+  fromDate: optionalDate,
+  toDate: optionalDate,
   trxType: z.enum(["", "IN", "OUT"]).optional().default(""),
 });
 
