@@ -20,12 +20,12 @@ describe("jwt", () => {
     const token = createAccessToken({
       userId: 7,
       tenantId: 1,
-      role: "Admin",
+      role: "Principal",
     });
     expect(verifyAccessToken(token)).toEqual({
       userId: 7,
       tenantId: 1,
-      role: "Admin",
+      role: "Principal",
     });
   });
 

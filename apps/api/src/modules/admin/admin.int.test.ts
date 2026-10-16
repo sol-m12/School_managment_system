@@ -11,7 +11,7 @@ import { seedTwoTenants, type IsolationSeed } from "../../test/seed.js";
 
 const app = createTestApp();
 
-function bearer(tenantId: number, role: Role = "Admin"): string {
+function bearer(tenantId: number, role: Role = "Principal"): string {
   return `Bearer ${createAccessToken({ userId: 1, tenantId, role })}`;
 }
 

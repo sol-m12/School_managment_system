@@ -173,9 +173,8 @@ export const MENU_ITEMS: readonly MenuItem[] = [
     path: "/dashboard",
     icon: Gauge,
     group: "main",
-    roles: ["Admin", "Principal", "Teacher", "Technician", "V_Principal", "Student"],
+    roles: ["Principal", "Teacher", "Technician", "V_Principal", "Student"],
     labelByRole: {
-      Admin: "dashboardAdmin",
       Principal: "dashboardPrincipal",
       Teacher: "dashboardAcademic",
       Technician: "dashboardStaff",
@@ -184,7 +183,7 @@ export const MENU_ITEMS: readonly MenuItem[] = [
     },
   },
   { key: "fileManagement", path: "/files", icon: FolderOpen, group: "main", permission: "files.manage" },
-  { key: "profile", path: "/profile", icon: UserCog, group: "main", roles: ["Admin", "Principal", "Teacher", "Technician", "V_Principal", "Student", "Store_Keeper"] },
+  { key: "profile", path: "/profile", icon: UserCog, group: "main", roles: ["Principal", "Teacher", "Technician", "V_Principal", "Student", "Store_Keeper"] },
   { key: "payments", path: "/finance/payments", icon: Landmark, group: "finance", permission: "finance.income" },
   { key: "incomeExpense", path: "/finance/income", icon: Landmark, group: "finance", permission: "finance.expense" },
 ];

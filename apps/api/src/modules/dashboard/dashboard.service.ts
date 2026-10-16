@@ -15,7 +15,7 @@ import {
 import type { Role } from "../../lib/roles.js";
 import { scoped } from "../../lib/tenant.js";
 
-const CONTROL_ROLES = new Set<Role>(["Admin", "Principal", "V_Principal"]);
+const CONTROL_ROLES = new Set<Role>(["Principal", "V_Principal"]);
 const STORE_ROLES = new Set<Role>(["Technician", "Store_Keeper"]);
 
 export type RoleCount = { role: string; total: number };

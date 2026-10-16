@@ -114,14 +114,14 @@ describe("subjects API: tenant from the token only", () => {
 describe("subjects API: permissions", () => {
   let seed: IsolationSeed;
   const SUBJECT_KEYS = PERMISSIONS.filter((permission) => permission.startsWith("subjects."));
-  const fullAccess: readonly Role[] = ["Admin", "V_Principal"];
+  const fullAccess: readonly Role[] = ["Principal", "V_Principal"];
   const denied = ROLES.filter((role) => !fullAccess.includes(role));
 
   beforeAll(async () => {
     seed = await seedTwoTenants();
   });
 
-  it("grants every subjects key to Admin and V_Principal", () => {
+  it("grants every subjects key to Principal and V_Principal", () => {
     expect(SUBJECT_KEYS).toEqual(["subjects.read", "subjects.create", "subjects.update", "subjects.delete"]);
     for (const role of ROLES) {
       for (const permission of SUBJECT_KEYS) {
@@ -130,11 +130,11 @@ describe("subjects API: permissions", () => {
     }
   });
 
-  it("keeps subjects on Admin and does not give Admin the split screens", () => {
-    expect(hasPermission("Admin", "subjects.read")).toBe(true);
-    expect(hasPermission("Admin", "students.manage")).toBe(true);
-    expect(hasPermission("Admin", "approvals.read")).toBe(false);
-    expect(hasPermission("Admin", "academicYear.manage")).toBe(false);
+  it("keeps system settings off Principal", () => {
+    expect(hasPermission("Principal", "academicYear.manage")).toBe(false);
+    expect(hasPermission("Principal", "gradeCorrection.approve")).toBe(false);
+    expect(hasPermission("Technician", "students.manage")).toBe(false);
+    expect(hasPermission("Technician", "finance.income")).toBe(false);
   });
 
   it("gives Technician system settings and grade correction", () => {
@@ -155,9 +155,13 @@ describe("subjects API: permissions", () => {
     expect(hasPermission("Principal", "academicApprovals.manage")).toBe(true);
     expect(hasPermission("Principal", "studentStatusReport.read")).toBe(true);
     expect(hasPermission("Principal", "academicReports.read")).toBe(true);
-    expect(hasPermission("Principal", "academicYear.manage")).toBe(false);
-    expect(hasPermission("Principal", "gradeCorrection.approve")).toBe(false);
-    expect(hasPermission("Principal", "subjects.read")).toBe(false);
+    expect(hasPermission("Principal", "subjects.read")).toBe(true);
+    expect(hasPermission("Principal", "students.manage")).toBe(true);
+    expect(hasPermission("Principal", "teachingLoad.manage")).toBe(true);
+    expect(hasPermission("Principal", "selectedRoster.read")).toBe(true);
+    expect(hasPermission("Principal", "periodSchedule.manage")).toBe(true);
+    expect(hasPermission("Principal", "finance.income")).toBe(true);
+    expect(hasPermission("Principal", "finance.expense")).toBe(true);
   });
 
   it("gives Teacher and a homeroom teacher the same teacher keys", () => {

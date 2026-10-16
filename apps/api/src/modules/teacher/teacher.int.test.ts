@@ -82,7 +82,7 @@ describe("teacher pages", () => {
     await request(app).get("/teacher/schedule").expect(401);
     await request(app)
       .get("/teacher/schedule")
-      .set("Authorization", bearer(seed.tenantA.id, "Admin", seed.tenantA.userId))
+      .set("Authorization", bearer(seed.tenantA.id, "Student", seed.tenantA.userId))
       .expect(403);
   });
 

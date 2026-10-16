@@ -31,17 +31,10 @@ describe("dashboard", () => {
     await request(app).get("/dashboard").expect(401);
   });
 
-  it("shows the control center to Admin and V_Principal, and only that tenant's students", async () => {
-    const admin = await request(app).get("/dashboard").set("Authorization", bearer(seed.tenantA.id, "Admin")).expect(200);
-    expect(admin.body.kind).toBe("control");
-    expect(admin.body.academicYear).toBe("2017");
-    expect(admin.body.students).toBe(1);
-
-    const principal = await request(app)
-      .get("/dashboard")
-      .set("Authorization", bearer(seed.tenantA.id, "Principal"))
-      .expect(200);
+  it("shows the control center to Principal and V_Principal, and only that tenant's students", async () => {
+    const principal = await request(app).get("/dashboard").set("Authorization", bearer(seed.tenantA.id, "Principal")).expect(200);
     expect(principal.body.kind).toBe("control");
+    expect(principal.body.academicYear).toBe("2017");
     expect(principal.body.students).toBe(1);
 
     const vice = await request(app)
@@ -50,7 +43,7 @@ describe("dashboard", () => {
       .expect(200);
     expect(vice.body.students).toBe(1);
 
-    const other = await request(app).get("/dashboard").set("Authorization", bearer(seed.tenantB.id, "Admin")).expect(200);
+    const other = await request(app).get("/dashboard").set("Authorization", bearer(seed.tenantB.id, "Principal")).expect(200);
     expect(other.body.students).toBe(0);
   });
 

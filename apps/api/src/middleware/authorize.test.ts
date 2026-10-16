@@ -23,7 +23,7 @@ describe("authorize", () => {
     const req = {} as Request;
     const res = mockRes();
     const next = vi.fn() as unknown as NextFunction;
-    authorize("Admin")(req, res, next);
+    authorize("Principal")(req, res, next);
     expect(res.statusCode).toBe(401);
     expect(res.body).toEqual({ code: "AUTH_UNAUTHORIZED" });
     expect(next).not.toHaveBeenCalled();
@@ -35,7 +35,7 @@ describe("authorize", () => {
     } as Request;
     const res = mockRes();
     const next = vi.fn() as unknown as NextFunction;
-    authorize("Admin")(req, res, next);
+    authorize("Principal")(req, res, next);
     expect(res.statusCode).toBe(403);
     expect(res.body).toEqual({ code: "AUTH_FORBIDDEN" });
     expect(next).not.toHaveBeenCalled();
@@ -43,11 +43,11 @@ describe("authorize", () => {
 
   it("calls next when role is allowed", () => {
     const req = {
-      auth: { userId: 1, tenantId: 1, role: "Admin" },
+      auth: { userId: 1, tenantId: 1, role: "Principal" },
     } as Request;
     const res = mockRes();
     const next = vi.fn() as unknown as NextFunction;
-    authorize("Admin", "Teacher")(req, res, next);
+    authorize("Principal", "Teacher")(req, res, next);
     expect(next).toHaveBeenCalledOnce();
   });
 });

@@ -71,20 +71,20 @@ export const PERMISSIONS = [
 export type Permission = (typeof PERMISSIONS)[number];
 
 const GRANTS: Record<Permission, readonly Role[]> = {
-  "subjects.read": ["Admin", "V_Principal"],
-  "subjects.create": ["Admin", "V_Principal"],
-  "subjects.update": ["Admin", "V_Principal"],
-  "subjects.delete": ["Admin", "V_Principal"],
+  "subjects.read": ["Principal", "V_Principal"],
+  "subjects.create": ["Principal", "V_Principal"],
+  "subjects.update": ["Principal", "V_Principal"],
+  "subjects.delete": ["Principal", "V_Principal"],
 
   "approvals.read": ["Principal"],
   "studentStatusReport.read": ["Principal"],
 
-  "students.manage": ["Admin", "V_Principal"],
-  "teachingLoad.manage": ["Admin", "V_Principal"],
-  "selectedRoster.read": ["Admin", "V_Principal"],
+  "students.manage": ["Principal", "V_Principal"],
+  "teachingLoad.manage": ["Principal", "V_Principal"],
+  "selectedRoster.read": ["Principal", "V_Principal"],
   "gradeCorrection.approve": ["Technician", "V_Principal"],
   "academicApprovals.manage": ["Principal", "V_Principal"],
-  "periodSchedule.manage": ["Admin", "V_Principal"],
+  "periodSchedule.manage": ["Principal", "V_Principal"],
   "academicReports.read": ["Principal", "V_Principal"],
 
   "announcements.manage": ["Technician"],
@@ -111,7 +111,7 @@ const GRANTS: Record<Permission, readonly Role[]> = {
   "simulations.create": ["Teacher"],
   "studentReports.read": ["Teacher"],
 
-  "files.manage": ["Admin", "Teacher", "Technician", "V_Principal"],
+  "files.manage": ["Principal", "Teacher", "Technician", "V_Principal"],
 
   "results.readOwn": ["Student"],
   "reportCard.readOwn": ["Student"],
@@ -128,8 +128,8 @@ const GRANTS: Record<Permission, readonly Role[]> = {
   "store.approvals": ["Store_Keeper"],
   "store.finance": ["Store_Keeper"],
 
-  "finance.income": ["Admin"],
-  "finance.expense": ["Admin"],
+  "finance.income": ["Principal"],
+  "finance.expense": ["Principal"],
 };
 
 export function hasPermission(role: Role, permission: Permission): boolean {

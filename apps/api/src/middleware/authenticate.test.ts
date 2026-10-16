@@ -39,7 +39,7 @@ describe("authenticate", () => {
     vi.mocked(verifyAccessToken).mockReturnValue({
       userId: 9,
       tenantId: 1,
-      role: "Admin",
+      role: "Principal",
     });
     const req = {
       headers: { authorization: "Bearer good-token" },
@@ -47,7 +47,7 @@ describe("authenticate", () => {
     const res = mockRes();
     const next = vi.fn() as unknown as NextFunction;
     authenticate(req, res, next);
-    expect(req.auth).toEqual({ userId: 9, tenantId: 1, role: "Admin" });
+    expect(req.auth).toEqual({ userId: 9, tenantId: 1, role: "Principal" });
     expect(next).toHaveBeenCalledOnce();
   });
 });

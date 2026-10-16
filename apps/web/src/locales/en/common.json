@@ -42,7 +42,6 @@
   "footerVersion": "Keyit School administration system v2.0",
   "roles": {
     "Teacher": "Teacher",
-    "Admin": "Admin (legacy)",
     "Technician": "IT Technician",
     "Secretary": "Secretary",
     "Counselor": "Counselor",

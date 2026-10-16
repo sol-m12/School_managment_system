@@ -1,7 +1,6 @@
 // Mirror of apps/api/src/lib/roles.ts. Keep both lists in the same order.
 export const ROLES = [
   "Teacher",
-  "Admin",
   "Technician",
   "Secretary",
   "Counselor",

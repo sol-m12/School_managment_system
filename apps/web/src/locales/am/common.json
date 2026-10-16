@@ -42,7 +42,6 @@
   "footerVersion": "የቀይት ትምህርት ቤት አስተዳደር ሲስተም v2.0",
   "roles": {
     "Teacher": "መምህር",
-    "Admin": "አድሚን",
     "Technician": "አይቲ ቴክኒሻን",
     "Secretary": "ሴክሬታሪ",
     "Counselor": "አማካሪ",

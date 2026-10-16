@@ -1,7 +1,6 @@
 // Same values and order as the users.role enum in the database.
 export const ROLES = [
   "Teacher",
-  "Admin",
   "Technician",
   "Secretary",
   "Counselor",

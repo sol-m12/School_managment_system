@@ -2,7 +2,6 @@ import { z } from "zod";
 
 /** Roles that exist on both staff.role and users.role. */
 export const STAFF_ROLES = [
-  "Admin",
   "Counselor",
   "Finance",
   "Librarian",
