@@ -33,6 +33,9 @@ import {
   FileSpreadsheet,
   LayoutTemplate,
   Siren,
+  Wrench,
+  Scale,
+  ClipboardCheck,
   AlertTriangle,
   PieChart,
   Upload,
@@ -77,6 +80,7 @@ export type MenuGroupKey =
   | "finance"
   | "studentInfo"
   | "principalOffice"
+  | "viceOffice"
   | "main";
 
 export type MenuItem = {
@@ -105,6 +109,7 @@ export const MENU_GROUP_ORDER: readonly MenuGroupKey[] = [
   "store",
   "studentInfo",
   "principalOffice",
+  "viceOffice",
   "main",
   "finance",
 ];
@@ -158,6 +163,10 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "earlyWarning", path: "/principal/warnings", icon: AlertTriangle, group: "principalOffice", permission: "principal.office" },
   { key: "incidentPortal", path: "/principal/incidents", icon: Siren, group: "principalOffice", permission: "principal.office" },
   { key: "yearAnalytics", path: "/principal/demographics", icon: PieChart, group: "principalOffice", permission: "principal.office" },
+
+  { key: "vocationalTraining", path: "/vice/vocational", icon: Wrench, group: "viceOffice", permission: "vice.office" },
+  { key: "behaviorOffice", path: "/vice/behavior", icon: Scale, group: "viceOffice", permission: "vice.office" },
+  { key: "examInvigilation", path: "/vice/invigilation", icon: ClipboardCheck, group: "viceOffice", permission: "vice.office" },
 
   // Teacher (same menu for homeroom teachers)
   { key: "assignedWorks", path: "/teacher/assigned-works", icon: ListChecks, group: "academicTasks", permission: "assignedWork.read" },

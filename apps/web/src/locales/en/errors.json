@@ -75,5 +75,12 @@
   "excelSaveAsCsv": "Save the Excel workbook as CSV, then import that file.",
   "noteRequired": "Write a short note before you clarify or override.",
   "clearanceIncomplete": "Library, store, and finance must all be clear before the certificate is issued.",
-  "notReady": "That action is not available for this record."
+  "notReady": "That action is not available for this record.",
+  "programClosed": "This program is closed, so no more students can be placed.",
+  "programFull": "This program has no open seats.",
+  "alreadyPlaced": "This student is already on this program.",
+  "hearingRequired": "Schedule a committee hearing before recording a penalty.",
+  "invigilationOverlap": "That teacher is already covering an exam at the same time.",
+  "sessionFull": "This sitting already has enough invigilators.",
+  "alreadyAssigned": "That teacher is already assigned to this sitting."
 }

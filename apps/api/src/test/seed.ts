@@ -23,6 +23,14 @@ export type IsolationSeed = {
 };
 
 const TABLES_TO_EMPTY = [
+  "class_schedule",
+  "vp_invigilators",
+  "vp_exam_sessions",
+  "vp_penalties",
+  "vp_hearings",
+  "vp_referrals",
+  "vp_placements",
+  "vp_programs",
   "principal_approval_notes",
   "principal_report_defs",
   "principal_incidents",

@@ -34,8 +34,8 @@ import { GradeBars, Panel, PassChart, pct, readForm, textOf, useNotice } from ".
 
 const FIELDS = ["name", "gender", "gradeLevel", "section", "year", "registrationType", "average", "absenceRate"] as const;
 
-function fail(setNotice: (value: { tone: "success" | "danger"; text: string }) => void, t: (key: string) => string, error: unknown) {
-  setNotice({ tone: "danger", text: t(`errors:${toErrorKey(error)}`) });
+function fail(setNotice: (value: { tone: "success" | "danger"; text: string }) => void, t: (key: "errors:server") => string, error: unknown) {
+  setNotice({ tone: "danger", text: t(`errors:${toErrorKey(error)}` as "errors:server") });
 }
 
 function fieldLabel(t: (key: string) => string, field: string): string {

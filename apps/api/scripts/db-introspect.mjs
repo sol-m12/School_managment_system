@@ -53,7 +53,12 @@ function fixGeneratedSchema(filePath) {
     return new RegExp("\\b" + name + "\\s*\\(").test(source) && !imported.has(name);
   });
 
+  source = source.replaceAll(".default(')", '.default("")');
+
   if (needed.length === 0) {
+    if (source !== fs.readFileSync(filePath, "utf8")) {
+      fs.writeFileSync(filePath, source, "utf8");
+    }
     return;
   }
 

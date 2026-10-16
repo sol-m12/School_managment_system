@@ -75,7 +75,14 @@ export type ErrorKey =
   | "excelSaveAsCsv"
   | "noteRequired"
   | "clearanceIncomplete"
-  | "notReady";
+  | "notReady"
+  | "programClosed"
+  | "programFull"
+  | "alreadyPlaced"
+  | "hearingRequired"
+  | "invigilationOverlap"
+  | "sessionFull"
+  | "alreadyAssigned";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -151,6 +158,13 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   NOTE_REQUIRED: "noteRequired",
   CLEARANCE_INCOMPLETE: "clearanceIncomplete",
   NOT_READY: "notReady",
+  PROGRAM_CLOSED: "programClosed",
+  PROGRAM_FULL: "programFull",
+  ALREADY_PLACED: "alreadyPlaced",
+  HEARING_REQUIRED: "hearingRequired",
+  OVERLAP: "invigilationOverlap",
+  SESSION_FULL: "sessionFull",
+  ALREADY_ASSIGNED: "alreadyAssigned",
 };
 
 function readCode(data: unknown): string | null {

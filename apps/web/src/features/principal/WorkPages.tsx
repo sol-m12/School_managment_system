@@ -23,8 +23,8 @@ import {
 } from "./api/usePrincipal";
 import { GradeBars, Panel, PassChart, money, pct, readForm, textOf, useNotice } from "./officeUi";
 
-function fail(setNotice: (value: { tone: "success" | "danger"; text: string }) => void, t: (key: string) => string, error: unknown) {
-  setNotice({ tone: "danger", text: t(`errors:${toErrorKey(error)}`) });
+function fail(setNotice: (value: { tone: "success" | "danger"; text: string }) => void, t: (key: "errors:server") => string, error: unknown) {
+  setNotice({ tone: "danger", text: t(`errors:${toErrorKey(error)}` as "errors:server") });
 }
 
 export function ExecutivePage() {

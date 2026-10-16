@@ -1517,3 +1517,115 @@ export const vocationalRequests = mysqlTable("vocational_requests", {
 (table) => [
 	index("idx_vocational_requests_tenant_id").on(table.tenantId),
 ]);
+
+export const vpExamSessions = mysqlTable("vp_exam_sessions", {
+	sessionId: int("session_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	title: varchar({ length: 160 }).notNull(),
+	room: varchar({ length: 80 }).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	examDate: date("exam_date", { mode: 'string' }).notNull(),
+	startTime: time("start_time").notNull(),
+	endTime: time("end_time").notNull(),
+	gradeLevel: int("grade_level").notNull(),
+	section: varchar({ length: 10 }).notNull(),
+	needed: int().default(2).notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_vp_exam_sessions_tenant_id").on(table.tenantId),
+]);
+
+export const vpHearings = mysqlTable("vp_hearings", {
+	hearingId: int("hearing_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	referralId: int("referral_id").notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	heldOn: date("held_on", { mode: 'string' }).notNull(),
+	committee: varchar({ length: 255 }).notNull(),
+	outcome: mysqlEnum(['Pending','Upheld','Dismissed','Reduced']).default('Pending').notNull(),
+	minutes: varchar({ length: 1000 }).default("").notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_vp_hearings_tenant_id").on(table.tenantId),
+]);
+
+export const vpInvigilators = mysqlTable("vp_invigilators", {
+	assignmentId: int("assignment_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	sessionId: int("session_id").notNull(),
+	staffId: int("staff_id").notNull(),
+	duty: mysqlEnum(['lead','assistant']).default('assistant').notNull(),
+	source: mysqlEnum(['auto','manual']).default('manual').notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_vp_invigilators_tenant_id").on(table.tenantId),
+	unique("uq_vp_invigilators_session_staff").on(table.tenantId, table.sessionId, table.staffId),
+]);
+
+export const vpPenalties = mysqlTable("vp_penalties", {
+	penaltyId: int("penalty_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	referralId: int("referral_id").notNull(),
+	kind: mysqlEnum(['warning','detention','suspension','community']).notNull(),
+	days: int().default(0).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	startsOn: date("starts_on", { mode: 'string' }).notNull(),
+	note: varchar({ length: 255 }).default("").notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_vp_penalties_tenant_id").on(table.tenantId),
+]);
+
+export const vpPlacements = mysqlTable("vp_placements", {
+	placementId: int("placement_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	programId: int("program_id").notNull(),
+	studentId: int("student_id").notNull(),
+	status: mysqlEnum(['Applied','Placed','Completed','Withdrawn']).default('Applied').notNull(),
+	note: varchar({ length: 255 }).default("").notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_vp_placements_tenant_id").on(table.tenantId),
+	index("idx_vp_placements_program").on(table.tenantId, table.programId),
+]);
+
+export const vpPrograms = mysqlTable("vp_programs", {
+	programId: int("program_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	name: varchar({ length: 160 }).notNull(),
+	trade: varchar({ length: 80 }).notNull(),
+	gradeLevel: int("grade_level"),
+	capacity: int().default(20).notNull(),
+	status: mysqlEnum(['Open','Closed']).default('Open').notNull(),
+	description: varchar({ length: 500 }).notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_vp_programs_tenant_id").on(table.tenantId),
+]);
+
+export const vpReferrals = mysqlTable("vp_referrals", {
+	referralId: int("referral_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	studentId: int("student_id").notNull(),
+	category: mysqlEnum(['attendance','misconduct','academic','safety']).notNull(),
+	severity: mysqlEnum(['low','medium','high']).default('medium').notNull(),
+	summary: varchar({ length: 500 }).notNull(),
+	status: mysqlEnum(['Escalated','Hearing','Decided','Closed']).default('Escalated').notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_vp_referrals_tenant_id").on(table.tenantId),
+]);

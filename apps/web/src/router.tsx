@@ -79,6 +79,7 @@ import { SimulationsPage as StudentSimulationsPage } from "@/features/student/Si
 import { VirtualLabPage } from "@/features/student/VirtualLabPage";
 import { AnalyticsPage, AtRiskPage, BuilderPage, CorrelationPage, DemographicsPage, IncidentsPage, MoePage, TrainingPage, TransfersPage, WarningsPage } from "@/features/principal/InsightPages";
 import { BulkPage, DocumentsPage, ExecutivePage, HubPage, InboxPage, PremiumPage, StaffKpiPage, TrendsPage } from "@/features/principal/WorkPages";
+import { BehaviorPage, InvigilationPage, VocationalPage } from "@/features/vice/VicePages";
 import { AnnouncementsPage } from "@/features/technician/AnnouncementsPage";
 import { AuditPage, DutiesPage, HealthPage, IdentityPage, ImportPage, TicketsPage } from "@/features/operations/OperationsPages";
 import { StaffRegistrationPage } from "@/features/technician/StaffRegistrationPage";
@@ -163,6 +164,9 @@ const BUILT_ITEMS: readonly NavItemKey[] = [
   "earlyWarning",
   "incidentPortal",
   "yearAnalytics",
+  "vocationalTraining",
+  "behaviorOffice",
+  "examInvigilation",
 ];
 
 const placeholderRoutes: RouteObject[] = MENU_ITEMS.filter((item) => !BUILT_ITEMS.includes(item.key)).map((item) => ({
@@ -308,6 +312,9 @@ export const router = createBrowserRouter([
       { path: "principal/warnings", element: <ProtectedRoute permission="principal.office"><WarningsPage /></ProtectedRoute> },
       { path: "principal/incidents", element: <ProtectedRoute permission="principal.office"><IncidentsPage /></ProtectedRoute> },
       { path: "principal/demographics", element: <ProtectedRoute permission="principal.office"><DemographicsPage /></ProtectedRoute> },
+      { path: "vice/vocational", element: <ProtectedRoute permission="vice.office"><VocationalPage /></ProtectedRoute> },
+      { path: "vice/behavior", element: <ProtectedRoute permission="vice.office"><BehaviorPage /></ProtectedRoute> },
+      { path: "vice/invigilation", element: <ProtectedRoute permission="vice.office"><InvigilationPage /></ProtectedRoute> },
       ...placeholderRoutes,
       { path: "*", element: <NotFoundPage /> },
     ],

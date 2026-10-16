@@ -17,6 +17,7 @@ import { financeRouter } from "./modules/finance/finance.routes.js";
 import { technicianRouter } from "./modules/technician/technician.routes.js";
 import { operationsRouter } from "./modules/operations/operations.routes.js";
 import { principalRouter } from "./modules/principal/principal.routes.js";
+import { viceRouter } from "./modules/vice/vice.routes.js";
 
 const app = express();
 
@@ -48,6 +49,7 @@ app.use("/teacher", teacherRouter);
 app.use("/technician", technicianRouter);
 app.use("/operations", operationsRouter);
 app.use("/principal", principalRouter);
+app.use("/vice", viceRouter);
 app.use("/student", studentRouter);
 app.use("/store/finance", financeRouter);
 app.use("/store", storeRouter);

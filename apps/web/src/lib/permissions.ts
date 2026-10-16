@@ -68,6 +68,7 @@ export const PERMISSIONS = [
   "finance.expense",
 
   "principal.office",
+  "vice.office",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];

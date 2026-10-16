@@ -10,6 +10,7 @@
     "finance": "ፋይናንስ",
     "studentInfo": "ተማሪ መረጃ",
     "principalOffice": "የርዕሰ መምህር ቢሮ",
+    "viceOffice": "የምክትል ርዕሰ መምህር ቢሮ",
     "main": "ዋና"
   },
   "items": {
@@ -96,6 +97,9 @@
     "earlyWarning": "ቅድመ ማስጠንቀቂያ",
     "incidentPortal": "ከፍተኛ ክስተቶች",
     "yearAnalytics": "ዓመታዊ ትንታኔ",
+    "vocationalTraining": "የሙያ ስልጠና",
+    "behaviorOffice": "የባህሪ አስተዳደር",
+    "examInvigilation": "የፈተና ተቆጣጣሪ",
     "dashboardStudent": "ዋና ዳሽቦርድ (Student)",
     "payments": "ክፍያ",
     "incomeExpense": "ገቢና ወጪ",

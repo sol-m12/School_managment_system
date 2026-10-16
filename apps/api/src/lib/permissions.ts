@@ -73,6 +73,7 @@ export const PERMISSIONS = [
   "finance.expense",
 
   "principal.office",
+  "vice.office",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
@@ -144,6 +145,7 @@ const GRANTS: Record<Permission, readonly Role[]> = {
   "finance.expense": ["Principal"],
 
   "principal.office": ["Principal"],
+  "vice.office": ["V_Principal"],
 };
 
 export function hasPermission(role: Role, permission: Permission): boolean {
