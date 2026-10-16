@@ -1,4 +1,4 @@
-import { and, asc, count, eq, gte, inArray, like, lte, ne, or, type SQL } from "drizzle-orm";
+import { and, asc, count, eq, gte, inArray, isNotNull, like, lte, ne, or, type SQL } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import {
   attendance,
@@ -7,6 +7,8 @@ import {
   expenses,
   grades,
   income,
+  items,
+  requisitionsModel20,
   schoolSettings,
   staff,
   staffFiles,
@@ -1033,6 +1035,80 @@ export function listRoleModules() {
     permission,
     roles: ROLES.filter((role) => permissionsForRole(role).includes(permission)),
   }));
+}
+
+function amount(value: string | number | null): number {
+  const parsed = Number(value ?? 0);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+/** Requests the store keeper has already forwarded. The principal approves or rejects them. */
+export async function listStoreApprovals(tenantId: number) {
+  const rows = await db
+    .select({
+      id: requisitionsModel20.requisitionId,
+      refCode: requisitionsModel20.refCode,
+      department: requisitionsModel20.department,
+      quantityRequested: requisitionsModel20.quantityRequested,
+      purpose: requisitionsModel20.purpose,
+      createdAt: requisitionsModel20.createdAt,
+      itemName: items.itemName,
+      itemCode: items.itemCode,
+      currentStock: items.currentStock,
+      firstName: staff.firstName,
+      lastName: staff.lastName,
+    })
+    .from(requisitionsModel20)
+    .innerJoin(items, eq(requisitionsModel20.itemId, items.itemId))
+    .innerJoin(staff, eq(requisitionsModel20.requesterStaffId, staff.staffId))
+    .where(
+      scoped(
+        requisitionsModel20,
+        tenantId,
+        and(eq(requisitionsModel20.status, "Pending"), isNotNull(requisitionsModel20.approvedByStaffId)),
+      ),
+    )
+    .orderBy(asc(requisitionsModel20.createdAt));
+
+  return {
+    rows: rows.map((row) => ({
+      id: row.id,
+      refCode: row.refCode,
+      requesterName: `${row.firstName} ${row.lastName}`.trim(),
+      department: row.department ?? "",
+      itemName: row.itemName,
+      itemCode: row.itemCode,
+      quantityRequested: amount(row.quantityRequested),
+      currentStock: amount(row.currentStock),
+      purpose: row.purpose ?? "",
+      createdAt: row.createdAt,
+    })),
+  };
+}
+
+export async function decideStoreApproval(tenantId: number, requisitionId: number, action: "approve" | "reject") {
+  const [row] = await db
+    .select({ id: requisitionsModel20.requisitionId })
+    .from(requisitionsModel20)
+    .where(
+      scoped(
+        requisitionsModel20,
+        tenantId,
+        and(
+          eq(requisitionsModel20.requisitionId, requisitionId),
+          eq(requisitionsModel20.status, "Pending"),
+          isNotNull(requisitionsModel20.approvedByStaffId),
+        ),
+      ),
+    )
+    .limit(1);
+  if (!row) throw new AdminError("NOT_FOUND");
+
+  await db
+    .update(requisitionsModel20)
+    .set({ status: action === "approve" ? "Approved" : "Rejected" })
+    .where(scoped(requisitionsModel20, tenantId, eq(requisitionsModel20.requisitionId, requisitionId)));
+  return { ok: true as const };
 }
 
 export function refuseBackup(): never {

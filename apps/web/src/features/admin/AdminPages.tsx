@@ -27,7 +27,9 @@ import {
   useSaveProfile,
   useSaveSchool,
   useSchedule,
+  useDecideStoreApproval,
   useSchoolInfo,
+  useStoreApprovals,
   useStudents,
   useUnlockGrades,
   useUsers,
@@ -467,15 +469,61 @@ export function ApprovalsPage() {
 }
 
 export function StoreApprovalsPage() {
-  const { t } = useTranslation("admin");
+  const { t } = useTranslation(["admin", "errors"]);
+  const query = useStoreApprovals();
+  const decide = useDecideStoreApproval();
+  const [notice, setNotice] = useState<{ tone: "success" | "danger"; text: string } | null>(null);
+
+  const run = (id: number, action: "approve" | "reject") => {
+    if (action === "reject" && !window.confirm(t("storeRejectConfirm"))) return;
+    decide.mutate(
+      { id, action },
+      {
+        onSuccess: () => setNotice({ tone: "success", text: action === "approve" ? t("approved") : t("storeRejected") }),
+        onError: (error) => setNotice({ tone: "danger", text: t(`errors:${toErrorKey(error)}`) }),
+      },
+    );
+  };
+
   return (
     <>
       <PageHeader title={t("storeTitle")} />
-      <Card>
-        <CardBody>
-          <p>{t("storeEmpty")}</p>
-        </CardBody>
-      </Card>
+      <Notice tone={notice?.tone ?? null} text={notice?.text ?? ""} />
+      <Panel query={query}>
+        {(data) => (
+          <Card>
+            <Table
+              columns={[
+                { key: "ref", header: t("storeRef"), render: (row) => row.refCode },
+                { key: "who", header: t("storeRequester"), render: (row) => row.requesterName },
+                { key: "dept", header: t("storeDepartment"), render: (row) => row.department },
+                { key: "item", header: t("storeItem"), render: (row) => `${row.itemName} [${row.itemCode}]` },
+                { key: "qty", header: t("storeQty"), render: (row) => row.quantityRequested },
+                { key: "stock", header: t("storeStock"), render: (row) => row.currentStock },
+                { key: "why", header: t("storePurpose"), render: (row) => row.purpose },
+                { key: "date", header: t("date"), render: (row) => row.createdAt },
+                {
+                  key: "act",
+                  header: t("approve"),
+                  render: (row) => (
+                    <div className="flex gap-2">
+                      <Button type="button" loading={decide.isPending} onClick={() => run(row.id, "approve")}>
+                        {t("approve")}
+                      </Button>
+                      <Button type="button" variant="danger" loading={decide.isPending} onClick={() => run(row.id, "reject")}>
+                        {t("storeReject")}
+                      </Button>
+                    </div>
+                  ),
+                },
+              ]}
+              rows={data.rows}
+              rowKey={(row) => row.id}
+              empty={t("storeEmpty")}
+            />
+          </Card>
+        )}
+      </Panel>
     </>
   );
 }

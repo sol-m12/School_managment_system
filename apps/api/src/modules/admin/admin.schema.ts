@@ -45,6 +45,10 @@ export const idParamSchema = z.object({
   id: z.coerce.number().int().positive(),
 });
 
+export const storeApprovalBodySchema = z.object({
+  action: z.enum(["approve", "reject"]),
+});
+
 export const studentQuerySchema = z.object({
   academicYear: z.string().max(10).optional(),
   gradeLevel: z.coerce.number().int().positive().optional(),

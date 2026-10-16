@@ -215,6 +215,37 @@ export function useSaveProfile() {
   });
 }
 
+export type StoreApprovalRow = {
+  id: number;
+  refCode: string;
+  requesterName: string;
+  department: string;
+  itemName: string;
+  itemCode: string;
+  quantityRequested: number;
+  currentStock: number;
+  purpose: string;
+  createdAt: string;
+};
+
+export function useStoreApprovals() {
+  const { tenantId } = useSessionUser();
+  return useQuery({
+    queryKey: key(tenantId, "store-approvals"),
+    queryFn: async () => (await api.get<{ rows: StoreApprovalRow[] }>("/admin/store-approvals")).data,
+  });
+}
+
+export function useDecideStoreApproval() {
+  const { tenantId } = useSessionUser();
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (body: { id: number; action: "approve" | "reject" }) =>
+      api.post(`/admin/store-approvals/${body.id}`, { action: body.action }),
+    onSuccess: () => void client.invalidateQueries({ queryKey: key(tenantId, "store-approvals") }),
+  });
+}
+
 export function useIncome() {
   const { tenantId } = useSessionUser();
   return useQuery({

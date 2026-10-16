@@ -16,6 +16,7 @@ import {
   passwordResetBodySchema,
   profileBodySchema,
   schoolInfoBodySchema,
+  storeApprovalBodySchema,
   studentQuerySchema,
   teacherToggleBodySchema,
   teacherUpdateBodySchema,
@@ -364,8 +365,27 @@ adminRouter.post("/approvals/attendance", ...requirePermission("academicApproval
   }
 });
 
-adminRouter.get("/store-approvals", ...requirePermission("approvals.read"), async (_req, res) => {
-  res.json({ rows: [] });
+adminRouter.get("/store-approvals", ...requirePermission("approvals.read"), async (req, res) => {
+  try {
+    res.json(await admin.listStoreApprovals(tenantOf(req)));
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+adminRouter.post("/store-approvals/:id", ...requirePermission("approvals.read"), async (req, res) => {
+  const parsed = idParamSchema.safeParse(req.params);
+  if (!parsed.success) {
+    res.status(404).json({ code: "NOT_FOUND" });
+    return;
+  }
+  const input = parseBody(storeApprovalBodySchema, req, res);
+  if (!input) return;
+  try {
+    res.json(await admin.decideStoreApproval(tenantOf(req), parsed.data.id, input.action));
+  } catch (error) {
+    sendError(res, error);
+  }
 });
 
 adminRouter.get("/files", ...requirePermission("files.manage"), async (req, res) => {

@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import request from "supertest";
 import { beforeAll, describe, expect, it } from "vitest";
 import { db } from "../../db/index.js";
-import { staff, students, users } from "../../db/schema/index.js";
+import { items, requisitionsModel20, staff, students, users } from "../../db/schema/index.js";
 import { createAccessToken } from "../../lib/jwt.js";
 import { scoped } from "../../lib/tenant.js";
 import { createTestApp } from "../../test/createTestApp.js";
@@ -76,6 +76,101 @@ describe("admin API: tenant isolation", () => {
     const res = await request(app).get("/admin/repeaters").set("Authorization", bearer(seed.tenantA.id)).expect(200);
     const ids = (res.body.rows as { id: number }[]).map((row) => row.id);
     expect(ids).not.toContain(seed.tenantB.studentId);
+  });
+
+  it("approves only a forwarded store request from this school", async () => {
+    const [staffA] = await db.insert(staff).values({
+      firstName: "Abebe",
+      lastName: "Kebede",
+      role: "Teacher",
+      jobTitle: "Teacher",
+      tenantId: seed.tenantA.id,
+    });
+    const [staffB] = await db.insert(staff).values({
+      firstName: "Other",
+      lastName: "School",
+      role: "Teacher",
+      jobTitle: "Teacher",
+      tenantId: seed.tenantB.id,
+    });
+    const [itemA] = await db.insert(items).values({
+      tenantId: seed.tenantA.id,
+      itemCode: "APR-A",
+      itemName: "Chalk",
+      unitOfMeasure: "Box",
+      currentStock: "10.00",
+    });
+    const [itemB] = await db.insert(items).values({
+      tenantId: seed.tenantB.id,
+      itemCode: "APR-B",
+      itemName: "Chalk",
+      unitOfMeasure: "Box",
+      currentStock: "4.00",
+    });
+    const [waiting] = await db.insert(requisitionsModel20).values({
+      tenantId: seed.tenantA.id,
+      refCode: "REQ-WAIT",
+      requesterStaffId: Number(staffA.insertId),
+      itemId: Number(itemA.insertId),
+      quantityRequested: "2.00",
+      purpose: "Class",
+      status: "Pending",
+    });
+    const [forwarded] = await db.insert(requisitionsModel20).values({
+      tenantId: seed.tenantA.id,
+      refCode: "REQ-FWD",
+      requesterStaffId: Number(staffA.insertId),
+      approvedByStaffId: Number(staffA.insertId),
+      itemId: Number(itemA.insertId),
+      quantityRequested: "2.00",
+      purpose: "Class",
+      status: "Pending",
+    });
+    const [other] = await db.insert(requisitionsModel20).values({
+      tenantId: seed.tenantB.id,
+      refCode: "REQ-B",
+      requesterStaffId: Number(staffB.insertId),
+      approvedByStaffId: Number(staffB.insertId),
+      itemId: Number(itemB.insertId),
+      quantityRequested: "1.00",
+      purpose: "Other school",
+      status: "Pending",
+    });
+
+    const list = await request(app).get("/admin/store-approvals").set("Authorization", bearer(seed.tenantA.id)).expect(200);
+    const ids = (list.body.rows as { id: number }[]).map((row) => row.id);
+    expect(ids).toContain(Number(forwarded.insertId));
+    expect(ids).not.toContain(Number(waiting.insertId));
+    expect(ids).not.toContain(Number(other.insertId));
+
+    await request(app)
+      .post(`/admin/store-approvals/${other.insertId}`)
+      .set("Authorization", bearer(seed.tenantA.id))
+      .send({ action: "approve" })
+      .expect(404);
+
+    await request(app)
+      .post(`/admin/store-approvals/${forwarded.insertId}`)
+      .set("Authorization", bearer(seed.tenantA.id))
+      .send({ action: "approve" })
+      .expect(200);
+
+    const after = await request(app).get("/admin/store-approvals").set("Authorization", bearer(seed.tenantA.id)).expect(200);
+    expect((after.body.rows as { id: number }[]).map((row) => row.id)).not.toContain(Number(forwarded.insertId));
+
+    const [saved] = await db
+      .select({ status: requisitionsModel20.status })
+      .from(requisitionsModel20)
+      .where(eq(requisitionsModel20.requisitionId, Number(forwarded.insertId)))
+      .limit(1);
+    expect(saved?.status).toBe("Approved");
+
+    const [untouched] = await db
+      .select({ status: requisitionsModel20.status })
+      .from(requisitionsModel20)
+      .where(eq(requisitionsModel20.requisitionId, Number(other.insertId)))
+      .limit(1);
+    expect(untouched?.status).toBe("Pending");
   });
 });
 
