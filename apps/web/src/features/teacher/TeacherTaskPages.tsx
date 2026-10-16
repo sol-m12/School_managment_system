@@ -277,3 +277,4 @@ export function StudentRegistrationPage() {
       </section>
     </div>
   );
+}
