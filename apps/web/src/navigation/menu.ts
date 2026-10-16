@@ -43,6 +43,9 @@ import {
   ShoppingCart,
   Star,
   Hand,
+  Bell,
+  LifeBuoy,
+  QrCode,
   AlertTriangle,
   PieChart,
   Upload,
@@ -91,6 +94,7 @@ export type MenuGroupKey =
   | "subjectTeacher"
   | "homeroomTeacher"
   | "departmentHead"
+  | "studentDesk"
   | "main";
 
 export type MenuItem = {
@@ -123,6 +127,7 @@ export const MENU_GROUP_ORDER: readonly MenuGroupKey[] = [
   "subjectTeacher",
   "homeroomTeacher",
   "departmentHead",
+  "studentDesk",
   "main",
   "finance",
 ];
@@ -143,6 +148,18 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "sentSimulation", path: "/student/simulations", icon: FlaskConical, group: "studentInfo", permission: "simulations.readOwn" },
   { key: "virtualLab", path: "/student/virtual-lab", icon: TestTube, group: "studentInfo", permission: "simulations.readOwn" },
   { key: "myResults", path: "/student/results", icon: ChartColumn, group: "studentInfo", permission: "results.readOwn" },
+  { key: "attendanceStatus", path: "/student/attendance", icon: UserCheck, group: "studentDesk", permission: "student.desk" },
+  { key: "disciplineStatus", path: "/student/discipline", icon: Scale, group: "studentDesk", permission: "student.desk" },
+  { key: "studentTimetable", path: "/student/timetable", icon: CalendarDays, group: "studentDesk", permission: "student.desk" },
+  { key: "notificationCenter", path: "/student/notifications", icon: Bell, group: "studentDesk", permission: "student.desk" },
+  { key: "studentAssignments", path: "/student/assignments", icon: ClipboardList, group: "studentDesk", permission: "student.desk" },
+  { key: "vocationalPlacement", path: "/student/vocational", icon: Wrench, group: "studentDesk", permission: "student.desk" },
+  { key: "libraryStatus", path: "/student/library", icon: Library, group: "studentDesk", permission: "student.desk" },
+  { key: "libraryUsage", path: "/student/library-usage", icon: BookOpen, group: "studentDesk", permission: "student.desk" },
+  { key: "documentRequest", path: "/student/documents", icon: FileText, group: "studentDesk", permission: "student.desk" },
+  { key: "helpdesk", path: "/student/helpdesk", icon: LifeBuoy, group: "studentDesk", permission: "student.desk" },
+  { key: "studyPlanner", path: "/student/planner", icon: Brain, group: "studentDesk", permission: "student.desk" },
+  { key: "digitalId", path: "/student/id", icon: QrCode, group: "studentDesk", permission: "student.desk" },
 
   { key: "requestItem", path: "/teacher/store-requests", icon: Link, group: "administration", permission: "storeRequests.create" },
 

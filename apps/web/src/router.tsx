@@ -77,6 +77,20 @@ import { ResourcesPage } from "@/features/student/ResourcesPage";
 import { ResultsPage } from "@/features/student/ResultsPage";
 import { SimulationsPage as StudentSimulationsPage } from "@/features/student/SimulationsPage";
 import { VirtualLabPage } from "@/features/student/VirtualLabPage";
+import {
+  AssignmentsPage,
+  AttendanceStatusPage,
+  DigitalIdPage,
+  DisciplineStatusPage,
+  DocumentRequestPage,
+  HelpdeskPage,
+  LibraryStatusPage,
+  LibraryUsagePage,
+  NotificationsPage,
+  StudentTimetablePage,
+  StudentVocationalPage,
+  StudyPlannerPage,
+} from "@/features/student/StudentDeskPages";
 import { AnalyticsPage, AtRiskPage, BuilderPage, CorrelationPage, DemographicsPage, IncidentsPage, MoePage, TrainingPage, TransfersPage, WarningsPage } from "@/features/principal/InsightPages";
 import { BulkPage, DocumentsPage, ExecutivePage, HubPage, InboxPage, PremiumPage, StaffKpiPage, TrendsPage } from "@/features/principal/WorkPages";
 import { BehaviorPage, InvigilationPage, VocationalPage } from "@/features/vice/VicePages";
@@ -148,6 +162,18 @@ const BUILT_ITEMS: readonly NavItemKey[] = [
   "sentSimulation",
   "virtualLab",
   "myResults",
+  "attendanceStatus",
+  "disciplineStatus",
+  "studentTimetable",
+  "notificationCenter",
+  "studentAssignments",
+  "vocationalPlacement",
+  "libraryStatus",
+  "libraryUsage",
+  "documentRequest",
+  "helpdesk",
+  "studyPlanner",
+  "digitalId",
   "storeApprovals",
   "profileSettings",
   "propertyInflow",
@@ -337,6 +363,18 @@ export const router = createBrowserRouter([
       { path: "student/exams", element: <ProtectedRoute permission="exams.readOwn"><ExamsPage /></ProtectedRoute> },
       { path: "student/quiz", element: <ProtectedRoute permission="quiz.readOwn"><QuizPage /></ProtectedRoute> },
       { path: "student/virtual-lab", element: <ProtectedRoute permission="simulations.readOwn"><VirtualLabPage /></ProtectedRoute> },
+      { path: "student/attendance", element: <ProtectedRoute permission="student.desk"><AttendanceStatusPage /></ProtectedRoute> },
+      { path: "student/discipline", element: <ProtectedRoute permission="student.desk"><DisciplineStatusPage /></ProtectedRoute> },
+      { path: "student/timetable", element: <ProtectedRoute permission="student.desk"><StudentTimetablePage /></ProtectedRoute> },
+      { path: "student/notifications", element: <ProtectedRoute permission="student.desk"><NotificationsPage /></ProtectedRoute> },
+      { path: "student/assignments", element: <ProtectedRoute permission="student.desk"><AssignmentsPage /></ProtectedRoute> },
+      { path: "student/vocational", element: <ProtectedRoute permission="student.desk"><StudentVocationalPage /></ProtectedRoute> },
+      { path: "student/library", element: <ProtectedRoute permission="student.desk"><LibraryStatusPage /></ProtectedRoute> },
+      { path: "student/library-usage", element: <ProtectedRoute permission="student.desk"><LibraryUsagePage /></ProtectedRoute> },
+      { path: "student/documents", element: <ProtectedRoute permission="student.desk"><DocumentRequestPage /></ProtectedRoute> },
+      { path: "student/helpdesk", element: <ProtectedRoute permission="student.desk"><HelpdeskPage /></ProtectedRoute> },
+      { path: "student/planner", element: <ProtectedRoute permission="student.desk"><StudyPlannerPage /></ProtectedRoute> },
+      { path: "student/id", element: <ProtectedRoute permission="student.desk"><DigitalIdPage /></ProtectedRoute> },
       { path: "principal/executive", element: <ProtectedRoute permission="principal.office"><ExecutivePage /></ProtectedRoute> },
       { path: "principal/trends", element: <ProtectedRoute permission="principal.office"><TrendsPage /></ProtectedRoute> },
       { path: "principal/communications", element: <ProtectedRoute permission="principal.office"><HubPage /></ProtectedRoute> },

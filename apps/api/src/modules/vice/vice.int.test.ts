@@ -1,7 +1,7 @@
 import request from "supertest";
 import { beforeAll, describe, expect, it } from "vitest";
 import { db } from "../../db/index.js";
-import { classSchedule, staff } from "../../db/schema/index.js";
+import { classSchedule, staff, subjects } from "../../db/schema/index.js";
 import { createAccessToken } from "../../lib/jwt.js";
 import type { Role } from "../../lib/roles.js";
 import { withTenant } from "../../lib/tenant.js";
@@ -48,10 +48,19 @@ describe("vice principal office", () => {
   });
 
   it("keeps a program and its students inside one school", async () => {
+    await db.insert(subjects).values({
+      subjectName: "Textile",
+      gradeLevel: 9,
+      stream: "Common",
+      creditHours: 2,
+      isVocational: 1,
+      sortOrder: 2,
+      tenantId: seed.tenantA.id,
+    });
     const opened = await request(app)
       .post("/vice/programs")
       .set("Authorization", bearer(seed.tenantA.id, "V_Principal", seed.tenantA.userId))
-      .send({ name: "Garment", trade: "Textile", gradeLevel: 10, capacity: 1, description: "Sewing workshop" })
+      .send({ name: "Garment", trade: "Textile", gradeLevel: 9, capacity: 1, description: "Sewing workshop" })
       .expect(201);
 
     await request(app)

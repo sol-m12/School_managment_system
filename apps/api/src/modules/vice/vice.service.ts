@@ -16,6 +16,7 @@ import {
   vpReferrals,
 } from "../../db/schema/index.js";
 import { scoped, withTenant } from "../../lib/tenant.js";
+import { placementBlock, programGradeBlock, tradeMatches, vocationalBand } from "../student/deskRules.js";
 import { clocksOverlap, planInvigilation } from "./invigilation.js";
 import type {
   HearingInput,
@@ -42,7 +43,13 @@ export type ViceErrorCode =
   | "NOT_READY"
   | "OVERLAP"
   | "SESSION_FULL"
-  | "ALREADY_ASSIGNED";
+  | "ALREADY_ASSIGNED"
+  | "GRADE_CLOSED"
+  | "EXPLORE_ONLY"
+  | "CONTINUE_ONLY"
+  | "ALREADY_CHOSEN"
+  | "NOT_IN_CURRICULUM"
+  | "WRONG_GRADE";
 
 export class ViceError extends Error {
   readonly code: ViceErrorCode;
@@ -136,7 +143,19 @@ export async function vocationalView(tenantId: number) {
   };
 }
 
+async function curriculumNames(tenantId: number, grade: number): Promise<string[]> {
+  const rows = await db
+    .select({ name: subjects.subjectName })
+    .from(subjects)
+    .where(scoped(subjects, tenantId, and(eq(subjects.gradeLevel, grade), eq(subjects.isVocational, 1))));
+  return rows.map((row) => row.name);
+}
+
 export async function createProgram(tenantId: number, userId: number, input: ProgramInput) {
+  const gradeBlock = programGradeBlock(input.gradeLevel);
+  if (gradeBlock) throw new ViceError(gradeBlock);
+  const names = await curriculumNames(tenantId, input.gradeLevel ?? 0);
+  if (!names.some((name) => tradeMatches(input.trade, name))) throw new ViceError("NOT_IN_CURRICULUM");
   const result = await db.insert(vpPrograms).values(
     withTenant(
       {
@@ -177,7 +196,30 @@ export async function placeStudent(tenantId: number, userId: number, input: Plac
     .where(scoped(vpPrograms, tenantId, eq(vpPrograms.programId, input.programId)))
     .limit(1);
   if (!program) throw new ViceError("NOT_FOUND");
-  if (!(await studentExists(tenantId, input.studentId))) throw new ViceError("NOT_FOUND");
+  const [pupil] = await db
+    .select({ id: students.studentId, grade: students.gradeLevel, skillId: students.vocationalId })
+    .from(students)
+    .where(scoped(students, tenantId, eq(students.studentId, input.studentId)))
+    .limit(1);
+  if (!pupil) throw new ViceError("NOT_FOUND");
+  const names = await curriculumNames(tenantId, pupil.grade);
+  let currentSkill: string | null = null;
+  if (pupil.skillId != null) {
+    const [skill] = await db
+      .select({ name: subjects.subjectName })
+      .from(subjects)
+      .where(scoped(subjects, tenantId, eq(subjects.subjectId, pupil.skillId)))
+      .limit(1);
+    currentSkill = skill?.name ?? null;
+  }
+  const block = placementBlock({
+    studentGrade: pupil.grade,
+    programGrade: program.gradeLevel,
+    trade: program.trade,
+    curriculumNames: names,
+    currentSkill,
+  });
+  if (block) throw new ViceError(block);
   if (program.status !== "Open") throw new ViceError("PROGRAM_CLOSED");
 
   const seats = await db
@@ -202,6 +244,19 @@ export async function placeStudent(tenantId: number, userId: number, input: Plac
     ),
   );
   const id = insertId(result);
+  if (vocationalBand(pupil.grade) === "choose" && pupil.skillId == null) {
+    const skill = (await db
+      .select({ id: subjects.subjectId, name: subjects.subjectName })
+      .from(subjects)
+      .where(scoped(subjects, tenantId, and(eq(subjects.gradeLevel, pupil.grade), eq(subjects.isVocational, 1)))))
+      .find((row) => tradeMatches(program.trade, row.name));
+    if (skill) {
+      await db
+        .update(students)
+        .set({ vocationalId: skill.id })
+        .where(scoped(students, tenantId, eq(students.studentId, pupil.id)));
+    }
+  }
   await writeAudit(tenantId, userId, "vp_placement", `Placed student ${input.studentId} on program ${input.programId}`);
   return { id };
 }

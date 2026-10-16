@@ -15,6 +15,8 @@ import {
   sessionBodySchema,
   examDaySchema,
 } from "./vice.schema.js";
+import { commendationBodySchema } from "../student/desk.schema.js";
+import { DeskError, recordCommendation } from "../student/desk.service.js";
 import { ViceError, type ViceErrorCode } from "./vice.service.js";
 import * as vice from "./vice.service.js";
 
@@ -32,6 +34,12 @@ const STATUS: Record<ViceErrorCode, number> = {
   OVERLAP: 409,
   SESSION_FULL: 409,
   ALREADY_ASSIGNED: 409,
+  GRADE_CLOSED: 409,
+  EXPLORE_ONLY: 409,
+  CONTINUE_ONLY: 409,
+  ALREADY_CHOSEN: 409,
+  NOT_IN_CURRICULUM: 409,
+  WRONG_GRADE: 409,
 };
 
 function sendError(res: Response, error: unknown): void {
@@ -159,6 +167,20 @@ viceRouter.patch("/hearings/:id", ...guard, async (req, res) => {
     await vice.setHearingOutcome(tenantOf(req), userOf(req), id, input);
     res.json({ id });
   } catch (error) {
+    sendError(res, error);
+  }
+});
+
+viceRouter.post("/commendations", ...guard, async (req, res) => {
+  const input = parseBody(commendationBodySchema, req, res);
+  if (!input) return;
+  try {
+    res.status(201).json(await recordCommendation(tenantOf(req), userOf(req), input.studentId, input.note));
+  } catch (error) {
+    if (error instanceof DeskError) {
+      res.status(error.code === "NOT_FOUND" ? 404 : 409).json({ code: error.code });
+      return;
+    }
     sendError(res, error);
   }
 });

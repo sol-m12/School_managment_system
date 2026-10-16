@@ -94,5 +94,14 @@
   "cannotDecideSelf": "You cannot decide your own request or evaluate yourself.",
   "alreadyEvaluated": "This teacher already has an evaluation for this term.",
   "wrongDay": "The cover date is not the same weekday as the period.",
-  "substitutionOpen": "Cancel the open substitution before swapping that period."
+  "substitutionOpen": "Cancel the open substitution before swapping that period.",
+  "gradeClosed": "Vocational placement is not open for this grade.",
+  "exploreOnly": "Grades 7 and 8 can look at vocational fields, but they cannot choose a trade yet.",
+  "continueOnly": "Grades 11 and 12 continue the skill already chosen. A different trade is closed.",
+  "alreadyChosen": "A vocational skill is already chosen.",
+  "notInCurriculum": "That trade is not a vocational subject in the curriculum for this grade.",
+  "wrongGrade": "The program grade does not match the student's grade.",
+  "alreadyOpen": "A document request is already open.",
+  "deadlinePassed": "The homework deadline has passed.",
+  "alreadySubmitted": "This homework is already submitted."
 }

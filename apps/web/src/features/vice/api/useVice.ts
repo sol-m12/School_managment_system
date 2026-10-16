@@ -149,6 +149,14 @@ export function useBehavior() {
   });
 }
 
+export function useSaveCommendation() {
+  const { tenantId, client } = useTenantKey();
+  return useMutation({
+    mutationFn: (body: { studentId: number; note: string }) => api.post("/vice/commendations", body),
+    onSuccess: () => void client.invalidateQueries({ queryKey: key(tenantId, "behavior") }),
+  });
+}
+
 export function useSaveReferral() {
   const { tenantId, client } = useTenantKey();
   return useMutation({

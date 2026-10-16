@@ -94,7 +94,16 @@ export type ErrorKey =
   | "cannotDecideSelf"
   | "alreadyEvaluated"
   | "wrongDay"
-  | "substitutionOpen";
+  | "substitutionOpen"
+  | "gradeClosed"
+  | "exploreOnly"
+  | "continueOnly"
+  | "alreadyChosen"
+  | "notInCurriculum"
+  | "wrongGrade"
+  | "alreadyOpen"
+  | "deadlinePassed"
+  | "alreadySubmitted";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -189,6 +198,15 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   ALREADY_EVALUATED: "alreadyEvaluated",
   WRONG_DAY: "wrongDay",
   SUBSTITUTION_OPEN: "substitutionOpen",
+  GRADE_CLOSED: "gradeClosed",
+  EXPLORE_ONLY: "exploreOnly",
+  CONTINUE_ONLY: "continueOnly",
+  ALREADY_CHOSEN: "alreadyChosen",
+  NOT_IN_CURRICULUM: "notInCurriculum",
+  WRONG_GRADE: "wrongGrade",
+  ALREADY_OPEN: "alreadyOpen",
+  DEADLINE: "deadlinePassed",
+  ALREADY_SUBMITTED: "alreadySubmitted",
 };
 
 function readCode(data: unknown): string | null {

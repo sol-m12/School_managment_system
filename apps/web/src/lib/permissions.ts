@@ -58,6 +58,7 @@ export const PERMISSIONS = [
   "quiz.readOwn",
   "resources.readOwn",
   "simulations.readOwn",
+  "student.desk",
 
   "store.items",
   "store.receive",

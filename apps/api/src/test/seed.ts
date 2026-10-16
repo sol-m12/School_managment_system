@@ -23,6 +23,9 @@ export type IsolationSeed = {
 };
 
 const TABLES_TO_EMPTY = [
+  "st_task_work",
+  "st_document_requests",
+  "st_commendations",
   "tc_performance_scores",
   "tc_performance",
   "tc_topic_coverage",

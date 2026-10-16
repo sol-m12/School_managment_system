@@ -1846,3 +1846,41 @@ export const tcTopicCoverage = mysqlTable("tc_topic_coverage", {
 	index("idx_tc_topic_coverage_tenant_id").on(table.tenantId),
 	unique("uq_tc_topic_coverage_plan").on(table.tenantId, table.planDetailId),
 ]);
+
+export const stCommendations = mysqlTable("st_commendations", {
+	commendationId: int("commendation_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	studentId: int("student_id").notNull(),
+	note: varchar({ length: 500 }).notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_st_commendations_tenant_id").on(table.tenantId),
+]);
+
+export const stDocumentRequests = mysqlTable("st_document_requests", {
+	requestId: int("request_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	studentId: int("student_id").notNull(),
+	kind: mysqlEnum(['transcript','document']).notNull(),
+	purpose: varchar({ length: 255 }).notNull(),
+	status: mysqlEnum(['Submitted','Reviewing','Ready','Collected']).default('Submitted').notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_st_document_requests_tenant_id").on(table.tenantId),
+]);
+
+export const stTaskWork = mysqlTable("st_task_work", {
+	workId: int("work_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	taskId: int("task_id").notNull(),
+	studentId: int("student_id").notNull(),
+	body: varchar({ length: 2000 }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_st_task_work_tenant_id").on(table.tenantId),
+	unique("uq_st_task_work_student").on(table.tenantId, table.taskId, table.studentId),
+]);

@@ -15,6 +15,7 @@ import {
   usePlacementStatus,
   useProgramStatus,
   useRemoveDuty,
+  useSaveCommendation,
   useSavePenalty,
   useSaveProgram,
   useSaveReferral,
@@ -237,6 +238,7 @@ export function BehaviorPage() {
   const { t } = useTranslation(["vice", "errors"]);
   const query = useBehavior();
   const save = useSaveReferral();
+  const praise = useSaveCommendation();
   const hearing = useScheduleHearing();
   const outcome = useHearingOutcome();
   const penalty = useSavePenalty();
@@ -254,6 +256,31 @@ export function BehaviorPage() {
           return (
             <div className="grid gap-4">
               <StatCard label={t("openCases")} value={String(data.openCount)} icon={Scale} />
+              <Card>
+                <CardHeader title={t("commendationForm")} />
+                <CardBody>
+                  <form
+                    className="grid gap-3 md:grid-cols-2"
+                    onSubmit={(event) => {
+                      const form = readForm(event);
+                      praise.mutate(
+                        { studentId: whole(form, "studentId"), note: textOf(form, "note") },
+                        {
+                          onSuccess: () => {
+                            setNotice({ tone: "success", text: t("saved") });
+                            event.currentTarget.reset();
+                          },
+                          onError: (error) => fail(setNotice, t, error),
+                        },
+                      );
+                    }}
+                  >
+                    <Select name="studentId" label={t("student")} placeholder={t("choose")} required options={data.students.map((row) => ({ value: String(row.id), label: row.name }))} />
+                    <Input name="note" label={t("note")} required />
+                    <Button type="submit" loading={praise.isPending}>{t("save")}</Button>
+                  </form>
+                </CardBody>
+              </Card>
               <Card>
                 <CardHeader title={t("referralForm")} />
                 <CardBody>

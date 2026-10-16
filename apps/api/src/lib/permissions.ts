@@ -63,6 +63,7 @@ export const PERMISSIONS = [
   "quiz.readOwn",
   "resources.readOwn",
   "simulations.readOwn",
+  "student.desk",
 
   "store.items",
   "store.receive",
@@ -139,6 +140,7 @@ const GRANTS: Record<Permission, readonly Role[]> = {
   "quiz.readOwn": ["Student"],
   "resources.readOwn": ["Student"],
   "simulations.readOwn": ["Student"],
+  "student.desk": ["Student"],
   "store.items": ["Store_Keeper"],
   "store.receive": ["Store_Keeper"],
   "store.binCard": ["Store_Keeper"],

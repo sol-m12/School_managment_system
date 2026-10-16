@@ -13,6 +13,7 @@ import { subjectsRouter } from "./modules/subjects/subjects.routes.js";
 import { teacherRouter } from "./modules/teacher/teacher.routes.js";
 import { officeRouter } from "./modules/teacher/office.routes.js";
 import { studentRouter } from "./modules/student/student.routes.js";
+import { deskRouter } from "./modules/student/desk.routes.js";
 import { storeRouter } from "./modules/store/store.routes.js";
 import { financeRouter } from "./modules/finance/finance.routes.js";
 import { technicianRouter } from "./modules/technician/technician.routes.js";
@@ -53,6 +54,7 @@ app.use("/operations", operationsRouter);
 app.use("/principal", principalRouter);
 app.use("/vice", viceRouter);
 app.use("/student", studentRouter);
+app.use("/student", deskRouter);
 app.use("/store/finance", financeRouter);
 app.use("/store", storeRouter);
 
