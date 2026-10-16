@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Alert, Spinner } from "@/components/ui";
@@ -49,12 +50,60 @@ function shortSubject(name: string): string {
   return name.replace(/[^A-Za-z0-9]/g, "").slice(0, 5).toUpperCase();
 }
 
+function escapeHtml(value: string): string {
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function timetableDocument(options: {
+  title: string;
+  school: string;
+  subtitle: string;
+  dayLabel: string;
+  periodLabel: string;
+  columns: { id: number; gradeLevel: number; section: string }[];
+  periods: { period: number; start: string; end: string }[];
+  lessons: Lesson[];
+}): string {
+  const body = DAYS.map((day) =>
+    options.periods
+      .map((period, index) => {
+        const cells = options.columns
+          .map((room) => {
+            const lesson = options.lessons.find((item) => item.classId === room.id && item.day === day && item.period === period.period);
+            if (!lesson) return "<td>—</td>";
+            return `<td><div class="subject">${escapeHtml(lesson.subjectName)}</div><div>${escapeHtml(lesson.teacherName)}</div></td>`;
+          })
+          .join("");
+        const dayCell = index === 0 ? `<td rowspan="${options.periods.length}">${DAY_SHORT[day]}</td>` : "";
+        return `<tr>${dayCell}<td>P${period.period}<div>${period.start.slice(0, 5)}–${period.end.slice(0, 5)}</div></td>${cells}</tr>`;
+      })
+      .join(""),
+  ).join("");
+  const heads = options.columns.map((room) => `<th>${room.gradeLevel}-${escapeHtml(room.section)}</th>`).join("");
+  return `<!doctype html><html lang="am"><head><meta charset="UTF-8"><title>${escapeHtml(options.title)}</title>
+    <style>
+      @page { size: landscape; margin: 0.4in; }
+      body { font-family: "Noto Sans Ethiopic", "Segoe UI", sans-serif; color: #000; margin: 0; }
+      h1 { font-size: 18px; margin: 0; }
+      p { margin: 4px 0 12px; font-size: 12px; }
+      table { width: 100%; border-collapse: collapse; font-size: 10px; }
+      th, td { border: 1px solid #000; padding: 4px; text-align: center; vertical-align: top; }
+      .subject { font-weight: 700; }
+    </style></head><body>
+    <h1>${escapeHtml(options.school)}</h1>
+    <p>${escapeHtml(options.title)} · ${escapeHtml(options.subtitle)}</p>
+    <table><thead><tr><th>${escapeHtml(options.dayLabel)}</th><th>${escapeHtml(options.periodLabel)}</th>${heads}</tr></thead><tbody>${body}</tbody></table>
+    <script>window.addEventListener("load", function () { window.print(); });</script>
+    </body></html>`;
+}
+
 export function ScheduleBoardPage() {
-  const { t } = useTranslation(["admin", "errors", "common"]);
+  const { t } = useTranslation(["admin", "errors", "common", "auth"]);
   const { tenantId } = useSessionUser();
   const client = useQueryClient();
   const [shift, setShift] = useState<"Morning" | "Afternoon" | "Both">("Morning");
   const [notice, setNotice] = useState<string | null>(null);
+  const [preview, setPreview] = useState(false);
   const query = useQuery({
     queryKey: ["admin", tenantId, "schedule-board", shift],
     queryFn: async () => (await api.get<Board>("/admin/schedule/board", { params: { shift } })).data,
@@ -74,6 +123,15 @@ export function ScheduleBoardPage() {
     onSuccess: () => void refresh(),
   });
 
+  useEffect(() => {
+    if (!preview) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setPreview(false);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [preview]);
+
   if (query.isPending) {
     return (
       <div className="flex justify-center py-10">
@@ -86,6 +144,28 @@ export function ScheduleBoardPage() {
   const periods = [...new Map(data.periods.map((period) => [period.period, period])).values()];
   const classIds = [...new Set(data.lessons.map((lesson) => lesson.classId))];
   const columns = data.classes.filter((room) => classIds.length === 0 || classIds.includes(room.id));
+  const sheetTitle = t("admin:schedulePrintPreview");
+  const sheetSubtitle = `${t("admin:scheduleCenterHint", { year: data.year })} · ${shift}`;
+
+  function saveTimetable() {
+    const html = timetableDocument({
+      title: sheetTitle,
+      school: t("auth:schoolName"),
+      subtitle: sheetSubtitle,
+      dayLabel: "DAY",
+      periodLabel: "PERIOD",
+      columns,
+      periods,
+      lessons: data.lessons,
+    });
+    const blob = new Blob([`\uFEFF${html}`], { type: "text/html;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `timetable_${data.year.replace(/[^0-9A-Za-z_-]/g, "_")}_${shift}.html`;
+    link.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
 
   return (
     <div className="bg-[#f8fafc] px-4 py-6 text-black print:bg-white print:p-0">
@@ -95,7 +175,7 @@ export function ScheduleBoardPage() {
           <h2 className="text-2xl font-extrabold">{t("admin:scheduleCenter")}</h2>
           <p className="text-sm text-[#6c757d] print:text-black">{t("admin:scheduleCenterHint", { year: data.year })} · {shift}</p>
         </div>
-        <button type="button" className="rounded-md bg-[#1a237e] px-4 py-2 text-sm font-bold text-white print:hidden" onClick={() => window.print()}>
+        <button type="button" className="rounded-md bg-[#1a237e] px-4 py-2 text-sm font-bold text-white print:hidden" onClick={() => setPreview(true)}>
           {t("admin:schedulePrint")}
         </button>
       </div>
@@ -285,6 +365,80 @@ export function ScheduleBoardPage() {
           </table>
         </div>
       </section>
+      {preview
+        ? createPortal(
+            <div className="fixed inset-0 z-[1200] overflow-auto bg-white text-black">
+              <div className="sticky top-0 flex flex-wrap items-center justify-between gap-3 border-b bg-white px-4 py-3">
+                <div>
+                  <h2 className="text-lg font-extrabold">{sheetTitle}</h2>
+                  <p className="text-sm text-[#6c757d]">{t("admin:schedulePrintUseFile")}</p>
+                </div>
+                <div className="flex gap-2">
+                  <button type="button" className="rounded-md bg-[#1a237e] px-4 py-2 text-sm font-bold text-white" onClick={saveTimetable}>
+                    {t("admin:schedulePrintSave")}
+                  </button>
+                  <button type="button" className="rounded-md border px-4 py-2 text-sm font-bold" onClick={() => setPreview(false)}>
+                    {t("common:close")}
+                  </button>
+                </div>
+              </div>
+              <div className="px-4 py-6">
+                <h1 className="text-xl font-extrabold">{t("auth:schoolName")}</h1>
+                <p className="mb-4 text-sm">{sheetTitle} · {sheetSubtitle}</p>
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[900px] border-collapse border border-black text-center text-[11px]">
+                    <thead>
+                      <tr>
+                        <th className="border border-black px-2 py-2">DAY</th>
+                        <th className="border border-black px-2 py-2">PERIOD</th>
+                        {columns.map((room) => (
+                          <th key={room.id} className="border border-black px-2 py-2">
+                            {room.gradeLevel}-{room.section}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {DAYS.map((day) =>
+                        periods.map((period, index) => (
+                          <tr key={`${day}-${period.period}`}>
+                            {index === 0 ? (
+                              <td className="border border-black px-2 py-2 font-bold" rowSpan={periods.length}>
+                                {DAY_SHORT[day]}
+                              </td>
+                            ) : null}
+                            <td className="border border-black px-2 py-2">
+                              P{period.period}
+                              <div>
+                                {period.start.slice(0, 5)}–{period.end.slice(0, 5)}
+                              </div>
+                            </td>
+                            {columns.map((room) => {
+                              const lesson = data.lessons.find((item) => item.classId === room.id && item.day === day && item.period === period.period);
+                              return (
+                                <td key={room.id} className="border border-black px-1 py-2 align-top">
+                                  {lesson ? (
+                                    <>
+                                      <div className="font-bold">{lesson.subjectName}</div>
+                                      <div>{lesson.teacherName}</div>
+                                    </>
+                                  ) : (
+                                    "—"
+                                  )}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        )),
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>,
+            document.body,
+          )
+        : null}
     </div>
   );
 }

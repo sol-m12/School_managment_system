@@ -462,6 +462,9 @@
   "scheduleHeatEmpty": "No lessons are on this timetable yet.",
   "scheduleWeekly": "Week",
   "schedulePrint": "Print timetable",
+  "schedulePrintPreview": "Timetable preview",
+  "schedulePrintSave": "Save to print",
+  "schedulePrintUseFile": "This is the timetable preview. Save the file and open it in Chrome or Edge. Printing starts when the file opens.",
   "profilePhoto": "Photo",
   "profilePhotoSaved": "Your profile was updated."
 }

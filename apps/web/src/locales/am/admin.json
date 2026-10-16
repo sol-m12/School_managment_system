@@ -462,6 +462,9 @@
   "scheduleHeatEmpty": "በዚህ ሰሌዳ ላይ ትምህርት የለም።",
   "scheduleWeekly": "ሳምንት",
   "schedulePrint": "የክፍለ ጊዜ ሰሌዳ አትም",
+  "schedulePrintPreview": "የክፍለ ጊዜ ሰሌዳ ቅድመ እይታ",
+  "schedulePrintSave": "ለማተም አስቀምጥ",
+  "schedulePrintUseFile": "ይህ የክፍለ ጊዜ ሰሌዳ ቅድመ እይታ ነው። ለማተም ፋይሉን አስቀምጠው በChrome ወይም በEdge ክፈት። ማተሚያው ፋይሉ ሲከፈት ይጀምራል።",
   "profilePhoto": "ፎቶ",
   "profilePhotoSaved": "ፕሮፋይልዎ በትክክል ተሻሽሏል!"
 }
