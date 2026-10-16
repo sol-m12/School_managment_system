@@ -72,5 +72,8 @@
   "yearArchived": "That Ethiopian year is already in the archive.",
   "staffNotTeacher": "Only a teacher can hold homeroom or department-head duty. A lab assistant has no website login.",
   "importEmpty": "The file has no rows to import.",
-  "excelSaveAsCsv": "Save the Excel workbook as CSV, then import that file."
+  "excelSaveAsCsv": "Save the Excel workbook as CSV, then import that file.",
+  "noteRequired": "Write a short note before you clarify or override.",
+  "clearanceIncomplete": "Library, store, and finance must all be clear before the certificate is issued.",
+  "notReady": "That action is not available for this record."
 }

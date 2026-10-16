@@ -23,6 +23,14 @@ export type IsolationSeed = {
 };
 
 const TABLES_TO_EMPTY = [
+  "principal_approval_notes",
+  "principal_report_defs",
+  "principal_incidents",
+  "principal_training",
+  "principal_transfers",
+  "principal_documents",
+  "principal_messages",
+  "principal_policies",
   "support_tickets",
   "login_attempts",
   "backup_runs",

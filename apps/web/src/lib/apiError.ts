@@ -72,7 +72,10 @@ export type ErrorKey =
   | "yearArchived"
   | "staffNotTeacher"
   | "importEmpty"
-  | "excelSaveAsCsv";
+  | "excelSaveAsCsv"
+  | "noteRequired"
+  | "clearanceIncomplete"
+  | "notReady";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -145,6 +148,9 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   STAFF_NOT_TEACHER: "staffNotTeacher",
   IMPORT_EMPTY: "importEmpty",
   EXCEL_SAVE_AS_CSV: "excelSaveAsCsv",
+  NOTE_REQUIRED: "noteRequired",
+  CLEARANCE_INCOMPLETE: "clearanceIncomplete",
+  NOT_READY: "notReady",
 };
 
 function readCode(data: unknown): string | null {

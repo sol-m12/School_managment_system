@@ -77,6 +77,8 @@ import { ResourcesPage } from "@/features/student/ResourcesPage";
 import { ResultsPage } from "@/features/student/ResultsPage";
 import { SimulationsPage as StudentSimulationsPage } from "@/features/student/SimulationsPage";
 import { VirtualLabPage } from "@/features/student/VirtualLabPage";
+import { AnalyticsPage, AtRiskPage, BuilderPage, CorrelationPage, DemographicsPage, IncidentsPage, MoePage, TrainingPage, TransfersPage, WarningsPage } from "@/features/principal/InsightPages";
+import { BulkPage, DocumentsPage, ExecutivePage, HubPage, InboxPage, PremiumPage, StaffKpiPage, TrendsPage } from "@/features/principal/WorkPages";
 import { AnnouncementsPage } from "@/features/technician/AnnouncementsPage";
 import { AuditPage, DutiesPage, HealthPage, IdentityPage, ImportPage, TicketsPage } from "@/features/operations/OperationsPages";
 import { StaffRegistrationPage } from "@/features/technician/StaffRegistrationPage";
@@ -143,6 +145,24 @@ const BUILT_ITEMS: readonly NavItemKey[] = [
   "mehi17Ledger",
   "mehi17Setup",
   "mehi7",
+  "executiveOffice",
+  "reportAnalysis",
+  "communicationHub",
+  "premiumOffice",
+  "approvalInbox",
+  "staffKpis",
+  "documentSign",
+  "bulkMessages",
+  "academicCompare",
+  "correlationInsights",
+  "transferClearance",
+  "atRiskStudents",
+  "moeReports",
+  "capacityBuilding",
+  "reportBuilder",
+  "earlyWarning",
+  "incidentPortal",
+  "yearAnalytics",
 ];
 
 const placeholderRoutes: RouteObject[] = MENU_ITEMS.filter((item) => !BUILT_ITEMS.includes(item.key)).map((item) => ({
@@ -270,6 +290,24 @@ export const router = createBrowserRouter([
       { path: "student/exams", element: <ProtectedRoute permission="exams.readOwn"><ExamsPage /></ProtectedRoute> },
       { path: "student/quiz", element: <ProtectedRoute permission="quiz.readOwn"><QuizPage /></ProtectedRoute> },
       { path: "student/virtual-lab", element: <ProtectedRoute permission="simulations.readOwn"><VirtualLabPage /></ProtectedRoute> },
+      { path: "principal/executive", element: <ProtectedRoute permission="principal.office"><ExecutivePage /></ProtectedRoute> },
+      { path: "principal/trends", element: <ProtectedRoute permission="principal.office"><TrendsPage /></ProtectedRoute> },
+      { path: "principal/communications", element: <ProtectedRoute permission="principal.office"><HubPage /></ProtectedRoute> },
+      { path: "principal/premium", element: <ProtectedRoute permission="principal.office"><PremiumPage /></ProtectedRoute> },
+      { path: "principal/inbox", element: <ProtectedRoute permission="principal.office"><InboxPage /></ProtectedRoute> },
+      { path: "principal/staff", element: <ProtectedRoute permission="principal.office"><StaffKpiPage /></ProtectedRoute> },
+      { path: "principal/documents", element: <ProtectedRoute permission="principal.office"><DocumentsPage /></ProtectedRoute> },
+      { path: "principal/messages", element: <ProtectedRoute permission="principal.office"><BulkPage /></ProtectedRoute> },
+      { path: "principal/analytics", element: <ProtectedRoute permission="principal.office"><AnalyticsPage /></ProtectedRoute> },
+      { path: "principal/correlation", element: <ProtectedRoute permission="principal.office"><CorrelationPage /></ProtectedRoute> },
+      { path: "principal/transfers", element: <ProtectedRoute permission="principal.office"><TransfersPage /></ProtectedRoute> },
+      { path: "principal/at-risk", element: <ProtectedRoute permission="principal.office"><AtRiskPage /></ProtectedRoute> },
+      { path: "principal/moe", element: <ProtectedRoute permission="principal.office"><MoePage /></ProtectedRoute> },
+      { path: "principal/training", element: <ProtectedRoute permission="principal.office"><TrainingPage /></ProtectedRoute> },
+      { path: "principal/reports", element: <ProtectedRoute permission="principal.office"><BuilderPage /></ProtectedRoute> },
+      { path: "principal/warnings", element: <ProtectedRoute permission="principal.office"><WarningsPage /></ProtectedRoute> },
+      { path: "principal/incidents", element: <ProtectedRoute permission="principal.office"><IncidentsPage /></ProtectedRoute> },
+      { path: "principal/demographics", element: <ProtectedRoute permission="principal.office"><DemographicsPage /></ProtectedRoute> },
       ...placeholderRoutes,
       { path: "*", element: <NotFoundPage /> },
     ],

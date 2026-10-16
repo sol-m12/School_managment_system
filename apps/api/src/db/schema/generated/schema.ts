@@ -968,6 +968,128 @@ export const periodSettings = mysqlTable("period_settings", {
 	index("idx_period_settings_tenant_id").on(table.tenantId),
 ]);
 
+export const principalApprovalNotes = mysqlTable("principal_approval_notes", {
+	noteId: int("note_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	source: mysqlEnum(['store','registration','attendance','staff']).notNull(),
+	sourceId: int("source_id").notNull(),
+	action: mysqlEnum(['approve','reject','clarify','override']).notNull(),
+	note: varchar({ length: 255 }).notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_principal_approval_notes_tenant_id").on(table.tenantId),
+]);
+
+export const principalDocuments = mysqlTable("principal_documents", {
+	documentId: int("document_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	title: varchar({ length: 160 }).notNull(),
+	body: text().notNull(),
+	status: mysqlEnum(['Draft','Signed','Rejected']).default('Draft').notNull(),
+	signerName: varchar("signer_name", { length: 160 }),
+	signedBy: int("signed_by"),
+	signedAt: timestamp("signed_at", { mode: 'string' }),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_principal_documents_tenant_id").on(table.tenantId),
+]);
+
+export const principalIncidents = mysqlTable("principal_incidents", {
+	incidentId: int("incident_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	title: varchar({ length: 160 }).notNull(),
+	details: text().notNull(),
+	severity: mysqlEnum(['low','medium','high']).default('medium').notNull(),
+	status: mysqlEnum(['Open','Investigating','Resolved']).default('Open').notNull(),
+	studentId: int("student_id"),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_principal_incidents_tenant_id").on(table.tenantId),
+]);
+
+export const principalMessages = mysqlTable("principal_messages", {
+	messageId: int("message_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	kind: mysqlEnum(['announcement','emergency','memo','targeted','bulk']).notNull(),
+	audience: varchar({ length: 160 }).notNull(),
+	title: varchar({ length: 160 }).notNull(),
+	body: text().notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_principal_messages_tenant_id").on(table.tenantId),
+]);
+
+export const principalPolicies = mysqlTable("principal_policies", {
+	policyId: int("policy_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	title: varchar({ length: 160 }).notNull(),
+	body: text().notNull(),
+	area: mysqlEnum(['performance','policy','compliance']).notNull(),
+	status: mysqlEnum(['Draft','Active','Retired']).default('Draft').notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	effectiveOn: date("effective_on", { mode: 'string' }),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_principal_policies_tenant_id").on(table.tenantId),
+]);
+
+export const principalReportDefs = mysqlTable("principal_report_defs", {
+	reportId: int("report_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	name: varchar({ length: 160 }).notNull(),
+	columnsJson: text("columns_json").notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_principal_report_defs_tenant_id").on(table.tenantId),
+]);
+
+export const principalTraining = mysqlTable("principal_training", {
+	sessionId: int("session_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	title: varchar({ length: 160 }).notNull(),
+	trainer: varchar({ length: 160 }).notNull(),
+	audience: varchar({ length: 160 }).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	scheduledOn: date("scheduled_on", { mode: 'string' }).notNull(),
+	seats: int().default(20).notNull(),
+	notes: text(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_principal_training_tenant_id").on(table.tenantId),
+]);
+
+export const principalTransfers = mysqlTable("principal_transfers", {
+	transferId: int("transfer_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	studentId: int("student_id").notNull(),
+	destination: varchar({ length: 160 }).notNull(),
+	reason: varchar({ length: 255 }).notNull(),
+	libraryClear: tinyint("library_clear").default(0).notNull(),
+	storeClear: tinyint("store_clear").default(0).notNull(),
+	financeClear: tinyint("finance_clear").default(0).notNull(),
+	status: mysqlEnum(['Open','Cleared','Issued']).default('Open').notNull(),
+	certificateNo: varchar("certificate_no", { length: 40 }),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_principal_transfers_tenant_id").on(table.tenantId),
+]);
+
 export const requisitionsModel20 = mysqlTable("requisitions_model20", {
 	requisitionId: int("requisition_id").autoincrement().notNull(),
 	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),

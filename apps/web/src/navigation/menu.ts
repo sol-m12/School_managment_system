@@ -23,6 +23,18 @@ import {
   ScrollText,
   Activity,
   Headset,
+  Shield,
+  Inbox,
+  PenLine,
+  Send,
+  GitCompare,
+  FileOutput,
+  Brain,
+  FileSpreadsheet,
+  LayoutTemplate,
+  Siren,
+  AlertTriangle,
+  PieChart,
   Upload,
   Wallet,
   Database,
@@ -64,6 +76,7 @@ export type MenuGroupKey =
   | "store"
   | "finance"
   | "studentInfo"
+  | "principalOffice"
   | "main";
 
 export type MenuItem = {
@@ -91,6 +104,7 @@ export const MENU_GROUP_ORDER: readonly MenuGroupKey[] = [
   "systemSettings",
   "store",
   "studentInfo",
+  "principalOffice",
   "main",
   "finance",
 ];
@@ -125,6 +139,25 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "academicApprovals", path: "/academics/approvals", icon: CheckCheck, group: "academicAdmin", permission: "academicApprovals.manage" },
   { key: "periodSchedule", path: "/academics/schedule", icon: CalendarDays, group: "academicAdmin", permission: "periodSchedule.manage" },
   { key: "academicReports", path: "/academics/reports", icon: ChartLine, group: "academicAdmin", permission: "academicReports.read" },
+
+  { key: "executiveOffice", path: "/principal/executive", icon: Shield, group: "principalOffice", permission: "principal.office" },
+  { key: "reportAnalysis", path: "/principal/trends", icon: ChartLine, group: "principalOffice", permission: "principal.office" },
+  { key: "communicationHub", path: "/principal/communications", icon: Megaphone, group: "principalOffice", permission: "principal.office" },
+  { key: "premiumOffice", path: "/principal/premium", icon: Activity, group: "principalOffice", permission: "principal.office" },
+  { key: "approvalInbox", path: "/principal/inbox", icon: Inbox, group: "principalOffice", permission: "principal.office" },
+  { key: "staffKpis", path: "/principal/staff", icon: UsersRound, group: "principalOffice", permission: "principal.office" },
+  { key: "documentSign", path: "/principal/documents", icon: PenLine, group: "principalOffice", permission: "principal.office" },
+  { key: "bulkMessages", path: "/principal/messages", icon: Send, group: "principalOffice", permission: "principal.office" },
+  { key: "academicCompare", path: "/principal/analytics", icon: ChartColumn, group: "principalOffice", permission: "principal.office" },
+  { key: "correlationInsights", path: "/principal/correlation", icon: GitCompare, group: "principalOffice", permission: "principal.office" },
+  { key: "transferClearance", path: "/principal/transfers", icon: FileOutput, group: "principalOffice", permission: "principal.office" },
+  { key: "atRiskStudents", path: "/principal/at-risk", icon: Brain, group: "principalOffice", permission: "principal.office" },
+  { key: "moeReports", path: "/principal/moe", icon: FileSpreadsheet, group: "principalOffice", permission: "principal.office" },
+  { key: "capacityBuilding", path: "/principal/training", icon: GraduationCap, group: "principalOffice", permission: "principal.office" },
+  { key: "reportBuilder", path: "/principal/reports", icon: LayoutTemplate, group: "principalOffice", permission: "principal.office" },
+  { key: "earlyWarning", path: "/principal/warnings", icon: AlertTriangle, group: "principalOffice", permission: "principal.office" },
+  { key: "incidentPortal", path: "/principal/incidents", icon: Siren, group: "principalOffice", permission: "principal.office" },
+  { key: "yearAnalytics", path: "/principal/demographics", icon: PieChart, group: "principalOffice", permission: "principal.office" },
 
   // Teacher (same menu for homeroom teachers)
   { key: "assignedWorks", path: "/teacher/assigned-works", icon: ListChecks, group: "academicTasks", permission: "assignedWork.read" },

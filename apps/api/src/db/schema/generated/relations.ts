@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { tenants, accountTypes, adminTasks, announcements, annualLessonPlan, assignmentSubmissions, attendance, auditLog, backupRuns, binCardLedger, budgetNotifications, budgetNotificationItems, classes, classSchedule, committeesClubs, committeeMembers, communicationGroups, departmentHeads, evaluationCriteria, evaluationDetails, onlineExams, examQuestions, examResultsOnline, students, expenses, externalInquiries, fileShares, financeCodes, foreignPartners, grades, users, groupsInfo, subjects, groupChats, groupMembers, groupMessages, groupResponses, groupTasks, groupSubmissions, studentGroups, income, issueModel22, itemCategories, items, libraryAttendance, libraryBooks, libraryBorrowing, libraryHandovers, liveQuizQuestions, liveQuizSessions, loginAttempts, mehi161Cards, mehi161Transactions, mehi17Cards, mehi17Transactions, mehi7Items, mehi7Vouchers, model19Grn, model19Items, outboundNotices, parentGuardian, payroll, peerAssessments, periodSettings, requisitionsModel20, schoolNews, schoolPlans, schoolSettings, schoolStats, simulations, staff, staffFiles, staffFolders, stockLedgerCard, studentAssessments, studentFinalReports, subjectWeightings, suppliers, supportTickets, systemSettings, teacherAssignments, teacherEvaluations, teacherRoleCredits, vocationalRequests } from "./schema.js";
+import { tenants, accountTypes, adminTasks, announcements, annualLessonPlan, assignmentSubmissions, attendance, auditLog, backupRuns, binCardLedger, budgetNotifications, budgetNotificationItems, classes, classSchedule, committeesClubs, committeeMembers, communicationGroups, departmentHeads, evaluationCriteria, evaluationDetails, onlineExams, examQuestions, examResultsOnline, students, expenses, externalInquiries, fileShares, financeCodes, foreignPartners, grades, users, groupsInfo, subjects, groupChats, groupMembers, groupMessages, groupResponses, groupTasks, groupSubmissions, studentGroups, income, issueModel22, itemCategories, items, libraryAttendance, libraryBooks, libraryBorrowing, libraryHandovers, liveQuizQuestions, liveQuizSessions, loginAttempts, mehi161Cards, mehi161Transactions, mehi17Cards, mehi17Transactions, mehi7Items, mehi7Vouchers, model19Grn, model19Items, outboundNotices, parentGuardian, payroll, peerAssessments, periodSettings, principalApprovalNotes, principalDocuments, principalIncidents, principalMessages, principalPolicies, principalReportDefs, principalTraining, principalTransfers, requisitionsModel20, schoolNews, schoolPlans, schoolSettings, schoolStats, simulations, staff, staffFiles, staffFolders, stockLedgerCard, studentAssessments, studentFinalReports, subjectWeightings, suppliers, supportTickets, systemSettings, teacherAssignments, teacherEvaluations, teacherRoleCredits, vocationalRequests } from "./schema.js";
 
 export const accountTypesRelations = relations(accountTypes, ({one, many}) => ({
 	tenant: one(tenants, {
@@ -69,6 +69,14 @@ export const tenantsRelations = relations(tenants, ({many}) => ({
 	payrolls: many(payroll),
 	peerAssessments: many(peerAssessments),
 	periodSettings: many(periodSettings),
+	principalApprovalNotes: many(principalApprovalNotes),
+	principalDocuments: many(principalDocuments),
+	principalIncidents: many(principalIncidents),
+	principalMessages: many(principalMessages),
+	principalPolicies: many(principalPolicies),
+	principalReportDefs: many(principalReportDefs),
+	principalTrainings: many(principalTraining),
+	principalTransfers: many(principalTransfers),
 	requisitionsModel20s: many(requisitionsModel20),
 	schoolNews: many(schoolNews),
 	schoolPlans: many(schoolPlans),
@@ -685,6 +693,62 @@ export const peerAssessmentsRelations = relations(peerAssessments, ({one}) => ({
 export const periodSettingsRelations = relations(periodSettings, ({one}) => ({
 	tenant: one(tenants, {
 		fields: [periodSettings.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const principalApprovalNotesRelations = relations(principalApprovalNotes, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [principalApprovalNotes.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const principalDocumentsRelations = relations(principalDocuments, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [principalDocuments.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const principalIncidentsRelations = relations(principalIncidents, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [principalIncidents.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const principalMessagesRelations = relations(principalMessages, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [principalMessages.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const principalPoliciesRelations = relations(principalPolicies, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [principalPolicies.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const principalReportDefsRelations = relations(principalReportDefs, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [principalReportDefs.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const principalTrainingRelations = relations(principalTraining, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [principalTraining.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const principalTransfersRelations = relations(principalTransfers, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [principalTransfers.tenantId],
 		references: [tenants.id]
 	}),
 }));
