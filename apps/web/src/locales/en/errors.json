@@ -82,5 +82,17 @@
   "hearingRequired": "Schedule a committee hearing before recording a penalty.",
   "invigilationOverlap": "That teacher is already covering an exam at the same time.",
   "sessionFull": "This sitting already has enough invigilators.",
-  "alreadyAssigned": "That teacher is already assigned to this sitting."
+  "alreadyAssigned": "That teacher is already assigned to this sitting.",
+  "notHomeroom": "This screen is for the homeroom teacher of a class.",
+  "notHead": "This screen is for the department head.",
+  "leaveOverlap": "That leave overlaps a request that is still pending or already approved.",
+  "alreadyMarked": "That mark is already recorded.",
+  "notEnoughQuestions": "The question bank does not have enough free questions for this paper.",
+  "alreadyRecommended": "That title is already recommended for this subject.",
+  "swapBusy": "That swap would give a teacher two classes in the same period.",
+  "coverBusy": "That substitute is already teaching or covering this period.",
+  "cannotDecideSelf": "You cannot decide your own request or evaluate yourself.",
+  "alreadyEvaluated": "This teacher already has an evaluation for this term.",
+  "wrongDay": "The cover date is not the same weekday as the period.",
+  "substitutionOpen": "Cancel the open substitution before swapping that period."
 }

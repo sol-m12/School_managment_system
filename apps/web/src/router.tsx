@@ -80,6 +80,23 @@ import { VirtualLabPage } from "@/features/student/VirtualLabPage";
 import { AnalyticsPage, AtRiskPage, BuilderPage, CorrelationPage, DemographicsPage, IncidentsPage, MoePage, TrainingPage, TransfersPage, WarningsPage } from "@/features/principal/InsightPages";
 import { BulkPage, DocumentsPage, ExecutivePage, HubPage, InboxPage, PremiumPage, StaffKpiPage, TrendsPage } from "@/features/principal/WorkPages";
 import { BehaviorPage, InvigilationPage, VocationalPage } from "@/features/vice/VicePages";
+import {
+  IncidentsPage as TeacherIncidentsPage,
+  LeavePage,
+  LibraryPage,
+  OfflineAttendancePage,
+  ParticipationPage,
+  QuestionBankPage,
+  TimetablePage,
+} from "@/features/teacher/SubjectOfficePages";
+import {
+  CoveragePage,
+  CurriculumPage,
+  EvaluationPage,
+  GradeWorkflowPage,
+  ProcurementPage,
+  Student360Page,
+} from "@/features/teacher/DutyOfficePages";
 import { AnnouncementsPage } from "@/features/technician/AnnouncementsPage";
 import { AuditPage, DutiesPage, HealthPage, IdentityPage, ImportPage, TicketsPage } from "@/features/operations/OperationsPages";
 import { StaffRegistrationPage } from "@/features/technician/StaffRegistrationPage";
@@ -167,6 +184,19 @@ const BUILT_ITEMS: readonly NavItemKey[] = [
   "vocationalTraining",
   "behaviorOffice",
   "examInvigilation",
+  "offlineAttendance",
+  "globalTimetable",
+  "incidentReports",
+  "leaveRequest",
+  "teacherLibrary",
+  "questionBank",
+  "participationTracker",
+  "student360",
+  "curriculumQuality",
+  "gradeWorkflow",
+  "procurementRequest",
+  "syllabusCoverage",
+  "teacherEvaluation",
 ];
 
 const placeholderRoutes: RouteObject[] = MENU_ITEMS.filter((item) => !BUILT_ITEMS.includes(item.key)).map((item) => ({
@@ -283,6 +313,19 @@ export const router = createBrowserRouter([
       { path: "teacher/report-cards", element: <ProtectedRoute permission="reportCards.generate"><ReportCardsPage /></ProtectedRoute> },
       { path: "teacher/simulations", element: <ProtectedRoute permission="simulations.create"><SimulationsPage /></ProtectedRoute> },
       { path: "teacher/student-reports", element: <ProtectedRoute permission="studentReports.read"><StudentReportsPage /></ProtectedRoute> },
+      { path: "teacher/offline-attendance", element: <ProtectedRoute permission="teacher.subject"><OfflineAttendancePage /></ProtectedRoute> },
+      { path: "teacher/timetable", element: <ProtectedRoute permission="teacher.subject"><TimetablePage /></ProtectedRoute> },
+      { path: "teacher/incidents", element: <ProtectedRoute permission="teacher.subject"><TeacherIncidentsPage /></ProtectedRoute> },
+      { path: "teacher/leave", element: <ProtectedRoute permission="teacher.subject"><LeavePage /></ProtectedRoute> },
+      { path: "teacher/library", element: <ProtectedRoute permission="teacher.subject"><LibraryPage /></ProtectedRoute> },
+      { path: "teacher/question-bank", element: <ProtectedRoute permission="teacher.subject"><QuestionBankPage /></ProtectedRoute> },
+      { path: "teacher/participation", element: <ProtectedRoute permission="teacher.subject"><ParticipationPage /></ProtectedRoute> },
+      { path: "teacher/student-360", element: <ProtectedRoute permission="teacher.homeroom"><Student360Page /></ProtectedRoute> },
+      { path: "teacher/curriculum", element: <ProtectedRoute permission="teacher.department"><CurriculumPage /></ProtectedRoute> },
+      { path: "teacher/grade-workflow", element: <ProtectedRoute permission="teacher.department"><GradeWorkflowPage /></ProtectedRoute> },
+      { path: "teacher/procurement", element: <ProtectedRoute permission="teacher.department"><ProcurementPage /></ProtectedRoute> },
+      { path: "teacher/coverage", element: <ProtectedRoute permission="teacher.department"><CoveragePage /></ProtectedRoute> },
+      { path: "teacher/evaluation", element: <ProtectedRoute permission="teacher.department"><EvaluationPage /></ProtectedRoute> },
       { path: "system/announcements", element: <ProtectedRoute permission="announcements.manage"><AnnouncementsPage /></ProtectedRoute> },
       { path: "system/staff-registration", element: <ProtectedRoute permission="staffRegistration.manage"><StaffRegistrationPage /></ProtectedRoute> },
       { path: "account/manage", element: <ProtectedRoute permission="accounts.manage"><StudentIdPage /></ProtectedRoute> },

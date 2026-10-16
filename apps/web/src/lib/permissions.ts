@@ -45,6 +45,9 @@ export const PERMISSIONS = [
   "reportCards.generate",
   "simulations.create",
   "studentReports.read",
+  "teacher.subject",
+  "teacher.homeroom",
+  "teacher.department",
 
   "files.manage",
 

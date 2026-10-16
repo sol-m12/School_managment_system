@@ -82,7 +82,19 @@ export type ErrorKey =
   | "hearingRequired"
   | "invigilationOverlap"
   | "sessionFull"
-  | "alreadyAssigned";
+  | "alreadyAssigned"
+  | "notHomeroom"
+  | "notHead"
+  | "leaveOverlap"
+  | "alreadyMarked"
+  | "notEnoughQuestions"
+  | "alreadyRecommended"
+  | "swapBusy"
+  | "coverBusy"
+  | "cannotDecideSelf"
+  | "alreadyEvaluated"
+  | "wrongDay"
+  | "substitutionOpen";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -165,6 +177,18 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   OVERLAP: "invigilationOverlap",
   SESSION_FULL: "sessionFull",
   ALREADY_ASSIGNED: "alreadyAssigned",
+  NOT_HOMEROOM: "notHomeroom",
+  NOT_HEAD: "notHead",
+  LEAVE_OVERLAP: "leaveOverlap",
+  ALREADY_MARKED: "alreadyMarked",
+  NOT_ENOUGH: "notEnoughQuestions",
+  ALREADY_RECOMMENDED: "alreadyRecommended",
+  SWAP_BUSY: "swapBusy",
+  COVER_BUSY: "coverBusy",
+  SELF: "cannotDecideSelf",
+  ALREADY_EVALUATED: "alreadyEvaluated",
+  WRONG_DAY: "wrongDay",
+  SUBSTITUTION_OPEN: "substitutionOpen",
 };
 
 function readCode(data: unknown): string | null {

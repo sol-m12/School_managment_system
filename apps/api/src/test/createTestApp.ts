@@ -6,6 +6,7 @@ import { adminRouter } from "../modules/admin/admin.routes.js";
 import { publicRouter } from "../modules/public/public.routes.js";
 import { subjectsRouter } from "../modules/subjects/subjects.routes.js";
 import { teacherRouter } from "../modules/teacher/teacher.routes.js";
+import { officeRouter } from "../modules/teacher/office.routes.js";
 import { studentRouter } from "../modules/student/student.routes.js";
 import { storeRouter } from "../modules/store/store.routes.js";
 import { financeRouter } from "../modules/finance/finance.routes.js";
@@ -25,6 +26,7 @@ export function createTestApp(): Express {
   app.use("/subjects", subjectsRouter);
   app.use("/admin", adminRouter);
   app.use("/teacher", teacherRouter);
+  app.use("/teacher", officeRouter);
   app.use("/technician", technicianRouter);
   app.use("/operations", operationsRouter);
   app.use("/principal", principalRouter);

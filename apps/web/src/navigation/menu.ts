@@ -36,6 +36,13 @@ import {
   Wrench,
   Scale,
   ClipboardCheck,
+  Wifi,
+  CalendarOff,
+  Library,
+  BookMarked,
+  ShoppingCart,
+  Star,
+  Hand,
   AlertTriangle,
   PieChart,
   Upload,
@@ -81,6 +88,9 @@ export type MenuGroupKey =
   | "studentInfo"
   | "principalOffice"
   | "viceOffice"
+  | "subjectTeacher"
+  | "homeroomTeacher"
+  | "departmentHead"
   | "main";
 
 export type MenuItem = {
@@ -110,6 +120,9 @@ export const MENU_GROUP_ORDER: readonly MenuGroupKey[] = [
   "studentInfo",
   "principalOffice",
   "viceOffice",
+  "subjectTeacher",
+  "homeroomTeacher",
+  "departmentHead",
   "main",
   "finance",
 ];
@@ -180,6 +193,20 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "reportCard", path: "/teacher/report-cards", icon: FileDown, group: "academicTasks", permission: "reportCards.generate" },
   { key: "simulations", path: "/teacher/simulations", icon: FileDown, group: "academicTasks", permission: "simulations.create" },
   { key: "studentReports", path: "/teacher/student-reports", icon: FileDown, group: "academicTasks", permission: "studentReports.read" },
+
+  { key: "offlineAttendance", path: "/teacher/offline-attendance", icon: Wifi, group: "subjectTeacher", permission: "teacher.subject" },
+  { key: "globalTimetable", path: "/teacher/timetable", icon: CalendarDays, group: "subjectTeacher", permission: "teacher.subject" },
+  { key: "incidentReports", path: "/teacher/incidents", icon: Megaphone, group: "subjectTeacher", permission: "teacher.subject" },
+  { key: "leaveRequest", path: "/teacher/leave", icon: CalendarOff, group: "subjectTeacher", permission: "teacher.subject" },
+  { key: "teacherLibrary", path: "/teacher/library", icon: Library, group: "subjectTeacher", permission: "teacher.subject" },
+  { key: "questionBank", path: "/teacher/question-bank", icon: BookOpen, group: "subjectTeacher", permission: "teacher.subject" },
+  { key: "participationTracker", path: "/teacher/participation", icon: Hand, group: "subjectTeacher", permission: "teacher.subject" },
+  { key: "student360", path: "/teacher/student-360", icon: UsersRound, group: "homeroomTeacher", permission: "teacher.homeroom" },
+  { key: "curriculumQuality", path: "/teacher/curriculum", icon: BookMarked, group: "departmentHead", permission: "teacher.department" },
+  { key: "gradeWorkflow", path: "/teacher/grade-workflow", icon: ClipboardCheck, group: "departmentHead", permission: "teacher.department" },
+  { key: "procurementRequest", path: "/teacher/procurement", icon: ShoppingCart, group: "departmentHead", permission: "teacher.department" },
+  { key: "syllabusCoverage", path: "/teacher/coverage", icon: ChartLine, group: "departmentHead", permission: "teacher.department" },
+  { key: "teacherEvaluation", path: "/teacher/evaluation", icon: Star, group: "departmentHead", permission: "teacher.department" },
 
   // Technician (Technician.png)
   { key: "announcements", path: "/system/announcements", icon: Megaphone, group: "techRegistration", permission: "announcements.manage" },

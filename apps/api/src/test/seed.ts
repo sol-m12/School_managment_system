@@ -23,6 +23,21 @@ export type IsolationSeed = {
 };
 
 const TABLES_TO_EMPTY = [
+  "tc_performance_scores",
+  "tc_performance",
+  "tc_topic_coverage",
+  "tc_grade_reviews",
+  "tc_exam_standards",
+  "tc_requisitions",
+  "tc_participation",
+  "tc_paper_items",
+  "tc_papers",
+  "tc_questions",
+  "tc_book_recommendations",
+  "tc_leave_requests",
+  "tc_incidents",
+  "tc_substitutions",
+  "tc_swaps",
   "class_schedule",
   "vp_invigilators",
   "vp_exam_sessions",

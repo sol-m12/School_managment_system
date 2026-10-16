@@ -50,6 +50,9 @@ export const PERMISSIONS = [
   "reportCards.generate",
   "simulations.create",
   "studentReports.read",
+  "teacher.subject",
+  "teacher.homeroom",
+  "teacher.department",
 
   "files.manage",
 
@@ -123,6 +126,9 @@ const GRANTS: Record<Permission, readonly Role[]> = {
   "reportCards.generate": ["Teacher"],
   "simulations.create": ["Teacher"],
   "studentReports.read": ["Teacher"],
+  "teacher.subject": ["Teacher"],
+  "teacher.homeroom": ["Teacher"],
+  "teacher.department": ["Teacher"],
 
   "files.manage": ["Principal", "Teacher", "Technician", "V_Principal"],
 
