@@ -43,7 +43,7 @@ describe("public home", () => {
     await db.insert(users).values({
       username: "portal_admin",
       passwordHash: await hashPassword("TestPass123!"),
-      role: "Admin",
+      role: "Principal",
       isActive: 1,
       tenantId: seed.tenantA.id,
       tokenVersion: 0,
@@ -57,7 +57,7 @@ describe("public home", () => {
       {
         firstName: "Principal",
         lastName: "A",
-        role: "Admin",
+        role: "Principal",
         jobTitle: "Principal",
         userId: admin?.userId,
         tenantId: seed.tenantA.id,

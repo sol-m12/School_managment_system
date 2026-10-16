@@ -52,7 +52,7 @@ async function tenantIdForSlug(slug: string): Promise<number> {
   return tenant.id;
 }
 
-async function leader(tenantId: number, role: Extract<Role, "Admin" | "V_Principal">): Promise<PublicLeader | null> {
+async function leader(tenantId: number, role: Extract<Role, "Principal" | "V_Principal">): Promise<PublicLeader | null> {
   const [row] = await db
     .select({ firstName: staff.firstName, lastName: staff.lastName, photo: staff.photo })
     .from(staff)
@@ -105,7 +105,7 @@ export async function publicHome(slug: string): Promise<PublicHome> {
     students: Number(studentRow?.total ?? 0),
     staff: Number(staffRow?.total ?? 0),
     news,
-    principal: await leader(tenantId, "Admin"),
+    principal: await leader(tenantId, "Principal"),
     vicePrincipal: await leader(tenantId, "V_Principal"),
   };
 }

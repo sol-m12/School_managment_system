@@ -37,6 +37,13 @@ describe("dashboard", () => {
     expect(admin.body.academicYear).toBe("2017");
     expect(admin.body.students).toBe(1);
 
+    const principal = await request(app)
+      .get("/dashboard")
+      .set("Authorization", bearer(seed.tenantA.id, "Principal"))
+      .expect(200);
+    expect(principal.body.kind).toBe("control");
+    expect(principal.body.students).toBe(1);
+
     const vice = await request(app)
       .get("/dashboard")
       .set("Authorization", bearer(seed.tenantA.id, "V_Principal", seed.tenantA.userId))

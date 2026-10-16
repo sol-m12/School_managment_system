@@ -130,17 +130,34 @@ describe("subjects API: permissions", () => {
     }
   });
 
-  it("gives Admin the live Admin menu, including subjects", () => {
-    expect(hasPermission("Admin", "approvals.read")).toBe(true);
-    expect(hasPermission("Admin", "academicYear.manage")).toBe(true);
+  it("keeps subjects on Admin and does not give Admin the split screens", () => {
     expect(hasPermission("Admin", "subjects.read")).toBe(true);
     expect(hasPermission("Admin", "students.manage")).toBe(true);
+    expect(hasPermission("Admin", "approvals.read")).toBe(false);
+    expect(hasPermission("Admin", "academicYear.manage")).toBe(false);
   });
 
-  it("gives Technician its menu and not the Admin system settings", () => {
+  it("gives Technician system settings and grade correction", () => {
     expect(hasPermission("Technician", "announcements.manage")).toBe(true);
     expect(hasPermission("Technician", "files.manage")).toBe(true);
-    expect(hasPermission("Technician", "academicYear.manage")).toBe(false);
+    expect(hasPermission("Technician", "academicYear.manage")).toBe(true);
+    expect(hasPermission("Technician", "backup.create")).toBe(true);
+    expect(hasPermission("Technician", "backup.restore")).toBe(true);
+    expect(hasPermission("Technician", "passwords.reset")).toBe(true);
+    expect(hasPermission("Technician", "schoolInfo.manage")).toBe(true);
+    expect(hasPermission("Technician", "roleModules.manage")).toBe(true);
+    expect(hasPermission("Technician", "gradeCorrection.approve")).toBe(true);
+    expect(hasPermission("Technician", "approvals.read")).toBe(false);
+  });
+
+  it("gives Principal approvals and reports", () => {
+    expect(hasPermission("Principal", "approvals.read")).toBe(true);
+    expect(hasPermission("Principal", "academicApprovals.manage")).toBe(true);
+    expect(hasPermission("Principal", "studentStatusReport.read")).toBe(true);
+    expect(hasPermission("Principal", "academicReports.read")).toBe(true);
+    expect(hasPermission("Principal", "academicYear.manage")).toBe(false);
+    expect(hasPermission("Principal", "gradeCorrection.approve")).toBe(false);
+    expect(hasPermission("Principal", "subjects.read")).toBe(false);
   });
 
   it("gives Teacher and a homeroom teacher the same teacher keys", () => {

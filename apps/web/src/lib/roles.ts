@@ -11,6 +11,7 @@ export const ROLES = [
   "Librarian",
   "Store_Keeper",
   "Student",
+  "Principal",
 ] as const;
 
 export type Role = (typeof ROLES)[number];

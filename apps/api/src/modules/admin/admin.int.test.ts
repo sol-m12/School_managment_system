@@ -4,14 +4,15 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { db } from "../../db/index.js";
 import { items, requisitionsModel20, staff, students, users } from "../../db/schema/index.js";
 import { createAccessToken } from "../../lib/jwt.js";
+import type { Role } from "../../lib/roles.js";
 import { scoped } from "../../lib/tenant.js";
 import { createTestApp } from "../../test/createTestApp.js";
 import { seedTwoTenants, type IsolationSeed } from "../../test/seed.js";
 
 const app = createTestApp();
 
-function bearer(tenantId: number): string {
-  return `Bearer ${createAccessToken({ userId: 1, tenantId, role: "Admin" })}`;
+function bearer(tenantId: number, role: Role = "Admin"): string {
+  return `Bearer ${createAccessToken({ userId: 1, tenantId, role })}`;
 }
 
 describe("admin API: tenant isolation", () => {
@@ -37,7 +38,7 @@ describe("admin API: tenant isolation", () => {
 
     await request(app)
       .post("/admin/passwords")
-      .set("Authorization", bearer(seed.tenantA.id))
+      .set("Authorization", bearer(seed.tenantA.id, "Technician"))
       .send({ userId: seed.tenantB.userId, password: "ShouldNotApply1" })
       .expect(404);
 
@@ -52,17 +53,17 @@ describe("admin API: tenant isolation", () => {
   it("stores the academic year on the caller tenant only", async () => {
     await request(app)
       .put("/admin/academic-year")
-      .set("Authorization", bearer(seed.tenantA.id))
+      .set("Authorization", bearer(seed.tenantA.id, "Technician"))
       .send({ academicYear: "2091", semester: "1" })
       .expect(200);
     await request(app)
       .put("/admin/academic-year")
-      .set("Authorization", bearer(seed.tenantB.id))
+      .set("Authorization", bearer(seed.tenantB.id, "Technician"))
       .send({ academicYear: "2092", semester: "2" })
       .expect(200);
 
-    const a = await request(app).get("/admin/academic-year").set("Authorization", bearer(seed.tenantA.id)).expect(200);
-    const b = await request(app).get("/admin/academic-year").set("Authorization", bearer(seed.tenantB.id)).expect(200);
+    const a = await request(app).get("/admin/academic-year").set("Authorization", bearer(seed.tenantA.id, "Technician")).expect(200);
+    const b = await request(app).get("/admin/academic-year").set("Authorization", bearer(seed.tenantB.id, "Technician")).expect(200);
     expect(a.body.academicYear).toBe("2091");
     expect(b.body.academicYear).toBe("2092");
   });
@@ -73,7 +74,7 @@ describe("admin API: tenant isolation", () => {
       .set({ registrationType: "ደጋሚ", gradeLevel: 9 })
       .where(scoped(students, seed.tenantB.id, eq(students.studentId, seed.tenantB.studentId)));
 
-    const res = await request(app).get("/admin/repeaters").set("Authorization", bearer(seed.tenantA.id)).expect(200);
+    const res = await request(app).get("/admin/repeaters").set("Authorization", bearer(seed.tenantA.id, "Principal")).expect(200);
     const ids = (res.body.rows as { id: number }[]).map((row) => row.id);
     expect(ids).not.toContain(seed.tenantB.studentId);
   });
@@ -137,7 +138,7 @@ describe("admin API: tenant isolation", () => {
       status: "Pending",
     });
 
-    const list = await request(app).get("/admin/store-approvals").set("Authorization", bearer(seed.tenantA.id)).expect(200);
+    const list = await request(app).get("/admin/store-approvals").set("Authorization", bearer(seed.tenantA.id, "Principal")).expect(200);
     const ids = (list.body.rows as { id: number }[]).map((row) => row.id);
     expect(ids).toContain(Number(forwarded.insertId));
     expect(ids).not.toContain(Number(waiting.insertId));
@@ -145,17 +146,17 @@ describe("admin API: tenant isolation", () => {
 
     await request(app)
       .post(`/admin/store-approvals/${other.insertId}`)
-      .set("Authorization", bearer(seed.tenantA.id))
+      .set("Authorization", bearer(seed.tenantA.id, "Principal"))
       .send({ action: "approve" })
       .expect(404);
 
     await request(app)
       .post(`/admin/store-approvals/${forwarded.insertId}`)
-      .set("Authorization", bearer(seed.tenantA.id))
+      .set("Authorization", bearer(seed.tenantA.id, "Principal"))
       .send({ action: "approve" })
       .expect(200);
 
-    const after = await request(app).get("/admin/store-approvals").set("Authorization", bearer(seed.tenantA.id)).expect(200);
+    const after = await request(app).get("/admin/store-approvals").set("Authorization", bearer(seed.tenantA.id, "Principal")).expect(200);
     expect((after.body.rows as { id: number }[]).map((row) => row.id)).not.toContain(Number(forwarded.insertId));
 
     const [saved] = await db

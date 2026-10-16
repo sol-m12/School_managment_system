@@ -12,6 +12,7 @@ export const STAFF_ROLES = [
   "Teacher",
   "Technician",
   "V_Principal",
+  "Principal",
 ] as const;
 
 export const ANNOUNCEMENT_ROLES = ["All", "Staff", "Students", "Parents", "Admin_Only"] as const;

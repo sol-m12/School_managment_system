@@ -141,7 +141,7 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "staffRegistration", path: "/system/staff-registration", icon: IdCard, group: "techRegistration", permission: "staffRegistration.manage" },
   { key: "accountManagement", path: "/account/manage", icon: KeyRound, group: "techRegistration", permission: "accounts.manage" },
 
-  // Admin — ሲስተም ሴቲንግ. The screenshot text is small; labels follow the earlier reading of Admin.png.
+  // Technician — system and accounts. These were on the old Admin menu.
   { key: "academicYear", path: "/system/academic-year", icon: SlidersHorizontal, group: "systemSettings", permission: "academicYear.manage" },
   { key: "databaseBackup", path: "/system/backup", icon: Database, group: "systemSettings", permission: "backup.create" },
   { key: "databaseRestore", path: "/system/restore", icon: RotateCcw, group: "systemSettings", permission: "backup.restore" },
@@ -173,9 +173,10 @@ export const MENU_ITEMS: readonly MenuItem[] = [
     path: "/dashboard",
     icon: Gauge,
     group: "main",
-    roles: ["Admin", "Teacher", "Technician", "V_Principal", "Student"],
+    roles: ["Admin", "Principal", "Teacher", "Technician", "V_Principal", "Student"],
     labelByRole: {
       Admin: "dashboardAdmin",
+      Principal: "dashboardPrincipal",
       Teacher: "dashboardAcademic",
       Technician: "dashboardStaff",
       V_Principal: "dashboardAdmin",
@@ -183,7 +184,7 @@ export const MENU_ITEMS: readonly MenuItem[] = [
     },
   },
   { key: "fileManagement", path: "/files", icon: FolderOpen, group: "main", permission: "files.manage" },
-  { key: "profile", path: "/profile", icon: UserCog, group: "main", roles: ["Admin", "Teacher", "Technician", "V_Principal", "Student", "Store_Keeper"] },
+  { key: "profile", path: "/profile", icon: UserCog, group: "main", roles: ["Admin", "Principal", "Teacher", "Technician", "V_Principal", "Student", "Store_Keeper"] },
   { key: "payments", path: "/finance/payments", icon: Landmark, group: "finance", permission: "finance.income" },
   { key: "incomeExpense", path: "/finance/income", icon: Landmark, group: "finance", permission: "finance.expense" },
 ];
