@@ -8,6 +8,7 @@ import { subjectsRouter } from "../modules/subjects/subjects.routes.js";
 import { teacherRouter } from "../modules/teacher/teacher.routes.js";
 import { studentRouter } from "../modules/student/student.routes.js";
 import { storeRouter } from "../modules/store/store.routes.js";
+import { financeRouter } from "../modules/finance/finance.routes.js";
 import { technicianRouter } from "../modules/technician/technician.routes.js";
 
 /** Minimal Express app for integration tests (no listen). */
@@ -23,6 +24,7 @@ export function createTestApp(): Express {
   app.use("/teacher", teacherRouter);
   app.use("/technician", technicianRouter);
   app.use("/student", studentRouter);
+  app.use("/store/finance", financeRouter);
   app.use("/store", storeRouter);
   return app;
 }

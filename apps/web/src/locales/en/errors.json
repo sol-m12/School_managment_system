@@ -55,5 +55,14 @@
   "duplicateCode": "This code is already registered.",
   "insufficientStock": "The bin card does not have enough quantity.",
   "staffRequired": "No staff record was found for this account.",
-  "roleUnknown": "Error: this role is not in the system list."
+  "roleUnknown": "Error: this role is not in the system list.",
+  "noCard": "No ledger card has been registered!",
+  "cardNotFound": "The requested ledger card was not found!",
+  "cardHasExpenditure": "This ledger card cannot be deleted! Expenditure is already recorded on it.",
+  "zeroBudget": "Not allowed! A budget card cannot be opened when every amount is 0.00. Enter an amount above 0.00 for at least one expenditure line.",
+  "duplicateMehi17": "A Mehi 17 card is already open for this fiscal year, bank account, and budget type!",
+  "missingLine": "Enter at least one account line!",
+  "missingCodes": "Choose the account code, budget type, and budget source.",
+  "noM16Card": "No Mehi 16/1 ledger card is open for this expenditure line!",
+  "noM17Card": "Choose the payment source card (Mehi 17 bank or cash)."
 }

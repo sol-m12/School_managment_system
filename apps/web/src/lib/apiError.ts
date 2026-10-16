@@ -55,7 +55,16 @@ export type ErrorKey =
   | "duplicateCode"
   | "insufficientStock"
   | "staffRequired"
-  | "roleUnknown";
+  | "roleUnknown"
+  | "noCard"
+  | "cardNotFound"
+  | "cardHasExpenditure"
+  | "zeroBudget"
+  | "duplicateMehi17"
+  | "missingLine"
+  | "missingCodes"
+  | "noM16Card"
+  | "noM17Card";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -111,6 +120,15 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   INSUFFICIENT_STOCK: "insufficientStock",
   STAFF_REQUIRED: "staffRequired",
   ROLE_UNKNOWN: "roleUnknown",
+  NO_CARD: "noCard",
+  CARD_NOT_FOUND: "cardNotFound",
+  CARD_HAS_EXPENDITURE: "cardHasExpenditure",
+  ZERO_BUDGET: "zeroBudget",
+  DUPLICATE_MEHI17: "duplicateMehi17",
+  MISSING_LINE: "missingLine",
+  MISSING_CODES: "missingCodes",
+  NO_M16_CARD: "noM16Card",
+  NO_M17_CARD: "noM17Card",
 };
 
 function readCode(data: unknown): string | null {

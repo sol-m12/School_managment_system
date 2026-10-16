@@ -1,3 +1,4 @@
+import { Printer } from "lucide-react";
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import type { UseQueryResult } from "@tanstack/react-query";
 import type { TFunction } from "i18next";
@@ -70,49 +71,155 @@ const studentColumns = (t: TFunction<"admin">): TableColumn<StudentRow>[] => [
   { key: "status", header: t("status"), render: (row) => row.submissionStatus ?? "" },
 ];
 
+const filterControl = "w-full rounded-md border border-[#E2E8F0] bg-[#F8FAFC] px-3 py-2 text-sm text-[#334155] outline-none focus:border-[#009B48]";
+
 export function StudentStatusPage() {
-  const { t } = useTranslation("admin");
-  const [filters, setFilters] = useState<Record<string, string>>({});
+  const { t } = useTranslation(["admin", "common", "errors"]);
+  const yearQuery = useAcademicYear();
   const [draft, setDraft] = useState({ academicYear: "", gradeLevel: "", section: "", gender: "" });
+  const [filters, setFilters] = useState<Record<string, string>>({});
+  const [seeded, setSeeded] = useState(false);
   const query = useRepeaters(filters);
+
+  useEffect(() => {
+    if (seeded || !yearQuery.data) return;
+    const academicYear = yearQuery.data.academicYear ?? "";
+    setDraft((current) => ({ ...current, academicYear }));
+    setFilters(academicYear ? { academicYear } : {});
+    setSeeded(true);
+  }, [seeded, yearQuery.data]);
+
+  function apply(next: typeof draft) {
+    setDraft(next);
+    setFilters(Object.fromEntries(Object.entries(next).filter(([, value]) => value)));
+  }
+
+  if (yearQuery.isPending || !seeded || query.isPending) {
+    return (
+      <div className="flex justify-center py-10 text-brand-700">
+        <Spinner size="lg" label={t("common:loading")} />
+      </div>
+    );
+  }
+  if (query.isError || !query.data) return <Alert tone="danger">{t(`errors:${toErrorKey(query.error)}`)}</Alert>;
+
+  const data = query.data;
+  const yearLabel = draft.academicYear || data.academicYear;
+  const genderLabel = draft.gender === "M" ? t("admin:repeaterMaleOption") : draft.gender === "F" ? t("admin:repeaterFemaleOption") : "";
+
   return (
-    <>
-      <PageHeader title={t("repeaterTitle")} />
-      <Card className="mb-4">
-        <CardBody>
-          <form
-            className="grid gap-3 sm:grid-cols-4"
-            onSubmit={(event) => {
-              event.preventDefault();
-              setFilters(Object.fromEntries(Object.entries(draft).filter(([, value]) => value)));
-            }}
-          >
-            <Input label={t("year")} value={draft.academicYear} onChange={(event) => setDraft({ ...draft, academicYear: event.target.value })} />
-            <Input label={t("grade")} value={draft.gradeLevel} onChange={(event) => setDraft({ ...draft, gradeLevel: event.target.value })} />
-            <Input label={t("section")} value={draft.section} onChange={(event) => setDraft({ ...draft, section: event.target.value })} />
-            <Select
-              label={t("gender")}
-              value={draft.gender}
-              options={[
-                { value: "M", label: t("male") },
-                { value: "F", label: t("female") },
-              ]}
-              placeholder={t("all")}
-              onChange={(event) => setDraft({ ...draft, gender: event.target.value })}
-            />
-            <Button type="submit">{t("apply")}</Button>
-          </form>
-        </CardBody>
-      </Card>
-      <Panel query={query}>
-        {(data) => (
-          <Card>
-            <CardHeader title={`${t("total")}: ${data.total} · ${t("male")}: ${data.male} · ${t("female")}: ${data.female}`} />
-            <Table columns={studentColumns(t)} rows={data.rows} rowKey={(row) => row.id} empty={t("all")} />
-          </Card>
-        )}
-      </Panel>
-    </>
+    <div className="-m-4 bg-[#f8fafc] px-4 py-5 font-sans text-[#334155] md:-m-6 md:px-6 print:m-0 print:bg-white print:p-0">
+      <div className="mx-auto max-w-[1200px]">
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-4 rounded-lg bg-[#0B192C] px-5 py-4 text-white print:hidden">
+          <div>
+            <h1 className="m-0 text-xl font-bold">{t("admin:repeaterTitle")}</h1>
+            <p className="mt-1 text-[0.82rem] text-[#94a3b8]">
+              {t("admin:repeaterYearLine")}: <b>{yearLabel}</b>
+            </p>
+          </div>
+          <span className="rounded-md border border-[rgba(245,158,11,0.4)] bg-[rgba(245,158,11,0.2)] px-3 py-1.5 text-sm">
+            {t("admin:repeaterCount")}: <b className="text-[#F59E0B]">{data.total}</b>
+          </span>
+        </div>
+
+        <form className="mb-5 flex flex-wrap items-end gap-4 rounded-lg border border-[#E2E8F0] bg-white p-4 shadow-[0_2px_6px_rgba(0,0,0,0.04)] print:hidden">
+          <label className="flex min-w-[140px] flex-1 flex-col gap-1 text-sm font-semibold">
+            {t("admin:repeaterYearLabel")}
+            <input className={filterControl} value={draft.academicYear} onChange={(event) => apply({ ...draft, academicYear: event.target.value })} />
+          </label>
+          <label className="flex min-w-[140px] flex-1 flex-col gap-1 text-sm font-semibold">
+            {t("admin:repeaterGradeLabel")}
+            <select className={filterControl} value={draft.gradeLevel} onChange={(event) => apply({ ...draft, gradeLevel: event.target.value })}>
+              <option value="">{t("admin:repeaterAllGrades")}</option>
+              {data.grades.map((grade) => (
+                <option key={grade} value={grade}>{grade}</option>
+              ))}
+            </select>
+          </label>
+          <label className="flex min-w-[140px] flex-1 flex-col gap-1 text-sm font-semibold">
+            {t("admin:repeaterSectionLabel")}
+            <select className={filterControl} value={draft.section} onChange={(event) => apply({ ...draft, section: event.target.value })}>
+              <option value="">{t("admin:repeaterAllSections")}</option>
+              {data.sections.filter(Boolean).map((section) => (
+                <option key={section} value={section}>{section}</option>
+              ))}
+            </select>
+          </label>
+          <label className="flex min-w-[140px] flex-1 flex-col gap-1 text-sm font-semibold">
+            {t("admin:repeaterGenderLabel")}
+            <select className={filterControl} value={draft.gender} onChange={(event) => apply({ ...draft, gender: event.target.value })}>
+              <option value="">{t("admin:repeaterAllGenders")}</option>
+              <option value="M">{t("admin:repeaterMaleOption")}</option>
+              <option value="F">{t("admin:repeaterFemaleOption")}</option>
+            </select>
+          </label>
+          <button type="button" className="inline-flex h-10 items-center gap-1.5 rounded-md bg-[#0B192C] px-4 text-sm font-semibold text-white" onClick={() => window.print()}>
+            <Printer aria-hidden="true" className="size-4" />
+            {t("admin:repeaterPrint")}
+          </button>
+        </form>
+
+        <table className="mb-5 w-full max-w-[400px] overflow-hidden rounded-md border border-[#E2E8F0] bg-white text-center text-sm">
+          <thead>
+            <tr className="bg-[#1e293b] text-white">
+              <th className="px-4 py-2.5 font-semibold">{t("admin:repeaterMaleHead")}</th>
+              <th className="px-4 py-2.5 font-semibold">{t("admin:repeaterFemaleHead")}</th>
+              <th className="px-4 py-2.5 font-semibold">{t("admin:repeaterTotalHead")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="font-bold">
+              <td className="border-t border-[#E2E8F0] px-4 py-2.5 text-[#2563eb]">{data.male}</td>
+              <td className="border-t border-[#E2E8F0] px-4 py-2.5 text-[#db2777]">{data.female}</td>
+              <td className="border-t border-[#E2E8F0] px-4 py-2.5 text-[#d97706]">{data.total}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div className="overflow-hidden rounded-lg border border-[#E2E8F0] bg-white shadow-[0_2px_6px_rgba(0,0,0,0.04)]">
+          <div className="flex flex-wrap items-center justify-between gap-2 bg-[#0B192C] px-4 py-3 text-sm font-semibold text-white">
+            <span>{t("admin:repeaterTableTitle", { year: yearLabel })}</span>
+            <span className="text-[0.85rem] text-[#cbd5e1]">
+              {draft.gradeLevel ? t("admin:repeaterChipGrade", { value: draft.gradeLevel }) : ""}
+              {draft.section ? ` ${t("admin:repeaterChipSection", { value: draft.section })}` : ""}
+              {genderLabel ? ` ${t("admin:repeaterChipGender", { value: genderLabel })}` : ""}
+            </span>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full whitespace-nowrap border-collapse text-sm">
+              <thead>
+                <tr className="bg-[#0B192C] text-left text-white">
+                  <th className="w-12 px-4 py-3 font-semibold">{t("admin:repeaterColNo")}</th>
+                  <th className="px-4 py-3 font-semibold">{t("admin:repeaterColName")}</th>
+                  <th className="px-4 py-3 font-semibold">{t("admin:repeaterColGender")}</th>
+                  <th className="px-4 py-3 font-semibold">{t("admin:repeaterColKebele")}</th>
+                  <th className="px-4 py-3 font-semibold">{t("admin:repeaterColGote")}</th>
+                  <th className="px-4 py-3 font-semibold">{t("admin:repeaterColGrade")}</th>
+                  <th className="px-4 py-3 font-semibold">{t("admin:repeaterColSection")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.rows.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="px-4 py-8 text-center text-[#64748b]">{t("admin:repeaterEmpty")}</td>
+                  </tr>
+                ) : data.rows.map((row, index) => (
+                  <tr key={row.id} className="border-b border-[#E2E8F0] hover:bg-[#F1F5F9]">
+                    <td className="px-4 py-2.5">{index + 1}</td>
+                    <td className="px-4 py-2.5">{row.fullName}</td>
+                    <td className="px-4 py-2.5">{row.gender}</td>
+                    <td className="px-4 py-2.5">{row.kebele ?? ""}</td>
+                    <td className="px-4 py-2.5">{row.gote ?? ""}</td>
+                    <td className="px-4 py-2.5">{row.gradeLevel}</td>
+                    <td className="px-4 py-2.5">{row.section ?? ""}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

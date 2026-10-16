@@ -35,7 +35,13 @@ import { StudentWatchPage } from "@/features/students/StudentWatchPage";
 import { SubjectDetailPage } from "@/features/subjects/SubjectDetailPage";
 import { SubjectEditPage } from "@/features/subjects/SubjectEditPage";
 import { SubjectsPage } from "@/features/subjects/SubjectsPage";
+import { BudgetPage } from "@/features/store/BudgetPage";
 import { ItemsPage } from "@/features/store/ItemsPage";
+import { LedgerCardsPage } from "@/features/store/LedgerCardsPage";
+import { Mehi16Page } from "@/features/store/Mehi16Page";
+import { Mehi17LedgerPage } from "@/features/store/Mehi17LedgerPage";
+import { Mehi17SetupPage } from "@/features/store/Mehi17SetupPage";
+import { Mehi7Page } from "@/features/store/Mehi7Page";
 import {
   ApprovalsPage as StoreApprovalQueuePage,
   BinCardPage,
@@ -130,6 +136,12 @@ const BUILT_ITEMS: readonly NavItemKey[] = [
   "binCard",
   "storeDashboard",
   "issueModel22",
+  "mehi16",
+  "ledgerCards",
+  "saveBudget",
+  "mehi17Ledger",
+  "mehi17Setup",
+  "mehi7",
 ];
 
 const placeholderRoutes: RouteObject[] = MENU_ITEMS.filter((item) => !BUILT_ITEMS.includes(item.key)).map((item) => ({
@@ -219,6 +231,12 @@ export const router = createBrowserRouter([
       { path: "store/approvals", element: <ProtectedRoute permission="store.approvals"><StoreApprovalQueuePage /></ProtectedRoute> },
       { path: "store/issue", element: <ProtectedRoute permission="store.issue"><IssuePage /></ProtectedRoute> },
       { path: "store/register", element: <ProtectedRoute permission="store.items"><RegisterPage /></ProtectedRoute> },
+      { path: "store/mehi-16", element: <ProtectedRoute permission="store.finance"><Mehi16Page /></ProtectedRoute> },
+      { path: "store/ledger-cards", element: <ProtectedRoute permission="store.finance"><LedgerCardsPage /></ProtectedRoute> },
+      { path: "store/budget", element: <ProtectedRoute permission="store.finance"><BudgetPage /></ProtectedRoute> },
+      { path: "store/mehi-17", element: <ProtectedRoute permission="store.finance"><Mehi17LedgerPage /></ProtectedRoute> },
+      { path: "store/mehi-17-setup", element: <ProtectedRoute permission="store.finance"><Mehi17SetupPage /></ProtectedRoute> },
+      { path: "store/mehi-7", element: <ProtectedRoute permission="store.finance"><Mehi7Page /></ProtectedRoute> },
       { path: "finance/payments", element: <ProtectedRoute permission="finance.income"><IncomePage /></ProtectedRoute> },
       { path: "finance/income", element: <ProtectedRoute permission="finance.expense"><ExpensePage /></ProtectedRoute> },
       { path: "teacher/assigned-works", element: <ProtectedRoute permission="assignedWork.read"><AssignedWorksPage /></ProtectedRoute> },

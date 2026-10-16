@@ -1,4 +1,6 @@
+import { ArrowLeft, Building2, Calendar, ClipboardList, Clock, Printer, User } from "lucide-react";
 import { useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Alert, Button, Spinner, Table } from "@/components/ui";
 import { fieldControlClass, fieldLabelClass } from "@/components/ui/Input";
@@ -451,13 +453,23 @@ export function ApprovalsPage() {
   );
 }
 
+function issueStamp(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  const day = date.toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  const time = date.toLocaleString("en-US", { hour: "numeric", minute: "2-digit", hour12: true });
+  return `${day} - ${time}`;
+}
+
 export function IssuePage() {
   const { t } = useTranslation(["store", "errors"]);
+  const navigate = useNavigate();
   const query = useIssues();
   const issue = useIssueItem();
   const [vouchers, setVouchers] = useState<Record<number, string>>({});
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [printId, setPrintId] = useState<number | null>(null);
 
   async function onIssue(id: number) {
     const voucherNo = (vouchers[id] ?? "").trim();
@@ -472,70 +484,156 @@ export function IssuePage() {
     }
   }
 
+  function printCard(id: number | null) {
+    setPrintId(id);
+    window.setTimeout(() => {
+      window.print();
+      setPrintId(null);
+    }, 40);
+  }
+
   if (query.isPending) return <Loading />;
   if (query.isError || !query.data) return <Alert tone="danger">{t(`errors:${toErrorKey(query.error)}`)}</Alert>;
 
   return (
-    <div className="grid gap-4">
-      <div className="rounded-xl border-s-4 border-[#16a34a] bg-white p-4 shadow-sm">
-        <h1 className="text-xl font-bold text-[#15803d]">{t("store:issueTitle")}</h1>
-        <p className="text-sm text-ink-muted">{t("store:issueSubtitle")}</p>
+    <div className={`-m-4 min-h-full bg-[#f4f7fb] p-4 text-[#1e293b] md:-m-6 md:p-6 print:m-0 print:bg-white print:p-0 ${printId !== null ? "printing-one" : ""}`}>
+      <style>{`@media print { .printing-one .history-card { display: none !important } .printing-one .history-card.print-target { display: block !important } .printing-one .history-heading { display: none !important } }`}</style>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-[#e2e8f0] border-s-4 border-s-[#15803d] bg-white px-4 py-3 shadow-sm print:hidden">
+        <div>
+          <h1 className="flex items-center gap-2 text-lg font-bold text-[#15803d]">
+            <ClipboardList aria-hidden="true" className="size-5" />
+            {t("store:issueTitle")}
+          </h1>
+          <p className="text-xs text-[#64748b]">{t("store:issueSubtitle")}</p>
+        </div>
+        <div className="flex gap-2">
+          <button type="button" className="inline-flex items-center gap-1 rounded-lg border border-[#cbd5e1] bg-white px-3 py-1.5 text-sm font-semibold text-[#334155]" onClick={() => printCard(null)}>
+            <Printer aria-hidden="true" className="size-4" />
+            {t("store:issuePrint")}
+          </button>
+          <button type="button" className="inline-flex items-center gap-1 rounded-lg border border-[#93c5fd] px-3 py-1.5 text-sm font-semibold text-[#2563eb]" onClick={() => navigate(-1)}>
+            <ArrowLeft aria-hidden="true" className="size-4" />
+            {t("store:issueBack")}
+          </button>
+        </div>
       </div>
-      {notice ? <Alert tone="success">{notice}</Alert> : null}
-      {error ? <Alert tone="danger">{error}</Alert> : null}
-      <div className="rounded-xl bg-white shadow-sm">
-        <h2 className="border-b px-4 py-3 font-bold">{t("store:pendingIssues")}</h2>
-        <Table
-          rows={query.data.pending}
-          rowKey={(row) => row.id}
-          empty={t("store:emptyIssues")}
-          columns={[
-            { key: "ref", header: t("store:colRef"), render: (row) => row.refCode },
-            { key: "who", header: t("store:source"), render: (row) => `${row.requesterName} / ${row.department}` },
-            { key: "item", header: t("store:colItem"), render: (row) => `${row.itemName} [${row.itemCode}]` },
-            { key: "qty", header: t("store:quantity"), render: (row) => `${row.quantityRequested} ${row.unitOfMeasure}` },
-            {
-              key: "bin",
-              header: t("store:onHand"),
-              render: (row) => (row.enough ? `${t("store:enough")} (${row.binBalance})` : `${t("store:short")} (${row.binBalance})`),
-            },
-            { key: "head", header: t("store:forward"), render: (row) => row.approverName },
-            {
-              key: "act",
-              header: t("store:issueButton"),
-              render: (row) => (
-                <div className="flex gap-2">
-                  <input
-                    className={fieldControlClass}
-                    placeholder={t("store:voucherPlaceholder")}
-                    value={vouchers[row.id] ?? ""}
-                    onChange={(event) => setVouchers((current) => ({ ...current, [row.id]: event.target.value }))}
-                  />
-                  <Button type="button" disabled={!row.enough} loading={issue.isPending} onClick={() => void onIssue(row.id)}>
-                    {t("store:issueButton")}
-                  </Button>
+      {notice ? <Alert tone="success" className="mb-3 print:hidden">{notice}</Alert> : null}
+      {error ? <Alert tone="danger" className="mb-3 print:hidden">{error}</Alert> : null}
+
+      <section className="mb-5 rounded-xl border border-[#e2e8f0] bg-white shadow-sm print:hidden">
+        <div className="flex items-center justify-between gap-3 border-b border-[#e2e8f0] px-4 py-3">
+          <h2 className="flex items-center gap-2 text-sm font-bold">
+            <ClipboardList aria-hidden="true" className="size-4 text-[#64748b]" />
+            {t("store:pendingIssues")}
+          </h2>
+          <span className="rounded-full bg-[#ede9fe] px-2.5 py-1 text-xs font-bold text-[#6d28d9]">{t("store:pendingCount", { count: query.data.pending.length })}</span>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[980px] border-collapse text-sm">
+            <thead>
+              <tr className="border-b border-[#e2e8f0] text-left text-xs uppercase tracking-wide text-[#64748b]">
+                <th className="px-4 py-3">REF CODE</th>
+                <th className="px-3 py-3">{t("store:colRequesterDept")}</th>
+                <th className="px-3 py-3">{t("store:colItemAndCode")}</th>
+                <th className="px-3 py-3">{t("store:colQtyRequested")}</th>
+                <th className="px-3 py-3">{t("store:colBinRemain")}</th>
+                <th className="px-3 py-3">{t("store:colApprover")}</th>
+                <th className="px-3 py-3">{t("store:colM22Entry")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {query.data.pending.length === 0 ? (
+                <tr><td colSpan={7} className="px-4 py-8 text-center text-[#64748b]">{t("store:emptyIssues")}</td></tr>
+              ) : query.data.pending.map((row) => (
+                <tr key={row.id} className="border-b border-[#f1f5f9]">
+                  <td className="px-4 py-3 font-bold text-[#2563eb]">{row.refCode}</td>
+                  <td className="px-3 py-3">
+                    <div className="font-semibold">{row.requesterName}</div>
+                    <div className="text-xs text-[#64748b]">{row.department}</div>
+                  </td>
+                  <td className="px-3 py-3">
+                    <div className="font-semibold">{row.itemName}</div>
+                    <div className="text-xs text-[#94a3b8]">{row.itemCode}</div>
+                  </td>
+                  <td className="px-3 py-3">
+                    <span className="rounded-full bg-[#eef2ff] px-2 py-1 text-xs font-bold text-[#4338ca]">{row.quantityRequested} {row.unitOfMeasure}</span>
+                  </td>
+                  <td className="px-3 py-3">
+                    <span className={`inline-flex rounded-full px-2 py-1 text-xs font-bold ${row.enough ? "bg-[#dcfce7] text-[#15803d]" : "bg-[#fee2e2] text-[#b91c1c]"}`}>
+                      {row.enough ? t("store:enough") : t("store:short")} ({row.binBalance})
+                    </span>
+                  </td>
+                  <td className="px-3 py-3 font-semibold text-[#15803d]">{row.approverName}</td>
+                  <td className="px-3 py-3">
+                    <div className="flex items-center gap-2">
+                      <input
+                        className="w-40 rounded-lg border-2 border-[#f43f5e] px-2 py-1.5 text-sm outline-none"
+                        placeholder={t("store:voucherPlaceholder")}
+                        value={vouchers[row.id] ?? ""}
+                        onChange={(event) => setVouchers((current) => ({ ...current, [row.id]: event.target.value }))}
+                      />
+                      <button
+                        type="button"
+                        disabled={!row.enough || issue.isPending}
+                        className="inline-flex items-center gap-1 rounded-lg bg-[#22a35a] px-3 py-1.5 text-sm font-bold text-white disabled:opacity-50"
+                        onClick={() => void onIssue(row.id)}
+                      >
+                        {t("store:issueButton")}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div className="history-heading mb-3 flex flex-wrap items-center justify-between gap-2">
+        <h2 className="flex items-center gap-2 text-sm font-bold text-[#334155]">
+          <Clock aria-hidden="true" className="size-4" />
+          {t("store:issueHistory")}
+        </h2>
+        <button type="button" className="text-xs font-semibold text-[#64748b] underline print:hidden" onClick={() => printCard(null)}>{t("store:historyOverview")}</button>
+      </div>
+      {query.data.history.length === 0 ? <p className="text-sm text-[#64748b]">{t("store:emptyIssueHistory")}</p> : (
+        <div className="grid gap-4 md:grid-cols-2">
+          {query.data.history.map((row) => (
+            <article key={row.id} className={`history-card rounded-xl border border-[#e2e8f0] bg-white p-4 shadow-sm ${printId === row.id ? "print-target" : ""}`}>
+              <div className="mb-3 flex items-center justify-between gap-2">
+                <span className="rounded-md bg-[#eff6ff] px-2 py-1 text-xs font-bold text-[#2563eb]">{t("store:m22No", { no: row.voucherNo })}</span>
+                <button type="button" className="inline-flex items-center gap-1 rounded-md border border-[#93c5fd] px-2 py-1 text-xs font-bold text-[#2563eb] print:hidden" onClick={() => printCard(row.id)}>
+                  <Printer aria-hidden="true" className="size-3.5" />
+                  {t("store:m22Print")}
+                </button>
+              </div>
+              <p className="mb-2 flex items-center gap-1 text-xs text-[#64748b]">
+                <Calendar aria-hidden="true" className="size-3.5" />
+                {issueStamp(row.issueDate)}
+              </p>
+              <div className="mb-3 flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-lg font-bold text-[#1d4ed8]">{row.itemName}</p>
+                  <p className="text-xs text-[#94a3b8]">{row.itemCode}</p>
                 </div>
-              ),
-            },
-          ]}
-        />
-      </div>
-      <div className="rounded-xl bg-white shadow-sm">
-        <h2 className="border-b px-4 py-3 font-bold">{t("store:issueHistory")}</h2>
-        <Table
-          rows={query.data.history}
-          rowKey={(row) => row.id}
-          empty={t("store:emptyIssueHistory")}
-          columns={[
-            { key: "no", header: t("store:voucherPlaceholder"), render: (row) => row.voucherNo },
-            { key: "date", header: t("store:colDate"), render: (row) => row.issueDate },
-            { key: "item", header: t("store:colItem"), render: (row) => `[${row.itemCode}] ${row.itemName}` },
-            { key: "qty", header: t("store:quantity"), render: (row) => row.quantityIssued },
-            { key: "who", header: t("store:source"), render: (row) => row.requesterName },
-            { key: "cost", header: t("store:colLineTotal"), render: (row) => `${etb.format(row.totalCost)} ${t("store:currency")}` },
-          ]}
-        />
-      </div>
+                <p className="font-bold text-[#1d4ed8]">{row.quantityIssued} {row.unitOfMeasure}</p>
+              </div>
+              <p className="flex items-center gap-1 text-sm text-[#475569]">
+                <User aria-hidden="true" className="size-3.5" />
+                {t("store:receivedBy")}: {row.requesterName}{row.department ? ` (${row.department})` : ""}
+              </p>
+              <p className="mt-1 flex items-center gap-1 text-sm text-[#475569]">
+                <Building2 aria-hidden="true" className="size-3.5" />
+                {t("store:issuedOffice")}
+              </p>
+              <div className="mt-3 flex items-center justify-between border-t border-[#f1f5f9] pt-2 text-sm">
+                <span className="text-[#64748b]">{t("store:totalPrice")}</span>
+                <span className="font-bold text-[#15803d]">ETB {etb.format(row.totalCost)}</span>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

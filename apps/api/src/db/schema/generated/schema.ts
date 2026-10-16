@@ -1,6 +1,16 @@
 import { mysqlTable, mysqlSchema, AnyMySqlColumn, index, foreignKey, int, varchar, text, date, mysqlEnum, timestamp, datetime, decimal, unique, time, longtext, float, char, tinyint, bigint } from "drizzle-orm/mysql-core"
 import { sql } from "drizzle-orm"
 
+export const accountTypes = mysqlTable("account_types", {
+	typeId: int("type_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	typeName: varchar("type_name", { length: 120 }).notNull(),
+	codePrefix: varchar("code_prefix", { length: 10 }),
+},
+(table) => [
+	index("idx_account_types_tenant_id").on(table.tenantId),
+]);
+
 export const adminTasks = mysqlTable("admin_tasks", {
 	id: int().autoincrement().notNull(),
 	taskName: varchar("task_name", { length: 255 }).notNull(),
@@ -110,6 +120,38 @@ export const binCardLedger = mysqlTable("bin_card_ledger", {
 (table) => [
 	index("idx_bin_card_ledger_tenant_id").on(table.tenantId),
 	index("idx_bin_card_ledger_item").on(table.tenantId, table.itemId, table.ledgerId),
+]);
+
+export const budgetNotifications = mysqlTable("budget_notifications", {
+	notificationId: int("notification_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	fiscalYear: varchar("fiscal_year", { length: 10 }).notNull(),
+	letterRefNo: varchar("letter_ref_no", { length: 100 }).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	notificationDate: date("notification_date", { mode: 'string' }).notNull(),
+	publicBodyCodeId: int("public_body_code_id").notNull(),
+	programCodeId: int("program_code_id").notNull(),
+	subProgramCodeId: int("sub_program_code_id"),
+	projectCodeId: int("project_code_id"),
+	recordedBy: int("recorded_by"),
+},
+(table) => [
+	index("idx_budget_notifications_tenant_id").on(table.tenantId),
+]);
+
+export const budgetNotificationItems = mysqlTable("budget_notification_items", {
+	itemId: int("item_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	notificationId: int("notification_id").notNull().references(() => budgetNotifications.notificationId, { onDelete: "restrict", onUpdate: "restrict" } ),
+	accountCodeId: int("account_code_id").notNull(),
+	treasuryAmount: decimal("treasury_amount", { precision: 15, scale: 2 }).default('0.00').notNull(),
+	retainedRevenueAmount: decimal("retained_revenue_amount", { precision: 15, scale: 2 }).default('0.00').notNull(),
+	assistanceAmount: decimal("assistance_amount", { precision: 15, scale: 2 }).default('0.00').notNull(),
+	loanAmount: decimal("loan_amount", { precision: 15, scale: 2 }).default('0.00').notNull(),
+},
+(table) => [
+	index("idx_budget_notification_items_tenant_id").on(table.tenantId),
+	index("idx_budget_notification_items_notice").on(table.notificationId),
 ]);
 
 export const classes = mysqlTable("classes", {
@@ -288,6 +330,20 @@ export const fileShares = mysqlTable("file_shares", {
 },
 (table) => [
 	index("idx_file_shares_tenant_id").on(table.tenantId),
+]);
+
+export const financeCodes = mysqlTable("finance_codes", {
+	codeId: int("code_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	typeId: int("type_id").notNull().references(() => accountTypes.typeId, { onDelete: "restrict", onUpdate: "restrict" } ),
+	codeNumber: varchar("code_number", { length: 50 }).notNull(),
+	codeNameAm: varchar("code_name_am", { length: 255 }).notNull(),
+	codeNameEn: varchar("code_name_en", { length: 255 }),
+	isActive: tinyint("is_active").default(1).notNull(),
+},
+(table) => [
+	index("idx_finance_codes_tenant_id").on(table.tenantId),
+	index("idx_finance_codes_tenant_type").on(table.tenantId, table.typeId),
 ]);
 
 export const foreignPartners = mysqlTable("foreign_partners", {
@@ -618,6 +674,131 @@ export const liveQuizSessions = mysqlTable("live_quiz_sessions", {
 (table) => [
 	index("idx_live_quiz_sessions_tenant_id").on(table.tenantId),
 	unique("exam_id").on(table.examId),
+]);
+
+export const mehi161Cards = mysqlTable("mehi_16_1_cards", {
+	cardId: int("card_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	fiscalYear: varchar("fiscal_year", { length: 10 }).notNull(),
+	pageNo: varchar("page_no", { length: 20 }).default('1').notNull(),
+	publicBodyCodeId: int("public_body_code_id"),
+	programCodeId: int("program_code_id"),
+	subProgramCodeId: int("sub_program_code_id"),
+	projectCodeId: int("project_code_id"),
+	subAgencyCodeId: int("sub_agency_code_id"),
+	sourceCodeId: int("source_code_id"),
+	budgetTypeId: int("budget_type_id"),
+	accountCodeId: int("account_code_id"),
+	createdBy: int("created_by"),
+},
+(table) => [
+	index("idx_mehi_16_1_cards_tenant_id").on(table.tenantId),
+	index("idx_mehi_16_1_cards_lookup").on(table.tenantId, table.fiscalYear, table.accountCodeId),
+]);
+
+export const mehi161Transactions = mysqlTable("mehi_16_1_transactions", {
+	transId: int("trans_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	cardId: int("card_id").notNull().references(() => mehi161Cards.cardId, { onDelete: "restrict", onUpdate: "restrict" } ),
+	notificationId: int("notification_id"),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	transDate: date("trans_date", { mode: 'string' }).notNull(),
+	description: varchar({ length: 500 }).notNull(),
+	refNo: varchar("ref_no", { length: 100 }).notNull(),
+	approvedBudget: decimal("approved_budget", { precision: 15, scale: 2 }).default('0.00').notNull(),
+	additionToBudget: decimal("addition_to_budget", { precision: 15, scale: 2 }).default('0.00').notNull(),
+	reductionFromBudget: decimal("reduction_from_budget", { precision: 15, scale: 2 }).default('0.00').notNull(),
+	adjustedBudget: decimal("adjusted_budget", { precision: 15, scale: 2 }).default('0.00').notNull(),
+	commitments: decimal({ precision: 15, scale: 2 }).default('0.00').notNull(),
+	expenditure: decimal({ precision: 15, scale: 2 }).default('0.00').notNull(),
+	balance: decimal({ precision: 15, scale: 2 }).default('0.00').notNull(),
+},
+(table) => [
+	index("idx_mehi_16_1_transactions_tenant_id").on(table.tenantId),
+	index("idx_mehi_16_1_transactions_card").on(table.cardId, table.transId),
+]);
+
+export const mehi17Cards = mysqlTable("mehi_17_cards", {
+	cardId: int("card_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	fiscalYear: varchar("fiscal_year", { length: 10 }).notNull(),
+	publicBodyCodeId: int("public_body_code_id").notNull(),
+	subAgencyCodeId: int("sub_agency_code_id"),
+	programCodeId: int("program_code_id").notNull(),
+	subProgramCodeId: int("sub_program_code_id"),
+	projectCodeId: int("project_code_id"),
+	sourceCodeId: int("source_code_id").notNull(),
+	bankAccountNo: varchar("bank_account_no", { length: 100 }).notNull(),
+	budgetTypeId: int("budget_type_id").notNull(),
+	accountCodeId: int("account_code_id"),
+	accountName: varchar("account_name", { length: 255 }),
+	accountType: varchar("account_type", { length: 20 }),
+	createdBy: int("created_by"),
+},
+(table) => [
+	index("idx_mehi_17_cards_tenant_id").on(table.tenantId),
+	unique("uq_mehi_17_cards_bank").on(table.tenantId, table.fiscalYear, table.bankAccountNo, table.budgetTypeId),
+]);
+
+export const mehi17Transactions = mysqlTable("mehi_17_transactions", {
+	transId: int("trans_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	cardId: int("card_id").notNull().references(() => mehi17Cards.cardId, { onDelete: "restrict", onUpdate: "restrict" } ),
+	registerMonth: varchar("register_month", { length: 30 }).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	registerDate: date("register_date", { mode: 'string' }).notNull(),
+	registerPage: varchar("register_page", { length: 20 }),
+	registerItemNo: varchar("register_item_no", { length: 20 }),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	docDate: date("doc_date", { mode: 'string' }).notNull(),
+	description: varchar({ length: 500 }).notNull(),
+	refNo: varchar("ref_no", { length: 100 }).notNull(),
+	refType: varchar("ref_type", { length: 50 }).notNull(),
+	debitAmount: decimal("debit_amount", { precision: 15, scale: 2 }).default('0.00').notNull(),
+	creditAmount: decimal("credit_amount", { precision: 15, scale: 2 }).default('0.00').notNull(),
+	balance: decimal({ precision: 15, scale: 2 }).default('0.00').notNull(),
+	createdBy: int("created_by"),
+},
+(table) => [
+	index("idx_mehi_17_transactions_tenant_id").on(table.tenantId),
+	index("idx_mehi_17_transactions_card").on(table.cardId, table.transId),
+]);
+
+export const mehi7Items = mysqlTable("mehi_7_items", {
+	itemId: int("item_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	voucherId: int("voucher_id").notNull().references(() => mehi7Vouchers.voucherId, { onDelete: "restrict", onUpdate: "restrict" } ),
+	m16CardId: int("m16_card_id"),
+	m17CardId: int("m17_card_id"),
+	budgetCategoryId: int("budget_category_id"),
+	budgetSourceId: int("budget_source_id"),
+	accountCodeId: int("account_code_id"),
+	debitAmount: decimal("debit_amount", { precision: 15, scale: 2 }).default('0.00').notNull(),
+	creditAmount: decimal("credit_amount", { precision: 15, scale: 2 }).default('0.00').notNull(),
+},
+(table) => [
+	index("idx_mehi_7_items_tenant_id").on(table.tenantId),
+	index("idx_mehi_7_items_voucher").on(table.voucherId),
+]);
+
+export const mehi7Vouchers = mysqlTable("mehi_7_vouchers", {
+	voucherId: int("voucher_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	serialNo: varchar("serial_no", { length: 100 }).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	voucherDate: date("voucher_date", { mode: 'string' }).notNull(),
+	fiscalYear: varchar("fiscal_year", { length: 10 }).notNull(),
+	publicBodyCodeId: int("public_body_code_id").notNull(),
+	programCodeId: int("program_code_id").notNull(),
+	payeeName: varchar("payee_name", { length: 255 }).notNull(),
+	modeOfPayment: varchar("mode_of_payment", { length: 30 }).notNull(),
+	checkNo: varchar("check_no", { length: 100 }),
+	purpose: varchar({ length: 500 }).notNull(),
+	totalAmount: decimal("total_amount", { precision: 15, scale: 2 }).default('0.00').notNull(),
+	createdBy: int("created_by"),
+},
+(table) => [
+	index("idx_mehi_7_vouchers_tenant_id").on(table.tenantId),
 ]);
 
 export const model19Grn = mysqlTable("model_19_grn", {
