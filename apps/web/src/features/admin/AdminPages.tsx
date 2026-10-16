@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Alert, Button, Card, CardBody, CardHeader, Input, PageHeader, Select, Spinner, Table, type TableColumn } from "@/components/ui";
 import { api } from "@/lib/api";
 import { toErrorKey } from "@/lib/apiError";
+import { useBackupCheck, useGradeProtocol, useMonitoring, useRecordNotice, useResetToId, useYearAction } from "@/features/operations/api/useOperations";
 import { useSessionUser } from "@/features/auth/authContext";
 import { CourseFilesPage } from "@/features/teacher/CourseFilesPage";
 import { LockedProfilePage } from "@/features/teacher/LockedProfilePage";
@@ -32,7 +33,6 @@ import {
   useSchoolInfo,
   useStoreApprovals,
   useStudents,
-  useUnlockGrades,
   useUsers,
   type StudentRow,
 } from "./api/useAdmin";
@@ -75,26 +75,25 @@ const filterControl = "w-full rounded-md border border-[#E2E8F0] bg-[#F8FAFC] px
 
 export function StudentStatusPage() {
   const { t } = useTranslation(["admin", "common", "errors"]);
-  const yearQuery = useAcademicYear();
   const [draft, setDraft] = useState({ academicYear: "", gradeLevel: "", section: "", gender: "" });
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [seeded, setSeeded] = useState(false);
   const query = useRepeaters(filters);
 
   useEffect(() => {
-    if (seeded || !yearQuery.data) return;
-    const academicYear = yearQuery.data.academicYear ?? "";
+    if (seeded || !query.data) return;
+    const academicYear = query.data.academicYear ?? "";
     setDraft((current) => ({ ...current, academicYear }));
-    setFilters(academicYear ? { academicYear } : {});
     setSeeded(true);
-  }, [seeded, yearQuery.data]);
+    if (academicYear) setFilters({ academicYear });
+  }, [seeded, query.data]);
 
   function apply(next: typeof draft) {
     setDraft(next);
     setFilters(Object.fromEntries(Object.entries(next).filter(([, value]) => value)));
   }
 
-  if (yearQuery.isPending || !seeded || query.isPending) {
+  if (query.isPending && !query.data) {
     return (
       <div className="flex justify-center py-10 text-brand-700">
         <Spinner size="lg" label={t("common:loading")} />
@@ -259,10 +258,17 @@ export function RosterPage() {
 }
 
 export function AcademicYearPage() {
-  const { t } = useTranslation(["admin", "errors"]);
+  const { t } = useTranslation(["admin", "operations", "errors"]);
   const query = useAcademicYear();
   const save = useSaveAcademicYear();
+  const yearAction = useYearAction();
   const [notice, setNotice] = useState<{ tone: "success" | "danger"; text: string } | null>(null);
+  const run = (action: "lock" | "archive" | "rollover", text: string) => {
+    yearAction.mutate(action, {
+      onSuccess: () => setNotice({ tone: "success", text }),
+      onError: (error) => setNotice({ tone: "danger", text: t(`errors:${toErrorKey(error)}`) }),
+    });
+  };
   return (
     <>
       <PageHeader title={t("yearTitle")} description={t("yearSubtitle")} />
@@ -289,19 +295,36 @@ export function AcademicYearPage() {
                 <p className="text-sm text-ink-muted">
                   {t("yearLabel")}: <strong>{data.academicYear ?? "—"}</strong> · {t("semesterLabel")}: <strong>{data.semester}</strong>
                 </p>
+                <p className="text-sm text-ink-muted">
+                  {t("operations:gateLabel")}: <strong>{data.gate === "locked" ? t("operations:gateLocked") : t("operations:gateOpen")}</strong>
+                  {" · "}
+                  {t("operations:archivedYears")}: <strong>{data.archived.length > 0 ? data.archived.join(", ") : t("operations:noneArchived")}</strong>
+                </p>
+                <p className="text-sm text-ink-muted">{t("operations:ecYearHint")}</p>
                 <Input name="academicYear" label={t("changeYear")} defaultValue={data.academicYear ?? ""} required />
                 <Select
                   name="semester"
                   label={t("chooseSemester")}
                   defaultValue={data.semester}
                   options={[
-                    { value: "1", label: t("semester1") },
-                    { value: "2", label: t("semester2") },
+                    { value: "1", label: t("operations:semester1Range") },
+                    { value: "2", label: t("operations:semester2Range") },
                   ]}
                 />
                 <Button type="submit" loading={save.isPending}>
                   {t("updateSettings")}
                 </Button>
+                <div className="flex flex-wrap gap-2">
+                  <Button type="button" variant="secondary" loading={yearAction.isPending} onClick={() => run("lock", t("operations:yearLockedDone"))}>
+                    {t("operations:lockYear")}
+                  </Button>
+                  <Button type="button" variant="secondary" loading={yearAction.isPending} onClick={() => run("archive", t("operations:yearArchivedDone"))}>
+                    {t("operations:archiveYear")}
+                  </Button>
+                  <Button type="button" variant="secondary" loading={yearAction.isPending} onClick={() => run("rollover", t("operations:yearRolled"))}>
+                    {t("operations:rolloverYear")}
+                  </Button>
+                </div>
                 <p className="text-sm text-ink-muted">{t("yearWarning")}</p>
               </form>
             </CardBody>
@@ -313,11 +336,12 @@ export function AcademicYearPage() {
 }
 
 export function PasswordPage() {
-  const { t } = useTranslation(["admin", "errors"]);
+  const { t } = useTranslation(["admin", "operations", "errors"]);
   const [q, setQ] = useState("");
   const [search, setSearch] = useState("");
   const users = useUsers(search);
   const reset = useResetPassword();
+  const resetToId = useResetToId();
   const [notice, setNotice] = useState<{ tone: "success" | "danger"; text: string } | null>(null);
   return (
     <>
@@ -357,10 +381,28 @@ export function PasswordPage() {
                   options={data.rows.map((row) => ({ value: String(row.id), label: `${row.name} (${row.username})` }))}
                   required
                 />
-                <Input name="password" type="password" label={t("newPassword")} required autoComplete="new-password" />
-                <Button type="submit" loading={reset.isPending}>
-                  {t("reset")}
-                </Button>
+                <Input name="password" type="password" label={t("newPassword")} autoComplete="new-password" />
+                <div className="flex flex-wrap gap-2">
+                  <Button type="submit" loading={reset.isPending}>
+                    {t("reset")}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    loading={resetToId.isPending}
+                    onClick={(event) => {
+                      const form = event.currentTarget.form;
+                      const userId = Number(new FormData(form ?? undefined).get("userId"));
+                      if (!userId) return;
+                      resetToId.mutate(userId, {
+                        onSuccess: () => setNotice({ tone: "success", text: t("operations:resetToIdDone") }),
+                        onError: (error) => setNotice({ tone: "danger", text: t(`errors:${toErrorKey(error)}`) }),
+                      });
+                    }}
+                  >
+                    {t("operations:resetToId")}
+                  </Button>
+                </div>
               </form>
             )}
           </Panel>
@@ -420,8 +462,8 @@ export function SchoolInfoPage() {
 }
 
 export function GradeUnlockPage() {
-  const { t } = useTranslation(["admin", "errors"]);
-  const unlock = useUnlockGrades();
+  const { t } = useTranslation(["admin", "operations", "errors"]);
+  const protocol = useGradeProtocol();
   const [notice, setNotice] = useState<{ tone: "success" | "danger"; text: string } | null>(null);
   return (
     <>
@@ -429,28 +471,40 @@ export function GradeUnlockPage() {
       <Notice tone={notice?.tone ?? null} text={notice?.text ?? ""} />
       <Card>
         <CardBody>
-          <p className="mb-4 text-sm text-ink-muted">{t("unlockHelp")}</p>
+          <p className="mb-4 text-sm text-ink-muted">{t("operations:protocolHelp")}</p>
           <form
             className="grid max-w-lg gap-4"
             onSubmit={(event: FormEvent<HTMLFormElement>) => {
               event.preventDefault();
-              if (!window.confirm(t("unlockConfirm"))) return;
               const form = new FormData(event.currentTarget);
+              const action = form.get("action") === "lock" ? "lock" : "unlock";
+              if (action === "unlock" && !window.confirm(t("unlockConfirm"))) return;
               const rawStudent = String(form.get("studentId") ?? "").trim();
-              unlock.mutate(
+              protocol.mutate(
                 {
+                  action,
                   studentId: rawStudent === "" || rawStudent === "0" ? null : Number(rawStudent),
                   subjectId: Number(form.get("subjectId")),
                   academicYear: String(form.get("academicYear") ?? ""),
                   semester: form.get("semester") === "2" ? "2" : "1",
+                  reason: String(form.get("reason") ?? ""),
                 },
                 {
-                  onSuccess: () => setNotice({ tone: "success", text: t("unlocked") }),
+                  onSuccess: () => setNotice({ tone: "success", text: action === "lock" ? t("operations:marksLocked") : t("operations:marksUnlocked") }),
                   onError: (error) => setNotice({ tone: "danger", text: t(`errors:${toErrorKey(error)}`) }),
                 },
               );
             }}
           >
+            <Select
+              name="action"
+              label={t("operations:action")}
+              defaultValue="unlock"
+              options={[
+                { value: "unlock", label: t("operations:unlockMarks") },
+                { value: "lock", label: t("operations:lockMarks") },
+              ]}
+            />
             <Input name="studentId" label={t("studentId")} inputMode="numeric" />
             <Input name="subjectId" label={t("subjectId")} inputMode="numeric" required />
             <Input name="academicYear" label={t("year")} required />
@@ -463,7 +517,8 @@ export function GradeUnlockPage() {
                 { value: "2", label: t("semester2") },
               ]}
             />
-            <Button type="submit" loading={unlock.isPending}>
+            <Input name="reason" label={t("operations:reason")} required minLength={8} />
+            <Button type="submit" loading={protocol.isPending}>
               {t("unlockAction")}
             </Button>
           </form>
@@ -850,14 +905,21 @@ export function RoleModulesPage() {
 }
 
 export function BackupPage({ restore = false }: { restore?: boolean }) {
-  const { t } = useTranslation(["admin", "errors"]);
+  const { t } = useTranslation(["admin", "operations", "errors"]);
   const action = useBackupAction();
-  const [notice, setNotice] = useState<string | null>(null);
+  const monitoring = useMonitoring();
+  const recordCheck = useBackupCheck();
+  const recordNotice = useRecordNotice();
+  const [notice, setNotice] = useState<{ tone: "success" | "danger" | "warning"; text: string } | null>(null);
   return (
     <>
-      <PageHeader title={restore ? t("restoreTitle") : t("backupTitle")} />
-      {notice ? <Alert tone="warning" className="mb-4">{notice}</Alert> : null}
-      <Card>
+      <PageHeader title={restore ? t("restoreTitle") : t("backupTitle")} description={t("operations:monitorHelp")} />
+      {notice ? (
+        <Alert tone={notice.tone === "success" ? "success" : notice.tone === "danger" ? "danger" : "warning"} className="mb-4">
+          {notice.text}
+        </Alert>
+      ) : null}
+      <Card className="mb-4">
         <CardBody>
           <p className="mb-4 text-sm text-ink-muted">{t("backupBlocked")}</p>
           <div className="flex flex-wrap gap-2">
@@ -865,20 +927,120 @@ export function BackupPage({ restore = false }: { restore?: boolean }) {
               type="button"
               onClick={() =>
                 action.mutate(restore ? "/admin/restore" : "/admin/backup", {
-                  onError: (error) => setNotice(t(`errors:${toErrorKey(error)}`)),
+                  onError: (error) => setNotice({ tone: "warning", text: t(`errors:${toErrorKey(error)}`) }),
                 })
               }
             >
               {restore ? t("restoreTitle") : t("backupFull")}
             </Button>
-            {restore ? null : (
-              <Button type="button" variant="secondary" onClick={() => action.mutate("/admin/backup", { onError: (error) => setNotice(t(`errors:${toErrorKey(error)}`)) })}>
-                {t("backupSchema")}
-              </Button>
-            )}
+            <Button
+              type="button"
+              variant="secondary"
+              loading={recordCheck.isPending}
+              onClick={() =>
+                recordCheck.mutate(restore ? "restore" : "backup", {
+                  onSuccess: () => setNotice({ tone: "success", text: t("operations:checkRecorded") }),
+                  onError: (error) => setNotice({ tone: "danger", text: t(`errors:${toErrorKey(error)}`) }),
+                })
+              }
+            >
+              {t("operations:recordCheck")}
+            </Button>
           </div>
         </CardBody>
       </Card>
+      <Panel query={monitoring}>
+        {(data) => (
+          <div className="grid gap-4">
+            <Card>
+              <CardHeader title={t("operations:monitorTitle")} />
+              <CardBody>
+                <p className="text-sm text-ink-muted">
+                  {t("operations:emailChannel")}: {data.channels.emailReady ? t("operations:ready") : t("operations:missingChannel")}
+                </p>
+                <p className="text-sm text-ink-muted">
+                  {t("operations:phoneChannel")}: {data.channels.phoneReady ? t("operations:ready") : t("operations:missingChannel")}
+                </p>
+              </CardBody>
+            </Card>
+            {restore ? null : (
+              <Card>
+                <CardHeader title={t("operations:noticeForm")} />
+                <CardBody>
+                  <form
+                    className="grid max-w-xl gap-4"
+                    onSubmit={(event: FormEvent<HTMLFormElement>) => {
+                      event.preventDefault();
+                      const form = new FormData(event.currentTarget);
+                      const rawChannel = String(form.get("channel") ?? "letter");
+                      const channel = rawChannel === "phone" || rawChannel === "email" ? rawChannel : "letter";
+                      recordNotice.mutate(
+                        {
+                          channel,
+                          recipient: String(form.get("recipient") ?? ""),
+                          referenceNo: String(form.get("referenceNo") ?? ""),
+                          subject: String(form.get("subject") ?? ""),
+                          sentOn: String(form.get("sentOn") ?? ""),
+                        },
+                        {
+                          onSuccess: () => setNotice({ tone: "success", text: t("operations:noticeSaved") }),
+                          onError: (error) => setNotice({ tone: "danger", text: t(`errors:${toErrorKey(error)}`) }),
+                        },
+                      );
+                    }}
+                  >
+                    <Select
+                      name="channel"
+                      label={t("operations:channel")}
+                      defaultValue="letter"
+                      options={[
+                        { value: "letter", label: t("operations:letter") },
+                        { value: "phone", label: t("operations:phone") },
+                        { value: "email", label: t("operations:email") },
+                      ]}
+                    />
+                    <Input name="recipient" label={t("operations:recipient")} required />
+                    <Input name="referenceNo" label={t("operations:referenceNo")} required />
+                    <Input name="subject" label={t("operations:subjectLabel")} required />
+                    <Input name="sentOn" type="date" label={t("operations:sentOn")} required />
+                    <Button type="submit" loading={recordNotice.isPending}>
+                      {t("operations:recordNotice")}
+                    </Button>
+                  </form>
+                </CardBody>
+              </Card>
+            )}
+            <Card>
+              <CardHeader title={t("operations:runsTitle")} />
+              <Table
+                columns={[
+                  { key: "when", header: t("operations:when"), render: (row) => row.createdAt },
+                  { key: "action", header: t("operations:action"), render: (row) => row.action },
+                  { key: "note", header: t("operations:description"), render: (row) => row.note ?? row.status },
+                ]}
+                rows={data.runs}
+                rowKey={(row) => row.id}
+                empty={t("operations:noRuns")}
+              />
+            </Card>
+            <Card>
+              <CardHeader title={t("operations:noticesTitle")} />
+              <Table
+                columns={[
+                  { key: "when", header: t("operations:sentOn"), render: (row) => row.sentOn },
+                  { key: "channel", header: t("operations:channel"), render: (row) => row.channel },
+                  { key: "who", header: t("operations:recipient"), render: (row) => row.recipient },
+                  { key: "ref", header: t("operations:referenceNo"), render: (row) => row.referenceNo },
+                  { key: "subject", header: t("operations:subjectLabel"), render: (row) => row.subject },
+                ]}
+                rows={data.notices}
+                rowKey={(row) => row.id}
+                empty={t("operations:noNotices")}
+              />
+            </Card>
+          </div>
+        )}
+      </Panel>
     </>
   );
 }

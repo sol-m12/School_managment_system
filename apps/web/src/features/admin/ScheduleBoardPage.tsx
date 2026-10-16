@@ -88,11 +88,19 @@ export function ScheduleBoardPage() {
   const columns = data.classes.filter((room) => classIds.length === 0 || classIds.includes(room.id));
 
   return (
-    <div className="bg-[#f8fafc] px-4 py-6">
-      <h2 className="text-2xl font-extrabold">{t("admin:scheduleCenter")}</h2>
-      <p className="mb-4 text-sm text-[#6c757d]">{t("admin:scheduleCenterHint", { year: data.year })}</p>
-      {notice ? <Alert tone="danger" className="mb-4">{notice}</Alert> : null}
-      <div className="mb-4 flex flex-wrap gap-2">
+    <div className="bg-[#f8fafc] px-4 py-6 text-black print:bg-white print:p-0">
+      <style>{`@media print { @page { size: landscape; margin: 0.4in; } }`}</style>
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-3 print:mb-2">
+        <div>
+          <h2 className="text-2xl font-extrabold">{t("admin:scheduleCenter")}</h2>
+          <p className="text-sm text-[#6c757d] print:text-black">{t("admin:scheduleCenterHint", { year: data.year })} · {shift}</p>
+        </div>
+        <button type="button" className="rounded-md bg-[#1a237e] px-4 py-2 text-sm font-bold text-white print:hidden" onClick={() => window.print()}>
+          {t("admin:schedulePrint")}
+        </button>
+      </div>
+      {notice ? <Alert tone="danger" className="mb-4 print:hidden">{notice}</Alert> : null}
+      <div className="mb-4 flex flex-wrap gap-2 print:hidden">
         {(["Morning", "Afternoon", "Both"] as const).map((item) => (
           <button key={item} type="button" className={`rounded-md px-3 py-2 text-sm font-bold ${shift === item ? "bg-[#1a237e] text-white" : "bg-white"}`} onClick={() => setShift(item)}>
             {item}
@@ -101,7 +109,7 @@ export function ScheduleBoardPage() {
       </div>
 
       <form
-        className="mb-4 grid gap-3 rounded-2xl bg-white p-4 md:grid-cols-6"
+        className="mb-4 grid gap-3 rounded-2xl bg-white p-4 print:hidden md:grid-cols-6"
         onSubmit={(event) => {
           event.preventDefault();
           if (!window.confirm(t("admin:scheduleGenerateConfirm"))) return;
@@ -160,10 +168,10 @@ export function ScheduleBoardPage() {
         </div>
       </form>
 
-      <div className="mb-6 overflow-x-auto rounded-2xl bg-white shadow-sm">
-        <table className="w-full min-w-[900px] border text-center text-xs">
+      <div className="mb-6 overflow-x-auto rounded-2xl bg-white shadow-sm print:mb-0 print:overflow-visible print:shadow-none">
+        <table className="w-full min-w-[900px] border border-black text-center text-xs print:min-w-0 print:text-[9px]">
           <thead>
-            <tr className="bg-[#1a237e] text-white">
+            <tr className="bg-[#1a237e] text-white print:bg-white print:text-black">
               <th className="px-2 py-2">DAY</th>
               <th className="px-2 py-2">PERIOD</th>
               {columns.map((room) => (
@@ -213,9 +221,13 @@ export function ScheduleBoardPage() {
                         }}
                       >
                         {lesson ? (
-                          <div draggable onDragStart={(event) => event.dataTransfer.setData("text/plain", String(lesson.id))} className="cursor-grab rounded bg-[#e7f1ff] px-1 py-1" title={`${lesson.subjectName} / ${lesson.teacherName}`}>
-                            <div className="font-bold">{shortSubject(lesson.subjectName)}</div>
-                            <div>ID {lesson.staffId}</div>
+                          <div draggable onDragStart={(event) => event.dataTransfer.setData("text/plain", String(lesson.id))} className="cursor-grab rounded bg-[#e7f1ff] px-1 py-1 print:cursor-auto print:bg-white" title={`${lesson.subjectName} / ${lesson.teacherName}`}>
+                            <div className="font-bold print:hidden">{shortSubject(lesson.subjectName)}</div>
+                            <div className="print:hidden">ID {lesson.staffId}</div>
+                            <div className="hidden text-left print:block">
+                              <div className="font-bold">{lesson.subjectName}</div>
+                              <div>{lesson.teacherName}</div>
+                            </div>
                           </div>
                         ) : (
                           "—"
@@ -230,7 +242,7 @@ export function ScheduleBoardPage() {
         </table>
       </div>
 
-      <section className="rounded-2xl bg-white p-4 shadow-sm">
+      <section className="rounded-2xl bg-white p-4 shadow-sm print:hidden">
         <h3 className="mb-3 font-extrabold">{t("admin:scheduleHeatmap")}</h3>
         <p className="mb-3 text-sm text-[#6c757d]">{t("admin:scheduleHeatHint")}</p>
         <div className="overflow-x-auto">

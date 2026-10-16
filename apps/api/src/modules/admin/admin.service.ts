@@ -23,6 +23,7 @@ import { ER_DUP_ENTRY, ER_ROW_IS_REFERENCED, mysqlErrno } from "../../lib/mysqlE
 import { hashPassword } from "../../lib/password.js";
 import { PERMISSIONS, permissionsForRole } from "../../lib/permissions.js";
 import { ROLES } from "../../lib/roles.js";
+import { yearSnapshot, YEAR_KEY as YEAR_SETTING, SEMESTER_KEY as SEMESTER_SETTING, upsertSetting as saveSetting } from "../../lib/academicYear.js";
 import { scoped, withTenant } from "../../lib/tenant.js";
 import type {
   AcademicYearInput,
@@ -47,7 +48,9 @@ export type AdminErrorCode =
   | "GRADE_SECTION_EXISTS"
   | "TEACHER_ASSIGNED"
   | "TEACHER_IN_USE"
-  | "CLASS_IN_USE";
+  | "CLASS_IN_USE"
+  | "YEAR_LOCKED"
+  | "YEAR_ARCHIVED";
 
 export class AdminError extends Error {
   constructor(readonly code: AdminErrorCode) {
@@ -103,15 +106,15 @@ async function upsertSetting(tenantId: number, key: string, value: string): Prom
 }
 
 export async function getAcademicYear(tenantId: number) {
-  return {
-    academicYear: await settingValue(tenantId, YEAR_KEY),
-    semester: (await settingValue(tenantId, SEMESTER_KEY)) ?? "1",
-  };
+  return yearSnapshot(tenantId);
 }
 
 export async function updateAcademicYear(tenantId: number, input: AcademicYearInput) {
-  await upsertSetting(tenantId, YEAR_KEY, input.academicYear);
-  await upsertSetting(tenantId, SEMESTER_KEY, input.semester);
+  const snap = await yearSnapshot(tenantId);
+  if (snap.gate === "locked") throw new AdminError("YEAR_LOCKED");
+  if (input.academicYear && snap.archived.includes(input.academicYear)) throw new AdminError("YEAR_ARCHIVED");
+  await saveSetting(tenantId, YEAR_SETTING, input.academicYear);
+  await saveSetting(tenantId, SEMESTER_SETTING, input.semester);
   return getAcademicYear(tenantId);
 }
 

@@ -78,6 +78,7 @@ import { ResultsPage } from "@/features/student/ResultsPage";
 import { SimulationsPage as StudentSimulationsPage } from "@/features/student/SimulationsPage";
 import { VirtualLabPage } from "@/features/student/VirtualLabPage";
 import { AnnouncementsPage } from "@/features/technician/AnnouncementsPage";
+import { AuditPage, DutiesPage, HealthPage, IdentityPage, ImportPage, TicketsPage } from "@/features/operations/OperationsPages";
 import { StaffRegistrationPage } from "@/features/technician/StaffRegistrationPage";
 import { StudentIdPage } from "@/features/technician/StudentIdPage";
 
@@ -222,6 +223,12 @@ export const router = createBrowserRouter([
       { path: "system/passwords", element: <ProtectedRoute permission="passwords.reset"><PasswordPage /></ProtectedRoute> },
       { path: "system/school-info", element: <ProtectedRoute permission="schoolInfo.manage"><SchoolInfoPage /></ProtectedRoute> },
       { path: "system/role-modules", element: <ProtectedRoute permission="roleModules.manage"><RoleModulesPage /></ProtectedRoute> },
+      { path: "system/identity", element: <ProtectedRoute permission="accounts.manage"><IdentityPage /></ProtectedRoute> },
+      { path: "system/helpdesk", element: <ProtectedRoute permission="tickets.manage"><TicketsPage /></ProtectedRoute> },
+      { path: "system/audit", element: <ProtectedRoute permission="audit.read"><AuditPage /></ProtectedRoute> },
+      { path: "system/import", element: <ProtectedRoute permission="users.import"><ImportPage /></ProtectedRoute> },
+      { path: "system/health", element: <ProtectedRoute permission="health.read"><HealthPage /></ProtectedRoute> },
+      { path: "system/duties", element: <ProtectedRoute permission="duties.assign"><DutiesPage /></ProtectedRoute> },
       { path: "files", element: <ProtectedRoute permission="files.manage"><FilesPage /></ProtectedRoute> },
       { path: "profile", element: <ProfilePage /> },
       { path: "store/items", element: <ProtectedRoute permission="store.items"><ItemsPage /></ProtectedRoute> },

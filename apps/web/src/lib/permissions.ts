@@ -26,6 +26,11 @@ export const PERMISSIONS = [
   "passwords.reset",
   "schoolInfo.manage",
   "roleModules.manage",
+  "tickets.manage",
+  "audit.read",
+  "users.import",
+  "health.read",
+  "duties.assign",
 
   "attendance.take",
   "storeRequests.create",

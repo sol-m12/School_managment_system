@@ -52,7 +52,8 @@ export function useAcademicYear() {
   const { tenantId } = useSessionUser();
   return useQuery({
     queryKey: key(tenantId, "year"),
-    queryFn: async () => (await api.get<{ academicYear: string | null; semester: string }>("/admin/academic-year")).data,
+    queryFn: async () =>
+      (await api.get<{ academicYear: string | null; semester: string; gate: "open" | "locked"; archived: string[] }>("/admin/academic-year")).data,
   });
 }
 

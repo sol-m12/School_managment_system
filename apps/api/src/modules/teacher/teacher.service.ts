@@ -11,6 +11,7 @@ import {
   systemSettings,
   teacherAssignments,
 } from "../../db/schema/index.js";
+import { yearIsFrozen } from "../../lib/academicYear.js";
 import { scoped, withTenant } from "../../lib/tenant.js";
 import type { PlanBody, ScoreBody } from "./teacher.schema.js";
 
@@ -355,7 +356,8 @@ export async function gradeSheet(tenantId: number, userId: number, classSelect: 
           );
 
   const planNames = new Set(plans.map((plan) => plan.name));
-  const locked = scoreRows.some((row) => planNames.has(row.weightingType) && row.submissionStatus === "Approved");
+  const frozen = await yearIsFrozen(tenantId, context.academicYear);
+  const locked = frozen || scoreRows.some((row) => planNames.has(row.weightingType) && row.submissionStatus === "Approved");
   const byStudent = new Map<number, { scores: Record<string, number>; status: string }>();
   for (const row of scoreRows) {
     const current = byStudent.get(row.studentId) ?? { scores: {}, status: "Draft" };

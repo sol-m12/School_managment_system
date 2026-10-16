@@ -21,6 +21,9 @@ import {
   Boxes,
   ArrowUpCircle,
   ScrollText,
+  Activity,
+  Headset,
+  Upload,
   Wallet,
   Database,
   FileDown,
@@ -148,6 +151,12 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "passwordManagement", path: "/system/passwords", icon: UserCog, group: "systemSettings", permission: "passwords.reset" },
   { key: "schoolInfo", path: "/system/school-info", icon: Landmark, group: "systemSettings", permission: "schoolInfo.manage" },
   { key: "roleModules", path: "/system/role-modules", icon: SlidersHorizontal, group: "systemSettings", permission: "roleModules.manage" },
+  { key: "identityAccounts", path: "/system/identity", icon: KeyRound, group: "systemSettings", permission: "accounts.manage" },
+  { key: "helpdesk", path: "/system/helpdesk", icon: Headset, group: "systemSettings", permission: "tickets.manage" },
+  { key: "auditTrail", path: "/system/audit", icon: ScrollText, group: "systemSettings", permission: "audit.read" },
+  { key: "userImport", path: "/system/import", icon: Upload, group: "systemSettings", permission: "users.import" },
+  { key: "systemHealth", path: "/system/health", icon: Activity, group: "systemSettings", permission: "health.read" },
+  { key: "dutyAssignments", path: "/system/duties", icon: UsersRound, group: "systemSettings", permission: "duties.assign" },
 
   // Store_Keeper live menu (yekte, 2026-10-15) — ACADEMIC
   { key: "storeApprovals", path: "/store/approvals", icon: Link, group: "academic", permission: "store.approvals" },

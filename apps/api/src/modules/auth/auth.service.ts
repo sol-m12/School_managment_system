@@ -1,6 +1,6 @@
 import { and, eq, sql } from "drizzle-orm";
 import { db } from "../../db/index.js";
-import { tenants, users } from "../../db/schema/index.js";
+import { loginAttempts, tenants, users } from "../../db/schema/index.js";
 import {
   createAccessToken,
   createRefreshToken,
@@ -12,7 +12,7 @@ import {
 } from "../../lib/password.js";
 import { permissionsForRole, type Permission } from "../../lib/permissions.js";
 import { isRole } from "../../lib/roles.js";
-import { scoped } from "../../lib/tenant.js";
+import { scoped, withTenant } from "../../lib/tenant.js";
 
 export class AuthError extends Error {
   constructor(readonly code: string) {
@@ -39,6 +39,25 @@ export type LoginResult = {
 async function rejectCredentials(): Promise<never> {
   await dummyPasswordCompare("invalid");
   throw new AuthError("AUTH_INVALID_CREDENTIALS");
+}
+
+function addisStamp(): string {
+  return new Intl.DateTimeFormat("sv-SE", {
+    timeZone: "Africa/Addis_Ababa",
+    hour12: false,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).format(new Date());
+}
+
+async function recordAttempt(tenantId: number, username: string, succeeded: boolean): Promise<void> {
+  await db.insert(loginAttempts).values(
+    withTenant({ username: username.slice(0, 50), succeeded: succeeded ? 1 : 0 }, tenantId),
+  );
 }
 
 export async function loginWithPassword(input: {
@@ -77,6 +96,7 @@ export async function loginWithPassword(input: {
     .limit(1);
 
   if (!user) {
+    await recordAttempt(tenant.id, input.username, false);
     return rejectCredentials();
   }
 
@@ -90,15 +110,17 @@ export async function loginWithPassword(input: {
 
   const verified = await verifyPassword(input.password, user.passwordHash);
   if (!verified.ok) {
+    await recordAttempt(tenant.id, input.username, false);
     throw new AuthError("AUTH_INVALID_CREDENTIALS");
   }
 
-  if (verified.rehash) {
-    await db
-      .update(users)
-      .set({ passwordHash: verified.rehash })
-      .where(scoped(users, user.tenantId, eq(users.userId, user.userId)));
-  }
+  await db
+    .update(users)
+    .set({
+      lastSeen: addisStamp(),
+      ...(verified.rehash ? { passwordHash: verified.rehash } : {}),
+    })
+    .where(scoped(users, user.tenantId, eq(users.userId, user.userId)));
 
   const accessToken = createAccessToken({
     userId: user.userId,

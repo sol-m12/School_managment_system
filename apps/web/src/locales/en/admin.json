@@ -461,6 +461,7 @@
   "scheduleHeatHint": "Green is 1–3 periods that day, yellow is 4, and red is 5 or more. A teacher cannot pass 5 periods in one day.",
   "scheduleHeatEmpty": "No lessons are on this timetable yet.",
   "scheduleWeekly": "Week",
+  "schedulePrint": "Print timetable",
   "profilePhoto": "Photo",
   "profilePhotoSaved": "Your profile was updated."
 }

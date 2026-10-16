@@ -23,6 +23,12 @@ export type IsolationSeed = {
 };
 
 const TABLES_TO_EMPTY = [
+  "support_tickets",
+  "login_attempts",
+  "backup_runs",
+  "outbound_notices",
+  "department_heads",
+  "audit_log",
   "teacher_assignments",
   "groups_info",
   "subjects",

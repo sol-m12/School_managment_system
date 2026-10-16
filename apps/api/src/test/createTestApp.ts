@@ -10,6 +10,7 @@ import { studentRouter } from "../modules/student/student.routes.js";
 import { storeRouter } from "../modules/store/store.routes.js";
 import { financeRouter } from "../modules/finance/finance.routes.js";
 import { technicianRouter } from "../modules/technician/technician.routes.js";
+import { operationsRouter } from "../modules/operations/operations.routes.js";
 
 /** Minimal Express app for integration tests (no listen). */
 export function createTestApp(): Express {
@@ -23,6 +24,7 @@ export function createTestApp(): Express {
   app.use("/admin", adminRouter);
   app.use("/teacher", teacherRouter);
   app.use("/technician", technicianRouter);
+  app.use("/operations", operationsRouter);
   app.use("/student", studentRouter);
   app.use("/store/finance", financeRouter);
   app.use("/store", storeRouter);

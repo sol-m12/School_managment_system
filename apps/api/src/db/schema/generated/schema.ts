@@ -105,6 +105,19 @@ export const auditLog = mysqlTable("audit_log", {
 	index("idx_audit_log_tenant_id").on(table.tenantId),
 ]);
 
+export const backupRuns = mysqlTable("backup_runs", {
+	runId: int("run_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	action: mysqlEnum(['backup','restore']).notNull(),
+	status: mysqlEnum(['checked','blocked']).notNull(),
+	note: varchar({ length: 255 }),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_backup_runs_tenant_id").on(table.tenantId),
+]);
+
 export const binCardLedger = mysqlTable("bin_card_ledger", {
 	ledgerId: int("ledger_id").autoincrement().notNull(),
 	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
@@ -225,6 +238,18 @@ export const communicationGroups = mysqlTable("communication_groups", {
 },
 (table) => [
 	index("idx_communication_groups_tenant_id").on(table.tenantId),
+]);
+
+export const departmentHeads = mysqlTable("department_heads", {
+	headId: int("head_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	staffId: int("staff_id").notNull(),
+	department: mysqlEnum(['Languages','Mathematics','Natural Science','Social Science','Aesthetics','Vocational','Physical Education']).notNull(),
+	academicYear: varchar("academic_year", { length: 10 }).notNull(),
+},
+(table) => [
+	index("idx_department_heads_tenant_id").on(table.tenantId),
+	unique("uq_department_heads_tenant_dept_year").on(table.tenantId, table.department, table.academicYear),
 ]);
 
 export const evaluationCriteria = mysqlTable("evaluation_criteria", {
@@ -676,6 +701,18 @@ export const liveQuizSessions = mysqlTable("live_quiz_sessions", {
 	unique("exam_id").on(table.examId),
 ]);
 
+export const loginAttempts = mysqlTable("login_attempts", {
+	attemptId: int("attempt_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	username: varchar({ length: 50 }).notNull(),
+	succeeded: tinyint().default(0).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_login_attempts_tenant_id").on(table.tenantId),
+	index("idx_login_attempts_tenant_time").on(table.tenantId, table.createdAt),
+]);
+
 export const mehi161Cards = mysqlTable("mehi_16_1_cards", {
 	cardId: int("card_id").autoincrement().notNull(),
 	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
@@ -853,6 +890,22 @@ export const onlineExams = mysqlTable("online_exams", {
 	index("subject_id").on(table.subjectId),
 	index("class_id").on(table.classId),
 	index("idx_online_exams_tenant_id").on(table.tenantId),
+]);
+
+export const outboundNotices = mysqlTable("outbound_notices", {
+	noticeId: int("notice_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	channel: mysqlEnum(['letter','phone','email']).notNull(),
+	recipient: varchar({ length: 160 }).notNull(),
+	referenceNo: varchar("reference_no", { length: 80 }).notNull(),
+	subject: varchar({ length: 160 }).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	sentOn: date("sent_on", { mode: 'string' }).notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_outbound_notices_tenant_id").on(table.tenantId),
 ]);
 
 export const parentGuardian = mysqlTable("parent_guardian", {
@@ -1229,6 +1282,22 @@ export const suppliers = mysqlTable("suppliers", {
 },
 (table) => [
 	index("idx_suppliers_tenant_id").on(table.tenantId),
+]);
+
+export const supportTickets = mysqlTable("support_tickets", {
+	ticketId: int("ticket_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	openedBy: int("opened_by").notNull(),
+	title: varchar({ length: 160 }).notNull(),
+	details: text().notNull(),
+	category: mysqlEnum(['account','network','hardware','marks','other']).default('other').notNull(),
+	priority: mysqlEnum(['low','normal','urgent']).default('normal').notNull(),
+	status: mysqlEnum(['Open','InProgress','Resolved','Closed']).default('Open').notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').onUpdateNow().notNull(),
+},
+(table) => [
+	index("idx_support_tickets_tenant_id").on(table.tenantId),
 ]);
 
 export const systemSettings = mysqlTable("system_settings", {

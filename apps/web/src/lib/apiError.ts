@@ -64,7 +64,15 @@ export type ErrorKey =
   | "missingLine"
   | "missingCodes"
   | "noM16Card"
-  | "noM17Card";
+  | "noM17Card"
+  | "alreadyHasAccount"
+  | "yearLocked"
+  | "yearNotLocked"
+  | "yearFormat"
+  | "yearArchived"
+  | "staffNotTeacher"
+  | "importEmpty"
+  | "excelSaveAsCsv";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -129,6 +137,14 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   MISSING_CODES: "missingCodes",
   NO_M16_CARD: "noM16Card",
   NO_M17_CARD: "noM17Card",
+  ALREADY_HAS_ACCOUNT: "alreadyHasAccount",
+  YEAR_LOCKED: "yearLocked",
+  YEAR_NOT_LOCKED: "yearNotLocked",
+  YEAR_FORMAT: "yearFormat",
+  YEAR_ARCHIVED: "yearArchived",
+  STAFF_NOT_TEACHER: "staffNotTeacher",
+  IMPORT_EMPTY: "importEmpty",
+  EXCEL_SAVE_AS_CSV: "excelSaveAsCsv",
 };
 
 function readCode(data: unknown): string | null {

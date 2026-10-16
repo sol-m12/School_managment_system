@@ -64,5 +64,13 @@
   "missingLine": "Enter at least one account line!",
   "missingCodes": "Choose the account code, budget type, and budget source.",
   "noM16Card": "No Mehi 16/1 ledger card is open for this expenditure line!",
-  "noM17Card": "Choose the payment source card (Mehi 17 bank or cash)."
+  "noM17Card": "Choose the payment source card (Mehi 17 bank or cash).",
+  "alreadyHasAccount": "This person already has a login.",
+  "yearLocked": "This academic year is locked. Archive it, then roll to the next Ethiopian year.",
+  "yearNotLocked": "Lock the academic year before you archive or roll it forward.",
+  "yearFormat": "The academic year must be a four-digit Ethiopian year, for example 2018.",
+  "yearArchived": "That Ethiopian year is already in the archive.",
+  "staffNotTeacher": "Only a teacher can hold homeroom or department-head duty. A lab assistant has no website login.",
+  "importEmpty": "The file has no rows to import.",
+  "excelSaveAsCsv": "Save the Excel workbook as CSV, then import that file."
 }

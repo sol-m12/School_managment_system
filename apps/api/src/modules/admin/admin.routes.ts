@@ -38,6 +38,8 @@ const STATUS: Record<AdminErrorCode, number> = {
   TEACHER_ASSIGNED: 409,
   TEACHER_IN_USE: 409,
   CLASS_IN_USE: 409,
+  YEAR_LOCKED: 409,
+  YEAR_ARCHIVED: 409,
 };
 
 function sendError(res: Response, error: unknown): void {

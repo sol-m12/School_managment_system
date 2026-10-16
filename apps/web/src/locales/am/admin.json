@@ -461,6 +461,7 @@
   "scheduleHeatHint": "አረንጓዴ 1–3 ክፍለ ጊዜ በቀን፣ ቢጫ 4፣ ቀይ 5 ወይም ከዚያ በላይ። መምህር በቀን ከ5 ክፍለ ጊዜ አይበልጥም።",
   "scheduleHeatEmpty": "በዚህ ሰሌዳ ላይ ትምህርት የለም።",
   "scheduleWeekly": "ሳምንት",
+  "schedulePrint": "የክፍለ ጊዜ ሰሌዳ አትም",
   "profilePhoto": "ፎቶ",
   "profilePhotoSaved": "ፕሮፋይልዎ በትክክል ተሻሽሏል!"
 }

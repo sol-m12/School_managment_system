@@ -31,6 +31,11 @@ export const PERMISSIONS = [
   "passwords.reset",
   "schoolInfo.manage",
   "roleModules.manage",
+  "tickets.manage",
+  "audit.read",
+  "users.import",
+  "health.read",
+  "duties.assign",
 
   "attendance.take",
   "storeRequests.create",
@@ -96,6 +101,11 @@ const GRANTS: Record<Permission, readonly Role[]> = {
   "passwords.reset": ["Technician"],
   "schoolInfo.manage": ["Technician"],
   "roleModules.manage": ["Technician"],
+  "tickets.manage": ["Technician"],
+  "audit.read": ["Technician"],
+  "users.import": ["Technician"],
+  "health.read": ["Technician"],
+  "duties.assign": ["Technician"],
 
   "attendance.take": ["Teacher"],
   "storeRequests.create": ["Teacher"],
