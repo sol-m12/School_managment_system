@@ -65,6 +65,13 @@ import { MENU_ITEMS, type NavItemKey } from "@/navigation/menu";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
 import { HomePage } from "@/features/home/HomePage";
+import { PlatformRoot } from "@/features/platform/PlatformRoot";
+import { PlatformLoginPage } from "@/features/platform/PlatformLoginPage";
+import { PlatformProtectedRoute } from "@/features/platform/PlatformProtectedRoute";
+import { PlatformShell } from "@/features/platform/PlatformShell";
+import { PlatformHomePage } from "@/features/platform/PlatformHomePage";
+import { SchoolsPage } from "@/features/platform/SchoolsPage";
+import { AddSchoolPage } from "@/features/platform/AddSchoolPage";
 import {
   AccessLogPage,
   AlumniPage,
@@ -359,6 +366,25 @@ export const router = createBrowserRouter([
   { path: "/vendor", element: <VendorLoginPage /> },
   { path: "/vendor/desk", element: <VendorDeskPage /> },
   { path: "/forgot-password", element: <PublicPlaceholderPage title="forgotPassword" /> },
+  {
+    path: "/platform",
+    element: <PlatformRoot />,
+    children: [
+      { path: "login", element: <PlatformLoginPage /> },
+      {
+        element: (
+          <PlatformProtectedRoute>
+            <PlatformShell />
+          </PlatformProtectedRoute>
+        ),
+        children: [
+          { index: true, element: <PlatformHomePage /> },
+          { path: "schools", element: <SchoolsPage /> },
+          { path: "schools/new", element: <AddSchoolPage /> },
+        ],
+      },
+    ],
+  },
   {
     path: "/",
     element: (

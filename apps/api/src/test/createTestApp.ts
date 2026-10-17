@@ -20,6 +20,7 @@ import { technicianRouter } from "../modules/technician/technician.routes.js";
 import { operationsRouter } from "../modules/operations/operations.routes.js";
 import { principalRouter } from "../modules/principal/principal.routes.js";
 import { viceRouter } from "../modules/vice/vice.routes.js";
+import { platformRouter } from "../modules/platform/platform.routes.js";
 
 /** Minimal Express app for integration tests (no listen). */
 export function createTestApp(): Express {
@@ -28,6 +29,7 @@ export function createTestApp(): Express {
   app.use(cookieParser());
   app.use("/public", publicRouter);
   app.use("/auth", authRouter);
+  app.use("/platform", platformRouter);
   app.use("/dashboard", dashboardRouter);
   app.use("/subjects", subjectsRouter);
   app.use("/admin", adminRouter);

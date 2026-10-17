@@ -148,5 +148,8 @@
   "sameYear": "This student is already in that year.",
   "yearBack": "A renewal cannot go to an earlier year.",
   "codeTenant": "That ID belongs to another school.",
-  "parseIncomplete": "The form text is missing required labels."
+  "parseIncomplete": "The form text is missing required labels.",
+  "slugTaken": "That school URL code is already in use.",
+  "slugFormat": "Use lowercase letters, numbers, and hyphens only.",
+  "passwordShort": "Password must be at least 8 characters."
 }

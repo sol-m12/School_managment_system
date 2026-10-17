@@ -1071,6 +1071,20 @@ export const periodSettings = mysqlTable("period_settings", {
 	index("idx_period_settings_tenant_id").on(table.tenantId),
 ]);
 
+export const platformUsers = mysqlTable("platform_users", {
+	id: int().autoincrement().notNull(),
+	username: varchar({ length: 50 }).notNull(),
+	passwordHash: varchar("password_hash", { length: 255 }).notNull(),
+	displayName: varchar("display_name", { length: 120 }).notNull(),
+	isActive: tinyint("is_active").default(1).notNull(),
+	tokenVersion: int("token_version").default(0).notNull(),
+	lastSeen: timestamp("last_seen", { mode: 'string' }),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	unique("uq_platform_users_username").on(table.username),
+]);
+
 export const poApprovals = mysqlTable("po_approvals", {
 	approvalId: int("approval_id").autoincrement().notNull(),
 	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
@@ -1568,6 +1582,107 @@ export const schoolStats = mysqlTable("school_stats", {
 },
 (table) => [
 	index("idx_school_stats_tenant_id").on(table.tenantId),
+]);
+
+export const secAppointments = mysqlTable("sec_appointments", {
+	appointmentId: int("appointment_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	visitorName: varchar("visitor_name", { length: 255 }).notNull(),
+	purpose: varchar({ length: 500 }).notNull(),
+	withRole: mysqlEnum("with_role", ['Principal','V_Principal','Registrar','Technician','Librarian','Secretary']).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	startsOn: date("starts_on", { mode: 'string' }).notNull(),
+	startsAt: varchar("starts_at", { length: 5 }).notNull(),
+	status: mysqlEnum(['Scheduled','Done','Cancelled']).default('Scheduled').notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_sec_appointments_tenant_id").on(table.tenantId),
+	index("idx_sec_appointments_day").on(table.tenantId, table.startsOn),
+]);
+
+export const secCleanupRuns = mysqlTable("sec_cleanup_runs", {
+	runId: int("run_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	fixedCount: int("fixed_count").notNull(),
+	note: varchar({ length: 500 }).default("").notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_sec_cleanup_runs_tenant_id").on(table.tenantId),
+]);
+
+export const secDocuments = mysqlTable("sec_documents", {
+	documentId: int("document_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	title: varchar({ length: 255 }).notNull(),
+	audience: varchar({ length: 120 }).default("").notNull(),
+	fileNote: varchar("file_note", { length: 500 }).default("").notNull(),
+	status: mysqlEnum(['Draft','Pending','Issued','Rejected']).default('Draft').notNull(),
+	authorizedBy: int("authorized_by"),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_sec_documents_tenant_id").on(table.tenantId),
+]);
+
+export const secNotices = mysqlTable("sec_notices", {
+	noticeId: int("notice_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	title: varchar({ length: 255 }).notNull(),
+	content: text().notNull(),
+	targetRole: mysqlEnum("target_role", ['All','Staff','Students','Parents','Admin_Only']).default('All').notNull(),
+	status: mysqlEnum(['Draft','Pending','Approved','Rejected']).default('Draft').notNull(),
+	authorizedBy: int("authorized_by"),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_sec_notices_tenant_id").on(table.tenantId),
+]);
+
+export const secOcrScans = mysqlTable("sec_ocr_scans", {
+	scanId: int("scan_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	rawText: text("raw_text").notNull(),
+	parsedJson: text("parsed_json").notNull(),
+	studentId: int("student_id"),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_sec_ocr_scans_tenant_id").on(table.tenantId),
+]);
+
+export const secRenewals = mysqlTable("sec_renewals", {
+	renewalId: int("renewal_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	studentId: int("student_id").notNull(),
+	fromYear: varchar("from_year", { length: 10 }).notNull(),
+	toYear: varchar("to_year", { length: 10 }).notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_sec_renewals_tenant_id").on(table.tenantId),
+	index("idx_sec_renewals_student").on(table.tenantId, table.studentId),
+]);
+
+export const secTickets = mysqlTable("sec_tickets", {
+	ticketId: int("ticket_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	subject: varchar({ length: 255 }).notNull(),
+	details: varchar({ length: 1000 }).notNull(),
+	routeTo: mysqlEnum("route_to", ['Principal','V_Principal','Registrar','Technician','Librarian']).notNull(),
+	status: mysqlEnum(['Open','Routed','Closed']).default('Open').notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_sec_tickets_tenant_id").on(table.tenantId),
 ]);
 
 export const simulations = mysqlTable("simulations", {
@@ -2356,104 +2471,4 @@ export const vpReferrals = mysqlTable("vp_referrals", {
 },
 (table) => [
 	index("idx_vp_referrals_tenant_id").on(table.tenantId),
-]);
-
-export const secNotices = mysqlTable("sec_notices", {
-	noticeId: int("notice_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	title: varchar({ length: 255 }).notNull(),
-	content: text().notNull(),
-	targetRole: mysqlEnum("target_role", ['All','Staff','Students','Parents','Admin_Only']).default('All').notNull(),
-	status: mysqlEnum(['Draft','Pending','Approved','Rejected']).default('Draft').notNull(),
-	authorizedBy: int("authorized_by"),
-	recordedBy: int("recorded_by").notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_sec_notices_tenant_id").on(table.tenantId),
-]);
-
-export const secDocuments = mysqlTable("sec_documents", {
-	documentId: int("document_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	title: varchar({ length: 255 }).notNull(),
-	audience: varchar({ length: 120 }).default("").notNull(),
-	fileNote: varchar("file_note", { length: 500 }).default("").notNull(),
-	status: mysqlEnum(['Draft','Pending','Issued','Rejected']).default('Draft').notNull(),
-	authorizedBy: int("authorized_by"),
-	recordedBy: int("recorded_by").notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_sec_documents_tenant_id").on(table.tenantId),
-]);
-
-export const secAppointments = mysqlTable("sec_appointments", {
-	appointmentId: int("appointment_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	visitorName: varchar("visitor_name", { length: 255 }).notNull(),
-	purpose: varchar({ length: 500 }).notNull(),
-	withRole: mysqlEnum("with_role", ['Principal','V_Principal','Registrar','Technician','Librarian','Secretary']).notNull(),
-	startsOn: date("starts_on", { mode: 'string' }).notNull(),
-	startsAt: varchar("starts_at", { length: 5 }).notNull(),
-	status: mysqlEnum(['Scheduled','Done','Cancelled']).default('Scheduled').notNull(),
-	recordedBy: int("recorded_by").notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_sec_appointments_tenant_id").on(table.tenantId),
-	index("idx_sec_appointments_day").on(table.tenantId, table.startsOn),
-]);
-
-export const secTickets = mysqlTable("sec_tickets", {
-	ticketId: int("ticket_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	subject: varchar({ length: 255 }).notNull(),
-	details: varchar({ length: 1000 }).notNull(),
-	routeTo: mysqlEnum("route_to", ['Principal','V_Principal','Registrar','Technician','Librarian']).notNull(),
-	status: mysqlEnum(['Open','Routed','Closed']).default('Open').notNull(),
-	recordedBy: int("recorded_by").notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_sec_tickets_tenant_id").on(table.tenantId),
-]);
-
-export const secRenewals = mysqlTable("sec_renewals", {
-	renewalId: int("renewal_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	studentId: int("student_id").notNull(),
-	fromYear: varchar("from_year", { length: 10 }).notNull(),
-	toYear: varchar("to_year", { length: 10 }).notNull(),
-	recordedBy: int("recorded_by").notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_sec_renewals_tenant_id").on(table.tenantId),
-	index("idx_sec_renewals_student").on(table.tenantId, table.studentId),
-]);
-
-export const secCleanupRuns = mysqlTable("sec_cleanup_runs", {
-	runId: int("run_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	fixedCount: int("fixed_count").notNull(),
-	note: varchar({ length: 500 }).default("").notNull(),
-	recordedBy: int("recorded_by").notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_sec_cleanup_runs_tenant_id").on(table.tenantId),
-]);
-
-export const secOcrScans = mysqlTable("sec_ocr_scans", {
-	scanId: int("scan_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	rawText: text("raw_text").notNull(),
-	parsedJson: text("parsed_json").notNull(),
-	studentId: int("student_id"),
-	recordedBy: int("recorded_by").notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_sec_ocr_scans_tenant_id").on(table.tenantId),
 ]);

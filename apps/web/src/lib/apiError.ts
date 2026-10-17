@@ -148,7 +148,10 @@ export type ErrorKey =
   | "sameYear"
   | "yearBack"
   | "codeTenant"
-  | "parseIncomplete";
+  | "parseIncomplete"
+  | "slugTaken"
+  | "slugFormat"
+  | "passwordShort";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -297,6 +300,8 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   YEAR_BACK: "yearBack",
   CODE_TENANT: "codeTenant",
   PARSE_INCOMPLETE: "parseIncomplete",
+  SLUG_TAKEN: "slugTaken",
+  SLUG_FORMAT: "slugFormat",
 };
 
 function readCode(data: unknown): string | null {

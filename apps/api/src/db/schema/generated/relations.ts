@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { tenants, accountTypes, adminTasks, announcements, annualLessonPlan, assignmentSubmissions, attendance, auditLog, backupRuns, binCardLedger, budgetNotifications, budgetNotificationItems, classes, classSchedule, committeesClubs, committeeMembers, communicationGroups, departmentHeads, evaluationCriteria, evaluationDetails, onlineExams, examQuestions, examResultsOnline, students, expenses, externalInquiries, fileShares, financeCodes, foreignPartners, grades, users, groupsInfo, subjects, groupChats, groupMembers, groupMessages, groupResponses, groupTasks, groupSubmissions, studentGroups, income, issueModel22, itemCategories, items, lbBadges, lbIntake, lbLiteracy, lbPatronLog, lbReminders, lbReservations, lbResources, libraryAttendance, libraryBooks, libraryBorrowing, libraryHandovers, liveQuizQuestions, liveQuizSessions, loginAttempts, mehi161Cards, mehi161Transactions, mehi17Cards, mehi17Transactions, mehi7Items, mehi7Vouchers, model19Grn, model19Items, outboundNotices, parentGuardian, payroll, peerAssessments, periodSettings, poApprovals, poAwards, poBids, poBudgets, poChecks, poOrders, poTenders, poVendors, principalApprovalNotes, principalDocuments, principalIncidents, principalMessages, principalPolicies, principalReportDefs, principalTraining, principalTransfers, requisitionsModel20, roAccessLog, roAlumni, roArchives, roArchiveRows, roDocuments, roFiles, roImports, roLocks, roRequests, roStaffRecords, schoolNews, schoolPlans, schoolSettings, schoolStats, simulations, skAlerts, skAssets, skDisposals, skLoans, skPurchaseRequests, staff, staffFiles, staffFolders, stockLedgerCard, studentAssessments, studentFinalReports, stCommendations, stDocumentRequests, stTaskWork, subjectWeightings, suppliers, supportTickets, systemSettings, tcBookRecommendations, tcExamStandards, tcGradeReviews, tcIncidents, tcLeaveRequests, tcPapers, tcPaperItems, tcParticipation, tcPerformance, tcPerformanceScores, tcQuestions, tcRequisitions, tcSubstitutions, tcSwaps, tcTopicCoverage, teacherAssignments, teacherEvaluations, teacherRoleCredits, vocationalRequests, vpExamSessions, vpHearings, vpInvigilators, vpPenalties, vpPlacements, vpPrograms, vpReferrals } from "./schema.js";
+import { tenants, accountTypes, adminTasks, announcements, annualLessonPlan, assignmentSubmissions, attendance, auditLog, backupRuns, binCardLedger, budgetNotifications, budgetNotificationItems, classes, classSchedule, committeesClubs, committeeMembers, communicationGroups, departmentHeads, evaluationCriteria, evaluationDetails, onlineExams, examQuestions, examResultsOnline, students, expenses, externalInquiries, fileShares, financeCodes, foreignPartners, grades, users, groupsInfo, subjects, groupChats, groupMembers, groupMessages, groupResponses, groupTasks, groupSubmissions, studentGroups, income, issueModel22, itemCategories, items, lbBadges, lbIntake, lbLiteracy, lbPatronLog, lbReminders, lbReservations, lbResources, libraryAttendance, libraryBooks, libraryBorrowing, libraryHandovers, liveQuizQuestions, liveQuizSessions, loginAttempts, mehi161Cards, mehi161Transactions, mehi17Cards, mehi17Transactions, mehi7Items, mehi7Vouchers, model19Grn, model19Items, outboundNotices, parentGuardian, payroll, peerAssessments, periodSettings, poApprovals, poAwards, poBids, poBudgets, poChecks, poOrders, poTenders, poVendors, principalApprovalNotes, principalDocuments, principalIncidents, principalMessages, principalPolicies, principalReportDefs, principalTraining, principalTransfers, requisitionsModel20, roAccessLog, roAlumni, roArchives, roArchiveRows, roDocuments, roFiles, roImports, roLocks, roRequests, roStaffRecords, schoolNews, schoolPlans, schoolSettings, schoolStats, secAppointments, secCleanupRuns, secDocuments, secNotices, secOcrScans, secRenewals, secTickets, simulations, skAlerts, skAssets, skDisposals, skLoans, skPurchaseRequests, staff, staffFiles, staffFolders, stockLedgerCard, studentAssessments, studentFinalReports, stCommendations, stDocumentRequests, stTaskWork, subjectWeightings, suppliers, supportTickets, systemSettings, tcBookRecommendations, tcExamStandards, tcGradeReviews, tcIncidents, tcLeaveRequests, tcPapers, tcPaperItems, tcParticipation, tcPerformance, tcPerformanceScores, tcQuestions, tcRequisitions, tcSubstitutions, tcSwaps, tcTopicCoverage, teacherAssignments, teacherEvaluations, teacherRoleCredits, vocationalRequests, vpExamSessions, vpHearings, vpInvigilators, vpPenalties, vpPlacements, vpPrograms, vpReferrals } from "./schema.js";
 
 export const accountTypesRelations = relations(accountTypes, ({one, many}) => ({
 	tenant: one(tenants, {
@@ -107,6 +107,13 @@ export const tenantsRelations = relations(tenants, ({many}) => ({
 	schoolPlans: many(schoolPlans),
 	schoolSettings: many(schoolSettings),
 	schoolStats: many(schoolStats),
+	secAppointments: many(secAppointments),
+	secCleanupRuns: many(secCleanupRuns),
+	secDocuments: many(secDocuments),
+	secNotices: many(secNotices),
+	secOcrScans: many(secOcrScans),
+	secRenewals: many(secRenewals),
+	secTickets: many(secTickets),
 	simulations: many(simulations),
 	skAlerts: many(skAlerts),
 	skAssets: many(skAssets),
@@ -1014,6 +1021,55 @@ export const schoolSettingsRelations = relations(schoolSettings, ({one}) => ({
 export const schoolStatsRelations = relations(schoolStats, ({one}) => ({
 	tenant: one(tenants, {
 		fields: [schoolStats.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const secAppointmentsRelations = relations(secAppointments, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [secAppointments.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const secCleanupRunsRelations = relations(secCleanupRuns, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [secCleanupRuns.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const secDocumentsRelations = relations(secDocuments, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [secDocuments.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const secNoticesRelations = relations(secNotices, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [secNotices.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const secOcrScansRelations = relations(secOcrScans, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [secOcrScans.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const secRenewalsRelations = relations(secRenewals, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [secRenewals.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const secTicketsRelations = relations(secTickets, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [secTickets.tenantId],
 		references: [tenants.id]
 	}),
 }));

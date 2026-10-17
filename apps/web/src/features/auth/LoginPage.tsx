@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, KeyRound, LogIn, School, User, UserLock } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { FullScreenLoader } from "@/components/layout/FullScreenLoader";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { Alert, Button, Input } from "@/components/ui";
@@ -27,7 +27,9 @@ export function LoginPage() {
   const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const [errorKey, setErrorKey] = useState<ErrorKey | null>(null);
+  const tenantFromUrl = searchParams.get("tenant")?.trim() || DEFAULT_TENANT_SLUG;
 
   const {
     register,
@@ -35,7 +37,7 @@ export function LoginPage() {
     formState: { errors, isSubmitting },
   } = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { tenantSlug: DEFAULT_TENANT_SLUG, username: "", password: "" },
+    defaultValues: { tenantSlug: tenantFromUrl, username: "", password: "" },
   });
 
   useEffect(() => {

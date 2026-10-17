@@ -1,0 +1,74 @@
+{
+  "brand": {
+    "eyebrow": "Keyt Platform",
+    "title": "Super Admin",
+    "short": "Super Admin",
+    "subtitle": "Provision schools, manage the platform, and keep every tenant isolated."
+  },
+  "nav": {
+    "home": "Overview",
+    "schools": "Schools",
+    "addSchool": "Add school",
+    "logout": "Sign out"
+  },
+  "login": {
+    "pageTitle": "Platform login — Keyt",
+    "title": "Platform sign in",
+    "hint": "For Super Admin only. School staff use the school login.",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Sign in",
+    "schoolLogin": "School staff login"
+  },
+  "home": {
+    "welcome": "Platform console",
+    "title": "Welcome, {{name}}",
+    "subtitle": "Create empty schools, hand each one a first Technician login, and open the school URL when you are ready.",
+    "addSchool": "Add a school",
+    "viewSchools": "View schools",
+    "cardProvisionTitle": "Empty school seed",
+    "cardProvisionBody": "A new school gets its own tenant id, school settings, academic year, and first Technician account. It never copies Keyit data.",
+    "cardShellTitle": "What comes next",
+    "cardShellBody": "Feature flags, billing, and broadcasts will land here later. This shell is ready for those tools."
+  },
+  "schools": {
+    "title": "Schools",
+    "subtitle": "Every active tenant on the platform.",
+    "add": "Add school",
+    "loading": "Loading schools…",
+    "empty": "No schools yet.",
+    "colName": "Name",
+    "colSlug": "URL code",
+    "colStatus": "Status",
+    "colLogin": "School login"
+  },
+  "add": {
+    "title": "Add school",
+    "subtitle": "Create a tenant, seed starter settings, and issue the first school admin login.",
+    "sectionSchool": "School",
+    "sectionAdmin": "First admin",
+    "name": "School name",
+    "slug": "URL code (slug)",
+    "slugHint": "Staff will sign in with school code “{{slug}}”.",
+    "preview": "Login path preview: /login?tenant={{slug}}",
+    "adminHint": "This person is a Technician for that school (IT / school admin), not a platform Super Admin.",
+    "adminFirstName": "First name",
+    "adminLastName": "Last name",
+    "adminUsername": "Admin username",
+    "adminPassword": "Temporary password",
+    "passwordHint": "At least 8 characters. Ask them to change it after first login.",
+    "submit": "Create school",
+    "cancel": "Cancel",
+    "successTitle": "School created",
+    "successBody": "Share the login path and temporary password with the school operator.",
+    "resultName": "School",
+    "resultSlug": "URL code",
+    "resultAdmin": "Admin username",
+    "resultRole": "Role",
+    "resultLogin": "Login path",
+    "copy": "Copy login link",
+    "copied": "Copied to clipboard.",
+    "backToList": "View schools",
+    "addAnother": "Add another"
+  }
+}

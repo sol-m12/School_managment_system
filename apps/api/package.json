@@ -13,7 +13,8 @@
     "test:sync-schema": "node ./scripts/sync-test-schema.mjs",
     "db:introspect": "node ./scripts/db-introspect.mjs",
     "db:migrate-sql": "node ./scripts/migrate-sql.mjs",
-    "school:create": "node ./scripts/create-school.mjs"
+    "school:create": "node ./scripts/create-school.mjs",
+    "platform:seed": "node ./scripts/seed-platform-admin.mjs"
   },
   "keywords": [],
   "author": "",

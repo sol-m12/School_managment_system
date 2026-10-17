@@ -8,6 +8,9 @@ declare global {
         tenantId: number;
         role: Role;
       };
+      platformAuth?: {
+        userId: number;
+      };
       vendor?: {
         vendorId: number;
         tenantId: number;

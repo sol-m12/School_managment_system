@@ -223,7 +223,10 @@ function StaffForm() {
       },
       {
         onSuccess: (result) => {
-          setNotice({ tone: "success", text: t("staffSaved", { username: result.username }) });
+          setNotice({
+            tone: "success",
+            text: t("staffSaved", { username: result.username, password }),
+          });
           setPassword(randomPassword());
           formEl.reset();
         },

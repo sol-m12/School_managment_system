@@ -73,7 +73,7 @@
   "status": "Status",
   "active": "Active",
   "closed": "Closed",
-  "staffSaved": "The staff member was registered. Username: {{username}}",
+  "staffSaved": "The staff member was registered. Username: {{username}}. Password: {{password}}. Show this once.",
   "roleModalTitle": "Add a system role",
   "roleName": "Role name",
   "roleNameExample": "Example: Purchaser, Accountant",

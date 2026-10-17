@@ -73,7 +73,7 @@
   "status": "ሁኔታ",
   "active": "አክቲቭ",
   "closed": "የተዘጋ",
-  "staffSaved": "ሰራተኛው ተመዝግቧል። የተጠቃሚ ስም፡ {{username}}",
+  "staffSaved": "ሰራተኛው ተመዝግቧል። የተጠቃሚ ስም፡ {{username}}። የይለፍ ቃል፡ {{password}}። አንድ ጊዜ ብቻ ያሳዩ።",
   "roleModalTitle": "አዲስ ሲስተም ሚና (Role) ጨምር",
   "roleName": "የሮል ስም (Role Name)",
   "roleNameExample": "ምሳሌ፡ Purchaser, Accountant",

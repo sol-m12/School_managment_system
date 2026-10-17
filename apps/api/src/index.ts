@@ -25,6 +25,7 @@ import { recordsRouter } from "./modules/records/records.routes.js";
 import { libraryRouter } from "./modules/library/library.routes.js";
 import { procurementRouter, publicTenderList, vendorRouter } from "./modules/procurement/procurement.routes.js";
 import { secretaryRouter } from "./modules/secretary/secretary.routes.js";
+import { platformRouter } from "./modules/platform/platform.routes.js";
 
 const app = express();
 
@@ -49,6 +50,7 @@ app.get("/health/db", async (_req, res) => {
 
 app.use("/public", publicRouter);
 app.use("/auth", authRouter);
+app.use("/platform", platformRouter);
 app.use("/dashboard", dashboardRouter);
 app.use("/subjects", subjectsRouter);
 app.use("/admin", adminRouter);
