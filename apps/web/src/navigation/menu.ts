@@ -72,12 +72,15 @@ import {
   ListChecks,
   Megaphone,
   RotateCcw,
+  ScanLine,
   SlidersHorizontal,
+  Sparkles,
   SquarePen,
   TestTube,
   Trophy,
   UserCheck,
   UserCog,
+  UserPlus,
   UsersRound,
 } from "lucide-react";
 import { can, type Permission } from "@/lib/permissions";
@@ -106,6 +109,7 @@ export type MenuGroupKey =
   | "recordOffice"
   | "libraryOffice"
   | "procurementOffice"
+  | "secretaryOffice"
   | "main";
 
 export type MenuItem = {
@@ -145,6 +149,7 @@ export const MENU_GROUP_ORDER: readonly MenuGroupKey[] = [
   "recordOffice",
   "libraryOffice",
   "procurementOffice",
+  "secretaryOffice",
   "main",
   "finance",
 ];
@@ -325,6 +330,18 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "procurementOrders", path: "/procurement/orders", icon: FileText, group: "procurementOffice", permission: "procurement.office" },
   { key: "procurementTenders", path: "/procurement/tenders", icon: Scale, group: "procurementOffice", permission: "procurement.office" },
 
+  { key: "secretaryDesk", path: "/secretary", icon: Megaphone, group: "secretaryOffice", permission: "secretary.office", end: true },
+  { key: "secretaryRegistration", path: "/secretary/registration", icon: UserPlus, group: "secretaryOffice", permission: "secretary.office" },
+  { key: "secretaryCleanup", path: "/secretary/cleanup", icon: Sparkles, group: "secretaryOffice", permission: "secretary.office" },
+  { key: "secretaryRenewal", path: "/secretary/renewal", icon: RotateCcw, group: "secretaryOffice", permission: "secretary.office" },
+  { key: "secretaryNotices", path: "/secretary/notices", icon: Megaphone, group: "secretaryOffice", permission: "secretary.office" },
+  { key: "secretaryDocuments", path: "/secretary/documents", icon: FileText, group: "secretaryOffice", permission: "secretary.office" },
+  { key: "secretaryApprovals", path: "/secretary/approvals", icon: CheckCheck, group: "secretaryOffice", permission: "secretary.authorize" },
+  { key: "secretaryAppointments", path: "/secretary/appointments", icon: CalendarDays, group: "secretaryOffice", permission: "secretary.office" },
+  { key: "secretaryHelpdesk", path: "/secretary/helpdesk", icon: LifeBuoy, group: "secretaryOffice", permission: "secretary.office" },
+  { key: "secretaryIdCards", path: "/secretary/id-cards", icon: IdCard, group: "secretaryOffice", permission: "secretary.office" },
+  { key: "secretaryOcr", path: "/secretary/ocr", icon: ScanLine, group: "secretaryOffice", permission: "secretary.office" },
+
   {
     key: "dashboard",
     path: "/dashboard",
@@ -340,7 +357,7 @@ export const MENU_ITEMS: readonly MenuItem[] = [
     },
   },
   { key: "fileManagement", path: "/files", icon: FolderOpen, group: "main", permission: "files.manage" },
-  { key: "profile", path: "/profile", icon: UserCog, group: "main", roles: ["Principal", "Teacher", "Technician", "V_Principal", "Student", "Store_Keeper", "Registrar", "Procurement"] },
+  { key: "profile", path: "/profile", icon: UserCog, group: "main", roles: ["Principal", "Teacher", "Technician", "V_Principal", "Student", "Store_Keeper", "Registrar", "Procurement", "Secretary", "Librarian"] },
   { key: "payments", path: "/finance/payments", icon: Landmark, group: "finance", permission: "finance.income" },
   { key: "incomeExpense", path: "/finance/income", icon: Landmark, group: "finance", permission: "finance.expense" },
 ];

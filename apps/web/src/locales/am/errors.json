@@ -143,5 +143,10 @@
   "alreadyDelivered": "ይህ ትዕዛዝ ሙሉ በሙሉ ደርሷል።",
   "alreadyAwarded": "ይህ ጨረታ አስቀድሞ ተሰጥቷል።",
   "duplicateName": "ይህ አቅራቢ አስቀድሞ ተመዝግቧል።",
-  "alreadyDecided": "ይህ ጥያቄ አስቀድሞ ውሳኔ አለው።"
+  "alreadyDecided": "ይህ ጥያቄ አስቀድሞ ውሳኔ አለው።",
+  "notPending": "ይህ ንጥል ለፈቃድ አይጠብቅም።",
+  "sameYear": "ይህ ተማሪ አስቀድሞ በዚያ ዓመት ነው።",
+  "yearBack": "ማደስ ወደ ቀደመ ዓመት አይሄድም።",
+  "codeTenant": "ያ መታወቂያ የሌላ ትምህርት ቤት ነው።",
+  "parseIncomplete": "የቅጹ ጽሑፍ የሚያስፈልጉ መለያዎች ጎድለዋል።"
 }

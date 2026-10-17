@@ -84,6 +84,8 @@ export const PERMISSIONS = [
   "library.office",
   "library.opac",
   "procurement.office",
+  "secretary.office",
+  "secretary.authorize",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
@@ -166,6 +168,8 @@ const GRANTS: Record<Permission, readonly Role[]> = {
   "library.office": ["Librarian"],
   "library.opac": ["Librarian", "Student", "Teacher"],
   "procurement.office": ["Procurement"],
+  "secretary.office": ["Secretary"],
+  "secretary.authorize": ["Principal"],
 };
 
 export function hasPermission(role: Role, permission: Permission): boolean {

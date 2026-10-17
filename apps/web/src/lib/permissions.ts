@@ -79,6 +79,8 @@ export const PERMISSIONS = [
   "library.office",
   "library.opac",
   "procurement.office",
+  "secretary.office",
+  "secretary.authorize",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];

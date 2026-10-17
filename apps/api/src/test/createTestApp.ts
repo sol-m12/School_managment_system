@@ -14,6 +14,7 @@ import { storeOfficeRouter } from "../modules/store/office.routes.js";
 import { recordsRouter } from "../modules/records/records.routes.js";
 import { libraryRouter } from "../modules/library/library.routes.js";
 import { procurementRouter, publicTenderList, vendorRouter } from "../modules/procurement/procurement.routes.js";
+import { secretaryRouter } from "../modules/secretary/secretary.routes.js";
 import { financeRouter } from "../modules/finance/finance.routes.js";
 import { technicianRouter } from "../modules/technician/technician.routes.js";
 import { operationsRouter } from "../modules/operations/operations.routes.js";
@@ -45,6 +46,7 @@ export function createTestApp(): Express {
   app.use("/library", libraryRouter);
   app.use("/procurement", procurementRouter);
   app.use("/vendor", vendorRouter);
+  app.use("/secretary", secretaryRouter);
   app.get("/public/tenders", publicTenderList);
   return app;
 }

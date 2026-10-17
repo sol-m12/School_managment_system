@@ -143,7 +143,12 @@ export type ErrorKey =
   | "alreadyDelivered"
   | "alreadyAwarded"
   | "duplicateName"
-  | "alreadyDecided";
+  | "alreadyDecided"
+  | "notPending"
+  | "sameYear"
+  | "yearBack"
+  | "codeTenant"
+  | "parseIncomplete";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -287,6 +292,11 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   ALREADY_AWARDED: "alreadyAwarded",
   DUPLICATE_NAME: "duplicateName",
   ALREADY_DECIDED: "alreadyDecided",
+  NOT_PENDING: "notPending",
+  SAME_YEAR: "sameYear",
+  YEAR_BACK: "yearBack",
+  CODE_TENANT: "codeTenant",
+  PARSE_INCOMPLETE: "parseIncomplete",
 };
 
 function readCode(data: unknown): string | null {

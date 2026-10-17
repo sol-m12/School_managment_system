@@ -107,6 +107,19 @@ import {
   VendorsPage,
 } from "@/features/procurement/ProcurementPages";
 import { PublicTendersPage, VendorDeskPage, VendorLoginPage } from "@/features/procurement/VendorPortal";
+import {
+  ApprovalsPage as SecretaryApprovalsPage,
+  AppointmentsPage,
+  CleanupPage,
+  DocumentsPage,
+  HelpdeskPage,
+  IdCardsPage,
+  NoticesPage,
+  OcrPage,
+  RegistrationPage as SecretaryRegistrationPage,
+  RenewalPage,
+  SecretaryHomePage,
+} from "@/features/secretary/SecretaryPages";
 import { AssignedWorksPage } from "@/features/teacher/AssignedWorksPage";
 import { AttendanceRegisterPage, TakeAttendancePage } from "@/features/teacher/AttendancePages";
 import { ExamResultsPage } from "@/features/teacher/ExamResultsPage";
@@ -515,6 +528,17 @@ export const router = createBrowserRouter([
       { path: "procurement/orders/:id", element: <ProtectedRoute permission="procurement.office"><OrderPrintPage /></ProtectedRoute> },
       { path: "procurement/tenders", element: <ProtectedRoute permission="procurement.office"><TendersPage /></ProtectedRoute> },
       { path: "procurement/tenders/:id", element: <ProtectedRoute permission="procurement.office"><TenderMatrixPage /></ProtectedRoute> },
+      { path: "secretary", element: <ProtectedRoute permission="secretary.office"><SecretaryHomePage /></ProtectedRoute> },
+      { path: "secretary/registration", element: <ProtectedRoute permission="secretary.office"><SecretaryRegistrationPage /></ProtectedRoute> },
+      { path: "secretary/cleanup", element: <ProtectedRoute permission="secretary.office"><CleanupPage /></ProtectedRoute> },
+      { path: "secretary/renewal", element: <ProtectedRoute permission="secretary.office"><RenewalPage /></ProtectedRoute> },
+      { path: "secretary/notices", element: <ProtectedRoute permission="secretary.office"><NoticesPage /></ProtectedRoute> },
+      { path: "secretary/documents", element: <ProtectedRoute permission="secretary.office"><DocumentsPage /></ProtectedRoute> },
+      { path: "secretary/approvals", element: <ProtectedRoute permission="secretary.authorize"><SecretaryApprovalsPage /></ProtectedRoute> },
+      { path: "secretary/appointments", element: <ProtectedRoute permission="secretary.office"><AppointmentsPage /></ProtectedRoute> },
+      { path: "secretary/helpdesk", element: <ProtectedRoute permission="secretary.office"><HelpdeskPage /></ProtectedRoute> },
+      { path: "secretary/id-cards", element: <ProtectedRoute permission="secretary.office"><IdCardsPage /></ProtectedRoute> },
+      { path: "secretary/ocr", element: <ProtectedRoute permission="secretary.office"><OcrPage /></ProtectedRoute> },
       { path: "vice/vocational", element: <ProtectedRoute permission="vice.office"><VocationalPage /></ProtectedRoute> },
       { path: "vice/behavior", element: <ProtectedRoute permission="vice.office"><BehaviorPage /></ProtectedRoute> },
       { path: "vice/invigilation", element: <ProtectedRoute permission="vice.office"><InvigilationPage /></ProtectedRoute> },

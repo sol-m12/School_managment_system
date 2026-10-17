@@ -143,5 +143,10 @@
   "alreadyDelivered": "This order is already delivered in full.",
   "alreadyAwarded": "This tender is already awarded.",
   "duplicateName": "This supplier is already registered.",
-  "alreadyDecided": "This request already has a decision."
+  "alreadyDecided": "This request already has a decision.",
+  "notPending": "This item is not waiting for approval.",
+  "sameYear": "This student is already in that year.",
+  "yearBack": "A renewal cannot go to an earlier year.",
+  "codeTenant": "That ID belongs to another school.",
+  "parseIncomplete": "The form text is missing required labels."
 }

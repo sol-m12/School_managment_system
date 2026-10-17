@@ -42,6 +42,7 @@ export function DashboardPage() {
   if (user.role === "Registrar") return <Navigate to="/records" replace />;
   if (user.role === "Librarian") return <Navigate to="/library" replace />;
   if (user.role === "Procurement") return <Navigate to="/procurement" replace />;
+  if (user.role === "Secretary") return <Navigate to="/secretary" replace />;
   return <StaffDashboard />;
 }
 
