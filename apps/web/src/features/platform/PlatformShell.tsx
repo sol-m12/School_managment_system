@@ -72,7 +72,7 @@ export function PlatformShell() {
               <p className="text-sm font-semibold text-ink-strong">{t("brand.short")}</p>
             </div>
             <div className="ml-auto flex items-center gap-3">
-              <LanguageSwitcher />
+              <LanguageSwitcher tone="surface" />
               <button
                 type="button"
                 onClick={() => void auth.logout()}
