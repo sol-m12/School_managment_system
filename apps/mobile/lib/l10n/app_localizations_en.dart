@@ -177,4 +177,84 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get roleNotSupported => 'This role is not supported on mobile yet';
+
+  @override
+  String get navClasses => 'Classes';
+
+  @override
+  String get navTeaching => 'Teaching';
+
+  @override
+  String get navOffice => 'Office';
+
+  @override
+  String get teacherSchedule => 'Assigned works';
+
+  @override
+  String get teacherProfile => 'Teacher profile';
+
+  @override
+  String get homeroomAttendance => 'Homeroom attendance';
+
+  @override
+  String get subjectAttendance => 'Subject attendance';
+
+  @override
+  String get offlineAttendance => 'Offline attendance';
+
+  @override
+  String pendingSync(int count) {
+    return 'Pending sync ($count)';
+  }
+
+  @override
+  String get syncNow => 'Sync now';
+
+  @override
+  String get syncSuccess => 'Synced successfully';
+
+  @override
+  String get syncConflict => 'Some marks conflicted';
+
+  @override
+  String get classRoster => 'Class roster';
+
+  @override
+  String get studentRegistration => 'Student registration';
+
+  @override
+  String get student360 => 'Student 360';
+
+  @override
+  String get reportCards => 'Report cards';
+
+  @override
+  String get subjectReport => 'Student reports';
+
+  @override
+  String get lessonPlans => 'Lesson plans';
+
+  @override
+  String get examResults => 'Exam results';
+
+  @override
+  String get courseFiles => 'Course files';
+
+  @override
+  String get storeRequests => 'Store requests';
+
+  @override
+  String get incidents => 'Incidents';
+
+  @override
+  String get leaveRequest => 'Leave request';
+
+  @override
+  String get questionBank => 'Question bank';
+
+  @override
+  String get participation => 'Participation';
+
+  @override
+  String get queueAttendance => 'Save offline';
 }

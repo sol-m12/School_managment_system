@@ -17,7 +17,10 @@ void main() {
       RegExp(r'saveGrade'),
       RegExp(r'updateGrade'),
       RegExp(r'GradeEntry'),
-      RegExp(r'/teacher/.*grades?', caseSensitive: false),
+      RegExp(r'/teacher/grades'),
+      RegExp(r'/teacher/office/grades'),
+      RegExp(r'/grades/scores'),
+      RegExp(r'/grades/plans'),
       RegExp(r"post\([^)]*grade", caseSensitive: false),
     ];
 

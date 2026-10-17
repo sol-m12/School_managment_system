@@ -1,7 +1,7 @@
 import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
 
-/// SQLite cache isolated by tenantId + userId.
+/// SQLite cache + attendance outbox isolated by tenantId + userId.
 class CacheDatabase {
   CacheDatabase({Database? db}) : _db = db;
 
@@ -20,8 +20,11 @@ class CacheDatabase {
     final path = p.join(dir, 'keyt_mobile_cache.db');
     final db = await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: (db, version) async {
+        await _createSchema(db);
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
         await _createSchema(db);
       },
     );
@@ -38,6 +41,20 @@ CREATE TABLE IF NOT EXISTS cache_entries (
   payload TEXT NOT NULL,
   updated_at TEXT NOT NULL,
   PRIMARY KEY (tenant_id, user_id, cache_key)
+)
+''');
+    await db.execute('''
+CREATE TABLE IF NOT EXISTS attendance_outbox (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  tenant_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  idempotency_key TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  payload TEXT NOT NULL,
+  retry_count INTEGER NOT NULL DEFAULT 0,
+  last_error TEXT,
+  status TEXT NOT NULL DEFAULT 'pending',
+  UNIQUE (tenant_id, user_id, idempotency_key)
 )
 ''');
   }
@@ -99,12 +116,100 @@ CREATE TABLE IF NOT EXISTS cache_entries (
       where: 'tenant_id = ? AND user_id = ?',
       whereArgs: [tenantId, userId],
     );
+    await db.delete(
+      'attendance_outbox',
+      where: 'tenant_id = ? AND user_id = ?',
+      whereArgs: [tenantId, userId],
+    );
   }
 
-  /// Test helper: wipe all rows.
   Future<void> clearAll() async {
     final db = await ensureReady();
     await db.delete('cache_entries');
+    await db.delete('attendance_outbox');
+  }
+
+  Future<int> enqueueOutbox({
+    required int tenantId,
+    required int userId,
+    required String idempotencyKey,
+    required String payload,
+    DateTime? createdAt,
+  }) async {
+    final db = await ensureReady();
+    return db.insert(
+      'attendance_outbox',
+      {
+        'tenant_id': tenantId,
+        'user_id': userId,
+        'idempotency_key': idempotencyKey,
+        'created_at': (createdAt ?? DateTime.now().toUtc()).toIso8601String(),
+        'payload': payload,
+        'retry_count': 0,
+        'status': 'pending',
+      },
+      conflictAlgorithm: ConflictAlgorithm.ignore,
+    );
+  }
+
+  Future<List<OutboxRow>> pendingOutbox({
+    required int tenantId,
+    required int userId,
+  }) async {
+    final db = await ensureReady();
+    final rows = await db.query(
+      'attendance_outbox',
+      where: "tenant_id = ? AND user_id = ? AND status = 'pending'",
+      whereArgs: [tenantId, userId],
+      orderBy: 'created_at ASC, id ASC',
+    );
+    return rows.map(OutboxRow.fromMap).toList();
+  }
+
+  Future<int> pendingCount({
+    required int tenantId,
+    required int userId,
+  }) async {
+    final db = await ensureReady();
+    final result = await db.rawQuery(
+      "SELECT COUNT(*) AS c FROM attendance_outbox WHERE tenant_id = ? AND user_id = ? AND status = 'pending'",
+      [tenantId, userId],
+    );
+    return (result.first['c'] as num?)?.toInt() ?? 0;
+  }
+
+  Future<void> markOutboxSynced(int id) async {
+    final db = await ensureReady();
+    await db.update(
+      'attendance_outbox',
+      {'status': 'synced', 'last_error': null},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<void> markOutboxConflict(int id, String error) async {
+    final db = await ensureReady();
+    await db.update(
+      'attendance_outbox',
+      {'status': 'conflict', 'last_error': error},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<void> markOutboxRetry(int id, String error, int retryCount) async {
+    final db = await ensureReady();
+    await db.update(
+      'attendance_outbox',
+      {
+        'status': 'pending',
+        'last_error': error,
+        'retry_count': retryCount,
+      },
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 }
 
@@ -122,4 +227,42 @@ class CachedEntry {
   final String key;
   final String payload;
   final DateTime updatedAt;
+}
+
+class OutboxRow {
+  const OutboxRow({
+    required this.id,
+    required this.tenantId,
+    required this.userId,
+    required this.idempotencyKey,
+    required this.createdAt,
+    required this.payload,
+    required this.retryCount,
+    required this.status,
+    this.lastError,
+  });
+
+  final int id;
+  final int tenantId;
+  final int userId;
+  final String idempotencyKey;
+  final DateTime createdAt;
+  final String payload;
+  final int retryCount;
+  final String status;
+  final String? lastError;
+
+  factory OutboxRow.fromMap(Map<String, Object?> row) {
+    return OutboxRow(
+      id: row['id'] as int,
+      tenantId: row['tenant_id'] as int,
+      userId: row['user_id'] as int,
+      idempotencyKey: row['idempotency_key'] as String,
+      createdAt: DateTime.parse(row['created_at'] as String),
+      payload: row['payload'] as String,
+      retryCount: row['retry_count'] as int,
+      status: row['status'] as String,
+      lastError: row['last_error'] as String?,
+    );
+  }
 }

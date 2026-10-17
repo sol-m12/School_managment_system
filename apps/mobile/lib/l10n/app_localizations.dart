@@ -433,6 +433,162 @@ abstract class AppLocalizations {
   /// In am, this message translates to:
   /// **'ይህ ሚና በሞባይል ገና አይደገፍም'**
   String get roleNotSupported;
+
+  /// No description provided for @navClasses.
+  ///
+  /// In am, this message translates to:
+  /// **'ክፍሎች'**
+  String get navClasses;
+
+  /// No description provided for @navTeaching.
+  ///
+  /// In am, this message translates to:
+  /// **'ማስተማረ'**
+  String get navTeaching;
+
+  /// No description provided for @navOffice.
+  ///
+  /// In am, this message translates to:
+  /// **'ጂቤት'**
+  String get navOffice;
+
+  /// No description provided for @teacherSchedule.
+  ///
+  /// In am, this message translates to:
+  /// **'የተመደቡ ስራዎች'**
+  String get teacherSchedule;
+
+  /// No description provided for @teacherProfile.
+  ///
+  /// In am, this message translates to:
+  /// **'የመምህር መገለጫ'**
+  String get teacherProfile;
+
+  /// No description provided for @homeroomAttendance.
+  ///
+  /// In am, this message translates to:
+  /// **'የክፍል መገኘት'**
+  String get homeroomAttendance;
+
+  /// No description provided for @subjectAttendance.
+  ///
+  /// In am, this message translates to:
+  /// **'የትምህርት መገኘት'**
+  String get subjectAttendance;
+
+  /// No description provided for @offlineAttendance.
+  ///
+  /// In am, this message translates to:
+  /// **'ከመስመር ውጭ መገኘት'**
+  String get offlineAttendance;
+
+  /// No description provided for @pendingSync.
+  ///
+  /// In am, this message translates to:
+  /// **'የሚጠባቀ ስርኻት ({count})'**
+  String pendingSync(int count);
+
+  /// No description provided for @syncNow.
+  ///
+  /// In am, this message translates to:
+  /// **'አሁን አስማማር'**
+  String get syncNow;
+
+  /// No description provided for @syncSuccess.
+  ///
+  /// In am, this message translates to:
+  /// **'በተሳካ ሁኔታ ተሳማማረ'**
+  String get syncSuccess;
+
+  /// No description provided for @syncConflict.
+  ///
+  /// In am, this message translates to:
+  /// **'አንዳንድ ምልክቶች ተጋጠሙ'**
+  String get syncConflict;
+
+  /// No description provided for @classRoster.
+  ///
+  /// In am, this message translates to:
+  /// **'የክፍል ዘርዝር'**
+  String get classRoster;
+
+  /// No description provided for @studentRegistration.
+  ///
+  /// In am, this message translates to:
+  /// **'የተማሪ ምዝግባ'**
+  String get studentRegistration;
+
+  /// No description provided for @student360.
+  ///
+  /// In am, this message translates to:
+  /// **'ተማሪ 360'**
+  String get student360;
+
+  /// No description provided for @reportCards.
+  ///
+  /// In am, this message translates to:
+  /// **'የውጤት ካርድ'**
+  String get reportCards;
+
+  /// No description provided for @subjectReport.
+  ///
+  /// In am, this message translates to:
+  /// **'የተማሪዎች ሪፖርት'**
+  String get subjectReport;
+
+  /// No description provided for @lessonPlans.
+  ///
+  /// In am, this message translates to:
+  /// **'የትምህርት እቅዶች'**
+  String get lessonPlans;
+
+  /// No description provided for @examResults.
+  ///
+  /// In am, this message translates to:
+  /// **'የፈተና ውጤቶች'**
+  String get examResults;
+
+  /// No description provided for @courseFiles.
+  ///
+  /// In am, this message translates to:
+  /// **'የክርስ ፋይሎች'**
+  String get courseFiles;
+
+  /// No description provided for @storeRequests.
+  ///
+  /// In am, this message translates to:
+  /// **'የማዝገቢያ ጥያቄዎች'**
+  String get storeRequests;
+
+  /// No description provided for @incidents.
+  ///
+  /// In am, this message translates to:
+  /// **'ኡደቶች'**
+  String get incidents;
+
+  /// No description provided for @leaveRequest.
+  ///
+  /// In am, this message translates to:
+  /// **'የፍቃድ ጥያቄ'**
+  String get leaveRequest;
+
+  /// No description provided for @questionBank.
+  ///
+  /// In am, this message translates to:
+  /// **'የጥያቄ ባንክ'**
+  String get questionBank;
+
+  /// No description provided for @participation.
+  ///
+  /// In am, this message translates to:
+  /// **'ተሳትፎ'**
+  String get participation;
+
+  /// No description provided for @queueAttendance.
+  ///
+  /// In am, this message translates to:
+  /// **'ከመስመር ውጭ አስቀምጥ'**
+  String get queueAttendance;
 }
 
 class _AppLocalizationsDelegate

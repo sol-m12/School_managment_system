@@ -177,4 +177,84 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get roleNotSupported => 'ይህ ሚና በሞባይል ገና አይደገፍም';
+
+  @override
+  String get navClasses => 'ክፍሎች';
+
+  @override
+  String get navTeaching => 'ማስተማረ';
+
+  @override
+  String get navOffice => 'ጂቤት';
+
+  @override
+  String get teacherSchedule => 'የተመደቡ ስራዎች';
+
+  @override
+  String get teacherProfile => 'የመምህር መገለጫ';
+
+  @override
+  String get homeroomAttendance => 'የክፍል መገኘት';
+
+  @override
+  String get subjectAttendance => 'የትምህርት መገኘት';
+
+  @override
+  String get offlineAttendance => 'ከመስመር ውጭ መገኘት';
+
+  @override
+  String pendingSync(int count) {
+    return 'የሚጠባቀ ስርኻት ($count)';
+  }
+
+  @override
+  String get syncNow => 'አሁን አስማማር';
+
+  @override
+  String get syncSuccess => 'በተሳካ ሁኔታ ተሳማማረ';
+
+  @override
+  String get syncConflict => 'አንዳንድ ምልክቶች ተጋጠሙ';
+
+  @override
+  String get classRoster => 'የክፍል ዘርዝር';
+
+  @override
+  String get studentRegistration => 'የተማሪ ምዝግባ';
+
+  @override
+  String get student360 => 'ተማሪ 360';
+
+  @override
+  String get reportCards => 'የውጤት ካርድ';
+
+  @override
+  String get subjectReport => 'የተማሪዎች ሪፖርት';
+
+  @override
+  String get lessonPlans => 'የትምህርት እቅዶች';
+
+  @override
+  String get examResults => 'የፈተና ውጤቶች';
+
+  @override
+  String get courseFiles => 'የክርስ ፋይሎች';
+
+  @override
+  String get storeRequests => 'የማዝገቢያ ጥያቄዎች';
+
+  @override
+  String get incidents => 'ኡደቶች';
+
+  @override
+  String get leaveRequest => 'የፍቃድ ጥያቄ';
+
+  @override
+  String get questionBank => 'የጥያቄ ባንክ';
+
+  @override
+  String get participation => 'ተሳትፎ';
+
+  @override
+  String get queueAttendance => 'ከመስመር ውጭ አስቀምጥ';
 }

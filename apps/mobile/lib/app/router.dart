@@ -6,6 +6,9 @@ import '../core/providers.dart';
 import '../features/auth/login_page.dart';
 import '../features/student/screens/student_screens.dart';
 import '../features/student/student_shell.dart';
+import '../features/teacher/screens/offline_attendance_screen.dart';
+import '../features/teacher/screens/teacher_screens.dart';
+import '../features/teacher/teacher_shell.dart';
 import '../l10n/app_localizations.dart';
 
 final _rootKey = GlobalKey<NavigatorState>();
@@ -309,10 +312,305 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           ),
         ],
       ),
-      // Teacher placeholder route for role redirect (Part 2).
-      GoRoute(
-        path: '/teacher/home',
-        builder: (context, state) => const UnsupportedRolePage(),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return TeacherShell(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/teacher/home',
+                builder: (context, state) => const TeacherHomeScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'schedule',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.teacherSchedule,
+                        cacheKey: 'teacher_schedule',
+                        path: '/teacher/schedule',
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'profile',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.teacherProfile,
+                        cacheKey: 'teacher_profile',
+                        path: '/teacher/profile',
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/teacher/attendance',
+                builder: (context, state) => const TeacherAttendanceHubScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'homeroom',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.homeroomAttendance,
+                        cacheKey: 'teacher_attendance_homeroom',
+                        path: '/teacher/attendance/homeroom',
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'subject',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.subjectAttendance,
+                        cacheKey: 'teacher_attendance_subject',
+                        path: '/teacher/attendance/subject',
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'offline',
+                    builder: (context, state) => const OfflineAttendanceScreen(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/teacher/classes',
+                builder: (context, state) => const TeacherClassesHubScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'roster',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.classRoster,
+                        cacheKey: 'teacher_roster',
+                        path: '/teacher/roster',
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'registration',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.studentRegistration,
+                        cacheKey: 'teacher_registration',
+                        path: '/teacher/registration',
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'student-360',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.student360,
+                        cacheKey: 'teacher_student_360',
+                        path: '/teacher/office/student-360',
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'report-cards',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.reportCards,
+                        cacheKey: 'teacher_report_cards',
+                        path: '/teacher/report-cards',
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'subject-report',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.subjectReport,
+                        cacheKey: 'teacher_subject_report',
+                        path: '/teacher/subject-report',
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/teacher/teaching',
+                builder: (context, state) => const TeacherTeachingHubScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'lessons',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.lessonPlans,
+                        cacheKey: 'teacher_lessons',
+                        path: '/teacher/lesson-plans',
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'exams',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.exams,
+                        cacheKey: 'teacher_exams',
+                        path: '/teacher/exams',
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'exam-results',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.examResults,
+                        cacheKey: 'teacher_exam_results',
+                        path: '/teacher/exam-results',
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'files',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.courseFiles,
+                        cacheKey: 'teacher_course_files',
+                        path: '/teacher/course-files',
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'simulations',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.simulations,
+                        cacheKey: 'teacher_simulations',
+                        path: '/teacher/simulations',
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'participation',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.participation,
+                        cacheKey: 'teacher_participation',
+                        path: '/teacher/office/participation',
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'questions',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.questionBank,
+                        cacheKey: 'teacher_questions',
+                        path: '/teacher/office/questions',
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/teacher/office',
+                builder: (context, state) => const TeacherOfficeHubScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'timetable',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.timetable,
+                        cacheKey: 'teacher_timetable',
+                        path: '/teacher/office/timetable',
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'leave',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.leaveRequest,
+                        cacheKey: 'teacher_leave',
+                        path: '/teacher/office/leave',
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'incidents',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.incidents,
+                        cacheKey: 'teacher_incidents',
+                        path: '/teacher/office/incidents',
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'library',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.library,
+                        cacheKey: 'teacher_library',
+                        path: '/teacher/office/library',
+                      );
+                    },
+                  ),
+                  GoRoute(
+                    path: 'store',
+                    builder: (context, state) {
+                      final l10n = AppLocalizations.of(context);
+                      return TeacherJsonRoute(
+                        title: l10n.storeRequests,
+                        cacheKey: 'teacher_store',
+                        path: '/teacher/store-requests',
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/teacher/more',
+                builder: (context, state) => const TeacherMoreScreen(),
+              ),
+            ],
+          ),
+        ],
       ),
     ],
   );

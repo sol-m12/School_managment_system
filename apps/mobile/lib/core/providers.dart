@@ -8,6 +8,7 @@ import 'auth/token_store.dart';
 import 'cache/cache_database.dart';
 import 'cache/cache_repository.dart';
 import 'connectivity/connectivity_service.dart';
+import 'outbox/attendance_outbox.dart';
 
 final tokenStoreProvider = Provider<TokenStore>((ref) => TokenStore());
 
@@ -117,3 +118,49 @@ final authControllerProvider =
 final isOnlineProvider = StreamProvider<bool>((ref) {
   return ref.watch(connectivityServiceProvider).onOnlineChanged;
 });
+
+final attendanceOutboxServiceProvider = Provider<AttendanceOutboxService>((ref) {
+  return AttendanceOutboxService(
+    db: ref.watch(cacheDatabaseProvider),
+    api: ref.watch(apiClientProvider),
+  );
+});
+
+final pendingOutboxCountProvider = FutureProvider<int>((ref) async {
+  final user = ref.watch(authControllerProvider).user;
+  if (user == null) return 0;
+  return ref.watch(attendanceOutboxServiceProvider).pendingCount(user);
+});
+
+class AttendanceOutboxSync extends Notifier<AsyncValue<SyncResult?>> {
+  @override
+  AsyncValue<SyncResult?> build() {
+    ref.listen<AsyncValue<bool>>(isOnlineProvider, (prev, next) {
+      final online = next.value ?? false;
+      final wasOffline = !(prev?.value ?? true);
+      if (online && wasOffline) {
+        Future.microtask(syncNow);
+      }
+    });
+    return const AsyncValue.data(null);
+  }
+
+  Future<void> syncNow() async {
+    final user = ref.read(authControllerProvider).user;
+    if (user == null) return;
+    state = const AsyncValue.loading();
+    try {
+      final result =
+          await ref.read(attendanceOutboxServiceProvider).syncPending(user);
+      state = AsyncValue.data(result);
+      ref.invalidate(pendingOutboxCountProvider);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+}
+
+final attendanceOutboxSyncProvider =
+    NotifierProvider<AttendanceOutboxSync, AsyncValue<SyncResult?>>(
+  AttendanceOutboxSync.new,
+);

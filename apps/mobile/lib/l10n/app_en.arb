@@ -17,7 +17,9 @@
   "lastUpdated": "Last updated: {time}",
   "@lastUpdated": {
     "placeholders": {
-      "time": { "type": "String" }
+      "time": {
+        "type": "String"
+      }
     }
   },
   "pullToRefresh": "Pull to refresh",
@@ -60,5 +62,38 @@
   "send": "Send",
   "close": "Close",
   "sessionRestored": "Session restored",
-  "roleNotSupported": "This role is not supported on mobile yet"
+  "roleNotSupported": "This role is not supported on mobile yet",
+  "navClasses": "Classes",
+  "navTeaching": "Teaching",
+  "navOffice": "Office",
+  "teacherSchedule": "Assigned works",
+  "teacherProfile": "Teacher profile",
+  "homeroomAttendance": "Homeroom attendance",
+  "subjectAttendance": "Subject attendance",
+  "offlineAttendance": "Offline attendance",
+  "pendingSync": "Pending sync ({count})",
+  "@pendingSync": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncNow": "Sync now",
+  "syncSuccess": "Synced successfully",
+  "syncConflict": "Some marks conflicted",
+  "classRoster": "Class roster",
+  "studentRegistration": "Student registration",
+  "student360": "Student 360",
+  "reportCards": "Report cards",
+  "subjectReport": "Student reports",
+  "lessonPlans": "Lesson plans",
+  "examResults": "Exam results",
+  "courseFiles": "Course files",
+  "storeRequests": "Store requests",
+  "incidents": "Incidents",
+  "leaveRequest": "Leave request",
+  "questionBank": "Question bank",
+  "participation": "Participation",
+  "queueAttendance": "Save offline"
 }

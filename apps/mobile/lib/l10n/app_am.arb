@@ -62,5 +62,38 @@
   "send": "ላክ",
   "close": "ዝጋ",
   "sessionRestored": "ክፍለ ጊዜ ተመልሷል",
-  "roleNotSupported": "ይህ ሚና በሞባይል ገና አይደገፍም"
+  "roleNotSupported": "ይህ ሚና በሞባይል ገና አይደገፍም",
+  "navClasses": "ክፍሎች",
+  "navTeaching": "ማስተማረ",
+  "navOffice": "ጂቤት",
+  "teacherSchedule": "የተመደቡ ስራዎች",
+  "teacherProfile": "የመምህር መገለጫ",
+  "homeroomAttendance": "የክፍል መገኘት",
+  "subjectAttendance": "የትምህርት መገኘት",
+  "offlineAttendance": "ከመስመር ውጭ መገኘት",
+  "pendingSync": "የሚጠባቀ ስርኻት ({count})",
+  "@pendingSync": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncNow": "አሁን አስማማር",
+  "syncSuccess": "በተሳካ ሁኔታ ተሳማማረ",
+  "syncConflict": "አንዳንድ ምልክቶች ተጋጠሙ",
+  "classRoster": "የክፍል ዘርዝር",
+  "studentRegistration": "የተማሪ ምዝግባ",
+  "student360": "ተማሪ 360",
+  "reportCards": "የውጤት ካርድ",
+  "subjectReport": "የተማሪዎች ሪፖርት",
+  "lessonPlans": "የትምህርት እቅዶች",
+  "examResults": "የፈተና ውጤቶች",
+  "courseFiles": "የክርስ ፋይሎች",
+  "storeRequests": "የማዝገቢያ ጥያቄዎች",
+  "incidents": "ኡደቶች",
+  "leaveRequest": "የፍቃድ ጥያቄ",
+  "questionBank": "የጥያቄ ባንክ",
+  "participation": "ተሳትፎ",
+  "queueAttendance": "ከመስመር ውጭ አስቀምጥ"
 }
