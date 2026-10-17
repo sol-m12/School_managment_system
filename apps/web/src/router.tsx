@@ -50,6 +50,16 @@ import {
   Model19Page,
   RegisterPage,
 } from "@/features/store/StoreFlows";
+import {
+  AlertsPage,
+  AssetsPage,
+  DisposalPage,
+  ForecastPage,
+  InventorySearchPage,
+  LoansPage,
+  ProcurementPage as StoreProcurementPage,
+  StoreReportPage,
+} from "@/features/store/StoreOfficePages";
 import { MENU_ITEMS, type NavItemKey } from "@/navigation/menu";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
@@ -189,6 +199,14 @@ const BUILT_ITEMS: readonly NavItemKey[] = [
   "mehi17Ledger",
   "mehi17Setup",
   "mehi7",
+  "procurementRouting",
+  "inventorySearch",
+  "reorderAlerts",
+  "assetTags",
+  "damageLog",
+  "assetLoans",
+  "stockForecast",
+  "storeReports",
   "executiveOffice",
   "reportAnalysis",
   "communicationHub",
@@ -324,6 +342,14 @@ export const router = createBrowserRouter([
       { path: "store/mehi-17", element: <ProtectedRoute permission="store.finance"><Mehi17LedgerPage /></ProtectedRoute> },
       { path: "store/mehi-17-setup", element: <ProtectedRoute permission="store.finance"><Mehi17SetupPage /></ProtectedRoute> },
       { path: "store/mehi-7", element: <ProtectedRoute permission="store.finance"><Mehi7Page /></ProtectedRoute> },
+      { path: "store/procurement", element: <ProtectedRoute permission="store.office"><StoreProcurementPage /></ProtectedRoute> },
+      { path: "store/search", element: <ProtectedRoute permission="store.office"><InventorySearchPage /></ProtectedRoute> },
+      { path: "store/alerts", element: <ProtectedRoute permission="store.office"><AlertsPage /></ProtectedRoute> },
+      { path: "store/assets", element: <ProtectedRoute permission="store.office"><AssetsPage /></ProtectedRoute> },
+      { path: "store/disposal", element: <ProtectedRoute permission="store.office"><DisposalPage /></ProtectedRoute> },
+      { path: "store/loans", element: <ProtectedRoute permission="store.office"><LoansPage /></ProtectedRoute> },
+      { path: "store/forecast", element: <ProtectedRoute permission="store.office"><ForecastPage /></ProtectedRoute> },
+      { path: "store/reports", element: <ProtectedRoute permission="store.office"><StoreReportPage /></ProtectedRoute> },
       { path: "finance/payments", element: <ProtectedRoute permission="finance.income"><IncomePage /></ProtectedRoute> },
       { path: "finance/income", element: <ProtectedRoute permission="finance.expense"><ExpensePage /></ProtectedRoute> },
       { path: "teacher/assigned-works", element: <ProtectedRoute permission="assignedWork.read"><AssignedWorksPage /></ProtectedRoute> },

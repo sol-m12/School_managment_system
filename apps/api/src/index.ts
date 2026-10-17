@@ -15,6 +15,7 @@ import { officeRouter } from "./modules/teacher/office.routes.js";
 import { studentRouter } from "./modules/student/student.routes.js";
 import { deskRouter } from "./modules/student/desk.routes.js";
 import { storeRouter } from "./modules/store/store.routes.js";
+import { storeOfficeRouter } from "./modules/store/office.routes.js";
 import { financeRouter } from "./modules/finance/finance.routes.js";
 import { technicianRouter } from "./modules/technician/technician.routes.js";
 import { operationsRouter } from "./modules/operations/operations.routes.js";
@@ -56,6 +57,7 @@ app.use("/vice", viceRouter);
 app.use("/student", studentRouter);
 app.use("/student", deskRouter);
 app.use("/store/finance", financeRouter);
+app.use("/store/office", storeOfficeRouter);
 app.use("/store", storeRouter);
 
 if (process.env.NODE_ENV !== "test" && process.env.VITEST !== "true") {

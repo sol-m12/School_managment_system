@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { tenants, accountTypes, adminTasks, announcements, annualLessonPlan, assignmentSubmissions, attendance, auditLog, backupRuns, binCardLedger, budgetNotifications, budgetNotificationItems, classes, classSchedule, committeesClubs, committeeMembers, communicationGroups, departmentHeads, evaluationCriteria, evaluationDetails, onlineExams, examQuestions, examResultsOnline, students, expenses, externalInquiries, fileShares, financeCodes, foreignPartners, grades, users, groupsInfo, subjects, groupChats, groupMembers, groupMessages, groupResponses, groupTasks, groupSubmissions, studentGroups, income, issueModel22, itemCategories, items, libraryAttendance, libraryBooks, libraryBorrowing, libraryHandovers, liveQuizQuestions, liveQuizSessions, loginAttempts, mehi161Cards, mehi161Transactions, mehi17Cards, mehi17Transactions, mehi7Items, mehi7Vouchers, model19Grn, model19Items, outboundNotices, parentGuardian, payroll, peerAssessments, periodSettings, principalApprovalNotes, principalDocuments, principalIncidents, principalMessages, principalPolicies, principalReportDefs, principalTraining, principalTransfers, requisitionsModel20, schoolNews, schoolPlans, schoolSettings, schoolStats, simulations, staff, staffFiles, staffFolders, stockLedgerCard, studentAssessments, studentFinalReports, subjectWeightings, suppliers, supportTickets, systemSettings, teacherAssignments, teacherEvaluations, teacherRoleCredits, vocationalRequests, vpExamSessions, vpHearings, vpInvigilators, vpPenalties, vpPlacements, vpPrograms, vpReferrals } from "./schema.js";
+import { tenants, accountTypes, adminTasks, announcements, annualLessonPlan, assignmentSubmissions, attendance, auditLog, backupRuns, binCardLedger, budgetNotifications, budgetNotificationItems, classes, classSchedule, committeesClubs, committeeMembers, communicationGroups, departmentHeads, evaluationCriteria, evaluationDetails, onlineExams, examQuestions, examResultsOnline, students, expenses, externalInquiries, fileShares, financeCodes, foreignPartners, grades, users, groupsInfo, subjects, groupChats, groupMembers, groupMessages, groupResponses, groupTasks, groupSubmissions, studentGroups, income, issueModel22, itemCategories, items, libraryAttendance, libraryBooks, libraryBorrowing, libraryHandovers, liveQuizQuestions, liveQuizSessions, loginAttempts, mehi161Cards, mehi161Transactions, mehi17Cards, mehi17Transactions, mehi7Items, mehi7Vouchers, model19Grn, model19Items, outboundNotices, parentGuardian, payroll, peerAssessments, periodSettings, principalApprovalNotes, principalDocuments, principalIncidents, principalMessages, principalPolicies, principalReportDefs, principalTraining, principalTransfers, requisitionsModel20, schoolNews, schoolPlans, schoolSettings, schoolStats, simulations, skAlerts, skAssets, skDisposals, skLoans, skPurchaseRequests, staff, staffFiles, staffFolders, stockLedgerCard, studentAssessments, studentFinalReports, stCommendations, stDocumentRequests, stTaskWork, subjectWeightings, suppliers, supportTickets, systemSettings, tcBookRecommendations, tcExamStandards, tcGradeReviews, tcIncidents, tcLeaveRequests, tcPapers, tcPaperItems, tcParticipation, tcPerformance, tcPerformanceScores, tcQuestions, tcRequisitions, tcSubstitutions, tcSwaps, tcTopicCoverage, teacherAssignments, teacherEvaluations, teacherRoleCredits, vocationalRequests, vpExamSessions, vpHearings, vpInvigilators, vpPenalties, vpPlacements, vpPrograms, vpReferrals } from "./schema.js";
 
 export const accountTypesRelations = relations(accountTypes, ({one, many}) => ({
 	tenant: one(tenants, {
@@ -83,6 +83,11 @@ export const tenantsRelations = relations(tenants, ({many}) => ({
 	schoolSettings: many(schoolSettings),
 	schoolStats: many(schoolStats),
 	simulations: many(simulations),
+	skAlerts: many(skAlerts),
+	skAssets: many(skAssets),
+	skDisposals: many(skDisposals),
+	skLoans: many(skLoans),
+	skPurchaseRequests: many(skPurchaseRequests),
 	staff: many(staff),
 	staffFiles: many(staffFiles),
 	staffFolders: many(staffFolders),
@@ -91,11 +96,29 @@ export const tenantsRelations = relations(tenants, ({many}) => ({
 	studentAssessments: many(studentAssessments),
 	studentFinalReports: many(studentFinalReports),
 	studentGroups: many(studentGroups),
+	stCommendations: many(stCommendations),
+	stDocumentRequests: many(stDocumentRequests),
+	stTaskWorks: many(stTaskWork),
 	subjects: many(subjects),
 	subjectWeightings: many(subjectWeightings),
 	suppliers: many(suppliers),
 	supportTickets: many(supportTickets),
 	systemSettings: many(systemSettings),
+	tcBookRecommendations: many(tcBookRecommendations),
+	tcExamStandards: many(tcExamStandards),
+	tcGradeReviews: many(tcGradeReviews),
+	tcIncidents: many(tcIncidents),
+	tcLeaveRequests: many(tcLeaveRequests),
+	tcPapers: many(tcPapers),
+	tcPaperItems: many(tcPaperItems),
+	tcParticipations: many(tcParticipation),
+	tcPerformances: many(tcPerformance),
+	tcPerformanceScores: many(tcPerformanceScores),
+	tcQuestions: many(tcQuestions),
+	tcRequisitions: many(tcRequisitions),
+	tcSubstitutions: many(tcSubstitutions),
+	tcSwaps: many(tcSwaps),
+	tcTopicCoverages: many(tcTopicCoverage),
 	teacherAssignments: many(teacherAssignments),
 	teacherEvaluations: many(teacherEvaluations),
 	teacherRoleCredits: many(teacherRoleCredits),
@@ -802,6 +825,41 @@ export const simulationsRelations = relations(simulations, ({one}) => ({
 	}),
 }));
 
+export const skAlertsRelations = relations(skAlerts, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [skAlerts.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const skAssetsRelations = relations(skAssets, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [skAssets.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const skDisposalsRelations = relations(skDisposals, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [skDisposals.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const skLoansRelations = relations(skLoans, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [skLoans.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const skPurchaseRequestsRelations = relations(skPurchaseRequests, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [skPurchaseRequests.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
 export const staffRelations = relations(staff, ({one}) => ({
 	tenant: one(tenants, {
 		fields: [staff.tenantId],
@@ -844,6 +902,27 @@ export const studentFinalReportsRelations = relations(studentFinalReports, ({one
 	}),
 }));
 
+export const stCommendationsRelations = relations(stCommendations, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [stCommendations.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const stDocumentRequestsRelations = relations(stDocumentRequests, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [stDocumentRequests.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const stTaskWorkRelations = relations(stTaskWork, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [stTaskWork.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
 export const subjectWeightingsRelations = relations(subjectWeightings, ({one}) => ({
 	tenant: one(tenants, {
 		fields: [subjectWeightings.tenantId],
@@ -868,6 +947,111 @@ export const supportTicketsRelations = relations(supportTickets, ({one}) => ({
 export const systemSettingsRelations = relations(systemSettings, ({one}) => ({
 	tenant: one(tenants, {
 		fields: [systemSettings.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const tcBookRecommendationsRelations = relations(tcBookRecommendations, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [tcBookRecommendations.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const tcExamStandardsRelations = relations(tcExamStandards, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [tcExamStandards.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const tcGradeReviewsRelations = relations(tcGradeReviews, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [tcGradeReviews.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const tcIncidentsRelations = relations(tcIncidents, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [tcIncidents.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const tcLeaveRequestsRelations = relations(tcLeaveRequests, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [tcLeaveRequests.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const tcPapersRelations = relations(tcPapers, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [tcPapers.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const tcPaperItemsRelations = relations(tcPaperItems, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [tcPaperItems.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const tcParticipationRelations = relations(tcParticipation, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [tcParticipation.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const tcPerformanceRelations = relations(tcPerformance, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [tcPerformance.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const tcPerformanceScoresRelations = relations(tcPerformanceScores, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [tcPerformanceScores.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const tcQuestionsRelations = relations(tcQuestions, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [tcQuestions.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const tcRequisitionsRelations = relations(tcRequisitions, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [tcRequisitions.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const tcSubstitutionsRelations = relations(tcSubstitutions, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [tcSubstitutions.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const tcSwapsRelations = relations(tcSwaps, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [tcSwaps.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const tcTopicCoverageRelations = relations(tcTopicCoverage, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [tcTopicCoverage.tenantId],
 		references: [tenants.id]
 	}),
 }));

@@ -103,7 +103,10 @@ export type ErrorKey =
   | "wrongGrade"
   | "alreadyOpen"
   | "deadlinePassed"
-  | "alreadySubmitted";
+  | "alreadySubmitted"
+  | "stockAdequate"
+  | "alreadyRouted"
+  | "notFixed";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -207,6 +210,9 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   ALREADY_OPEN: "alreadyOpen",
   DEADLINE: "deadlinePassed",
   ALREADY_SUBMITTED: "alreadySubmitted",
+  STOCK_ADEQUATE: "stockAdequate",
+  ALREADY_ROUTED: "alreadyRouted",
+  NOT_FIXED: "notFixed",
 };
 
 function readCode(data: unknown): string | null {

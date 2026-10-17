@@ -46,6 +46,9 @@ import {
   Bell,
   LifeBuoy,
   QrCode,
+  Search,
+  Trash2,
+  Undo2,
   AlertTriangle,
   PieChart,
   Upload,
@@ -95,6 +98,7 @@ export type MenuGroupKey =
   | "homeroomTeacher"
   | "departmentHead"
   | "studentDesk"
+  | "storeOffice"
   | "main";
 
 export type MenuItem = {
@@ -128,6 +132,7 @@ export const MENU_GROUP_ORDER: readonly MenuGroupKey[] = [
   "homeroomTeacher",
   "departmentHead",
   "studentDesk",
+  "storeOffice",
   "main",
   "finance",
 ];
@@ -262,6 +267,15 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "mehi17Ledger", path: "/store/mehi-17", icon: ScrollText, group: "administration", permission: "store.finance" },
   { key: "mehi17Setup", path: "/store/mehi-17-setup", icon: ScrollText, group: "administration", permission: "store.finance" },
   { key: "mehi7", path: "/store/mehi-7", icon: ScrollText, group: "administration", permission: "store.finance" },
+
+  { key: "procurementRouting", path: "/store/procurement", icon: ShoppingCart, group: "storeOffice", permission: "store.office" },
+  { key: "inventorySearch", path: "/store/search", icon: Search, group: "storeOffice", permission: "store.office" },
+  { key: "reorderAlerts", path: "/store/alerts", icon: AlertTriangle, group: "storeOffice", permission: "store.office" },
+  { key: "assetTags", path: "/store/assets", icon: QrCode, group: "storeOffice", permission: "store.office" },
+  { key: "damageLog", path: "/store/disposal", icon: Trash2, group: "storeOffice", permission: "store.office" },
+  { key: "assetLoans", path: "/store/loans", icon: Undo2, group: "storeOffice", permission: "store.office" },
+  { key: "stockForecast", path: "/store/forecast", icon: Brain, group: "storeOffice", permission: "store.office" },
+  { key: "storeReports", path: "/store/reports", icon: FileSpreadsheet, group: "storeOffice", permission: "store.office" },
 
   {
     key: "dashboard",

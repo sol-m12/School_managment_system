@@ -15,6 +15,7 @@
     "homeroomTeacher": "Homeroom teacher",
     "departmentHead": "Department head",
     "studentDesk": "My school",
+    "storeOffice": "Store office",
     "main": "Main"
   },
   "items": {
@@ -129,6 +130,14 @@
     "helpdesk": "Helpdesk",
     "studyPlanner": "Study planner",
     "digitalId": "Digital ID",
+    "procurementRouting": "Purchase requests",
+    "storeReports": "Store reports",
+    "inventorySearch": "Inventory search",
+    "reorderAlerts": "Reorder alerts",
+    "assetTags": "Asset tags",
+    "damageLog": "Damage and disposal",
+    "assetLoans": "Asset loans",
+    "stockForecast": "Stock forecast",
     "dashboardStudent": "Main Dashboard (Student)",
     "payments": "Payments",
     "incomeExpense": "Income and Expense",

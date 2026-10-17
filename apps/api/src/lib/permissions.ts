@@ -72,6 +72,7 @@ export const PERMISSIONS = [
   "store.issue",
   "store.approvals",
   "store.finance",
+  "store.office",
 
   "finance.income",
   "finance.expense",
@@ -148,6 +149,7 @@ const GRANTS: Record<Permission, readonly Role[]> = {
   "store.issue": ["Store_Keeper"],
   "store.approvals": ["Store_Keeper"],
   "store.finance": ["Store_Keeper"],
+  "store.office": ["Store_Keeper"],
 
   "finance.income": ["Principal"],
   "finance.expense": ["Principal"],

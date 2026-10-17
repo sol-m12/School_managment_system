@@ -15,6 +15,7 @@
     "homeroomTeacher": "የክፍል መምህር",
     "departmentHead": "የትምህርት ክፍል ኃላፊ",
     "studentDesk": "የእኔ ትምህርት",
+    "storeOffice": "የመጋዘን ቢሮ",
     "main": "ዋና"
   },
   "items": {
@@ -129,6 +130,14 @@
     "helpdesk": "የእገዛ ጠያቄ",
     "studyPlanner": "የትምህርት ዕቅድ",
     "digitalId": "ዲጂታል መታወቂያ",
+    "procurementRouting": "የግዢ ጥያቄ",
+    "storeReports": "የመጋዘን ሪፖርት",
+    "inventorySearch": "የክምችት ፍለጋ",
+    "reorderAlerts": "የዕቃ ማስጠንቀቂያ",
+    "assetTags": "የንብረት መለያ",
+    "damageLog": "ጉዳትና ማስወገድ",
+    "assetLoans": "ጊዜያዊ ብድር",
+    "stockForecast": "የክምችት ግምት",
     "dashboardStudent": "ዋና ዳሽቦርድ (Student)",
     "payments": "ክፍያ",
     "incomeExpense": "ገቢና ወጪ",

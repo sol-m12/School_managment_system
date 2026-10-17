@@ -67,6 +67,7 @@ export const PERMISSIONS = [
   "store.issue",
   "store.approvals",
   "store.finance",
+  "store.office",
 
   "finance.income",
   "finance.expense",

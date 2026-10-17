@@ -1197,6 +1197,85 @@ export const simulations = mysqlTable("simulations", {
 	index("idx_simulations_tenant_id").on(table.tenantId),
 ]);
 
+export const skAlerts = mysqlTable("sk_alerts", {
+	alertId: int("alert_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	itemId: int("item_id").notNull(),
+	kind: mysqlEnum(['reorder','forecast']).notNull(),
+	stock: decimal({ precision: 12, scale: 2 }).notNull(),
+	reorderLevel: int("reorder_level").notNull(),
+	status: mysqlEnum(['Open','Seen']).default('Open').notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_sk_alerts_tenant_id").on(table.tenantId),
+	index("idx_sk_alerts_open").on(table.tenantId, table.itemId, table.kind, table.status),
+]);
+
+export const skAssets = mysqlTable("sk_assets", {
+	assetId: int("asset_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	itemId: int("item_id").notNull(),
+	tag: varchar({ length: 40 }).notNull(),
+	serialNo: varchar("serial_no", { length: 80 }).default("").notNull(),
+	location: varchar({ length: 150 }).default("").notNull(),
+	status: mysqlEnum(['InStore','OnLoan','Disposed']).default('InStore').notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_sk_assets_tenant_id").on(table.tenantId),
+	unique("uq_sk_assets_tag").on(table.tenantId, table.tag),
+]);
+
+export const skDisposals = mysqlTable("sk_disposals", {
+	disposalId: int("disposal_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	itemId: int("item_id").notNull(),
+	assetId: int("asset_id"),
+	quantity: decimal({ precision: 12, scale: 2 }).notNull(),
+	kind: mysqlEnum(['damage','disposal']).notNull(),
+	note: varchar({ length: 500 }).notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_sk_disposals_tenant_id").on(table.tenantId),
+]);
+
+export const skLoans = mysqlTable("sk_loans", {
+	loanId: int("loan_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	assetId: int("asset_id").notNull(),
+	borrowerName: varchar("borrower_name", { length: 150 }).notNull(),
+	purpose: varchar({ length: 255 }).default("").notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	dueOn: date("due_on", { mode: 'string' }).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	returnedOn: date("returned_on", { mode: 'string' }),
+	status: mysqlEnum(['Out','Returned']).default('Out').notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_sk_loans_tenant_id").on(table.tenantId),
+	index("idx_sk_loans_asset").on(table.tenantId, table.assetId, table.status),
+]);
+
+export const skPurchaseRequests = mysqlTable("sk_purchase_requests", {
+	requestId: int("request_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	itemId: int("item_id").notNull(),
+	quantity: decimal({ precision: 12, scale: 2 }).notNull(),
+	note: varchar({ length: 500 }).default("").notNull(),
+	status: mysqlEnum(['Routed']).default('Routed').notNull(),
+	routedBy: int("routed_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_sk_purchase_requests_tenant_id").on(table.tenantId),
+	index("idx_sk_purchase_requests_item").on(table.tenantId, table.itemId),
+]);
+
 export const staff = mysqlTable("staff", {
 	staffId: int("staff_id").autoincrement().notNull(),
 	firstName: varchar("first_name", { length: 100 }).notNull(),
@@ -1362,6 +1441,44 @@ export const studentGroups = mysqlTable("student_groups", {
 	index("idx_student_groups_tenant_id").on(table.tenantId),
 ]);
 
+export const stCommendations = mysqlTable("st_commendations", {
+	commendationId: int("commendation_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	studentId: int("student_id").notNull(),
+	note: varchar({ length: 500 }).notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_st_commendations_tenant_id").on(table.tenantId),
+]);
+
+export const stDocumentRequests = mysqlTable("st_document_requests", {
+	requestId: int("request_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	studentId: int("student_id").notNull(),
+	kind: mysqlEnum(['transcript','document']).notNull(),
+	purpose: varchar({ length: 255 }).notNull(),
+	status: mysqlEnum(['Submitted','Reviewing','Ready','Collected']).default('Submitted').notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_st_document_requests_tenant_id").on(table.tenantId),
+]);
+
+export const stTaskWork = mysqlTable("st_task_work", {
+	workId: int("work_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	taskId: int("task_id").notNull(),
+	studentId: int("student_id").notNull(),
+	body: varchar({ length: 2000 }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_st_task_work_tenant_id").on(table.tenantId),
+	unique("uq_st_task_work_student").on(table.tenantId, table.taskId, table.studentId),
+]);
+
 export const subjects = mysqlTable("subjects", {
 	subjectId: int("subject_id").autoincrement().notNull(),
 	subjectName: varchar("subject_name", { length: 100 }).notNull(),
@@ -1432,6 +1549,228 @@ export const systemSettings = mysqlTable("system_settings", {
 (table) => [
 	index("idx_system_settings_tenant_id").on(table.tenantId),
 	unique("uq_system_settings_tenant_setting_key").on(table.tenantId, table.settingKey),
+]);
+
+export const tcBookRecommendations = mysqlTable("tc_book_recommendations", {
+	recommendationId: int("recommendation_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	subjectId: int("subject_id").notNull(),
+	title: varchar({ length: 255 }).notNull(),
+	author: varchar({ length: 255 }).default("").notNull(),
+	reason: varchar({ length: 500 }).notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_tc_book_recommendations_tenant_id").on(table.tenantId),
+	unique("uq_tc_book_recommendations_title").on(table.tenantId, table.subjectId, table.title),
+]);
+
+export const tcExamStandards = mysqlTable("tc_exam_standards", {
+	standardId: int("standard_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	subjectId: int("subject_id").notNull(),
+	assessmentName: varchar("assessment_name", { length: 100 }).notNull(),
+	maxScore: int("max_score").notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_tc_exam_standards_tenant_id").on(table.tenantId),
+	unique("uq_tc_exam_standards_name").on(table.tenantId, table.subjectId, table.assessmentName),
+]);
+
+export const tcGradeReviews = mysqlTable("tc_grade_reviews", {
+	reviewId: int("review_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	gradeEntryId: int("grade_entry_id").notNull(),
+	status: mysqlEnum(['Approved','Sent']).default('Approved').notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_tc_grade_reviews_tenant_id").on(table.tenantId),
+	unique("uq_tc_grade_reviews_entry").on(table.tenantId, table.gradeEntryId),
+]);
+
+export const tcIncidents = mysqlTable("tc_incidents", {
+	incidentId: int("incident_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	studentId: int("student_id").notNull(),
+	subjectId: int("subject_id").notNull(),
+	category: mysqlEnum(['attendance','academic','behavior','safety']).notNull(),
+	summary: varchar({ length: 500 }).notNull(),
+	status: mysqlEnum(['Open','Acknowledged','Closed']).default('Open').notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_tc_incidents_tenant_id").on(table.tenantId),
+]);
+
+export const tcLeaveRequests = mysqlTable("tc_leave_requests", {
+	leaveId: int("leave_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	staffId: int("staff_id").notNull(),
+	kind: mysqlEnum(['sick','personal','annual']).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	startsOn: date("starts_on", { mode: 'string' }).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	endsOn: date("ends_on", { mode: 'string' }).notNull(),
+	reason: varchar({ length: 500 }).notNull(),
+	status: mysqlEnum(['Pending','Approved','Rejected','Withdrawn']).default('Pending').notNull(),
+	decidedBy: int("decided_by"),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_tc_leave_requests_tenant_id").on(table.tenantId),
+]);
+
+export const tcPapers = mysqlTable("tc_papers", {
+	paperId: int("paper_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	subjectId: int("subject_id").notNull(),
+	staffId: int("staff_id").notNull(),
+	title: varchar({ length: 160 }).notNull(),
+	questionCount: int("question_count").notNull(),
+	status: mysqlEnum(['Open','Closed']).default('Open').notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_tc_papers_tenant_id").on(table.tenantId),
+]);
+
+export const tcPaperItems = mysqlTable("tc_paper_items", {
+	itemId: int("item_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	paperId: int("paper_id").notNull(),
+	questionId: int("question_id").notNull(),
+	position: int().notNull(),
+},
+(table) => [
+	index("idx_tc_paper_items_tenant_id").on(table.tenantId),
+]);
+
+export const tcParticipation = mysqlTable("tc_participation", {
+	participationId: int("participation_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	studentId: int("student_id").notNull(),
+	subjectId: int("subject_id").notNull(),
+	staffId: int("staff_id").notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	markedOn: date("marked_on", { mode: 'string' }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_tc_participation_tenant_id").on(table.tenantId),
+	unique("uq_tc_participation_day").on(table.tenantId, table.studentId, table.subjectId, table.markedOn),
+]);
+
+export const tcPerformance = mysqlTable("tc_performance", {
+	performanceId: int("performance_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	staffId: int("staff_id").notNull(),
+	academicYear: varchar("academic_year", { length: 10 }).notNull(),
+	term: mysqlEnum(['1','2']).notNull(),
+	totalScore: decimal("total_score", { precision: 5, scale: 2 }).notNull(),
+	maxScore: decimal("max_score", { precision: 5, scale: 2 }).notNull(),
+	note: varchar({ length: 500 }).default("").notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_tc_performance_tenant_id").on(table.tenantId),
+	unique("uq_tc_performance_term").on(table.tenantId, table.staffId, table.academicYear, table.term),
+]);
+
+export const tcPerformanceScores = mysqlTable("tc_performance_scores", {
+	scoreId: int("score_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	performanceId: int("performance_id").notNull(),
+	criterion: varchar({ length: 40 }).notNull(),
+	maxScore: decimal("max_score", { precision: 5, scale: 2 }).notNull(),
+	scoreGiven: decimal("score_given", { precision: 5, scale: 2 }).notNull(),
+},
+(table) => [
+	index("idx_tc_performance_scores_tenant_id").on(table.tenantId),
+]);
+
+export const tcQuestions = mysqlTable("tc_questions", {
+	questionId: int("question_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	subjectId: int("subject_id").notNull(),
+	staffId: int("staff_id").notNull(),
+	topic: varchar({ length: 120 }).notNull(),
+	stem: varchar({ length: 1000 }).notNull(),
+	optionA: varchar("option_a", { length: 255 }).notNull(),
+	optionB: varchar("option_b", { length: 255 }).notNull(),
+	optionC: varchar("option_c", { length: 255 }).notNull(),
+	optionD: varchar("option_d", { length: 255 }).notNull(),
+	correctOption: mysqlEnum("correct_option", ['A','B','C','D']).notNull(),
+	points: decimal({ precision: 4, scale: 2 }).default('1.00').notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_tc_questions_tenant_id").on(table.tenantId),
+]);
+
+export const tcRequisitions = mysqlTable("tc_requisitions", {
+	requisitionId: int("requisition_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	staffId: int("staff_id").notNull(),
+	department: varchar({ length: 40 }).notNull(),
+	itemName: varchar("item_name", { length: 160 }).notNull(),
+	quantity: int().notNull(),
+	purpose: varchar({ length: 500 }).notNull(),
+	status: mysqlEnum(['Submitted','Sent']).default('Submitted').notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_tc_requisitions_tenant_id").on(table.tenantId),
+]);
+
+export const tcSubstitutions = mysqlTable("tc_substitutions", {
+	substitutionId: int("substitution_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	timetableId: int("timetable_id").notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	coverDate: date("cover_date", { mode: 'string' }).notNull(),
+	substituteStaffId: int("substitute_staff_id").notNull(),
+	reason: varchar({ length: 255 }).default("").notNull(),
+	status: mysqlEnum(['Active','Cancelled']).default('Active').notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_tc_substitutions_tenant_id").on(table.tenantId),
+	index("idx_tc_substitutions_slot").on(table.tenantId, table.timetableId, table.coverDate),
+]);
+
+export const tcSwaps = mysqlTable("tc_swaps", {
+	swapId: int("swap_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	leftTimetableId: int("left_timetable_id").notNull(),
+	rightTimetableId: int("right_timetable_id").notNull(),
+	academicYear: varchar("academic_year", { length: 10 }).notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_tc_swaps_tenant_id").on(table.tenantId),
+]);
+
+export const tcTopicCoverage = mysqlTable("tc_topic_coverage", {
+	coverageId: int("coverage_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	planDetailId: int("plan_detail_id").notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	coveredOn: date("covered_on", { mode: 'string' }).notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_tc_topic_coverage_tenant_id").on(table.tenantId),
+	unique("uq_tc_topic_coverage_plan").on(table.tenantId, table.planDetailId),
 ]);
 
 export const teacherAssignments = mysqlTable("teacher_assignments", {
@@ -1628,259 +1967,4 @@ export const vpReferrals = mysqlTable("vp_referrals", {
 },
 (table) => [
 	index("idx_vp_referrals_tenant_id").on(table.tenantId),
-]);
-
-export const tcBookRecommendations = mysqlTable("tc_book_recommendations", {
-	recommendationId: int("recommendation_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	subjectId: int("subject_id").notNull(),
-	title: varchar({ length: 255 }).notNull(),
-	author: varchar({ length: 255 }).default("").notNull(),
-	reason: varchar({ length: 500 }).notNull(),
-	recordedBy: int("recorded_by").notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_tc_book_recommendations_tenant_id").on(table.tenantId),
-	unique("uq_tc_book_recommendations_title").on(table.tenantId, table.subjectId, table.title),
-]);
-
-export const tcExamStandards = mysqlTable("tc_exam_standards", {
-	standardId: int("standard_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	subjectId: int("subject_id").notNull(),
-	assessmentName: varchar("assessment_name", { length: 100 }).notNull(),
-	maxScore: int("max_score").notNull(),
-	recordedBy: int("recorded_by").notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_tc_exam_standards_tenant_id").on(table.tenantId),
-	unique("uq_tc_exam_standards_name").on(table.tenantId, table.subjectId, table.assessmentName),
-]);
-
-export const tcGradeReviews = mysqlTable("tc_grade_reviews", {
-	reviewId: int("review_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	gradeEntryId: int("grade_entry_id").notNull(),
-	status: mysqlEnum(['Approved','Sent']).default('Approved').notNull(),
-	recordedBy: int("recorded_by").notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_tc_grade_reviews_tenant_id").on(table.tenantId),
-	unique("uq_tc_grade_reviews_entry").on(table.tenantId, table.gradeEntryId),
-]);
-
-export const tcIncidents = mysqlTable("tc_incidents", {
-	incidentId: int("incident_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	studentId: int("student_id").notNull(),
-	subjectId: int("subject_id").notNull(),
-	category: mysqlEnum(['attendance','academic','behavior','safety']).notNull(),
-	summary: varchar({ length: 500 }).notNull(),
-	status: mysqlEnum(['Open','Acknowledged','Closed']).default('Open').notNull(),
-	recordedBy: int("recorded_by").notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_tc_incidents_tenant_id").on(table.tenantId),
-]);
-
-export const tcLeaveRequests = mysqlTable("tc_leave_requests", {
-	leaveId: int("leave_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	staffId: int("staff_id").notNull(),
-	kind: mysqlEnum(['sick','personal','annual']).notNull(),
-	startsOn: date("starts_on", { mode: 'string' }).notNull(),
-	endsOn: date("ends_on", { mode: 'string' }).notNull(),
-	reason: varchar({ length: 500 }).notNull(),
-	status: mysqlEnum(['Pending','Approved','Rejected','Withdrawn']).default('Pending').notNull(),
-	decidedBy: int("decided_by"),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_tc_leave_requests_tenant_id").on(table.tenantId),
-]);
-
-export const tcPaperItems = mysqlTable("tc_paper_items", {
-	itemId: int("item_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	paperId: int("paper_id").notNull(),
-	questionId: int("question_id").notNull(),
-	position: int().notNull(),
-},
-(table) => [
-	index("idx_tc_paper_items_tenant_id").on(table.tenantId),
-]);
-
-export const tcPapers = mysqlTable("tc_papers", {
-	paperId: int("paper_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	subjectId: int("subject_id").notNull(),
-	staffId: int("staff_id").notNull(),
-	title: varchar({ length: 160 }).notNull(),
-	questionCount: int("question_count").notNull(),
-	status: mysqlEnum(['Open','Closed']).default('Open').notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_tc_papers_tenant_id").on(table.tenantId),
-]);
-
-export const tcParticipation = mysqlTable("tc_participation", {
-	participationId: int("participation_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	studentId: int("student_id").notNull(),
-	subjectId: int("subject_id").notNull(),
-	staffId: int("staff_id").notNull(),
-	markedOn: date("marked_on", { mode: 'string' }).notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_tc_participation_tenant_id").on(table.tenantId),
-	unique("uq_tc_participation_day").on(table.tenantId, table.studentId, table.subjectId, table.markedOn),
-]);
-
-export const tcPerformance = mysqlTable("tc_performance", {
-	performanceId: int("performance_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	staffId: int("staff_id").notNull(),
-	academicYear: varchar("academic_year", { length: 10 }).notNull(),
-	term: mysqlEnum(['1','2']).notNull(),
-	totalScore: decimal("total_score", { precision: 5, scale: 2 }).notNull(),
-	maxScore: decimal("max_score", { precision: 5, scale: 2 }).notNull(),
-	note: varchar({ length: 500 }).default("").notNull(),
-	recordedBy: int("recorded_by").notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_tc_performance_tenant_id").on(table.tenantId),
-	unique("uq_tc_performance_term").on(table.tenantId, table.staffId, table.academicYear, table.term),
-]);
-
-export const tcPerformanceScores = mysqlTable("tc_performance_scores", {
-	scoreId: int("score_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	performanceId: int("performance_id").notNull(),
-	criterion: varchar({ length: 40 }).notNull(),
-	maxScore: decimal("max_score", { precision: 5, scale: 2 }).notNull(),
-	scoreGiven: decimal("score_given", { precision: 5, scale: 2 }).notNull(),
-},
-(table) => [
-	index("idx_tc_performance_scores_tenant_id").on(table.tenantId),
-]);
-
-export const tcQuestions = mysqlTable("tc_questions", {
-	questionId: int("question_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	subjectId: int("subject_id").notNull(),
-	staffId: int("staff_id").notNull(),
-	topic: varchar({ length: 120 }).notNull(),
-	stem: varchar({ length: 1000 }).notNull(),
-	optionA: varchar("option_a", { length: 255 }).notNull(),
-	optionB: varchar("option_b", { length: 255 }).notNull(),
-	optionC: varchar("option_c", { length: 255 }).notNull(),
-	optionD: varchar("option_d", { length: 255 }).notNull(),
-	correctOption: mysqlEnum("correct_option", ['A','B','C','D']).notNull(),
-	points: decimal({ precision: 4, scale: 2 }).default('1.00').notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_tc_questions_tenant_id").on(table.tenantId),
-]);
-
-export const tcRequisitions = mysqlTable("tc_requisitions", {
-	requisitionId: int("requisition_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	staffId: int("staff_id").notNull(),
-	department: varchar({ length: 40 }).notNull(),
-	itemName: varchar("item_name", { length: 160 }).notNull(),
-	quantity: int().notNull(),
-	purpose: varchar({ length: 500 }).notNull(),
-	status: mysqlEnum(['Submitted','Sent']).default('Submitted').notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_tc_requisitions_tenant_id").on(table.tenantId),
-]);
-
-export const tcSubstitutions = mysqlTable("tc_substitutions", {
-	substitutionId: int("substitution_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	timetableId: int("timetable_id").notNull(),
-	coverDate: date("cover_date", { mode: 'string' }).notNull(),
-	substituteStaffId: int("substitute_staff_id").notNull(),
-	reason: varchar({ length: 255 }).default("").notNull(),
-	status: mysqlEnum(['Active','Cancelled']).default('Active').notNull(),
-	recordedBy: int("recorded_by").notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_tc_substitutions_tenant_id").on(table.tenantId),
-	index("idx_tc_substitutions_slot").on(table.tenantId, table.timetableId, table.coverDate),
-]);
-
-export const tcSwaps = mysqlTable("tc_swaps", {
-	swapId: int("swap_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	leftTimetableId: int("left_timetable_id").notNull(),
-	rightTimetableId: int("right_timetable_id").notNull(),
-	academicYear: varchar("academic_year", { length: 10 }).notNull(),
-	recordedBy: int("recorded_by").notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_tc_swaps_tenant_id").on(table.tenantId),
-]);
-
-export const tcTopicCoverage = mysqlTable("tc_topic_coverage", {
-	coverageId: int("coverage_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	planDetailId: int("plan_detail_id").notNull(),
-	coveredOn: date("covered_on", { mode: 'string' }).notNull(),
-	recordedBy: int("recorded_by").notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_tc_topic_coverage_tenant_id").on(table.tenantId),
-	unique("uq_tc_topic_coverage_plan").on(table.tenantId, table.planDetailId),
-]);
-
-export const stCommendations = mysqlTable("st_commendations", {
-	commendationId: int("commendation_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	studentId: int("student_id").notNull(),
-	note: varchar({ length: 500 }).notNull(),
-	recordedBy: int("recorded_by").notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_st_commendations_tenant_id").on(table.tenantId),
-]);
-
-export const stDocumentRequests = mysqlTable("st_document_requests", {
-	requestId: int("request_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	studentId: int("student_id").notNull(),
-	kind: mysqlEnum(['transcript','document']).notNull(),
-	purpose: varchar({ length: 255 }).notNull(),
-	status: mysqlEnum(['Submitted','Reviewing','Ready','Collected']).default('Submitted').notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_st_document_requests_tenant_id").on(table.tenantId),
-]);
-
-export const stTaskWork = mysqlTable("st_task_work", {
-	workId: int("work_id").autoincrement().notNull(),
-	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
-	taskId: int("task_id").notNull(),
-	studentId: int("student_id").notNull(),
-	body: varchar({ length: 2000 }).notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
-},
-(table) => [
-	index("idx_st_task_work_tenant_id").on(table.tenantId),
-	unique("uq_st_task_work_student").on(table.tenantId, table.taskId, table.studentId),
 ]);

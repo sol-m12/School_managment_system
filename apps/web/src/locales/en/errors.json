@@ -103,5 +103,8 @@
   "wrongGrade": "The program grade does not match the student's grade.",
   "alreadyOpen": "A document request is already open.",
   "deadlinePassed": "The homework deadline has passed.",
-  "alreadySubmitted": "This homework is already submitted."
+  "alreadySubmitted": "This homework is already submitted.",
+  "stockAdequate": "This item is above its reorder level, so a purchase request is not opened.",
+  "alreadyRouted": "A purchase request for this item is already with procurement.",
+  "notFixed": "A tag is only for a fixed asset."
 }

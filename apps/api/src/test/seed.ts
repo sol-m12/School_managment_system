@@ -23,6 +23,11 @@ export type IsolationSeed = {
 };
 
 const TABLES_TO_EMPTY = [
+  "sk_loans",
+  "sk_disposals",
+  "sk_assets",
+  "sk_alerts",
+  "sk_purchase_requests",
   "st_task_work",
   "st_document_requests",
   "st_commendations",
