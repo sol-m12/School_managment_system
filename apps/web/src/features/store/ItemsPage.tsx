@@ -141,6 +141,17 @@ export function ItemsPage() {
         <form onSubmit={onItem} className="mb-4 rounded-xl border border-[#e2e8f0] bg-white p-4">
           <h2 className="mb-3 font-bold text-[#2563eb]">{t("store:formTitle")}</h2>
           <div className="grid gap-3 md:grid-cols-3">
+            <label className="block text-sm md:col-span-3">
+              <span className={fieldLabelClass}>{t("store:itemType")}</span>
+              <span className="flex flex-wrap gap-4">
+                <label className="font-semibold">
+                  <input type="radio" checked={form.itemType === "fixed_asset"} onChange={() => setForm({ ...form, itemType: "fixed_asset" })} /> {t("store:fixedAsset")}
+                </label>
+                <label className="font-semibold">
+                  <input type="radio" checked={form.itemType === "consumable"} onChange={() => setForm({ ...form, itemType: "consumable" })} /> {t("store:consumable")}
+                </label>
+              </span>
+            </label>
             <label className="block text-sm">
               <span className={fieldLabelClass}>{t("store:itemName")}</span>
               <input className={fieldControlClass} required value={form.itemName} onChange={(event) => setForm({ ...form, itemName: event.target.value })} />

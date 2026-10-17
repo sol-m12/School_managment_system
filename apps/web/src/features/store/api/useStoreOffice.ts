@@ -53,7 +53,7 @@ export type AssetHit = AssetRow & {
 };
 
 export type AssetBoard = {
-  items: { id: number; code: string; name: string; stock: number }[];
+  items: { id: number; code: string; name: string; stock: number; itemType: string }[];
   rows: AssetRow[];
 };
 

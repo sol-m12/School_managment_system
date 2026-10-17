@@ -132,11 +132,8 @@ describe("store office API", () => {
 
   it("tags a fixed asset, records damage, and lends it only inside that school", async () => {
     const token = bearer(seed.tenantA.id);
-    await request(app)
-      .post("/store/office/assets")
-      .set("Authorization", token)
-      .send({ itemId: paperId, serialNo: "", location: "" })
-      .expect(409);
+    const catalog = await request(app).get("/store/office/assets").set("Authorization", token).expect(200);
+    expect(catalog.body.items.some((row: { id: number }) => row.id === paperId)).toBe(true);
 
     const tagged = await request(app)
       .post("/store/office/assets")

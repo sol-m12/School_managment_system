@@ -422,7 +422,7 @@ async function nextTag(tenantId: number): Promise<string> {
 }
 
 export async function assetBoard(tenantId: number) {
-  const fixed = (await catalog(tenantId)).filter((item) => item.itemType === "fixed_asset");
+  const fixed = await catalog(tenantId);
   const rows = await db
     .select({
       id: skAssets.assetId,
@@ -454,7 +454,13 @@ export async function assetBoard(tenantId: number) {
   );
 
   return {
-    items: fixed.map((item) => ({ id: item.id, code: item.code, name: item.name, stock: item.stock })),
+    items: fixed.map((item) => ({
+      id: item.id,
+      code: item.code,
+      name: item.name,
+      stock: item.stock,
+      itemType: item.itemType,
+    })),
     rows: withQr,
   };
 }
@@ -511,7 +517,6 @@ export async function registerAsset(
   input: { itemId: number; serialNo: string; location: string },
 ) {
   const item = await itemOf(tenantId, input.itemId);
-  if (item.itemType !== "fixed_asset") throw new OfficeError("NOT_FIXED");
   let tag = await nextTag(tenantId);
   let id = 0;
   for (let attempt = 0; attempt < 5; attempt += 1) {

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Camera, Printer, ScanLine } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Alert, Badge, Button, Card, CardBody, CardHeader, Input, PageHeader } from "@/components/ui";
 import { Panel, readForm, textOf, useNotice } from "@/features/principal/officeUi";
@@ -231,14 +232,22 @@ export function AssetsPage() {
                   <label className="block text-sm font-semibold text-ink-muted">
                     {t("officeItem")}
                     <select name="itemId" required className="mt-1.5 block min-h-11 w-full rounded-control border border-border bg-surface px-3 text-sm">
-                      <option value="">{t("officeItem")}</option>
+                      <option value="">{t("officeChooseItem")}</option>
                       {data.items.map((item) => (
                         <option key={item.id} value={item.id}>
-                          {item.code} {item.name}
+                          {item.code} — {item.name}
                         </option>
                       ))}
                     </select>
                   </label>
+                  {data.items.length === 0 ? (
+                    <p className="text-sm text-ink-muted md:col-span-4">
+                      {t("officeNoItems")}{" "}
+                      <Link className="font-semibold text-brand-700" to="/store/items">
+                        {t("officeItemsLink")}
+                      </Link>
+                    </p>
+                  ) : null}
                   <Input name="serialNo" label={t("officeSerial")} />
                   <Input name="location" label={t("officeLocation")} />
                   <Button type="submit" loading={save.isPending}>
