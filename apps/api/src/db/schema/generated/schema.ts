@@ -1110,6 +1110,156 @@ export const requisitionsModel20 = mysqlTable("requisitions_model20", {
 	index("idx_requisitions_model20_status").on(table.tenantId, table.status),
 ]);
 
+export const roAccessLog = mysqlTable("ro_access_log", {
+	logId: int("log_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	userId: int("user_id").notNull(),
+	actionType: varchar("action_type", { length: 80 }).notNull(),
+	targetCode: varchar("target_code", { length: 40 }).default("").notNull(),
+	description: varchar({ length: 500 }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_ro_access_log_tenant_id").on(table.tenantId),
+]);
+
+export const roAlumni = mysqlTable("ro_alumni", {
+	alumniId: int("alumni_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	studentId: int("student_id").notNull(),
+	graduationYear: varchar("graduation_year", { length: 10 }).notNull(),
+	note: varchar({ length: 255 }).default("").notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_ro_alumni_tenant_id").on(table.tenantId),
+	unique("uq_ro_alumni_student").on(table.tenantId, table.studentId),
+]);
+
+export const roArchives = mysqlTable("ro_archives", {
+	archiveId: int("archive_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	academicYear: varchar("academic_year", { length: 10 }).notNull(),
+	gradeLevel: int("grade_level").notNull(),
+	section: varchar({ length: 10 }).notNull(),
+	rowCount: int("row_count").notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_ro_archives_tenant_id").on(table.tenantId),
+	unique("uq_ro_archives_section").on(table.tenantId, table.academicYear, table.gradeLevel, table.section),
+]);
+
+export const roArchiveRows = mysqlTable("ro_archive_rows", {
+	rowId: int("row_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	archiveId: int("archive_id").notNull(),
+	gradeEntryId: int("grade_entry_id").notNull(),
+	studentName: varchar("student_name", { length: 255 }).notNull(),
+	subjectName: varchar("subject_name", { length: 100 }).notNull(),
+	score: decimal({ precision: 5, scale: 2 }).notNull(),
+	maxScore: decimal("max_score", { precision: 5, scale: 2 }).notNull(),
+},
+(table) => [
+	index("idx_ro_archive_rows_tenant_id").on(table.tenantId),
+	index("idx_ro_archive_rows_archive").on(table.tenantId, table.archiveId),
+]);
+
+export const roDocuments = mysqlTable("ro_documents", {
+	documentId: int("document_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	studentId: int("student_id").notNull(),
+	requestId: int("request_id"),
+	kind: mysqlEnum(['transcript','cumulative']).notNull(),
+	academicYear: varchar("academic_year", { length: 10 }).notNull(),
+	verifyCode: varchar("verify_code", { length: 16 }).notNull(),
+	summary: varchar({ length: 500 }).notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_ro_documents_tenant_id").on(table.tenantId),
+	unique("uq_ro_documents_code").on(table.verifyCode),
+]);
+
+export const roFiles = mysqlTable("ro_files", {
+	fileId: int("file_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	studentId: int("student_id").notNull(),
+	title: varchar({ length: 160 }).notNull(),
+	storedName: varchar("stored_name", { length: 80 }).notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_ro_files_tenant_id").on(table.tenantId),
+	unique("uq_ro_files_name").on(table.storedName),
+]);
+
+export const roImports = mysqlTable("ro_imports", {
+	importId: int("import_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	fileKind: mysqlEnum("file_kind", ['csv','structured']).notNull(),
+	rowCount: int("row_count").notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_ro_imports_tenant_id").on(table.tenantId),
+]);
+
+export const roLocks = mysqlTable("ro_locks", {
+	lockId: int("lock_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	academicYear: varchar("academic_year", { length: 10 }).notNull(),
+	gradeLevel: int("grade_level").notNull(),
+	section: varchar({ length: 10 }).notNull(),
+	status: mysqlEnum(['Locked','Unlocked']).default('Locked').notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_ro_locks_tenant_id").on(table.tenantId),
+	unique("uq_ro_locks_section").on(table.tenantId, table.academicYear, table.gradeLevel, table.section),
+]);
+
+export const roRequests = mysqlTable("ro_requests", {
+	requestId: int("request_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	kind: mysqlEnum(['correction','unlock']).notNull(),
+	gradeEntryId: int("grade_entry_id"),
+	academicYear: varchar("academic_year", { length: 10 }).notNull(),
+	gradeLevel: int("grade_level").notNull(),
+	section: varchar({ length: 10 }).notNull(),
+	proposedScore: decimal("proposed_score", { precision: 5, scale: 2 }),
+	reason: varchar({ length: 500 }).notNull(),
+	status: mysqlEnum(['Pending','Granted','Applied','Refused']).default('Pending').notNull(),
+	principalNote: varchar("principal_note", { length: 500 }).default("").notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	decidedBy: int("decided_by"),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_ro_requests_tenant_id").on(table.tenantId),
+	index("idx_ro_requests_status").on(table.tenantId, table.status),
+]);
+
+export const roStaffRecords = mysqlTable("ro_staff_records", {
+	recordId: int("record_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	staffId: int("staff_id").notNull(),
+	kind: mysqlEnum(['credential','work','file']).notNull(),
+	title: varchar({ length: 160 }).notNull(),
+	body: varchar({ length: 1000 }).notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_ro_staff_records_tenant_id").on(table.tenantId),
+]);
+
 export const schemaMigrations = mysqlTable("schema_migrations", {
 	id: int().autoincrement().notNull(),
 	filename: varchar({ length: 255 }).notNull(),

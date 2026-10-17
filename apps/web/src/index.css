@@ -95,6 +95,23 @@
     border-color: #003366;
     box-shadow: none;
   }
+
+  body:has(.ministry-sheet) * {
+    visibility: hidden;
+  }
+
+  body:has(.ministry-sheet) .ministry-sheet,
+  body:has(.ministry-sheet) .ministry-sheet * {
+    visibility: visible;
+  }
+
+  body:has(.ministry-sheet) .ministry-sheet {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    font-family: "Noto Sans Ethiopic", "Segoe UI", sans-serif;
+  }
 }
 
 @keyframes ticker {

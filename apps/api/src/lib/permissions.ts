@@ -79,6 +79,8 @@ export const PERMISSIONS = [
 
   "principal.office",
   "vice.office",
+  "records.office",
+  "records.override",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
@@ -156,6 +158,8 @@ const GRANTS: Record<Permission, readonly Role[]> = {
 
   "principal.office": ["Principal"],
   "vice.office": ["V_Principal"],
+  "records.office": ["Registrar"],
+  "records.override": ["Principal"],
 };
 
 export function hasPermission(role: Role, permission: Permission): boolean {

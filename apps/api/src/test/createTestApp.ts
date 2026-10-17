@@ -11,6 +11,7 @@ import { studentRouter } from "../modules/student/student.routes.js";
 import { deskRouter } from "../modules/student/desk.routes.js";
 import { storeRouter } from "../modules/store/store.routes.js";
 import { storeOfficeRouter } from "../modules/store/office.routes.js";
+import { recordsRouter } from "../modules/records/records.routes.js";
 import { financeRouter } from "../modules/finance/finance.routes.js";
 import { technicianRouter } from "../modules/technician/technician.routes.js";
 import { operationsRouter } from "../modules/operations/operations.routes.js";
@@ -38,5 +39,6 @@ export function createTestApp(): Express {
   app.use("/store/finance", financeRouter);
   app.use("/store/office", storeOfficeRouter);
   app.use("/store", storeRouter);
+  app.use("/records", recordsRouter);
   return app;
 }

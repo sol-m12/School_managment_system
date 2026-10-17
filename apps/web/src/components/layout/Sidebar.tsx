@@ -66,6 +66,7 @@ export const Sidebar = memo(function Sidebar({
                     <li key={item.key}>
                       <NavLink
                         to={item.path}
+                        end={item.end}
                         onClick={onClose}
                         className={({ isActive }) =>
                           cn(

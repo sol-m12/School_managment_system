@@ -106,7 +106,18 @@ export type ErrorKey =
   | "alreadySubmitted"
   | "stockAdequate"
   | "alreadyRouted"
-  | "notFixed";
+  | "notFixed"
+  | "notSent"
+  | "notAccepted"
+  | "overrideRequired"
+  | "recordLocked"
+  | "alreadyArchived"
+  | "notGraduate"
+  | "alreadyAlumni"
+  | "pdfFile"
+  | "importFormat"
+  | "fileType"
+  | "fileSize";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -213,6 +224,17 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   STOCK_ADEQUATE: "stockAdequate",
   ALREADY_ROUTED: "alreadyRouted",
   NOT_FIXED: "notFixed",
+  NOT_SENT: "notSent",
+  NOT_ACCEPTED: "notAccepted",
+  OVERRIDE_REQUIRED: "overrideRequired",
+  LOCKED: "recordLocked",
+  ALREADY_ARCHIVED: "alreadyArchived",
+  NOT_GRADUATE: "notGraduate",
+  ALREADY_ALUMNI: "alreadyAlumni",
+  PDF_FILE: "pdfFile",
+  IMPORT_FORMAT: "importFormat",
+  FILE_TYPE: "fileType",
+  FILE_SIZE: "fileSize",
 };
 
 function readCode(data: unknown): string | null {

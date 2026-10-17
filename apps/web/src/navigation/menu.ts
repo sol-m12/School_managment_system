@@ -49,6 +49,9 @@ import {
   Search,
   Trash2,
   Undo2,
+  Archive,
+  FileCheck2,
+  LockKeyhole,
   AlertTriangle,
   PieChart,
   Upload,
@@ -99,6 +102,7 @@ export type MenuGroupKey =
   | "departmentHead"
   | "studentDesk"
   | "storeOffice"
+  | "recordOffice"
   | "main";
 
 export type MenuItem = {
@@ -113,6 +117,8 @@ export type MenuItem = {
   roles?: readonly Role[];
   /** Legacy shows a different label for the same item per role. */
   labelByRole?: Partial<Record<Role, NavItemKey>>;
+  /** Highlight only this path, not the pages under it. */
+  end?: boolean;
 };
 
 type MenuUser = { role: Role; permissions: readonly Permission[] };
@@ -133,6 +139,7 @@ export const MENU_GROUP_ORDER: readonly MenuGroupKey[] = [
   "departmentHead",
   "studentDesk",
   "storeOffice",
+  "recordOffice",
   "main",
   "finance",
 ];
@@ -198,6 +205,7 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "earlyWarning", path: "/principal/warnings", icon: AlertTriangle, group: "principalOffice", permission: "principal.office" },
   { key: "incidentPortal", path: "/principal/incidents", icon: Siren, group: "principalOffice", permission: "principal.office" },
   { key: "yearAnalytics", path: "/principal/demographics", icon: PieChart, group: "principalOffice", permission: "principal.office" },
+  { key: "recordOverrides", path: "/principal/record-overrides", icon: LockKeyhole, group: "principalOffice", permission: "records.override" },
 
   { key: "vocationalTraining", path: "/vice/vocational", icon: Wrench, group: "viceOffice", permission: "vice.office" },
   { key: "behaviorOffice", path: "/vice/behavior", icon: Scale, group: "viceOffice", permission: "vice.office" },
@@ -278,6 +286,19 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "stockForecast", path: "/store/forecast", icon: Brain, group: "storeOffice", permission: "store.office" },
   { key: "storeReports", path: "/store/reports", icon: FileSpreadsheet, group: "storeOffice", permission: "store.office" },
 
+  { key: "recordDesk", path: "/records", icon: Archive, group: "recordOffice", permission: "records.office", end: true },
+  { key: "recordInbox", path: "/records/inbox", icon: FileCheck2, group: "recordOffice", permission: "records.office" },
+  { key: "recordQueue", path: "/records/queue", icon: ScrollText, group: "recordOffice", permission: "records.office" },
+  { key: "recordTranscripts", path: "/records/transcripts", icon: FileText, group: "recordOffice", permission: "records.office" },
+  { key: "recordArchives", path: "/records/archives", icon: Archive, group: "recordOffice", permission: "records.office" },
+  { key: "recordCorrections", path: "/records/corrections", icon: LockKeyhole, group: "recordOffice", permission: "records.office" },
+  { key: "recordImport", path: "/records/import", icon: Upload, group: "recordOffice", permission: "records.office" },
+  { key: "recordStaff", path: "/records/staff", icon: UsersRound, group: "recordOffice", permission: "records.office" },
+  { key: "recordFiles", path: "/records/files", icon: FolderOpen, group: "recordOffice", permission: "records.office" },
+  { key: "recordAlumni", path: "/records/alumni", icon: GraduationCap, group: "recordOffice", permission: "records.office" },
+  { key: "recordExport", path: "/records/export", icon: FileSpreadsheet, group: "recordOffice", permission: "records.office" },
+  { key: "recordAccess", path: "/records/access", icon: ScrollText, group: "recordOffice", permission: "records.office" },
+
   {
     key: "dashboard",
     path: "/dashboard",
@@ -293,7 +314,7 @@ export const MENU_ITEMS: readonly MenuItem[] = [
     },
   },
   { key: "fileManagement", path: "/files", icon: FolderOpen, group: "main", permission: "files.manage" },
-  { key: "profile", path: "/profile", icon: UserCog, group: "main", roles: ["Principal", "Teacher", "Technician", "V_Principal", "Student", "Store_Keeper"] },
+  { key: "profile", path: "/profile", icon: UserCog, group: "main", roles: ["Principal", "Teacher", "Technician", "V_Principal", "Student", "Store_Keeper", "Registrar"] },
   { key: "payments", path: "/finance/payments", icon: Landmark, group: "finance", permission: "finance.income" },
   { key: "incomeExpense", path: "/finance/income", icon: Landmark, group: "finance", permission: "finance.expense" },
 ];

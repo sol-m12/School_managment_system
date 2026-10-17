@@ -23,6 +23,16 @@ export type IsolationSeed = {
 };
 
 const TABLES_TO_EMPTY = [
+  "ro_access_log",
+  "ro_files",
+  "ro_archive_rows",
+  "ro_archives",
+  "ro_documents",
+  "ro_requests",
+  "ro_locks",
+  "ro_imports",
+  "ro_staff_records",
+  "ro_alumni",
   "sk_loans",
   "sk_disposals",
   "sk_assets",

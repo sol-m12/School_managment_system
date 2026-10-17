@@ -65,6 +65,22 @@ import { MENU_ITEMS, type NavItemKey } from "@/navigation/menu";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
 import { HomePage } from "@/features/home/HomePage";
+import {
+  AccessLogPage,
+  AlumniPage,
+  ArchivesPage,
+  CorrectionsPage,
+  MinistryExportPage,
+  RecordFilesPage,
+  RecordImportPage,
+  RecordInboxPage,
+  RecordOverridesPage,
+  RecordQueuePage,
+  RecordsHomePage,
+  StaffRecordsPage,
+  TranscriptsPage,
+  VerifyPage,
+} from "@/features/records/RecordsPages";
 import { AssignedWorksPage } from "@/features/teacher/AssignedWorksPage";
 import { AttendanceRegisterPage, TakeAttendancePage } from "@/features/teacher/AttendancePages";
 import { ExamResultsPage } from "@/features/teacher/ExamResultsPage";
@@ -286,6 +302,7 @@ const subjectRoutes: RouteObject[] = [
 export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
   { path: "/home", element: <HomePage /> },
+  { path: "/verify", element: <VerifyPage /> },
   { path: "/forgot-password", element: <PublicPlaceholderPage title="forgotPassword" /> },
   {
     path: "/",
@@ -422,6 +439,19 @@ export const router = createBrowserRouter([
       { path: "principal/warnings", element: <ProtectedRoute permission="principal.office"><WarningsPage /></ProtectedRoute> },
       { path: "principal/incidents", element: <ProtectedRoute permission="principal.office"><IncidentsPage /></ProtectedRoute> },
       { path: "principal/demographics", element: <ProtectedRoute permission="principal.office"><DemographicsPage /></ProtectedRoute> },
+      { path: "principal/record-overrides", element: <ProtectedRoute permission="records.override"><RecordOverridesPage /></ProtectedRoute> },
+      { path: "records", element: <ProtectedRoute permission="records.office"><RecordsHomePage /></ProtectedRoute> },
+      { path: "records/inbox", element: <ProtectedRoute permission="records.office"><RecordInboxPage /></ProtectedRoute> },
+      { path: "records/queue", element: <ProtectedRoute permission="records.office"><RecordQueuePage /></ProtectedRoute> },
+      { path: "records/transcripts", element: <ProtectedRoute permission="records.office"><TranscriptsPage /></ProtectedRoute> },
+      { path: "records/archives", element: <ProtectedRoute permission="records.office"><ArchivesPage /></ProtectedRoute> },
+      { path: "records/corrections", element: <ProtectedRoute permission="records.office"><CorrectionsPage /></ProtectedRoute> },
+      { path: "records/import", element: <ProtectedRoute permission="records.office"><RecordImportPage /></ProtectedRoute> },
+      { path: "records/staff", element: <ProtectedRoute permission="records.office"><StaffRecordsPage /></ProtectedRoute> },
+      { path: "records/files", element: <ProtectedRoute permission="records.office"><RecordFilesPage /></ProtectedRoute> },
+      { path: "records/alumni", element: <ProtectedRoute permission="records.office"><AlumniPage /></ProtectedRoute> },
+      { path: "records/export", element: <ProtectedRoute permission="records.office"><MinistryExportPage /></ProtectedRoute> },
+      { path: "records/access", element: <ProtectedRoute permission="records.office"><AccessLogPage /></ProtectedRoute> },
       { path: "vice/vocational", element: <ProtectedRoute permission="vice.office"><VocationalPage /></ProtectedRoute> },
       { path: "vice/behavior", element: <ProtectedRoute permission="vice.office"><BehaviorPage /></ProtectedRoute> },
       { path: "vice/invigilation", element: <ProtectedRoute permission="vice.office"><InvigilationPage /></ProtectedRoute> },

@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Navigate } from "react-router-dom";
 import {
   ArrowRightLeft,
   Boxes,
@@ -38,6 +39,7 @@ const numberFormat = new Intl.NumberFormat("en-US");
 export function DashboardPage() {
   const user = useSessionUser();
   if (user.role === "Student") return <StudentHome />;
+  if (user.role === "Registrar") return <Navigate to="/records" replace />;
   return <StaffDashboard />;
 }
 

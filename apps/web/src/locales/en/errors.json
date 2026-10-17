@@ -106,5 +106,16 @@
   "alreadySubmitted": "This homework is already submitted.",
   "stockAdequate": "This item is above its reorder level, so a purchase request is not opened.",
   "alreadyRouted": "A purchase request for this item is already with procurement.",
-  "notFixed": "A tag is only for a fixed asset."
+  "notFixed": "A tag is only for a fixed asset.",
+  "notSent": "The department head has not sent this mark yet.",
+  "notAccepted": "Only an accepted mark can be corrected.",
+  "overrideRequired": "This change waits for the principal.",
+  "recordLocked": "This section is locked. An unlock needs the principal.",
+  "alreadyArchived": "This roster is already archived.",
+  "notGraduate": "Only grade 12 can be recorded as alumni.",
+  "alreadyAlumni": "This student is already in the alumni list.",
+  "pdfFile": "A PDF is filed on the student profile. It is not read as a student list.",
+  "importFormat": "The file does not match the expected columns.",
+  "fileType": "Choose a real PDF file.",
+  "fileSize": "The file is too large."
 }
