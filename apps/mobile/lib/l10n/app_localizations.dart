@@ -655,6 +655,180 @@ abstract class AppLocalizations {
   /// In am, this message translates to:
   /// **'አዲስ ማሳወቂያዎች ከትምህርት ቤትዎ'**
   String get localNotifyChannelDesc;
+
+  /// No description provided for @parentNavHome.
+  ///
+  /// In am, this message translates to:
+  /// **'መነሻ'**
+  String get parentNavHome;
+
+  /// No description provided for @parentNavAttendance.
+  ///
+  /// In am, this message translates to:
+  /// **'መገኘት'**
+  String get parentNavAttendance;
+
+  /// No description provided for @parentNavHomework.
+  ///
+  /// In am, this message translates to:
+  /// **'የቤት ስራ'**
+  String get parentNavHomework;
+
+  /// No description provided for @parentNavLibrary.
+  ///
+  /// In am, this message translates to:
+  /// **'ቤተ-መጻሕፍት'**
+  String get parentNavLibrary;
+
+  /// No description provided for @parentNavMessages.
+  ///
+  /// In am, this message translates to:
+  /// **'መልእክት'**
+  String get parentNavMessages;
+
+  /// No description provided for @parentNavMore.
+  ///
+  /// In am, this message translates to:
+  /// **'ተጨማሪ'**
+  String get parentNavMore;
+
+  /// No description provided for @parentChildrenDashboard.
+  ///
+  /// In am, this message translates to:
+  /// **'የልጆች ዳሽቦርድ'**
+  String get parentChildrenDashboard;
+
+  /// No description provided for @parentAttendance.
+  ///
+  /// In am, this message translates to:
+  /// **'መገኘት'**
+  String get parentAttendance;
+
+  /// No description provided for @parentConduct.
+  ///
+  /// In am, this message translates to:
+  /// **'ስነ-ምግባር'**
+  String get parentConduct;
+
+  /// No description provided for @parentHomework.
+  ///
+  /// In am, this message translates to:
+  /// **'የቤት ስራ'**
+  String get parentHomework;
+
+  /// No description provided for @parentLibrary.
+  ///
+  /// In am, this message translates to:
+  /// **'ቤተ-መጻሕፍት'**
+  String get parentLibrary;
+
+  /// No description provided for @parentMessages.
+  ///
+  /// In am, this message translates to:
+  /// **'መልእክት'**
+  String get parentMessages;
+
+  /// No description provided for @parentAppointments.
+  ///
+  /// In am, this message translates to:
+  /// **'ቀጠሮ'**
+  String get parentAppointments;
+
+  /// No description provided for @parentSchoolFallback.
+  ///
+  /// In am, this message translates to:
+  /// **'ትምህርት ቤት'**
+  String get parentSchoolFallback;
+
+  /// No description provided for @parentEmptyChildren.
+  ///
+  /// In am, this message translates to:
+  /// **'ምንም የተገናኘ ልጅ የለም'**
+  String get parentEmptyChildren;
+
+  /// No description provided for @parentSelectChild.
+  ///
+  /// In am, this message translates to:
+  /// **'ልጅ ይምረጡ'**
+  String get parentSelectChild;
+
+  /// No description provided for @parentSendMessage.
+  ///
+  /// In am, this message translates to:
+  /// **'መልእክት ላክ'**
+  String get parentSendMessage;
+
+  /// No description provided for @parentBookAppointment.
+  ///
+  /// In am, this message translates to:
+  /// **'ቀጠሮ ያስይዙ'**
+  String get parentBookAppointment;
+
+  /// No description provided for @parentMessageSent.
+  ///
+  /// In am, this message translates to:
+  /// **'መልእክት ተልኳል'**
+  String get parentMessageSent;
+
+  /// No description provided for @parentAppointmentBooked.
+  ///
+  /// In am, this message translates to:
+  /// **'ቀጠሮ ተጠይቋል'**
+  String get parentAppointmentBooked;
+
+  /// No description provided for @parentWithRole.
+  ///
+  /// In am, this message translates to:
+  /// **'ለማን'**
+  String get parentWithRole;
+
+  /// No description provided for @parentSubjectName.
+  ///
+  /// In am, this message translates to:
+  /// **'የትምህርት ስም'**
+  String get parentSubjectName;
+
+  /// No description provided for @parentMessageBody.
+  ///
+  /// In am, this message translates to:
+  /// **'መልእክት'**
+  String get parentMessageBody;
+
+  /// No description provided for @parentPurpose.
+  ///
+  /// In am, this message translates to:
+  /// **'ዓላማ'**
+  String get parentPurpose;
+
+  /// No description provided for @parentPreferredDate.
+  ///
+  /// In am, this message translates to:
+  /// **'የሚመረጥ ቀን'**
+  String get parentPreferredDate;
+
+  /// No description provided for @parentPreferredTime.
+  ///
+  /// In am, this message translates to:
+  /// **'የሚመረጥ ሰዓት'**
+  String get parentPreferredTime;
+
+  /// No description provided for @parentIndicatorDone.
+  ///
+  /// In am, this message translates to:
+  /// **'ተሰርቷል'**
+  String get parentIndicatorDone;
+
+  /// No description provided for @parentIndicatorMissing.
+  ///
+  /// In am, this message translates to:
+  /// **'ጎድሏል'**
+  String get parentIndicatorMissing;
+
+  /// No description provided for @parentIndicatorPending.
+  ///
+  /// In am, this message translates to:
+  /// **'በመጠባበቅ ላይ'**
+  String get parentIndicatorPending;
 }
 
 class _AppLocalizationsDelegate

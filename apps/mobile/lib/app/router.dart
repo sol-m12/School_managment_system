@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../core/auth/auth_user.dart';
 import '../core/providers.dart';
 import '../features/auth/login_page.dart';
+import '../features/parent/parent_shell.dart';
+import '../features/parent/screens/parent_home_screen.dart';
+import '../features/parent/screens/parent_screens.dart';
 import '../features/student/screens/digital_id_screen.dart';
 import '../features/student/screens/notifications_screen.dart';
 import '../features/student/screens/student_screens.dart';
@@ -15,6 +19,14 @@ import '../features/teacher/teacher_shell.dart';
 import '../l10n/app_localizations.dart';
 
 final _rootKey = GlobalKey<NavigatorState>();
+
+/// Home path for a signed-in role (used by redirects and tests).
+String homePathForRole(AuthUser user) {
+  if (user.isStudent) return '/student/home';
+  if (user.isTeacher) return '/teacher/home';
+  if (user.isParent) return '/parent/home';
+  return '/unsupported';
+}
 
 final goRouterProvider = Provider<GoRouter>((ref) {
   final auth = ref.watch(authControllerProvider);
@@ -31,15 +43,17 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       }
       final user = auth.user!;
       if (loggingIn) {
-        if (user.isStudent) return '/student/home';
-        if (user.isTeacher) return '/teacher/home';
-        return '/unsupported';
+        return homePathForRole(user);
       }
-      if (state.matchedLocation.startsWith('/student') && !user.isStudent) {
-        return user.isTeacher ? '/teacher/home' : '/unsupported';
+      final loc = state.matchedLocation;
+      if (loc.startsWith('/student') && !user.isStudent) {
+        return homePathForRole(user);
       }
-      if (state.matchedLocation.startsWith('/teacher') && !user.isTeacher) {
-        return user.isStudent ? '/student/home' : '/unsupported';
+      if (loc.startsWith('/teacher') && !user.isTeacher) {
+        return homePathForRole(user);
+      }
+      if (loc.startsWith('/parent') && !user.isParent) {
+        return homePathForRole(user);
       }
       return null;
     },
@@ -614,6 +628,88 @@ final goRouterProvider = Provider<GoRouter>((ref) {
               GoRoute(
                 path: '/teacher/more',
                 builder: (context, state) => const TeacherMoreScreen(),
+              ),
+            ],
+          ),
+        ],
+      ),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return ParentShell(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/parent/home',
+                builder: (context, state) => const ParentHomeScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/parent/attendance',
+                builder: (context, state) => const ParentAttendanceHubScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'status',
+                    builder: (context, state) =>
+                        const ParentAttendanceStatusScreen(),
+                  ),
+                  GoRoute(
+                    path: 'conduct',
+                    builder: (context, state) => const ParentConductScreen(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/parent/homework',
+                builder: (context, state) => const ParentHomeworkScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/parent/library',
+                builder: (context, state) => const ParentLibraryScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/parent/messages',
+                builder: (context, state) => const ParentMessagesScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/parent/more',
+                builder: (context, state) => const ParentMoreScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'notifications',
+                    builder: (context, state) =>
+                        const ParentNotificationsScreen(),
+                  ),
+                  GoRoute(
+                    path: 'appointments',
+                    builder: (context, state) =>
+                        const ParentAppointmentsScreen(),
+                  ),
+                  GoRoute(
+                    path: 'results',
+                    builder: (context, state) => const ParentResultsScreen(),
+                  ),
+                ],
               ),
             ],
           ),

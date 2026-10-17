@@ -186,6 +186,7 @@ import {
 } from "@/features/teacher/DutyOfficePages";
 import { AnnouncementsPage } from "@/features/technician/AnnouncementsPage";
 import { AuditPage, DutiesPage, HealthPage, IdentityPage, ImportPage, TicketsPage } from "@/features/operations/OperationsPages";
+import { ParentsPage } from "@/features/operations/ParentsPage";
 import { StaffRegistrationPage } from "@/features/technician/StaffRegistrationPage";
 import { StudentIdPage } from "@/features/technician/StudentIdPage";
 
@@ -228,6 +229,7 @@ const BUILT_ITEMS: readonly NavItemKey[] = [
   "announcements",
   "staffRegistration",
   "accountManagement",
+  "parentAccounts",
   "onlineExam",
   "groupParticipation",
   "groupCompetition",
@@ -422,6 +424,7 @@ export const router = createBrowserRouter([
       { path: "system/school-info", element: <ProtectedRoute permission="schoolInfo.manage"><SchoolInfoPage /></ProtectedRoute> },
       { path: "system/role-modules", element: <ProtectedRoute permission="roleModules.manage"><RoleModulesPage /></ProtectedRoute> },
       { path: "system/identity", element: <ProtectedRoute permission="accounts.manage"><IdentityPage /></ProtectedRoute> },
+      { path: "system/parents", element: <ProtectedRoute permission="parents.manage"><ParentsPage /></ProtectedRoute> },
       { path: "system/helpdesk", element: <ProtectedRoute permission="tickets.manage"><TicketsPage /></ProtectedRoute> },
       { path: "system/audit", element: <ProtectedRoute permission="audit.read"><AuditPage /></ProtectedRoute> },
       { path: "system/import", element: <ProtectedRoute permission="users.import"><ImportPage /></ProtectedRoute> },

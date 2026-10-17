@@ -290,4 +290,91 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get localNotifyChannelDesc => 'New announcements from your school';
+
+  @override
+  String get parentNavHome => 'Home';
+
+  @override
+  String get parentNavAttendance => 'Attendance';
+
+  @override
+  String get parentNavHomework => 'Homework';
+
+  @override
+  String get parentNavLibrary => 'Library';
+
+  @override
+  String get parentNavMessages => 'Messages';
+
+  @override
+  String get parentNavMore => 'More';
+
+  @override
+  String get parentChildrenDashboard => 'Children dashboard';
+
+  @override
+  String get parentAttendance => 'Attendance';
+
+  @override
+  String get parentConduct => 'Conduct';
+
+  @override
+  String get parentHomework => 'Homework';
+
+  @override
+  String get parentLibrary => 'Library';
+
+  @override
+  String get parentMessages => 'Messages';
+
+  @override
+  String get parentAppointments => 'Appointments';
+
+  @override
+  String get parentSchoolFallback => 'School';
+
+  @override
+  String get parentEmptyChildren => 'No linked children yet';
+
+  @override
+  String get parentSelectChild => 'Select a child';
+
+  @override
+  String get parentSendMessage => 'Send message';
+
+  @override
+  String get parentBookAppointment => 'Book appointment';
+
+  @override
+  String get parentMessageSent => 'Message sent';
+
+  @override
+  String get parentAppointmentBooked => 'Appointment requested';
+
+  @override
+  String get parentWithRole => 'With';
+
+  @override
+  String get parentSubjectName => 'Subject name';
+
+  @override
+  String get parentMessageBody => 'Message';
+
+  @override
+  String get parentPurpose => 'Purpose';
+
+  @override
+  String get parentPreferredDate => 'Preferred date';
+
+  @override
+  String get parentPreferredTime => 'Preferred time';
+
+  @override
+  String get parentIndicatorDone => 'Done';
+
+  @override
+  String get parentIndicatorMissing => 'Missing';
+
+  @override
+  String get parentIndicatorPending => 'Pending';
 }

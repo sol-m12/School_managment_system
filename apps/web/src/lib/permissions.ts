@@ -81,6 +81,9 @@ export const PERMISSIONS = [
   "procurement.office",
   "secretary.office",
   "secretary.authorize",
+
+  "parent.desk",
+  "parents.manage",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];

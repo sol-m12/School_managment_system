@@ -1,5 +1,5 @@
 name: mobile
-description: Keyt school management mobile app (Student + Teacher).
+description: Keyt school management mobile app (Student + Teacher + Parent).
 publish_to: "none"
 version: 1.0.0+1
 

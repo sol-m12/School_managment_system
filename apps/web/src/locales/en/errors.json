@@ -151,5 +151,9 @@
   "parseIncomplete": "The form text is missing required labels.",
   "slugTaken": "That school URL code is already in use.",
   "slugFormat": "Use lowercase letters, numbers, and hyphens only.",
-  "passwordShort": "Password must be at least 8 characters."
+  "passwordShort": "Password must be at least 8 characters.",
+  "alreadyLinked": "That parent is already linked to this student.",
+  "codeInvalid": "No parent was found for that code.",
+  "noStudentAccount": "This student does not have a login account yet.",
+  "notParent": "This account is not a parent account."
 }

@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { tenants, accountTypes, adminTasks, announcements, annualLessonPlan, assignmentSubmissions, attendance, auditLog, backupRuns, binCardLedger, budgetNotifications, budgetNotificationItems, classes, classSchedule, committeesClubs, committeeMembers, communicationGroups, departmentHeads, evaluationCriteria, evaluationDetails, onlineExams, examQuestions, examResultsOnline, students, expenses, externalInquiries, fileShares, financeCodes, foreignPartners, grades, users, groupsInfo, subjects, groupChats, groupMembers, groupMessages, groupResponses, groupTasks, groupSubmissions, studentGroups, income, issueModel22, itemCategories, items, lbBadges, lbIntake, lbLiteracy, lbPatronLog, lbReminders, lbReservations, lbResources, libraryAttendance, libraryBooks, libraryBorrowing, libraryHandovers, liveQuizQuestions, liveQuizSessions, loginAttempts, mehi161Cards, mehi161Transactions, mehi17Cards, mehi17Transactions, mehi7Items, mehi7Vouchers, model19Grn, model19Items, outboundNotices, parentGuardian, payroll, peerAssessments, periodSettings, poApprovals, poAwards, poBids, poBudgets, poChecks, poOrders, poTenders, poVendors, principalApprovalNotes, principalDocuments, principalIncidents, principalMessages, principalPolicies, principalReportDefs, principalTraining, principalTransfers, requisitionsModel20, roAccessLog, roAlumni, roArchives, roArchiveRows, roDocuments, roFiles, roImports, roLocks, roRequests, roStaffRecords, schoolNews, schoolPlans, schoolSettings, schoolStats, secAppointments, secCleanupRuns, secDocuments, secNotices, secOcrScans, secRenewals, secTickets, simulations, skAlerts, skAssets, skDisposals, skLoans, skPurchaseRequests, staff, staffFiles, staffFolders, stockLedgerCard, studentAssessments, studentFinalReports, stCommendations, stDocumentRequests, stTaskWork, subjectWeightings, suppliers, supportTickets, systemSettings, tcBookRecommendations, tcExamStandards, tcGradeReviews, tcIncidents, tcLeaveRequests, tcPapers, tcPaperItems, tcParticipation, tcPerformance, tcPerformanceScores, tcQuestions, tcRequisitions, tcSubstitutions, tcSwaps, tcTopicCoverage, teacherAssignments, teacherEvaluations, teacherRoleCredits, vocationalRequests, vpExamSessions, vpHearings, vpInvigilators, vpPenalties, vpPlacements, vpPrograms, vpReferrals } from "./schema.js";
+import { tenants, accountTypes, adminTasks, announcements, annualLessonPlan, assignmentSubmissions, attendance, auditLog, backupRuns, binCardLedger, budgetNotifications, budgetNotificationItems, classes, classSchedule, committeesClubs, committeeMembers, communicationGroups, departmentHeads, evaluationCriteria, evaluationDetails, onlineExams, examQuestions, examResultsOnline, students, expenses, externalInquiries, fileShares, financeCodes, foreignPartners, grades, users, groupsInfo, subjects, groupChats, groupMembers, groupMessages, groupResponses, groupTasks, groupSubmissions, studentGroups, income, issueModel22, itemCategories, items, lbBadges, lbIntake, lbLiteracy, lbPatronLog, lbReminders, lbReservations, lbResources, libraryAttendance, libraryBooks, libraryBorrowing, libraryHandovers, liveQuizQuestions, liveQuizSessions, loginAttempts, mehi161Cards, mehi161Transactions, mehi17Cards, mehi17Transactions, mehi7Items, mehi7Vouchers, model19Grn, model19Items, outboundNotices, parentIdentities, parentAppointmentRequests, parentGuardian, parentMessages, parentStudentLinks, payroll, peerAssessments, periodSettings, poApprovals, poAwards, poBids, poBudgets, poChecks, poOrders, poTenders, poVendors, principalApprovalNotes, principalDocuments, principalIncidents, principalMessages, principalPolicies, principalReportDefs, principalTraining, principalTransfers, requisitionsModel20, roAccessLog, roAlumni, roArchives, roArchiveRows, roDocuments, roFiles, roImports, roLocks, roRequests, roStaffRecords, schoolNews, schoolPlans, schoolSettings, schoolStats, secAppointments, secCleanupRuns, secDocuments, secNotices, secOcrScans, secRenewals, secTickets, simulations, skAlerts, skAssets, skDisposals, skLoans, skPurchaseRequests, staff, staffFiles, staffFolders, stockLedgerCard, studentAssessments, studentFinalReports, stCommendations, stDocumentRequests, stTaskWork, subjectWeightings, suppliers, supportTickets, systemSettings, tcBookRecommendations, tcExamStandards, tcGradeReviews, tcIncidents, tcLeaveRequests, tcPapers, tcPaperItems, tcParticipation, tcPerformance, tcPerformanceScores, tcQuestions, tcRequisitions, tcSubstitutions, tcSwaps, tcTopicCoverage, teacherAssignments, teacherEvaluations, teacherRoleCredits, vocationalRequests, vpExamSessions, vpHearings, vpInvigilators, vpPenalties, vpPlacements, vpPrograms, vpReferrals } from "./schema.js";
 
 export const accountTypesRelations = relations(accountTypes, ({one, many}) => ({
 	tenant: one(tenants, {
@@ -72,7 +72,10 @@ export const tenantsRelations = relations(tenants, ({many}) => ({
 	model19Items: many(model19Items),
 	onlineExams: many(onlineExams),
 	outboundNotices: many(outboundNotices),
+	parentAppointmentRequests: many(parentAppointmentRequests),
 	parentGuardians: many(parentGuardian),
+	parentMessages: many(parentMessages),
+	parentStudentLinks: many(parentStudentLinks),
 	payrolls: many(payroll),
 	peerAssessments: many(peerAssessments),
 	periodSettings: many(periodSettings),
@@ -425,6 +428,10 @@ export const usersRelations = relations(users, ({one, many}) => ({
 	groupTasks: many(groupTasks),
 	libraryBorrowings: many(libraryBorrowing),
 	studentGroups: many(studentGroups),
+	parentIdentity: one(parentIdentities, {
+		fields: [users.parentId],
+		references: [parentIdentities.parentId]
+	}),
 	tenant: one(tenants, {
 		fields: [users.tenantId],
 		references: [tenants.id]
@@ -766,9 +773,49 @@ export const outboundNoticesRelations = relations(outboundNotices, ({one}) => ({
 	}),
 }));
 
+export const parentAppointmentRequestsRelations = relations(parentAppointmentRequests, ({one}) => ({
+	parentIdentity: one(parentIdentities, {
+		fields: [parentAppointmentRequests.parentId],
+		references: [parentIdentities.parentId]
+	}),
+	tenant: one(tenants, {
+		fields: [parentAppointmentRequests.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const parentIdentitiesRelations = relations(parentIdentities, ({many}) => ({
+	parentAppointmentRequests: many(parentAppointmentRequests),
+	parentMessages: many(parentMessages),
+	parentStudentLinks: many(parentStudentLinks),
+	users: many(users),
+}));
+
 export const parentGuardianRelations = relations(parentGuardian, ({one}) => ({
 	tenant: one(tenants, {
 		fields: [parentGuardian.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const parentMessagesRelations = relations(parentMessages, ({one}) => ({
+	parentIdentity: one(parentIdentities, {
+		fields: [parentMessages.parentId],
+		references: [parentIdentities.parentId]
+	}),
+	tenant: one(tenants, {
+		fields: [parentMessages.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const parentStudentLinksRelations = relations(parentStudentLinks, ({one}) => ({
+	parentIdentity: one(parentIdentities, {
+		fields: [parentStudentLinks.parentId],
+		references: [parentIdentities.parentId]
+	}),
+	tenant: one(tenants, {
+		fields: [parentStudentLinks.tenantId],
 		references: [tenants.id]
 	}),
 }));

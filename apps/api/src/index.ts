@@ -26,6 +26,7 @@ import { libraryRouter } from "./modules/library/library.routes.js";
 import { procurementRouter, publicTenderList, vendorRouter } from "./modules/procurement/procurement.routes.js";
 import { secretaryRouter } from "./modules/secretary/secretary.routes.js";
 import { platformRouter } from "./modules/platform/platform.routes.js";
+import { parentAdminRouter, parentRouter } from "./modules/parent/parent.routes.js";
 
 const app = express();
 
@@ -70,6 +71,8 @@ app.use("/library", libraryRouter);
 app.use("/procurement", procurementRouter);
 app.use("/vendor", vendorRouter);
 app.use("/secretary", secretaryRouter);
+app.use("/parent", parentRouter);
+app.use("/operations/parents", parentAdminRouter);
 app.get("/public/tenders", publicTenderList);
 
 if (process.env.NODE_ENV !== "test" && process.env.VITEST !== "true") {

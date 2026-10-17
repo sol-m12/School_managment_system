@@ -151,7 +151,11 @@ export type ErrorKey =
   | "parseIncomplete"
   | "slugTaken"
   | "slugFormat"
-  | "passwordShort";
+  | "passwordShort"
+  | "alreadyLinked"
+  | "codeInvalid"
+  | "noStudentAccount"
+  | "notParent";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -302,6 +306,12 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   PARSE_INCOMPLETE: "parseIncomplete",
   SLUG_TAKEN: "slugTaken",
   SLUG_FORMAT: "slugFormat",
+  ALREADY_LINKED: "alreadyLinked",
+  CODE_INVALID: "codeInvalid",
+  NO_STUDENT_ACCOUNT: "noStudentAccount",
+  NOT_PARENT: "notParent",
+  FORBIDDEN: "forbidden",
+  STUDENT_TENANT: "forbidden",
 };
 
 function readCode(data: unknown): string | null {

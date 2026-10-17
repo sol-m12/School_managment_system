@@ -23,6 +23,10 @@ export type IsolationSeed = {
 };
 
 const TABLES_TO_EMPTY = [
+  "parent_messages",
+  "parent_appointment_requests",
+  "parent_student_links",
+  "parent_identities",
   "po_awards",
   "po_bids",
   "po_orders",

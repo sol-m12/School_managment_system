@@ -1011,6 +1011,26 @@ export const outboundNotices = mysqlTable("outbound_notices", {
 	index("idx_outbound_notices_tenant_id").on(table.tenantId),
 ]);
 
+export const parentAppointmentRequests = mysqlTable("parent_appointment_requests", {
+	requestId: int("request_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	parentUserId: int("parent_user_id").notNull(),
+	parentId: int("parent_id").notNull().references(() => parentIdentities.parentId, { onDelete: "restrict", onUpdate: "restrict" } ),
+	studentId: int("student_id").notNull(),
+	withRole: mysqlEnum("with_role", ['Principal','V_Principal']).notNull(),
+	purpose: varchar({ length: 500 }).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	preferredDate: date("preferred_date", { mode: 'string' }).notNull(),
+	preferredTime: char("preferred_time", { length: 5 }),
+	status: mysqlEnum(['Pending','Accepted','Declined','Cancelled']).default('Pending').notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_par_appt_tenant_id").on(table.tenantId),
+	index("idx_par_appt_parent_id").on(table.parentId),
+	index("idx_par_appt_student_id").on(table.studentId),
+]);
+
 export const parentGuardian = mysqlTable("parent_guardian", {
 	pgId: int("pg_id").autoincrement().notNull(),
 	firstName: varchar("first_name", { length: 100 }).notNull(),
@@ -1026,6 +1046,49 @@ export const parentGuardian = mysqlTable("parent_guardian", {
 },
 (table) => [
 	index("idx_parent_guardian_tenant_id").on(table.tenantId),
+]);
+
+export const parentIdentities = mysqlTable("parent_identities", {
+	parentId: int("parent_id").autoincrement().notNull(),
+	parentCode: varchar("parent_code", { length: 32 }).notNull(),
+	displayName: varchar("display_name", { length: 200 }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	unique("uq_parent_identities_code").on(table.parentCode),
+]);
+
+export const parentMessages = mysqlTable("parent_messages", {
+	messageId: int("message_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	parentUserId: int("parent_user_id").notNull(),
+	parentId: int("parent_id").notNull().references(() => parentIdentities.parentId, { onDelete: "restrict", onUpdate: "restrict" } ),
+	studentId: int("student_id").notNull(),
+	withRole: mysqlEnum("with_role", ['Principal','V_Principal','Homeroom','Subject']).notNull(),
+	subjectName: varchar("subject_name", { length: 120 }),
+	body: varchar({ length: 2000 }).notNull(),
+	direction: mysqlEnum(['out','in']).default('out').notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_par_msg_tenant_id").on(table.tenantId),
+	index("idx_par_msg_parent_id").on(table.parentId),
+	index("idx_par_msg_student_id").on(table.studentId),
+]);
+
+export const parentStudentLinks = mysqlTable("parent_student_links", {
+	linkId: int("link_id").autoincrement().notNull(),
+	parentId: int("parent_id").notNull().references(() => parentIdentities.parentId, { onDelete: "restrict", onUpdate: "restrict" } ),
+	studentId: int("student_id").notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	linkedBy: int("linked_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_parent_student_links_tenant_id").on(table.tenantId),
+	index("idx_parent_student_links_parent_id").on(table.parentId),
+	index("idx_parent_student_links_student_id").on(table.studentId),
+	unique("uq_parent_student_links_pair").on(table.parentId, table.studentId),
 ]);
 
 export const payroll = mysqlTable("payroll", {
@@ -2336,17 +2399,19 @@ export const users = mysqlTable("users", {
 	passwordHash: varchar("password_hash", { length: 255 }).notNull(),
 	tempPassword: varchar("temp_password", { length: 255 }),
 	passwordChanged: tinyint("password_changed").default(0),
-	role: mysqlEnum(['Teacher','Technician','Secretary','Counselor','Finance','V_Principal','Registrar','Librarian','Store_Keeper','Student','Principal','Procurement']).notNull(),
+	role: mysqlEnum(['Teacher','Technician','Secretary','Counselor','Finance','V_Principal','Registrar','Librarian','Store_Keeper','Student','Principal','Procurement','Parent']).notNull(),
 	resetToken: varchar("reset_token", { length: 255 }),
 	resetExpiry: datetime("reset_expiry", { mode: 'string'}),
 	isActive: tinyint("is_active").default(1).notNull(),
 	lastSeen: timestamp("last_seen", { mode: 'string' }).default('CURRENT_TIMESTAMP').onUpdateNow(),
 	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 	tokenVersion: int("token_version").default(0).notNull(),
+	parentId: int("parent_id").references(() => parentIdentities.parentId, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
 	index("idx_users_tenant_id").on(table.tenantId),
 	unique("uq_users_tenant_username").on(table.tenantId, table.username),
+	unique("uq_users_parent_id").on(table.parentId),
 ]);
 
 export const vocationalRequests = mysqlTable("vocational_requests", {

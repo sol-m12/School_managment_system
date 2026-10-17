@@ -63,6 +63,7 @@
     "schoolInfo": "School Information",
     "roleModules": "Modules and Role Management",
     "identityAccounts": "Accounts from ID numbers",
+    "parentAccounts": "Parent accounts",
     "helpdesk": "IT helpdesk",
     "auditTrail": "Activity log",
     "userImport": "Import logins",

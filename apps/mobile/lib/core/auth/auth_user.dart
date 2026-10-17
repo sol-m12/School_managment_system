@@ -17,6 +17,7 @@ class AuthUser {
 
   bool get isStudent => role == 'Student';
   bool get isTeacher => role == 'Teacher';
+  bool get isParent => role == 'Parent';
 
   factory AuthUser.fromJson(Map<String, dynamic> json) {
     final permissions = json['permissions'];

@@ -261,6 +261,7 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "schoolInfo", path: "/system/school-info", icon: Landmark, group: "systemSettings", permission: "schoolInfo.manage" },
   { key: "roleModules", path: "/system/role-modules", icon: SlidersHorizontal, group: "systemSettings", permission: "roleModules.manage" },
   { key: "identityAccounts", path: "/system/identity", icon: KeyRound, group: "systemSettings", permission: "accounts.manage" },
+  { key: "parentAccounts", path: "/system/parents", icon: UserPlus, group: "systemSettings", permission: "parents.manage" },
   { key: "helpdesk", path: "/system/helpdesk", icon: Headset, group: "systemSettings", permission: "tickets.manage" },
   { key: "auditTrail", path: "/system/audit", icon: ScrollText, group: "systemSettings", permission: "audit.read" },
   { key: "userImport", path: "/system/import", icon: Upload, group: "systemSettings", permission: "users.import" },

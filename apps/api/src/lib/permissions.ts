@@ -86,6 +86,9 @@ export const PERMISSIONS = [
   "procurement.office",
   "secretary.office",
   "secretary.authorize",
+
+  "parent.desk",
+  "parents.manage",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
@@ -170,6 +173,9 @@ const GRANTS: Record<Permission, readonly Role[]> = {
   "procurement.office": ["Procurement"],
   "secretary.office": ["Secretary"],
   "secretary.authorize": ["Principal"],
+
+  "parent.desk": ["Parent"],
+  "parents.manage": ["Technician"],
 };
 
 export function hasPermission(role: Role, permission: Permission): boolean {

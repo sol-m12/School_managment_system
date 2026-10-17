@@ -290,4 +290,91 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get localNotifyChannelDesc => 'አዲስ ማሳወቂያዎች ከትምህርት ቤትዎ';
+
+  @override
+  String get parentNavHome => 'መነሻ';
+
+  @override
+  String get parentNavAttendance => 'መገኘት';
+
+  @override
+  String get parentNavHomework => 'የቤት ስራ';
+
+  @override
+  String get parentNavLibrary => 'ቤተ-መጻሕፍት';
+
+  @override
+  String get parentNavMessages => 'መልእክት';
+
+  @override
+  String get parentNavMore => 'ተጨማሪ';
+
+  @override
+  String get parentChildrenDashboard => 'የልጆች ዳሽቦርድ';
+
+  @override
+  String get parentAttendance => 'መገኘት';
+
+  @override
+  String get parentConduct => 'ስነ-ምግባር';
+
+  @override
+  String get parentHomework => 'የቤት ስራ';
+
+  @override
+  String get parentLibrary => 'ቤተ-መጻሕፍት';
+
+  @override
+  String get parentMessages => 'መልእክት';
+
+  @override
+  String get parentAppointments => 'ቀጠሮ';
+
+  @override
+  String get parentSchoolFallback => 'ትምህርት ቤት';
+
+  @override
+  String get parentEmptyChildren => 'ምንም የተገናኘ ልጅ የለም';
+
+  @override
+  String get parentSelectChild => 'ልጅ ይምረጡ';
+
+  @override
+  String get parentSendMessage => 'መልእክት ላክ';
+
+  @override
+  String get parentBookAppointment => 'ቀጠሮ ያስይዙ';
+
+  @override
+  String get parentMessageSent => 'መልእክት ተልኳል';
+
+  @override
+  String get parentAppointmentBooked => 'ቀጠሮ ተጠይቋል';
+
+  @override
+  String get parentWithRole => 'ለማን';
+
+  @override
+  String get parentSubjectName => 'የትምህርት ስም';
+
+  @override
+  String get parentMessageBody => 'መልእክት';
+
+  @override
+  String get parentPurpose => 'ዓላማ';
+
+  @override
+  String get parentPreferredDate => 'የሚመረጥ ቀን';
+
+  @override
+  String get parentPreferredTime => 'የሚመረጥ ሰዓት';
+
+  @override
+  String get parentIndicatorDone => 'ተሰርቷል';
+
+  @override
+  String get parentIndicatorMissing => 'ጎድሏል';
+
+  @override
+  String get parentIndicatorPending => 'በመጠባበቅ ላይ';
 }
