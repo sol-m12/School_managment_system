@@ -2,6 +2,7 @@ import type { FormEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Badge, Button, Card, CardBody, CardHeader, Input, PageHeader, Select, Table } from "@/components/ui";
 import { StatCard } from "@/features/dashboard/components/StatCard";
+import { OpacPanel } from "@/features/library/OpacPanel";
 import { readForm, textOf, useNotice } from "@/features/principal/officeUi";
 import { toErrorKey } from "@/lib/apiError";
 import { BookOpen, CalendarDays, IdCard, Library } from "lucide-react";
@@ -344,6 +345,7 @@ export function LibraryStatusPage() {
                 empty={t("empty")}
               />
             </Card>
+            <OpacPanel />
           </div>
         )}
       </StudentPanel>

@@ -117,7 +117,17 @@ export type ErrorKey =
   | "pdfFile"
   | "importFormat"
   | "fileType"
-  | "fileSize";
+  | "fileSize"
+  | "noneLeft"
+  | "alreadyOut"
+  | "overdueLoan"
+  | "copiesFree"
+  | "alreadyReserved"
+  | "notInside"
+  | "alreadyInside"
+  | "alreadyFiled"
+  | "alreadyReported"
+  | "booksOut";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -235,6 +245,16 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   IMPORT_FORMAT: "importFormat",
   FILE_TYPE: "fileType",
   FILE_SIZE: "fileSize",
+  NONE_LEFT: "noneLeft",
+  ALREADY_OUT: "alreadyOut",
+  OVERDUE: "overdueLoan",
+  COPIES_FREE: "copiesFree",
+  ALREADY_RESERVED: "alreadyReserved",
+  NOT_INSIDE: "notInside",
+  ALREADY_INSIDE: "alreadyInside",
+  ALREADY_FILED: "alreadyFiled",
+  ALREADY_REPORTED: "alreadyReported",
+  BOOKS_OUT: "booksOut",
 };
 
 function readCode(data: unknown): string | null {

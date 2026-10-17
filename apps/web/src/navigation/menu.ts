@@ -103,6 +103,7 @@ export type MenuGroupKey =
   | "studentDesk"
   | "storeOffice"
   | "recordOffice"
+  | "libraryOffice"
   | "main";
 
 export type MenuItem = {
@@ -140,6 +141,7 @@ export const MENU_GROUP_ORDER: readonly MenuGroupKey[] = [
   "studentDesk",
   "storeOffice",
   "recordOffice",
+  "libraryOffice",
   "main",
   "finance",
 ];
@@ -298,6 +300,20 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "recordAlumni", path: "/records/alumni", icon: GraduationCap, group: "recordOffice", permission: "records.office" },
   { key: "recordExport", path: "/records/export", icon: FileSpreadsheet, group: "recordOffice", permission: "records.office" },
   { key: "recordAccess", path: "/records/access", icon: ScrollText, group: "recordOffice", permission: "records.office" },
+
+  { key: "libraryDesk", path: "/library", icon: Library, group: "libraryOffice", permission: "library.office", end: true },
+  { key: "libraryCatalog", path: "/library/catalog", icon: BookMarked, group: "libraryOffice", permission: "library.office" },
+  { key: "libraryCirculation", path: "/library/circulation", icon: Undo2, group: "libraryOffice", permission: "library.office" },
+  { key: "libraryIntake", path: "/library/intake", icon: ArrowDownCircle, group: "libraryOffice", permission: "library.office" },
+  { key: "libraryReminders", path: "/library/reminders", icon: Bell, group: "libraryOffice", permission: "library.office" },
+  { key: "libraryPatrons", path: "/library/patrons", icon: UsersRound, group: "libraryOffice", permission: "library.office" },
+  { key: "libraryResources", path: "/library/resources", icon: FolderOpen, group: "libraryOffice", permission: "library.office" },
+  { key: "libraryLiteracy", path: "/library/literacy", icon: FileText, group: "libraryOffice", permission: "library.office" },
+  { key: "libraryRecommend", path: "/library/recommend", icon: Brain, group: "libraryOffice", permission: "library.office" },
+  { key: "libraryCheckout", path: "/library/checkout", icon: QrCode, group: "libraryOffice", permission: "library.office" },
+  { key: "libraryReservations", path: "/library/reservations", icon: ListChecks, group: "libraryOffice", permission: "library.office" },
+  { key: "libraryCompetition", path: "/library/competition", icon: Trophy, group: "libraryOffice", permission: "library.office" },
+  { key: "libraryClearance", path: "/library/clearance", icon: Shield, group: "libraryOffice", permission: "library.office" },
 
   {
     key: "dashboard",

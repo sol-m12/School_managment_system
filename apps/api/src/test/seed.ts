@@ -23,6 +23,17 @@ export type IsolationSeed = {
 };
 
 const TABLES_TO_EMPTY = [
+  "lb_badges",
+  "lb_literacy",
+  "lb_resources",
+  "lb_intake",
+  "lb_patron_log",
+  "lb_reminders",
+  "lb_reservations",
+  "library_borrowing",
+  "library_attendance",
+  "library_handovers",
+  "library_books",
   "ro_access_log",
   "ro_files",
   "ro_archive_rows",

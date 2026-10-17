@@ -596,6 +596,109 @@ export const itemCategories = mysqlTable("item_categories", {
 	unique("uq_item_categories_tenant_code").on(table.tenantId, table.categoryCode),
 ]);
 
+export const lbBadges = mysqlTable("lb_badges", {
+	badgeId: int("badge_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	userId: int("user_id").notNull(),
+	rank: mysqlEnum(['member','scholar']).notNull(),
+	points: int().notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_lb_badges_tenant_id").on(table.tenantId),
+	unique("uq_lb_badges_rank").on(table.tenantId, table.userId, table.rank),
+]);
+
+export const lbIntake = mysqlTable("lb_intake", {
+	intakeId: int("intake_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	itemId: int("item_id").notNull(),
+	bookId: int("book_id").notNull(),
+	copies: int().notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_lb_intake_tenant_id").on(table.tenantId),
+]);
+
+export const lbLiteracy = mysqlTable("lb_literacy", {
+	reportId: int("report_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	studentId: int("student_id").notNull(),
+	academicYear: varchar("academic_year", { length: 10 }).notNull(),
+	visits: int().notNull(),
+	returnedCount: int("returned_count").notNull(),
+	openLoans: int("open_loans").notNull(),
+	note: varchar({ length: 500 }).default("").notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_lb_literacy_tenant_id").on(table.tenantId),
+	unique("uq_lb_literacy_year").on(table.tenantId, table.studentId, table.academicYear),
+]);
+
+export const lbPatronLog = mysqlTable("lb_patron_log", {
+	logId: int("log_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	userId: int("user_id").notNull(),
+	studentId: int("student_id"),
+	action: mysqlEnum(['In','Out']).notNull(),
+	bookTitle: varchar("book_title", { length: 255 }).default("").notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	loggedOn: date("logged_on", { mode: 'string' }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_lb_patron_log_tenant_id").on(table.tenantId),
+	index("idx_lb_patron_log_user").on(table.tenantId, table.userId, table.loggedOn),
+]);
+
+export const lbReminders = mysqlTable("lb_reminders", {
+	reminderId: int("reminder_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	borrowId: int("borrow_id").notNull(),
+	userId: int("user_id").notNull(),
+	kind: mysqlEnum(['due','overdue']).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	dueOn: date("due_on", { mode: 'string' }).notNull(),
+	seen: tinyint().default(0).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_lb_reminders_tenant_id").on(table.tenantId),
+	unique("uq_lb_reminders_borrow").on(table.tenantId, table.borrowId),
+]);
+
+export const lbReservations = mysqlTable("lb_reservations", {
+	reservationId: int("reservation_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	bookId: int("book_id").notNull(),
+	userId: int("user_id").notNull(),
+	status: mysqlEnum(['Open','Ready','Collected','Cancelled']).default('Open').notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_lb_reservations_tenant_id").on(table.tenantId),
+	index("idx_lb_reservations_book").on(table.tenantId, table.bookId, table.status),
+]);
+
+export const lbResources = mysqlTable("lb_resources", {
+	resourceId: int("resource_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	subjectId: int("subject_id"),
+	title: varchar({ length: 255 }).notNull(),
+	note: varchar({ length: 500 }).default("").notNull(),
+	recommendationId: int("recommendation_id"),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_lb_resources_tenant_id").on(table.tenantId),
+	unique("uq_lb_resources_title").on(table.tenantId, table.title),
+]);
+
 export const libraryAttendance = mysqlTable("library_attendance", {
 	attendanceId: int("attendance_id").autoincrement().notNull(),
 	studentId: int("student_id").references(() => students.studentId, { onDelete: "restrict", onUpdate: "restrict" } ),

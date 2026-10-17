@@ -117,5 +117,15 @@
   "pdfFile": "A PDF is filed on the student profile. It is not read as a student list.",
   "importFormat": "The file does not match the expected columns.",
   "fileType": "Choose a real PDF file.",
-  "fileSize": "The file is too large."
+  "fileSize": "The file is too large.",
+  "noneLeft": "No copy of this book is on the shelf.",
+  "alreadyOut": "This patron already has this book.",
+  "overdueLoan": "This patron has an overdue book, so another loan is closed.",
+  "copiesFree": "A copy is on the shelf, so this book is borrowed instead of reserved.",
+  "alreadyReserved": "This book is already reserved for this patron.",
+  "notInside": "This patron is not signed in, so they cannot sign out.",
+  "alreadyInside": "This patron is already signed in.",
+  "alreadyFiled": "This resource is already on the teacher shelf.",
+  "alreadyReported": "A literacy report for this year is already saved.",
+  "booksOut": "Unreturned books block clearance."
 }

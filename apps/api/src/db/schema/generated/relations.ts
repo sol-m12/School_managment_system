@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { tenants, accountTypes, adminTasks, announcements, annualLessonPlan, assignmentSubmissions, attendance, auditLog, backupRuns, binCardLedger, budgetNotifications, budgetNotificationItems, classes, classSchedule, committeesClubs, committeeMembers, communicationGroups, departmentHeads, evaluationCriteria, evaluationDetails, onlineExams, examQuestions, examResultsOnline, students, expenses, externalInquiries, fileShares, financeCodes, foreignPartners, grades, users, groupsInfo, subjects, groupChats, groupMembers, groupMessages, groupResponses, groupTasks, groupSubmissions, studentGroups, income, issueModel22, itemCategories, items, libraryAttendance, libraryBooks, libraryBorrowing, libraryHandovers, liveQuizQuestions, liveQuizSessions, loginAttempts, mehi161Cards, mehi161Transactions, mehi17Cards, mehi17Transactions, mehi7Items, mehi7Vouchers, model19Grn, model19Items, outboundNotices, parentGuardian, payroll, peerAssessments, periodSettings, principalApprovalNotes, principalDocuments, principalIncidents, principalMessages, principalPolicies, principalReportDefs, principalTraining, principalTransfers, requisitionsModel20, roAccessLog, roAlumni, roArchives, roArchiveRows, roDocuments, roFiles, roImports, roLocks, roRequests, roStaffRecords, schoolNews, schoolPlans, schoolSettings, schoolStats, simulations, skAlerts, skAssets, skDisposals, skLoans, skPurchaseRequests, staff, staffFiles, staffFolders, stockLedgerCard, studentAssessments, studentFinalReports, stCommendations, stDocumentRequests, stTaskWork, subjectWeightings, suppliers, supportTickets, systemSettings, tcBookRecommendations, tcExamStandards, tcGradeReviews, tcIncidents, tcLeaveRequests, tcPapers, tcPaperItems, tcParticipation, tcPerformance, tcPerformanceScores, tcQuestions, tcRequisitions, tcSubstitutions, tcSwaps, tcTopicCoverage, teacherAssignments, teacherEvaluations, teacherRoleCredits, vocationalRequests, vpExamSessions, vpHearings, vpInvigilators, vpPenalties, vpPlacements, vpPrograms, vpReferrals } from "./schema.js";
+import { tenants, accountTypes, adminTasks, announcements, annualLessonPlan, assignmentSubmissions, attendance, auditLog, backupRuns, binCardLedger, budgetNotifications, budgetNotificationItems, classes, classSchedule, committeesClubs, committeeMembers, communicationGroups, departmentHeads, evaluationCriteria, evaluationDetails, onlineExams, examQuestions, examResultsOnline, students, expenses, externalInquiries, fileShares, financeCodes, foreignPartners, grades, users, groupsInfo, subjects, groupChats, groupMembers, groupMessages, groupResponses, groupTasks, groupSubmissions, studentGroups, income, issueModel22, itemCategories, items, lbBadges, lbIntake, lbLiteracy, lbPatronLog, lbReminders, lbReservations, lbResources, libraryAttendance, libraryBooks, libraryBorrowing, libraryHandovers, liveQuizQuestions, liveQuizSessions, loginAttempts, mehi161Cards, mehi161Transactions, mehi17Cards, mehi17Transactions, mehi7Items, mehi7Vouchers, model19Grn, model19Items, outboundNotices, parentGuardian, payroll, peerAssessments, periodSettings, principalApprovalNotes, principalDocuments, principalIncidents, principalMessages, principalPolicies, principalReportDefs, principalTraining, principalTransfers, requisitionsModel20, roAccessLog, roAlumni, roArchives, roArchiveRows, roDocuments, roFiles, roImports, roLocks, roRequests, roStaffRecords, schoolNews, schoolPlans, schoolSettings, schoolStats, simulations, skAlerts, skAssets, skDisposals, skLoans, skPurchaseRequests, staff, staffFiles, staffFolders, stockLedgerCard, studentAssessments, studentFinalReports, stCommendations, stDocumentRequests, stTaskWork, subjectWeightings, suppliers, supportTickets, systemSettings, tcBookRecommendations, tcExamStandards, tcGradeReviews, tcIncidents, tcLeaveRequests, tcPapers, tcPaperItems, tcParticipation, tcPerformance, tcPerformanceScores, tcQuestions, tcRequisitions, tcSubstitutions, tcSwaps, tcTopicCoverage, teacherAssignments, teacherEvaluations, teacherRoleCredits, vocationalRequests, vpExamSessions, vpHearings, vpInvigilators, vpPenalties, vpPlacements, vpPrograms, vpReferrals } from "./schema.js";
 
 export const accountTypesRelations = relations(accountTypes, ({one, many}) => ({
 	tenant: one(tenants, {
@@ -48,6 +48,13 @@ export const tenantsRelations = relations(tenants, ({many}) => ({
 	issueModel22s: many(issueModel22),
 	items: many(items),
 	itemCategories: many(itemCategories),
+	lbBadges: many(lbBadges),
+	lbIntakes: many(lbIntake),
+	lbLiteracies: many(lbLiteracy),
+	lbPatronLogs: many(lbPatronLog),
+	lbReminders: many(lbReminders),
+	lbReservations: many(lbReservations),
+	lbResources: many(lbResources),
 	libraryAttendances: many(libraryAttendance),
 	libraryBooks: many(libraryBooks),
 	libraryBorrowings: many(libraryBorrowing),
@@ -541,6 +548,55 @@ export const itemCategoriesRelations = relations(itemCategories, ({one, many}) =
 	items: many(items),
 	tenant: one(tenants, {
 		fields: [itemCategories.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const lbBadgesRelations = relations(lbBadges, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [lbBadges.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const lbIntakeRelations = relations(lbIntake, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [lbIntake.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const lbLiteracyRelations = relations(lbLiteracy, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [lbLiteracy.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const lbPatronLogRelations = relations(lbPatronLog, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [lbPatronLog.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const lbRemindersRelations = relations(lbReminders, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [lbReminders.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const lbReservationsRelations = relations(lbReservations, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [lbReservations.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const lbResourcesRelations = relations(lbResources, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [lbResources.tenantId],
 		references: [tenants.id]
 	}),
 }));

@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Badge, Button, Card, CardBody, CardHeader, Input, PageHeader, Select, Table } from "@/components/ui";
 import { StatCard } from "@/features/dashboard/components/StatCard";
 import { Panel, readForm, textOf, useNotice } from "@/features/principal/officeUi";
+import { OpacPanel } from "@/features/library/OpacPanel";
 import { toErrorKey } from "@/lib/apiError";
 import {
   useAddCover,
@@ -602,6 +603,7 @@ export function LibraryPage() {
                 empty={<p className="px-4 py-8 text-center text-sm text-ink-muted">{t("empty")}</p>}
               />
             </Card>
+            <OpacPanel />
           </div>
         )}
       </Panel>

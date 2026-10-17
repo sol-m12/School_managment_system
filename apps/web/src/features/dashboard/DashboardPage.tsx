@@ -40,6 +40,7 @@ export function DashboardPage() {
   const user = useSessionUser();
   if (user.role === "Student") return <StudentHome />;
   if (user.role === "Registrar") return <Navigate to="/records" replace />;
+  if (user.role === "Librarian") return <Navigate to="/library" replace />;
   return <StaffDashboard />;
 }
 

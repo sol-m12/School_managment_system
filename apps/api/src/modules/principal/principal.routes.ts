@@ -28,6 +28,7 @@ const STATUS: Record<PrincipalErrorCode, number> = {
   NOTE_REQUIRED: 400,
   CLEARANCE_INCOMPLETE: 409,
   NOT_READY: 409,
+  BOOKS_OUT: 409,
 };
 
 function sendError(res: Response, error: unknown): void {

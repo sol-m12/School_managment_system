@@ -76,6 +76,8 @@ export const PERMISSIONS = [
   "vice.office",
   "records.office",
   "records.override",
+  "library.office",
+  "library.opac",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];

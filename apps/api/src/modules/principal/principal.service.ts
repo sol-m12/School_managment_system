@@ -34,7 +34,7 @@ import {
   type TransferInput,
 } from "./principal.schema.js";
 
-export type PrincipalErrorCode = "NOT_FOUND" | "NOTE_REQUIRED" | "CLEARANCE_INCOMPLETE" | "NOT_READY";
+export type PrincipalErrorCode = "NOT_FOUND" | "NOTE_REQUIRED" | "CLEARANCE_INCOMPLETE" | "NOT_READY" | "BOOKS_OUT";
 
 export class PrincipalError extends Error {
   readonly code: PrincipalErrorCode;
@@ -619,6 +619,19 @@ export async function checkLibrary(tenantId: number, id: number) {
 export async function saveClearance(tenantId: number, id: number, input: ClearanceInput) {
   const row = await loadTransfer(tenantId, id);
   if (row.status === "Issued") throw new PrincipalError("NOT_READY");
+  if (input.libraryClear && row.userId != null) {
+    const loans = await db
+      .select({ id: libraryBorrowing.borrowId })
+      .from(libraryBorrowing)
+      .where(
+        scoped(
+          libraryBorrowing,
+          tenantId,
+          and(eq(libraryBorrowing.userId, row.userId), eq(libraryBorrowing.status, "Borrowed")),
+        ),
+      );
+    if (loans.length > 0) throw new PrincipalError("BOOKS_OUT");
+  }
   const libraryClear = input.libraryClear ? 1 : 0;
   const storeClear = input.storeClear ? 1 : 0;
   const financeClear = input.financeClear ? 1 : 0;

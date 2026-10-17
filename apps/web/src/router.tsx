@@ -81,6 +81,21 @@ import {
   TranscriptsPage,
   VerifyPage,
 } from "@/features/records/RecordsPages";
+import {
+  CatalogPage,
+  CheckoutPage,
+  CirculationPage,
+  ClearancePage,
+  CompetitionPage,
+  IntakePage,
+  LibraryHomePage,
+  LiteracyPage,
+  PatronsPage,
+  RecommendPage,
+  RemindersPage,
+  ReservationsPage,
+  ResourcesPage as LibraryResourcesPage,
+} from "@/features/library/LibraryPages";
 import { AssignedWorksPage } from "@/features/teacher/AssignedWorksPage";
 import { AttendanceRegisterPage, TakeAttendancePage } from "@/features/teacher/AttendancePages";
 import { ExamResultsPage } from "@/features/teacher/ExamResultsPage";
@@ -259,6 +274,19 @@ const BUILT_ITEMS: readonly NavItemKey[] = [
   "procurementRequest",
   "syllabusCoverage",
   "teacherEvaluation",
+  "libraryDesk",
+  "libraryCatalog",
+  "libraryCirculation",
+  "libraryIntake",
+  "libraryReminders",
+  "libraryPatrons",
+  "libraryResources",
+  "libraryLiteracy",
+  "libraryRecommend",
+  "libraryCheckout",
+  "libraryReservations",
+  "libraryCompetition",
+  "libraryClearance",
 ];
 
 const placeholderRoutes: RouteObject[] = MENU_ITEMS.filter((item) => !BUILT_ITEMS.includes(item.key)).map((item) => ({
@@ -452,6 +480,19 @@ export const router = createBrowserRouter([
       { path: "records/alumni", element: <ProtectedRoute permission="records.office"><AlumniPage /></ProtectedRoute> },
       { path: "records/export", element: <ProtectedRoute permission="records.office"><MinistryExportPage /></ProtectedRoute> },
       { path: "records/access", element: <ProtectedRoute permission="records.office"><AccessLogPage /></ProtectedRoute> },
+      { path: "library", element: <ProtectedRoute permission="library.office"><LibraryHomePage /></ProtectedRoute> },
+      { path: "library/catalog", element: <ProtectedRoute permission="library.office"><CatalogPage /></ProtectedRoute> },
+      { path: "library/circulation", element: <ProtectedRoute permission="library.office"><CirculationPage /></ProtectedRoute> },
+      { path: "library/intake", element: <ProtectedRoute permission="library.office"><IntakePage /></ProtectedRoute> },
+      { path: "library/reminders", element: <ProtectedRoute permission="library.office"><RemindersPage /></ProtectedRoute> },
+      { path: "library/patrons", element: <ProtectedRoute permission="library.office"><PatronsPage /></ProtectedRoute> },
+      { path: "library/resources", element: <ProtectedRoute permission="library.office"><LibraryResourcesPage /></ProtectedRoute> },
+      { path: "library/literacy", element: <ProtectedRoute permission="library.office"><LiteracyPage /></ProtectedRoute> },
+      { path: "library/recommend", element: <ProtectedRoute permission="library.office"><RecommendPage /></ProtectedRoute> },
+      { path: "library/checkout", element: <ProtectedRoute permission="library.office"><CheckoutPage /></ProtectedRoute> },
+      { path: "library/reservations", element: <ProtectedRoute permission="library.office"><ReservationsPage /></ProtectedRoute> },
+      { path: "library/competition", element: <ProtectedRoute permission="library.office"><CompetitionPage /></ProtectedRoute> },
+      { path: "library/clearance", element: <ProtectedRoute permission="library.office"><ClearancePage /></ProtectedRoute> },
       { path: "vice/vocational", element: <ProtectedRoute permission="vice.office"><VocationalPage /></ProtectedRoute> },
       { path: "vice/behavior", element: <ProtectedRoute permission="vice.office"><BehaviorPage /></ProtectedRoute> },
       { path: "vice/invigilation", element: <ProtectedRoute permission="vice.office"><InvigilationPage /></ProtectedRoute> },
