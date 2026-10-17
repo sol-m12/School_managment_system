@@ -127,7 +127,23 @@ export type ErrorKey =
   | "alreadyInside"
   | "alreadyFiled"
   | "alreadyReported"
-  | "booksOut";
+  | "booksOut"
+  | "alreadyChecked"
+  | "stockCovered"
+  | "notForwarded"
+  | "notChecked"
+  | "overBudget"
+  | "notApproved"
+  | "licenseExpired"
+  | "vendorSuspended"
+  | "tenderClosed"
+  | "alreadyBid"
+  | "noValidBid"
+  | "overReceipt"
+  | "alreadyDelivered"
+  | "alreadyAwarded"
+  | "duplicateName"
+  | "alreadyDecided";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -255,6 +271,22 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   ALREADY_FILED: "alreadyFiled",
   ALREADY_REPORTED: "alreadyReported",
   BOOKS_OUT: "booksOut",
+  ALREADY_CHECKED: "alreadyChecked",
+  STOCK_COVERED: "stockCovered",
+  NOT_FORWARDED: "notForwarded",
+  NOT_CHECKED: "notChecked",
+  OVER_BUDGET: "overBudget",
+  NOT_APPROVED: "notApproved",
+  LICENSE_EXPIRED: "licenseExpired",
+  VENDOR_SUSPENDED: "vendorSuspended",
+  TENDER_CLOSED: "tenderClosed",
+  ALREADY_BID: "alreadyBid",
+  NO_VALID_BID: "noValidBid",
+  OVER_RECEIPT: "overReceipt",
+  ALREADY_DELIVERED: "alreadyDelivered",
+  ALREADY_AWARDED: "alreadyAwarded",
+  DUPLICATE_NAME: "duplicateName",
+  ALREADY_DECIDED: "alreadyDecided",
 };
 
 function readCode(data: unknown): string | null {

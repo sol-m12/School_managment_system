@@ -96,6 +96,17 @@ import {
   ReservationsPage,
   ResourcesPage as LibraryResourcesPage,
 } from "@/features/library/LibraryPages";
+import {
+  BudgetsPage,
+  OrderPrintPage,
+  OrdersPage,
+  ProcurementHomePage,
+  RequisitionsPage,
+  TenderMatrixPage,
+  TendersPage,
+  VendorsPage,
+} from "@/features/procurement/ProcurementPages";
+import { PublicTendersPage, VendorDeskPage, VendorLoginPage } from "@/features/procurement/VendorPortal";
 import { AssignedWorksPage } from "@/features/teacher/AssignedWorksPage";
 import { AttendanceRegisterPage, TakeAttendancePage } from "@/features/teacher/AttendancePages";
 import { ExamResultsPage } from "@/features/teacher/ExamResultsPage";
@@ -331,6 +342,9 @@ export const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
   { path: "/home", element: <HomePage /> },
   { path: "/verify", element: <VerifyPage /> },
+  { path: "/tenders", element: <PublicTendersPage /> },
+  { path: "/vendor", element: <VendorLoginPage /> },
+  { path: "/vendor/desk", element: <VendorDeskPage /> },
   { path: "/forgot-password", element: <PublicPlaceholderPage title="forgotPassword" /> },
   {
     path: "/",
@@ -493,6 +507,14 @@ export const router = createBrowserRouter([
       { path: "library/reservations", element: <ProtectedRoute permission="library.office"><ReservationsPage /></ProtectedRoute> },
       { path: "library/competition", element: <ProtectedRoute permission="library.office"><CompetitionPage /></ProtectedRoute> },
       { path: "library/clearance", element: <ProtectedRoute permission="library.office"><ClearancePage /></ProtectedRoute> },
+      { path: "procurement", element: <ProtectedRoute permission="procurement.office"><ProcurementHomePage /></ProtectedRoute> },
+      { path: "procurement/vendors", element: <ProtectedRoute permission="procurement.office"><VendorsPage /></ProtectedRoute> },
+      { path: "procurement/requisitions", element: <ProtectedRoute permission="procurement.office"><RequisitionsPage /></ProtectedRoute> },
+      { path: "procurement/budgets", element: <ProtectedRoute permission="procurement.office"><BudgetsPage /></ProtectedRoute> },
+      { path: "procurement/orders", element: <ProtectedRoute permission="procurement.office"><OrdersPage /></ProtectedRoute> },
+      { path: "procurement/orders/:id", element: <ProtectedRoute permission="procurement.office"><OrderPrintPage /></ProtectedRoute> },
+      { path: "procurement/tenders", element: <ProtectedRoute permission="procurement.office"><TendersPage /></ProtectedRoute> },
+      { path: "procurement/tenders/:id", element: <ProtectedRoute permission="procurement.office"><TenderMatrixPage /></ProtectedRoute> },
       { path: "vice/vocational", element: <ProtectedRoute permission="vice.office"><VocationalPage /></ProtectedRoute> },
       { path: "vice/behavior", element: <ProtectedRoute permission="vice.office"><BehaviorPage /></ProtectedRoute> },
       { path: "vice/invigilation", element: <ProtectedRoute permission="vice.office"><InvigilationPage /></ProtectedRoute> },

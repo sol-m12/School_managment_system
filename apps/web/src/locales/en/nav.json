@@ -18,6 +18,7 @@
     "storeOffice": "Store office",
     "recordOffice": "Record office",
     "libraryOffice": "Library",
+    "procurementOffice": "Procurement office",
     "main": "Main"
   },
   "items": {
@@ -166,6 +167,12 @@
     "libraryReservations": "Reservations",
     "libraryCompetition": "Reading competition",
     "libraryClearance": "Clearance",
+    "procurementDesk": "Procurement office",
+    "procurementVendors": "Suppliers",
+    "procurementRequisitions": "Purchase requests",
+    "procurementBudgets": "Budgets",
+    "procurementOrders": "Purchase orders",
+    "procurementTenders": "Tenders",
     "recordOverrides": "Record office requests",
     "dashboardStudent": "Main Dashboard (Student)",
     "payments": "Payments",

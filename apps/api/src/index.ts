@@ -23,6 +23,7 @@ import { principalRouter } from "./modules/principal/principal.routes.js";
 import { viceRouter } from "./modules/vice/vice.routes.js";
 import { recordsRouter } from "./modules/records/records.routes.js";
 import { libraryRouter } from "./modules/library/library.routes.js";
+import { procurementRouter, publicTenderList, vendorRouter } from "./modules/procurement/procurement.routes.js";
 
 const app = express();
 
@@ -63,6 +64,9 @@ app.use("/store/office", storeOfficeRouter);
 app.use("/store", storeRouter);
 app.use("/records", recordsRouter);
 app.use("/library", libraryRouter);
+app.use("/procurement", procurementRouter);
+app.use("/vendor", vendorRouter);
+app.get("/public/tenders", publicTenderList);
 
 if (process.env.NODE_ENV !== "test" && process.env.VITEST !== "true") {
   app.listen(env.PORT, () => {

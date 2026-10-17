@@ -41,6 +41,7 @@ import {
   Library,
   BookMarked,
   ShoppingCart,
+  Building2,
   Star,
   Hand,
   Bell,
@@ -104,6 +105,7 @@ export type MenuGroupKey =
   | "storeOffice"
   | "recordOffice"
   | "libraryOffice"
+  | "procurementOffice"
   | "main";
 
 export type MenuItem = {
@@ -142,6 +144,7 @@ export const MENU_GROUP_ORDER: readonly MenuGroupKey[] = [
   "storeOffice",
   "recordOffice",
   "libraryOffice",
+  "procurementOffice",
   "main",
   "finance",
 ];
@@ -315,6 +318,13 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "libraryCompetition", path: "/library/competition", icon: Trophy, group: "libraryOffice", permission: "library.office" },
   { key: "libraryClearance", path: "/library/clearance", icon: Shield, group: "libraryOffice", permission: "library.office" },
 
+  { key: "procurementDesk", path: "/procurement", icon: ShoppingCart, group: "procurementOffice", permission: "procurement.office", end: true },
+  { key: "procurementVendors", path: "/procurement/vendors", icon: Building2, group: "procurementOffice", permission: "procurement.office" },
+  { key: "procurementRequisitions", path: "/procurement/requisitions", icon: ClipboardCheck, group: "procurementOffice", permission: "procurement.office" },
+  { key: "procurementBudgets", path: "/procurement/budgets", icon: Wallet, group: "procurementOffice", permission: "procurement.office" },
+  { key: "procurementOrders", path: "/procurement/orders", icon: FileText, group: "procurementOffice", permission: "procurement.office" },
+  { key: "procurementTenders", path: "/procurement/tenders", icon: Scale, group: "procurementOffice", permission: "procurement.office" },
+
   {
     key: "dashboard",
     path: "/dashboard",
@@ -330,7 +340,7 @@ export const MENU_ITEMS: readonly MenuItem[] = [
     },
   },
   { key: "fileManagement", path: "/files", icon: FolderOpen, group: "main", permission: "files.manage" },
-  { key: "profile", path: "/profile", icon: UserCog, group: "main", roles: ["Principal", "Teacher", "Technician", "V_Principal", "Student", "Store_Keeper", "Registrar"] },
+  { key: "profile", path: "/profile", icon: UserCog, group: "main", roles: ["Principal", "Teacher", "Technician", "V_Principal", "Student", "Store_Keeper", "Registrar", "Procurement"] },
   { key: "payments", path: "/finance/payments", icon: Landmark, group: "finance", permission: "finance.income" },
   { key: "incomeExpense", path: "/finance/income", icon: Landmark, group: "finance", permission: "finance.expense" },
 ];

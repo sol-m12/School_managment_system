@@ -23,6 +23,14 @@ export type IsolationSeed = {
 };
 
 const TABLES_TO_EMPTY = [
+  "po_awards",
+  "po_bids",
+  "po_orders",
+  "po_approvals",
+  "po_checks",
+  "po_tenders",
+  "po_budgets",
+  "po_vendors",
   "lb_badges",
   "lb_literacy",
   "lb_resources",

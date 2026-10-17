@@ -127,5 +127,21 @@
   "alreadyInside": "ይህ አንባቢ አስቀድሞ ገብቷል።",
   "alreadyFiled": "ይህ ግብዓት አስቀድሞ በመምህራን መደርደሪያ ላይ ነው።",
   "alreadyReported": "ለዚህ ዓመት የንባብ ሪፖርት አስቀድሞ ተቀምጧል።",
-  "booksOut": "ያልተመለሱ መጻሕፍት ክሊራንስን ያግዳሉ።"
+  "booksOut": "ያልተመለሱ መጻሕፍት ክሊራንስን ያግዳሉ።",
+  "alreadyChecked": "ይህ ጥያቄ ከመጋዘን ጋር አስቀድሞ ተፈትሿል።",
+  "stockCovered": "መጋዘኑ ይህን መጠን አስቀድሞ ስላለው አይገዛም።",
+  "notForwarded": "መምሪያው ይህን ጥያቄ ገና አልላከም።",
+  "notChecked": "ከመወሰን በፊት ጥያቄውን ከመጋዘን ክምችት ጋር ያረጋግጡ።",
+  "overBudget": "ይህ መጠን ከቀረው በጀት ይበልጣል።",
+  "notApproved": "ይህ ጥያቄ ለግዢ ትዕዛዝ አልጸደቀም።",
+  "licenseExpired": "የአቅራቢው ፈቃድ የአሁን አይደለም።",
+  "vendorSuspended": "የዚህ አቅራቢ መለያ ታግዷል።",
+  "tenderClosed": "ይህ ጨረታ ተዘግቷል።",
+  "alreadyBid": "ይህ አቅራቢ በዚህ ጨረታ ላይ አስቀድሞ ጨምሯል።",
+  "noValidBid": "የአሁን ፈቃድ ያለው ጨረታ የለም።",
+  "overReceipt": "የደረሰው መጠን ከትዕዛዙ ይበልጣል።",
+  "alreadyDelivered": "ይህ ትዕዛዝ ሙሉ በሙሉ ደርሷል።",
+  "alreadyAwarded": "ይህ ጨረታ አስቀድሞ ተሰጥቷል።",
+  "duplicateName": "ይህ አቅራቢ አስቀድሞ ተመዝግቧል።",
+  "alreadyDecided": "ይህ ጥያቄ አስቀድሞ ውሳኔ አለው።"
 }

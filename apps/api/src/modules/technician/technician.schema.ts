@@ -8,6 +8,7 @@ export const STAFF_ROLES = [
   "Registrar",
   "Secretary",
   "Store_Keeper",
+  "Procurement",
   "Teacher",
   "Technician",
   "V_Principal",

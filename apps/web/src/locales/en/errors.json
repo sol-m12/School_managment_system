@@ -127,5 +127,21 @@
   "alreadyInside": "This patron is already signed in.",
   "alreadyFiled": "This resource is already on the teacher shelf.",
   "alreadyReported": "A literacy report for this year is already saved.",
-  "booksOut": "Unreturned books block clearance."
+  "booksOut": "Unreturned books block clearance.",
+  "alreadyChecked": "This request was already checked against the store.",
+  "stockCovered": "The store already holds this quantity, so it is not purchased.",
+  "notForwarded": "The department has not sent this request yet.",
+  "notChecked": "Check the request against store stock before deciding.",
+  "overBudget": "This amount is more than the budget still available.",
+  "notApproved": "This request is not approved for a purchase order.",
+  "licenseExpired": "The supplier license is not current.",
+  "vendorSuspended": "This supplier account is suspended.",
+  "tenderClosed": "This tender is closed.",
+  "alreadyBid": "This supplier already bid on this tender.",
+  "noValidBid": "No bid has a current license.",
+  "overReceipt": "The delivery is more than the order.",
+  "alreadyDelivered": "This order is already delivered in full.",
+  "alreadyAwarded": "This tender is already awarded.",
+  "duplicateName": "This supplier is already registered.",
+  "alreadyDecided": "This request already has a decision."
 }

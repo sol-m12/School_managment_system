@@ -8,6 +8,10 @@ declare global {
         tenantId: number;
         role: Role;
       };
+      vendor?: {
+        vendorId: number;
+        tenantId: number;
+      };
     }
   }
 }

@@ -1071,6 +1071,142 @@ export const periodSettings = mysqlTable("period_settings", {
 	index("idx_period_settings_tenant_id").on(table.tenantId),
 ]);
 
+export const poApprovals = mysqlTable("po_approvals", {
+	approvalId: int("approval_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	sourceKind: mysqlEnum("source_kind", ['store','teacher']).notNull(),
+	sourceId: int("source_id").notNull(),
+	budgetId: int("budget_id"),
+	quantity: decimal({ precision: 12, scale: 2 }).notNull(),
+	unitPrice: decimal("unit_price", { precision: 12, scale: 2 }).notNull(),
+	status: mysqlEnum(['Approved','Refused']).notNull(),
+	note: varchar({ length: 500 }).default("").notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_po_approvals_tenant_id").on(table.tenantId),
+	unique("uq_po_approvals_source").on(table.tenantId, table.sourceKind, table.sourceId),
+]);
+
+export const poAwards = mysqlTable("po_awards", {
+	awardId: int("award_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	tenderId: int("tender_id").notNull(),
+	bidId: int("bid_id").notNull(),
+	vendorId: int("vendor_id").notNull(),
+	letterNo: varchar("letter_no", { length: 40 }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_po_awards_tenant_id").on(table.tenantId),
+	unique("uq_po_awards_tender").on(table.tenantId, table.tenderId),
+]);
+
+export const poBids = mysqlTable("po_bids", {
+	bidId: int("bid_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	tenderId: int("tender_id").notNull(),
+	vendorId: int("vendor_id").notNull(),
+	amount: decimal({ precision: 15, scale: 2 }).notNull(),
+	note: varchar({ length: 500 }).default("").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_po_bids_tenant_id").on(table.tenantId),
+	unique("uq_po_bids_vendor").on(table.tenantId, table.tenderId, table.vendorId),
+]);
+
+export const poBudgets = mysqlTable("po_budgets", {
+	budgetId: int("budget_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	fiscalYear: varchar("fiscal_year", { length: 10 }).notNull(),
+	code: varchar({ length: 40 }).notNull(),
+	title: varchar({ length: 160 }).notNull(),
+	allocated: decimal({ precision: 15, scale: 2 }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_po_budgets_tenant_id").on(table.tenantId),
+	unique("uq_po_budgets_code").on(table.tenantId, table.fiscalYear, table.code),
+]);
+
+export const poChecks = mysqlTable("po_checks", {
+	checkId: int("check_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	sourceKind: mysqlEnum("source_kind", ['store','teacher']).notNull(),
+	sourceId: int("source_id").notNull(),
+	stock: decimal({ precision: 12, scale: 2 }).notNull(),
+	needed: decimal({ precision: 12, scale: 2 }).notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_po_checks_tenant_id").on(table.tenantId),
+	unique("uq_po_checks_source").on(table.tenantId, table.sourceKind, table.sourceId),
+]);
+
+export const poOrders = mysqlTable("po_orders", {
+	orderId: int("order_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	orderNo: varchar("order_no", { length: 40 }).notNull(),
+	vendorId: int("vendor_id").notNull(),
+	budgetId: int("budget_id").notNull(),
+	sourceKind: mysqlEnum("source_kind", ['store','teacher','tender']).notNull(),
+	sourceId: int("source_id").notNull(),
+	itemName: varchar("item_name", { length: 160 }).notNull(),
+	quantity: decimal({ precision: 12, scale: 2 }).notNull(),
+	unitPrice: decimal("unit_price", { precision: 12, scale: 2 }).notNull(),
+	status: mysqlEnum(['Issued','Partial','Delivered']).default('Issued').notNull(),
+	receivedQty: decimal("received_qty", { precision: 12, scale: 2 }).default('0.00').notNull(),
+	note: varchar({ length: 500 }).default("").notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_po_orders_tenant_id").on(table.tenantId),
+	unique("uq_po_orders_no").on(table.tenantId, table.orderNo),
+	unique("uq_po_orders_source").on(table.tenantId, table.sourceKind, table.sourceId),
+]);
+
+export const poTenders = mysqlTable("po_tenders", {
+	tenderId: int("tender_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	title: varchar({ length: 160 }).notNull(),
+	itemName: varchar("item_name", { length: 160 }).notNull(),
+	quantity: decimal({ precision: 12, scale: 2 }).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	closesOn: date("closes_on", { mode: 'string' }).notNull(),
+	status: mysqlEnum(['Open','Awarded','Closed']).default('Open').notNull(),
+	budgetId: int("budget_id").notNull(),
+	recordedBy: int("recorded_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_po_tenders_tenant_id").on(table.tenantId),
+]);
+
+export const poVendors = mysqlTable("po_vendors", {
+	vendorId: int("vendor_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	supplierName: varchar("supplier_name", { length: 200 }).notNull(),
+	contactName: varchar("contact_name", { length: 120 }).default("").notNull(),
+	phone: varchar({ length: 50 }).default("").notNull(),
+	email: varchar({ length: 100 }).default("").notNull(),
+	licenseNo: varchar("license_no", { length: 80 }).default("").notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	licenseExpires: date("license_expires", { mode: 'string' }),
+	status: mysqlEnum(['Active','Suspended']).default('Active').notNull(),
+	username: varchar({ length: 50 }).notNull(),
+	passwordHash: varchar("password_hash", { length: 255 }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_po_vendors_tenant_id").on(table.tenantId),
+	unique("uq_po_vendors_name").on(table.tenantId, table.supplierName),
+	unique("uq_po_vendors_username").on(table.tenantId, table.username),
+]);
+
 export const principalApprovalNotes = mysqlTable("principal_approval_notes", {
 	noteId: int("note_id").autoincrement().notNull(),
 	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
@@ -1534,7 +1670,7 @@ export const staff = mysqlTable("staff", {
 	firstName: varchar("first_name", { length: 100 }).notNull(),
 	lastName: varchar("last_name", { length: 100 }).notNull(),
 	gender: mysqlEnum(['Male','Female','Other']),
-	role: mysqlEnum(['Teacher','Technician','Secretary','Counselor','Finance','V_Principal','Registrar','Librarian','Lab_Assistant','Store_Keeper','Principal']).notNull(),
+	role: mysqlEnum(['Teacher','Technician','Secretary','Counselor','Finance','V_Principal','Registrar','Librarian','Lab_Assistant','Store_Keeper','Principal','Procurement']).notNull(),
 	specialization: mysqlEnum(['Regular','Vocational','N/A']).default('N/A'),
 	jobTitle: varchar("job_title", { length: 100 }).notNull(),
 	phoneNumber: varchar("phone_number", { length: 50 }),
@@ -2085,7 +2221,7 @@ export const users = mysqlTable("users", {
 	passwordHash: varchar("password_hash", { length: 255 }).notNull(),
 	tempPassword: varchar("temp_password", { length: 255 }),
 	passwordChanged: tinyint("password_changed").default(0),
-	role: mysqlEnum(['Teacher','Technician','Secretary','Counselor','Finance','V_Principal','Registrar','Librarian','Store_Keeper','Student','Principal']).notNull(),
+	role: mysqlEnum(['Teacher','Technician','Secretary','Counselor','Finance','V_Principal','Registrar','Librarian','Store_Keeper','Student','Principal','Procurement']).notNull(),
 	resetToken: varchar("reset_token", { length: 255 }),
 	resetExpiry: datetime("reset_expiry", { mode: 'string'}),
 	isActive: tinyint("is_active").default(1).notNull(),
