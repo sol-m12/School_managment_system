@@ -34,9 +34,27 @@ export type AlertBoard = {
   rows: { id: number; itemId: number; code: string; name: string; kind: "reorder" | "forecast"; stock: number; reorder: number; daysLeft: number | null }[];
 };
 
+export type AssetStatus = "InStore" | "OnLoan" | "Disposed";
+
+export type AssetRow = {
+  id: number;
+  itemId: number;
+  code: string;
+  name: string;
+  tag: string;
+  serialNo: string;
+  location: string;
+  status: AssetStatus;
+  qrSvg: string;
+};
+
+export type AssetHit = AssetRow & {
+  loan: { id: number; borrowerName: string; purpose: string; dueOn: string; overdue: boolean } | null;
+};
+
 export type AssetBoard = {
   items: { id: number; code: string; name: string; stock: number }[];
-  rows: { id: number; itemId: number; code: string; name: string; tag: string; serialNo: string; location: string; status: "InStore" | "OnLoan" | "Disposed"; qrSvg: string }[];
+  rows: AssetRow[];
 };
 
 export type DisposalBoard = {
@@ -120,6 +138,12 @@ export function useRouteAlert() {
   return useMutation({
     mutationFn: async (id: number) => (await api.post(`/store/office/alerts/${id}/route`)).data,
     onSuccess: refresh,
+  });
+}
+
+export function useAssetLookup() {
+  return useMutation({
+    mutationFn: async (tag: string) => (await api.get<AssetHit>("/store/office/assets/lookup", { params: { tag } })).data,
   });
 }
 

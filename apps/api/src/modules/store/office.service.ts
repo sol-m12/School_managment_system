@@ -449,13 +449,59 @@ export async function assetBoard(tenantId: number) {
       serialNo: row.serialNo,
       location: row.location,
       status: row.status,
-      qrSvg: await QRCode.toString(row.tag, { type: "svg", margin: 1, width: 120 }),
+      qrSvg: await QRCode.toString(row.tag, { type: "svg", margin: 1, width: 280 }),
     })),
   );
 
   return {
     items: fixed.map((item) => ({ id: item.id, code: item.code, name: item.name, stock: item.stock })),
     rows: withQr,
+  };
+}
+
+export async function lookupAsset(tenantId: number, tag: string) {
+  const normalized = tag.trim().toUpperCase();
+  const [row] = await db
+    .select({
+      id: skAssets.assetId,
+      itemId: skAssets.itemId,
+      code: items.itemCode,
+      name: items.itemName,
+      tag: skAssets.tag,
+      serialNo: skAssets.serialNo,
+      location: skAssets.location,
+      status: skAssets.status,
+    })
+    .from(skAssets)
+    .innerJoin(items, and(eq(items.itemId, skAssets.itemId), eq(items.tenantId, tenantId)))
+    .where(scoped(skAssets, tenantId, eq(skAssets.tag, normalized)))
+    .limit(1);
+  if (!row) throw new OfficeError("NOT_FOUND");
+
+  const [loan] = await db
+    .select({
+      id: skLoans.loanId,
+      borrowerName: skLoans.borrowerName,
+      purpose: skLoans.purpose,
+      dueOn: skLoans.dueOn,
+      status: skLoans.status,
+    })
+    .from(skLoans)
+    .where(scoped(skLoans, tenantId, and(eq(skLoans.assetId, row.id), eq(skLoans.status, "Out"))))
+    .limit(1);
+
+  return {
+    ...row,
+    qrSvg: await QRCode.toString(row.tag, { type: "svg", margin: 1, width: 280 }),
+    loan: loan
+      ? {
+          id: loan.id,
+          borrowerName: loan.borrowerName,
+          purpose: loan.purpose,
+          dueOn: loan.dueOn,
+          overdue: isOverdue(loan.dueOn, schoolDate(), loan.status),
+        }
+      : null,
   };
 }
 

@@ -77,6 +77,26 @@
   }
 }
 
+@media print {
+  body:has(.asset-label) * {
+    visibility: hidden;
+  }
+
+  body:has(.asset-label) .asset-label,
+  body:has(.asset-label) .asset-label * {
+    visibility: visible;
+  }
+
+  body:has(.asset-label) .asset-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 340px;
+    border-color: #003366;
+    box-shadow: none;
+  }
+}
+
 @keyframes ticker {
   0% {
     transform: translateX(100%);

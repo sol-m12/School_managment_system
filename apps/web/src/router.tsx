@@ -52,7 +52,6 @@ import {
 } from "@/features/store/StoreFlows";
 import {
   AlertsPage,
-  AssetsPage,
   DisposalPage,
   ForecastPage,
   InventorySearchPage,
@@ -60,6 +59,8 @@ import {
   ProcurementPage as StoreProcurementPage,
   StoreReportPage,
 } from "@/features/store/StoreOfficePages";
+import { AssetsPage } from "@/features/store/AssetDesk";
+import { StoreDeskPage } from "@/features/store/StoreDesk";
 import { MENU_ITEMS, type NavItemKey } from "@/navigation/menu";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
@@ -199,6 +200,7 @@ const BUILT_ITEMS: readonly NavItemKey[] = [
   "mehi17Ledger",
   "mehi17Setup",
   "mehi7",
+  "storeDesk",
   "procurementRouting",
   "inventorySearch",
   "reorderAlerts",
@@ -342,6 +344,7 @@ export const router = createBrowserRouter([
       { path: "store/mehi-17", element: <ProtectedRoute permission="store.finance"><Mehi17LedgerPage /></ProtectedRoute> },
       { path: "store/mehi-17-setup", element: <ProtectedRoute permission="store.finance"><Mehi17SetupPage /></ProtectedRoute> },
       { path: "store/mehi-7", element: <ProtectedRoute permission="store.finance"><Mehi7Page /></ProtectedRoute> },
+      { path: "store/office", element: <ProtectedRoute permission="store.office"><StoreDeskPage /></ProtectedRoute> },
       { path: "store/procurement", element: <ProtectedRoute permission="store.office"><StoreProcurementPage /></ProtectedRoute> },
       { path: "store/search", element: <ProtectedRoute permission="store.office"><InventorySearchPage /></ProtectedRoute> },
       { path: "store/alerts", element: <ProtectedRoute permission="store.office"><AlertsPage /></ProtectedRoute> },

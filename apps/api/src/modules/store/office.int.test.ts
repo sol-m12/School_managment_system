@@ -148,6 +148,18 @@ describe("store office API", () => {
 
     const own = await request(app).get("/store/office/assets").set("Authorization", token).expect(200);
     expect(own.body.rows[0].qrSvg.startsWith("<svg")).toBe(true);
+    const found = await request(app)
+      .get("/store/office/assets/lookup")
+      .query({ tag: "ast-001" })
+      .set("Authorization", token)
+      .expect(200);
+    expect(found.body.tag).toBe("AST-001");
+    expect(found.body.name).toBe("Classroom projector");
+    await request(app)
+      .get("/store/office/assets/lookup")
+      .query({ tag: "AST-001" })
+      .set("Authorization", bearer(seed.tenantB.id))
+      .expect(404);
     const otherAssets = await request(app).get("/store/office/assets").set("Authorization", bearer(seed.tenantB.id)).expect(200);
     expect(otherAssets.body.rows).toEqual([]);
 

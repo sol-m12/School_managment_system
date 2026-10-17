@@ -268,6 +268,7 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "mehi17Setup", path: "/store/mehi-17-setup", icon: ScrollText, group: "administration", permission: "store.finance" },
   { key: "mehi7", path: "/store/mehi-7", icon: ScrollText, group: "administration", permission: "store.finance" },
 
+  { key: "storeDesk", path: "/store/office", icon: LayoutTemplate, group: "storeOffice", permission: "store.office" },
   { key: "procurementRouting", path: "/store/procurement", icon: ShoppingCart, group: "storeOffice", permission: "store.office" },
   { key: "inventorySearch", path: "/store/search", icon: Search, group: "storeOffice", permission: "store.office" },
   { key: "reorderAlerts", path: "/store/alerts", icon: AlertTriangle, group: "storeOffice", permission: "store.office" },

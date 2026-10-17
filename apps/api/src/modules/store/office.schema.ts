@@ -8,6 +8,10 @@ export const searchQuerySchema = z.object({
   q: z.string().trim().min(1).max(80),
 });
 
+export const tagQuerySchema = z.object({
+  tag: z.string().trim().min(1).max(40),
+});
+
 export const routeBodySchema = z.object({
   itemId: z.number().int().positive(),
   quantity: z.number().positive().max(1_000_000),

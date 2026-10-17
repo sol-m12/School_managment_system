@@ -8,6 +8,7 @@ import {
   loanBodySchema,
   routeBodySchema,
   searchQuerySchema,
+  tagQuerySchema,
 } from "./office.schema.js";
 import { OfficeError, type OfficeErrorCode } from "./office.service.js";
 import * as office from "./office.service.js";
@@ -115,6 +116,19 @@ storeOfficeRouter.post("/alerts/:id/route", ...guard, async (req, res) => {
   if (!id) return;
   try {
     res.status(201).json(await office.routeAlert(tenantOf(req), userOf(req), id));
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+storeOfficeRouter.get("/assets/lookup", ...guard, async (req, res) => {
+  const parsed = tagQuerySchema.safeParse(req.query);
+  if (!parsed.success) {
+    res.status(400).json({ code: "VALIDATION_ERROR" });
+    return;
+  }
+  try {
+    res.json(await office.lookupAsset(tenantOf(req), parsed.data.tag));
   } catch (error) {
     sendError(res, error);
   }

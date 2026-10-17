@@ -7,7 +7,6 @@ import { Panel, readForm, textOf, useNotice } from "@/features/principal/officeU
 import { toErrorKey } from "@/lib/apiError";
 import {
   useAlerts,
-  useAssets,
   useDisposals,
   useForecast,
   useInventorySearch,
@@ -15,7 +14,6 @@ import {
   useLoans,
   useProcurement,
   useRecordDisposal,
-  useRegisterAsset,
   useReturnAsset,
   useRouteAlert,
   useRoutePurchase,
@@ -32,7 +30,6 @@ function numOf(data: FormData, name: string): number {
 }
 
 const STATUS_KEY = { critical: "officeCritical", low: "officeLow", adequate: "officeAdequate" } as const;
-const ASSET_KEY = { InStore: "officeInStore", OnLoan: "officeOnLoan", Disposed: "officeDisposed" } as const;
 const ACTION_KEY: Record<string, "actionRoute" | "actionAlert" | "actionAsset" | "actionDispose" | "actionLoan" | "actionReturn"> = {
   "store.route": "actionRoute",
   "store.alert": "actionAlert",
@@ -209,80 +206,6 @@ export function AlertsPage() {
               empty={t("officeEmpty")}
             />
           </Card>
-        )}
-      </Panel>
-    </>
-  );
-}
-
-export function AssetsPage() {
-  const { t } = useTranslation(["store", "errors"]);
-  const query = useAssets();
-  const save = useRegisterAsset();
-  const { setNotice, view } = useNotice();
-  return (
-    <>
-      <PageHeader title={t("officeAssetsTitle")} description={t("officeAssetsHelp")} />
-      {view}
-      <Panel query={query}>
-        {(data) => (
-          <div className="grid gap-4">
-            <Card>
-              <CardHeader title={t("officeRegister")} />
-              <CardBody>
-                <form
-                  className="grid gap-3 md:grid-cols-3"
-                  onSubmit={(event) => {
-                    const form = readForm(event);
-                    save.mutate(
-                      { itemId: numOf(form, "itemId"), serialNo: textOf(form, "serialNo"), location: textOf(form, "location") },
-                      {
-                        onSuccess: () => {
-                          setNotice({ tone: "success", text: t("officeSaved") });
-                          event.currentTarget.reset();
-                        },
-                        onError: (error) => fail(setNotice, t, error),
-                      },
-                    );
-                  }}
-                >
-                  <Select
-                    name="itemId"
-                    label={t("officeItem")}
-                    required
-                    options={data.items.map((item) => ({ value: String(item.id), label: `${item.code} ${item.name}` }))}
-                    placeholder={t("officeItem")}
-                  />
-                  <Input name="serialNo" label={t("officeSerial")} />
-                  <Input name="location" label={t("officeLocation")} />
-                  <Button type="submit" loading={save.isPending}>
-                    {t("officeRegister")}
-                  </Button>
-                </form>
-              </CardBody>
-            </Card>
-            <Card>
-              <Table
-                columns={[
-                  { key: "tag", header: t("officeTag"), render: (row) => row.tag },
-                  { key: "item", header: t("officeItem"), render: (row) => `${row.code} ${row.name}` },
-                  { key: "serial", header: t("officeSerial"), render: (row) => row.serialNo },
-                  { key: "place", header: t("officeLocation"), render: (row) => row.location },
-                  { key: "status", header: t("officeStatus"), render: (row) => t(ASSET_KEY[row.status]) },
-                  {
-                    key: "qr",
-                    header: t("officeQr"),
-                    render: (row) => (
-                      <div className="h-16 w-16" dangerouslySetInnerHTML={{ __html: row.qrSvg.startsWith("<svg") ? row.qrSvg : "" }} />
-                    ),
-                  },
-                ]}
-                rows={data.rows}
-                rowKey={(row) => row.id}
-                empty={t("officeEmpty")}
-              />
-            </Card>
-          </div>
         )}
       </Panel>
     </>
