@@ -95,5 +95,16 @@
   "leaveRequest": "Leave request",
   "questionBank": "Question bank",
   "participation": "Participation",
-  "queueAttendance": "Save offline"
+  "queueAttendance": "Save offline",
+  "studentCode": "Student code",
+  "scanDigitalId": "Scan digital ID",
+  "scanHint": "Point the camera at a Keyt student QR code",
+  "scanUnsupported": "Camera scan is not available on this device",
+  "scanInvalid": "Not a valid Keyt student ID",
+  "scanWrongTenant": "This ID belongs to another school",
+  "scanOpenProfile": "Open student profile",
+  "notificationsEmpty": "No announcements right now",
+  "notificationUrgent": "Urgent",
+  "localNotifyChannelName": "School announcements",
+  "localNotifyChannelDesc": "New announcements from your school"
 }

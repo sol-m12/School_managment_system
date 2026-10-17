@@ -589,6 +589,72 @@ abstract class AppLocalizations {
   /// In am, this message translates to:
   /// **'ከመስመር ውጭ አስቀምጥ'**
   String get queueAttendance;
+
+  /// No description provided for @studentCode.
+  ///
+  /// In am, this message translates to:
+  /// **'የተማሪ ከድ'**
+  String get studentCode;
+
+  /// No description provided for @scanDigitalId.
+  ///
+  /// In am, this message translates to:
+  /// **'ዲጂታል መታወቂያ ስካን'**
+  String get scanDigitalId;
+
+  /// No description provided for @scanHint.
+  ///
+  /// In am, this message translates to:
+  /// **'የኬይት የተማሪ QR ከድ ያንብቡ'**
+  String get scanHint;
+
+  /// No description provided for @scanUnsupported.
+  ///
+  /// In am, this message translates to:
+  /// **'የካሜራ ስካን በዚህ ማሽን አይተከላም'**
+  String get scanUnsupported;
+
+  /// No description provided for @scanInvalid.
+  ///
+  /// In am, this message translates to:
+  /// **'ትክክል የኬይት የተማሪ መታወቂያ አይደለም'**
+  String get scanInvalid;
+
+  /// No description provided for @scanWrongTenant.
+  ///
+  /// In am, this message translates to:
+  /// **'ይህ መታወቂያ የሌላ ትምህርት ቤት ነው'**
+  String get scanWrongTenant;
+
+  /// No description provided for @scanOpenProfile.
+  ///
+  /// In am, this message translates to:
+  /// **'የተማሪ መገለጫ ክፈት'**
+  String get scanOpenProfile;
+
+  /// No description provided for @notificationsEmpty.
+  ///
+  /// In am, this message translates to:
+  /// **'አሁን ማሳወቂያ የለም'**
+  String get notificationsEmpty;
+
+  /// No description provided for @notificationUrgent.
+  ///
+  /// In am, this message translates to:
+  /// **'አስአኻይ'**
+  String get notificationUrgent;
+
+  /// No description provided for @localNotifyChannelName.
+  ///
+  /// In am, this message translates to:
+  /// **'የትምህርት ቤት ማሳወቂያዎች'**
+  String get localNotifyChannelName;
+
+  /// No description provided for @localNotifyChannelDesc.
+  ///
+  /// In am, this message translates to:
+  /// **'አዲስ ማሳወቂያዎች ከትምህርት ቤትዎ'**
+  String get localNotifyChannelDesc;
 }
 
 class _AppLocalizationsDelegate

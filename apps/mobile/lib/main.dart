@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'app/router.dart';
 import 'core/locale/locale_controller.dart';
+import 'core/providers.dart';
 import 'core/theme/app_theme.dart';
 import 'l10n/app_localizations.dart';
 
@@ -16,6 +17,7 @@ class KeytApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(announcementPollProvider);
     final locale = ref.watch(localeControllerProvider);
     final router = ref.watch(goRouterProvider);
     return MaterialApp.router(

@@ -219,6 +219,11 @@ class TeacherOfficeHubScreen extends StatelessWidget {
             icon: Icons.inventory_2,
             onTap: () => context.push('/teacher/office/store'),
           ),
+          HubItem(
+            label: l10n.scanDigitalId,
+            icon: Icons.qr_code_scanner,
+            onTap: () => context.push('/teacher/office/scan-id'),
+          ),
         ],
       ),
     );

@@ -8,6 +8,7 @@ import 'auth/token_store.dart';
 import 'cache/cache_database.dart';
 import 'cache/cache_repository.dart';
 import 'connectivity/connectivity_service.dart';
+import 'notifications/local_notification_service.dart';
 import 'outbox/attendance_outbox.dart';
 
 final tokenStoreProvider = Provider<TokenStore>((ref) => TokenStore());
@@ -98,6 +99,7 @@ class AuthController extends Notifier<AuthState> {
     await _repo.logout();
     if (user != null) {
       await _cache.clearForUser(user);
+      await ref.read(localNotificationServiceProvider).clearSeen(user);
     }
     state = AuthState.signedOut;
   }
@@ -107,6 +109,7 @@ class AuthController extends Notifier<AuthState> {
     await ref.read(tokenStoreProvider).clear();
     if (user != null) {
       await _cache.clearForUser(user);
+      await ref.read(localNotificationServiceProvider).clearSeen(user);
     }
     state = AuthState.signedOut;
   }
@@ -119,11 +122,34 @@ final isOnlineProvider = StreamProvider<bool>((ref) {
   return ref.watch(connectivityServiceProvider).onOnlineChanged;
 });
 
+final localNotificationServiceProvider =
+    Provider<LocalNotificationService>((ref) {
+  return LocalNotificationService(api: ref.watch(apiClientProvider));
+});
+
 final attendanceOutboxServiceProvider = Provider<AttendanceOutboxService>((ref) {
   return AttendanceOutboxService(
     db: ref.watch(cacheDatabaseProvider),
     api: ref.watch(apiClientProvider),
   );
+});
+
+/// Polls student desk notifications while authenticated (local alerts only).
+final announcementPollProvider = Provider<void>((ref) {
+  final auth = ref.watch(authControllerProvider);
+  final user = auth.user;
+  if (auth.status != AuthStatus.authenticated || user == null || !user.isStudent) {
+    return;
+  }
+  final service = ref.read(localNotificationServiceProvider);
+  Future.microtask(() => service.pollStudentAnnouncements(user));
+  final timer = Stream.periodic(const Duration(minutes: 5)).listen((_) {
+    final current = ref.read(authControllerProvider).user;
+    if (current != null && current.isStudent) {
+      service.pollStudentAnnouncements(current);
+    }
+  });
+  ref.onDispose(timer.cancel);
 });
 
 final pendingOutboxCountProvider = FutureProvider<int>((ref) async {

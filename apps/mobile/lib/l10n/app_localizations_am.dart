@@ -257,4 +257,37 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get queueAttendance => 'ከመስመር ውጭ አስቀምጥ';
+
+  @override
+  String get studentCode => 'የተማሪ ከድ';
+
+  @override
+  String get scanDigitalId => 'ዲጂታል መታወቂያ ስካን';
+
+  @override
+  String get scanHint => 'የኬይት የተማሪ QR ከድ ያንብቡ';
+
+  @override
+  String get scanUnsupported => 'የካሜራ ስካን በዚህ ማሽን አይተከላም';
+
+  @override
+  String get scanInvalid => 'ትክክል የኬይት የተማሪ መታወቂያ አይደለም';
+
+  @override
+  String get scanWrongTenant => 'ይህ መታወቂያ የሌላ ትምህርት ቤት ነው';
+
+  @override
+  String get scanOpenProfile => 'የተማሪ መገለጫ ክፈት';
+
+  @override
+  String get notificationsEmpty => 'አሁን ማሳወቂያ የለም';
+
+  @override
+  String get notificationUrgent => 'አስአኻይ';
+
+  @override
+  String get localNotifyChannelName => 'የትምህርት ቤት ማሳወቂያዎች';
+
+  @override
+  String get localNotifyChannelDesc => 'አዲስ ማሳወቂያዎች ከትምህርት ቤትዎ';
 }

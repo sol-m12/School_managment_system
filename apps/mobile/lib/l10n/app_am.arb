@@ -95,5 +95,16 @@
   "leaveRequest": "የፍቃድ ጥያቄ",
   "questionBank": "የጥያቄ ባንክ",
   "participation": "ተሳትፎ",
-  "queueAttendance": "ከመስመር ውጭ አስቀምጥ"
+  "queueAttendance": "ከመስመር ውጭ አስቀምጥ",
+  "studentCode": "የተማሪ ከድ",
+  "scanDigitalId": "ዲጂታል መታወቂያ ስካን",
+  "scanHint": "የኬይት የተማሪ QR ከድ ያንብቡ",
+  "scanUnsupported": "የካሜራ ስካን በዚህ ማሽን አይተከላም",
+  "scanInvalid": "ትክክል የኬይት የተማሪ መታወቂያ አይደለም",
+  "scanWrongTenant": "ይህ መታወቂያ የሌላ ትምህርት ቤት ነው",
+  "scanOpenProfile": "የተማሪ መገለጫ ክፈት",
+  "notificationsEmpty": "አሁን ማሳወቂያ የለም",
+  "notificationUrgent": "አስአኻይ",
+  "localNotifyChannelName": "የትምህርት ቤት ማሳወቂያዎች",
+  "localNotifyChannelDesc": "አዲስ ማሳወቂያዎች ከትምህርት ቤትዎ"
 }

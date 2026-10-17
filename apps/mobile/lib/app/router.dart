@@ -4,9 +4,12 @@ import 'package:go_router/go_router.dart';
 
 import '../core/providers.dart';
 import '../features/auth/login_page.dart';
+import '../features/student/screens/digital_id_screen.dart';
+import '../features/student/screens/notifications_screen.dart';
 import '../features/student/screens/student_screens.dart';
 import '../features/student/student_shell.dart';
 import '../features/teacher/screens/offline_attendance_screen.dart';
+import '../features/teacher/screens/scan_id_screen.dart';
 import '../features/teacher/screens/teacher_screens.dart';
 import '../features/teacher/teacher_shell.dart';
 import '../l10n/app_localizations.dart';
@@ -276,14 +279,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'id',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return StudentJsonRoute(
-                        title: l10n.digitalId,
-                        cacheKey: 'student_id',
-                        path: '/student/desk/id',
-                      );
-                    },
+                    builder: (context, state) => const DigitalIdScreen(),
                   ),
                 ],
               ),
@@ -297,14 +293,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: 'notifications',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return StudentJsonRoute(
-                        title: l10n.notifications,
-                        cacheKey: 'student_notifications',
-                        path: '/student/desk/notifications',
-                      );
-                    },
+                    builder: (context, state) => const NotificationsScreen(),
                   ),
                 ],
               ),
@@ -423,6 +412,20 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                         path: '/teacher/office/student-360',
                       );
                     },
+                    routes: [
+                      GoRoute(
+                        path: ':id',
+                        builder: (context, state) {
+                          final l10n = AppLocalizations.of(context);
+                          final id = state.pathParameters['id'] ?? '';
+                          return TeacherJsonRoute(
+                            title: l10n.student360,
+                            cacheKey: 'teacher_student_360_$id',
+                            path: '/teacher/office/student-360/$id',
+                          );
+                        },
+                      ),
+                    ],
                   ),
                   GoRoute(
                     path: 'report-cards',
@@ -597,6 +600,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                         path: '/teacher/store-requests',
                       );
                     },
+                  ),
+                  GoRoute(
+                    path: 'scan-id',
+                    builder: (context, state) => const ScanDigitalIdScreen(),
                   ),
                 ],
               ),

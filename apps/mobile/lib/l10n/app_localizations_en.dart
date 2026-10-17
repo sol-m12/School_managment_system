@@ -257,4 +257,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get queueAttendance => 'Save offline';
+
+  @override
+  String get studentCode => 'Student code';
+
+  @override
+  String get scanDigitalId => 'Scan digital ID';
+
+  @override
+  String get scanHint => 'Point the camera at a Keyt student QR code';
+
+  @override
+  String get scanUnsupported => 'Camera scan is not available on this device';
+
+  @override
+  String get scanInvalid => 'Not a valid Keyt student ID';
+
+  @override
+  String get scanWrongTenant => 'This ID belongs to another school';
+
+  @override
+  String get scanOpenProfile => 'Open student profile';
+
+  @override
+  String get notificationsEmpty => 'No announcements right now';
+
+  @override
+  String get notificationUrgent => 'Urgent';
+
+  @override
+  String get localNotifyChannelName => 'School announcements';
+
+  @override
+  String get localNotifyChannelDesc => 'New announcements from your school';
 }
