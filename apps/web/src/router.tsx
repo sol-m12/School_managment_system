@@ -118,8 +118,8 @@ import {
   ApprovalsPage as SecretaryApprovalsPage,
   AppointmentsPage,
   CleanupPage,
-  DocumentsPage,
-  HelpdeskPage,
+  DocumentsPage as SecretaryDocumentsPage,
+  HelpdeskPage as SecretaryHelpdeskPage,
   IdCardsPage,
   NoticesPage,
   OcrPage,
@@ -156,7 +156,7 @@ import {
   DigitalIdPage,
   DisciplineStatusPage,
   DocumentRequestPage,
-  HelpdeskPage,
+  HelpdeskPage as StudentHelpdeskPage,
   LibraryStatusPage,
   LibraryUsagePage,
   NotificationsPage,
@@ -165,7 +165,7 @@ import {
   StudyPlannerPage,
 } from "@/features/student/StudentDeskPages";
 import { AnalyticsPage, AtRiskPage, BuilderPage, CorrelationPage, DemographicsPage, IncidentsPage, MoePage, TrainingPage, TransfersPage, WarningsPage } from "@/features/principal/InsightPages";
-import { BulkPage, DocumentsPage, ExecutivePage, HubPage, InboxPage, PremiumPage, StaffKpiPage, TrendsPage } from "@/features/principal/WorkPages";
+import { BulkPage, DocumentsPage as PrincipalDocumentsPage, ExecutivePage, HubPage, InboxPage, PremiumPage, StaffKpiPage, TrendsPage } from "@/features/principal/WorkPages";
 import { BehaviorPage, InvigilationPage, VocationalPage } from "@/features/vice/VicePages";
 import {
   IncidentsPage as TeacherIncidentsPage,
@@ -499,7 +499,7 @@ export const router = createBrowserRouter([
       { path: "student/library", element: <ProtectedRoute permission="student.desk"><LibraryStatusPage /></ProtectedRoute> },
       { path: "student/library-usage", element: <ProtectedRoute permission="student.desk"><LibraryUsagePage /></ProtectedRoute> },
       { path: "student/documents", element: <ProtectedRoute permission="student.desk"><DocumentRequestPage /></ProtectedRoute> },
-      { path: "student/helpdesk", element: <ProtectedRoute permission="student.desk"><HelpdeskPage /></ProtectedRoute> },
+      { path: "student/helpdesk", element: <ProtectedRoute permission="student.desk"><StudentHelpdeskPage /></ProtectedRoute> },
       { path: "student/planner", element: <ProtectedRoute permission="student.desk"><StudyPlannerPage /></ProtectedRoute> },
       { path: "student/id", element: <ProtectedRoute permission="student.desk"><DigitalIdPage /></ProtectedRoute> },
       { path: "principal/executive", element: <ProtectedRoute permission="principal.office"><ExecutivePage /></ProtectedRoute> },
@@ -508,7 +508,7 @@ export const router = createBrowserRouter([
       { path: "principal/premium", element: <ProtectedRoute permission="principal.office"><PremiumPage /></ProtectedRoute> },
       { path: "principal/inbox", element: <ProtectedRoute permission="principal.office"><InboxPage /></ProtectedRoute> },
       { path: "principal/staff", element: <ProtectedRoute permission="principal.office"><StaffKpiPage /></ProtectedRoute> },
-      { path: "principal/documents", element: <ProtectedRoute permission="principal.office"><DocumentsPage /></ProtectedRoute> },
+      { path: "principal/documents", element: <ProtectedRoute permission="principal.office"><PrincipalDocumentsPage /></ProtectedRoute> },
       { path: "principal/messages", element: <ProtectedRoute permission="principal.office"><BulkPage /></ProtectedRoute> },
       { path: "principal/analytics", element: <ProtectedRoute permission="principal.office"><AnalyticsPage /></ProtectedRoute> },
       { path: "principal/correlation", element: <ProtectedRoute permission="principal.office"><CorrelationPage /></ProtectedRoute> },
@@ -559,10 +559,10 @@ export const router = createBrowserRouter([
       { path: "secretary/cleanup", element: <ProtectedRoute permission="secretary.office"><CleanupPage /></ProtectedRoute> },
       { path: "secretary/renewal", element: <ProtectedRoute permission="secretary.office"><RenewalPage /></ProtectedRoute> },
       { path: "secretary/notices", element: <ProtectedRoute permission="secretary.office"><NoticesPage /></ProtectedRoute> },
-      { path: "secretary/documents", element: <ProtectedRoute permission="secretary.office"><DocumentsPage /></ProtectedRoute> },
+      { path: "secretary/documents", element: <ProtectedRoute permission="secretary.office"><SecretaryDocumentsPage /></ProtectedRoute> },
       { path: "secretary/approvals", element: <ProtectedRoute permission="secretary.authorize"><SecretaryApprovalsPage /></ProtectedRoute> },
       { path: "secretary/appointments", element: <ProtectedRoute permission="secretary.office"><AppointmentsPage /></ProtectedRoute> },
-      { path: "secretary/helpdesk", element: <ProtectedRoute permission="secretary.office"><HelpdeskPage /></ProtectedRoute> },
+      { path: "secretary/helpdesk", element: <ProtectedRoute permission="secretary.office"><SecretaryHelpdeskPage /></ProtectedRoute> },
       { path: "secretary/id-cards", element: <ProtectedRoute permission="secretary.office"><IdCardsPage /></ProtectedRoute> },
       { path: "secretary/ocr", element: <ProtectedRoute permission="secretary.office"><OcrPage /></ProtectedRoute> },
       { path: "vice/vocational", element: <ProtectedRoute permission="vice.office"><VocationalPage /></ProtectedRoute> },
