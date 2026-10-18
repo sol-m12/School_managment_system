@@ -48,6 +48,7 @@ import {
   LifeBuoy,
   QrCode,
   Search,
+  MessageCircle,
   Trash2,
   Undo2,
   Archive,
@@ -110,6 +111,7 @@ export type MenuGroupKey =
   | "libraryOffice"
   | "procurementOffice"
   | "secretaryOffice"
+  | "counselorOffice"
   | "main";
 
 export type MenuItem = {
@@ -150,6 +152,7 @@ export const MENU_GROUP_ORDER: readonly MenuGroupKey[] = [
   "libraryOffice",
   "procurementOffice",
   "secretaryOffice",
+  "counselorOffice",
   "main",
   "finance",
 ];
@@ -182,6 +185,9 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "helpdesk", path: "/student/helpdesk", icon: LifeBuoy, group: "studentDesk", permission: "student.desk" },
   { key: "studyPlanner", path: "/student/planner", icon: Brain, group: "studentDesk", permission: "student.desk" },
   { key: "studentClubs", path: "/student/clubs", icon: Trophy, group: "studentDesk", permission: "clubs.student" },
+  { key: "studentLostFound", path: "/student/lost-found", icon: Search, group: "studentDesk", permission: "lostfound.post" },
+  { key: "studentForum", path: "/student/forum", icon: MessageCircle, group: "studentDesk", permission: "forum.student" },
+  { key: "studentScholarships", path: "/student/scholarships", icon: GraduationCap, group: "studentDesk", permission: "scholarships.student" },
   { key: "digitalId", path: "/student/id", icon: QrCode, group: "studentDesk", permission: "student.desk" },
 
   { key: "requestItem", path: "/teacher/store-requests", icon: Link, group: "administration", permission: "storeRequests.create" },
@@ -220,6 +226,7 @@ export const MENU_ITEMS: readonly MenuItem[] = [
 
   { key: "vocationalTraining", path: "/vice/vocational", icon: Wrench, group: "viceOffice", permission: "vice.office" },
   { key: "viceClubs", path: "/vice/clubs", icon: Trophy, group: "viceOffice", permission: "clubs.oversee" },
+  { key: "viceScholarships", path: "/vice/scholarships", icon: GraduationCap, group: "viceOffice", permission: "scholarships.post" },
   { key: "behaviorOffice", path: "/vice/behavior", icon: Scale, group: "viceOffice", permission: "vice.office" },
   { key: "examInvigilation", path: "/vice/invigilation", icon: ClipboardCheck, group: "viceOffice", permission: "vice.office" },
 
@@ -241,6 +248,9 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "incidentReports", path: "/teacher/incidents", icon: Megaphone, group: "subjectTeacher", permission: "teacher.subject" },
   { key: "leaveRequest", path: "/teacher/leave", icon: CalendarOff, group: "subjectTeacher", permission: "teacher.subject" },
   { key: "teacherClubs", path: "/teacher/clubs", icon: Trophy, group: "subjectTeacher", permission: "clubs.patron" },
+  { key: "teacherLostFound", path: "/teacher/lost-found", icon: Search, group: "subjectTeacher", permission: "lostfound.post" },
+  { key: "teacherForum", path: "/teacher/forum", icon: MessageCircle, group: "subjectTeacher", permission: "forum.moderate" },
+  { key: "teacherScholarships", path: "/teacher/scholarships", icon: GraduationCap, group: "subjectTeacher", permission: "scholarships.recommend" },
   { key: "teacherLibrary", path: "/teacher/library", icon: Library, group: "subjectTeacher", permission: "teacher.subject" },
   { key: "questionBank", path: "/teacher/question-bank", icon: BookOpen, group: "subjectTeacher", permission: "teacher.subject" },
   { key: "participationTracker", path: "/teacher/participation", icon: Hand, group: "subjectTeacher", permission: "teacher.subject" },
@@ -254,6 +264,7 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   // Technician (Technician.png)
   { key: "announcements", path: "/system/announcements", icon: Megaphone, group: "techRegistration", permission: "announcements.manage" },
   { key: "clubsManage", path: "/system/clubs", icon: Trophy, group: "techRegistration", permission: "clubs.manage" },
+  { key: "forumFilter", path: "/system/forum-filter", icon: Shield, group: "systemSettings", permission: "forum.filter" },
   { key: "staffRegistration", path: "/system/staff-registration", icon: IdCard, group: "techRegistration", permission: "staffRegistration.manage" },
   { key: "accountManagement", path: "/account/manage", icon: KeyRound, group: "techRegistration", permission: "accounts.manage" },
 
@@ -313,6 +324,8 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "recordAlumni", path: "/records/alumni", icon: GraduationCap, group: "recordOffice", permission: "records.office" },
   { key: "recordExport", path: "/records/export", icon: FileSpreadsheet, group: "recordOffice", permission: "records.office" },
   { key: "recordAccess", path: "/records/access", icon: ScrollText, group: "recordOffice", permission: "records.office" },
+  { key: "recordsLostFound", path: "/records/lost-found", icon: Search, group: "recordOffice", permission: "lostfound.moderate" },
+  { key: "recordsScholarships", path: "/records/scholarships", icon: GraduationCap, group: "recordOffice", permission: "scholarships.records" },
 
   { key: "libraryDesk", path: "/library", icon: Library, group: "libraryOffice", permission: "library.office", end: true },
   { key: "libraryCatalog", path: "/library/catalog", icon: BookMarked, group: "libraryOffice", permission: "library.office" },
@@ -346,6 +359,9 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "secretaryHelpdesk", path: "/secretary/helpdesk", icon: LifeBuoy, group: "secretaryOffice", permission: "secretary.office" },
   { key: "secretaryIdCards", path: "/secretary/id-cards", icon: IdCard, group: "secretaryOffice", permission: "secretary.office" },
   { key: "secretaryOcr", path: "/secretary/ocr", icon: ScanLine, group: "secretaryOffice", permission: "secretary.office" },
+  { key: "secretaryLostFound", path: "/secretary/lost-found", icon: Search, group: "secretaryOffice", permission: "lostfound.moderate" },
+  { key: "counselorScholarships", path: "/counselor/scholarships", icon: GraduationCap, group: "counselorOffice", permission: "scholarships.post" },
+  { key: "principalScholarships", path: "/principal/scholarships", icon: GraduationCap, group: "principalOffice", permission: "scholarships.recommend" },
 
   {
     key: "dashboard",

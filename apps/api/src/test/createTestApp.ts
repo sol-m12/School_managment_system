@@ -23,6 +23,9 @@ import { viceRouter } from "../modules/vice/vice.routes.js";
 import { platformRouter } from "../modules/platform/platform.routes.js";
 import { parentAdminRouter, parentRouter } from "../modules/parent/parent.routes.js";
 import { clubsRouter } from "../modules/clubs/clubs.routes.js";
+import { lostfoundRouter } from "../modules/lostfound/lostfound.routes.js";
+import { forumRouter } from "../modules/forum/forum.routes.js";
+import { scholarshipsRouter } from "../modules/scholarships/scholarships.routes.js";
 
 /** Minimal Express app for integration tests (no listen). */
 export function createTestApp(): Express {
@@ -54,6 +57,9 @@ export function createTestApp(): Express {
   app.use("/parent", parentRouter);
   app.use("/operations/parents", parentAdminRouter);
   app.use("/clubs", clubsRouter);
+  app.use("/lostfound", lostfoundRouter);
+  app.use("/forum", forumRouter);
+  app.use("/scholarships", scholarshipsRouter);
   app.get("/public/tenders", publicTenderList);
   return app;
 }

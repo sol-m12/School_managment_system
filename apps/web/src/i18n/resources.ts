@@ -21,6 +21,9 @@ import amTechnician from "@/locales/am/technician.json";
 import amPlatform from "@/locales/am/platform.json";
 import amParents from "@/locales/am/parents.json";
 import amClubs from "@/locales/am/clubs.json";
+import amLostfound from "@/locales/am/lostfound.json";
+import amForum from "@/locales/am/forum.json";
+import amScholarships from "@/locales/am/scholarships.json";
 import enAdmin from "@/locales/en/admin.json";
 import enAuth from "@/locales/en/auth.json";
 import enCommon from "@/locales/en/common.json";
@@ -44,8 +47,11 @@ import enTechnician from "@/locales/en/technician.json";
 import enPlatform from "@/locales/en/platform.json";
 import enParents from "@/locales/en/parents.json";
 import enClubs from "@/locales/en/clubs.json";
+import enLostfound from "@/locales/en/lostfound.json";
+import enForum from "@/locales/en/forum.json";
+import enScholarships from "@/locales/en/scholarships.json";
 
-export const NAMESPACES = ["common", "auth", "nav", "dashboard", "subjects", "admin", "errors", "home", "teacher", "technician", "student", "store", "operations", "principal", "vice", "office", "records", "library", "procurement", "secretary", "platform", "parents", "clubs"] as const;
+export const NAMESPACES = ["common", "auth", "nav", "dashboard", "subjects", "admin", "errors", "home", "teacher", "technician", "student", "store", "operations", "principal", "vice", "office", "records", "library", "procurement", "secretary", "platform", "parents", "clubs", "lostfound", "forum", "scholarships"] as const;
 
 export const resources = {
   am: {
@@ -72,6 +78,9 @@ export const resources = {
     platform: amPlatform,
     parents: amParents,
     clubs: amClubs,
+    lostfound: amLostfound,
+    forum: amForum,
+    scholarships: amScholarships,
   },
   en: {
     common: enCommon,
@@ -97,6 +106,9 @@ export const resources = {
     platform: enPlatform,
     parents: enParents,
     clubs: enClubs,
+    lostfound: enLostfound,
+    forum: enForum,
+    scholarships: enScholarships,
   },
 } as const;
 
