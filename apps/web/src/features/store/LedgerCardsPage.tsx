@@ -75,23 +75,38 @@ export function LedgerCardsPage() {
           <option value="">{t("store:yearAll")}</option>
           {lookups.data.years.map((year) => <option key={year} value={year}>{year} {t("store:yearSuffix")}</option>)}
         </select>
-        <select className={field} value={programId || ""} onChange={(event) => setProgramId(Number(event.target.value))}>
-          <option value="">{t("store:programAll")}</option>
-          {lookups.data.programs.map((code) => <option key={code.id} value={code.id}>{codeLabel(code)}</option>)}
-        </select>
-        <select className={field} value={budgetTypeId || ""} onChange={(event) => setBudgetTypeId(Number(event.target.value))}>
-          <option value="">{t("store:budgetTypeAll")}</option>
-          {lookups.data.budgetTypes.map((code) => <option key={code.id} value={code.id}>{codeLabel(code)}</option>)}
-        </select>
-        <select className={field} value={sourceCodeId || ""} onChange={(event) => setSourceCodeId(Number(event.target.value))}>
-          <option value="">{t("store:sourceAll")}</option>
-          {lookups.data.sources.map((code) => <option key={code.id} value={code.id}>{codeLabel(code)}</option>)}
-        </select>
+        <FilterSelect
+          value={programId}
+          placeholder={t("store:programAll")}
+          emptyHint={t("store:emptyProgramFilter")}
+          options={lookups.data.programs}
+          onChange={setProgramId}
+        />
+        <FilterSelect
+          value={budgetTypeId}
+          placeholder={t("store:budgetTypeAll")}
+          emptyHint={t("store:emptyBudgetTypeFilter")}
+          options={lookups.data.budgetTypes}
+          onChange={setBudgetTypeId}
+        />
+        <FilterSelect
+          value={sourceCodeId}
+          placeholder={t("store:sourceAll")}
+          emptyHint={t("store:emptySourceFilter")}
+          options={lookups.data.sources}
+          onChange={setSourceCodeId}
+        />
         <div className="flex gap-1">
           <button type="submit" className="w-full rounded bg-[#0e2a47] px-3 py-2 font-bold text-white">{t("store:filter")}</button>
           <button type="button" className="w-full rounded border bg-white px-3 py-2" onClick={() => { setSearch(""); setFiscalYear(""); setProgramId(0); setBudgetTypeId(0); setSourceCodeId(0); setDraft({ search: "", fiscalYear: "", programId: 0, budgetTypeId: 0, sourceCodeId: 0 }); }}>{t("store:clearFilters")}</button>
         </div>
       </form>
+      {lookups.data.programs.length === 0 && lookups.data.budgetTypes.length === 0 && lookups.data.sources.length === 0 ? (
+        <p className="mb-4 rounded border border-[#fde68a] bg-[#fffbeb] p-3 text-sm">
+          {t("store:emptyFilterCodes")}{" "}
+          <Link to="/store/budget" className="font-bold text-[#0d6efd] underline">{t("store:newBudget")}</Link>
+        </p>
+      ) : null}
       {cards.data.cards.length === 0 ? (
         <div className="rounded bg-white p-10 text-center shadow-sm">
           <h2 className="font-bold text-[#64748b]">{t("store:emptyCards")}</h2>
@@ -157,5 +172,33 @@ function Kpi({ label, value, tone, valueClass }: { label: string; value: string;
       <span className="text-xs font-bold text-[#64748b]">{label}</span>
       <h3 className={`mt-1 text-2xl font-bold ${valueClass}`}>{value}</h3>
     </div>
+  );
+}
+
+function FilterSelect({
+  value,
+  placeholder,
+  emptyHint,
+  options,
+  onChange,
+}: {
+  value: number;
+  placeholder: string;
+  emptyHint: string;
+  options: { id: number; number: string; name: string }[];
+  onChange: (id: number) => void;
+}) {
+  if (options.length === 0) {
+    return (
+      <div className={`${field} flex items-center text-[#64748b]`}>
+        <span>{emptyHint}</span>
+      </div>
+    );
+  }
+  return (
+    <select className={field} value={value || ""} onChange={(event) => onChange(Number(event.target.value))}>
+      <option value="">{placeholder}</option>
+      {options.map((code) => <option key={code.id} value={code.id}>{codeLabel(code)}</option>)}
+    </select>
   );
 }

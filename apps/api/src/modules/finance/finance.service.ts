@@ -112,18 +112,30 @@ async function codesWhere(tenantId: number, typeSql: SQL, activeOnly: boolean): 
     .select({
       id: financeCodes.codeId,
       number: financeCodes.codeNumber,
-      name: financeCodes.codeNameAm,
+      nameAm: financeCodes.codeNameAm,
+      nameEn: financeCodes.codeNameEn,
     })
     .from(financeCodes)
     .innerJoin(accountTypes, eq(financeCodes.typeId, accountTypes.typeId))
     .where(and(
       eq(financeCodes.tenantId, tenantId),
-      eq(accountTypes.tenantId, tenantId),
       typeSql,
       activeOnly ? eq(financeCodes.isActive, 1) : undefined,
     ))
     .orderBy(asc(financeCodes.codeNumber));
-  return rows;
+  return rows.map((row) => ({
+    id: row.id,
+    number: row.number,
+    name: displayCodeName(row.nameAm, row.nameEn, row.number),
+  }));
+}
+
+function displayCodeName(nameAm: string | null | undefined, nameEn: string | null | undefined, fallback = ""): string {
+  const am = nameAm?.trim() ?? "";
+  if (am) return am;
+  const en = nameEn?.trim() ?? "";
+  if (en) return en;
+  return fallback;
 }
 
 function likeType(fragment: string): SQL {
@@ -134,18 +146,56 @@ function exactType(name: string): SQL {
   return eq(accountTypes.typeName, name);
 }
 
+function anyType(...fragments: string[]): SQL {
+  const parts = fragments.map((fragment) => likeType(fragment));
+  return or(...parts)!;
+}
+
+async function codesOnCards(
+  tenantId: number,
+  column: typeof mehi161Cards.programCodeId,
+): Promise<CodeOption[]> {
+  const rows = await db
+    .selectDistinct({
+      id: financeCodes.codeId,
+      number: financeCodes.codeNumber,
+      nameAm: financeCodes.codeNameAm,
+      nameEn: financeCodes.codeNameEn,
+    })
+    .from(mehi161Cards)
+    .innerJoin(financeCodes, and(
+      eq(column, financeCodes.codeId),
+      eq(financeCodes.tenantId, tenantId),
+    ))
+    .where(and(eq(mehi161Cards.tenantId, tenantId), sql`${column} IS NOT NULL`))
+    .orderBy(asc(financeCodes.codeNumber));
+  return rows.map((row) => ({
+    id: row.id,
+    number: row.number,
+    name: displayCodeName(row.nameAm, row.nameEn, row.number),
+  }));
+}
+
+function mergeCodeOptions(...lists: CodeOption[][]): CodeOption[] {
+  const byId = new Map<number, CodeOption>();
+  for (const list of lists) {
+    for (const code of list) byId.set(code.id, code);
+  }
+  return [...byId.values()].sort((a, b) => a.number.localeCompare(b.number, undefined, { numeric: true }));
+}
+
 export async function financeLookups(tenantId: number, page: "budget" | "setup" | "ledger" | "mehi7") {
   if (page === "budget") {
     return {
       page,
-      publicBodies: await codesWhere(tenantId, likeType("Public Body"), false),
-      programs: await codesWhere(tenantId, likeType("Program"), false),
-      subPrograms: await codesWhere(tenantId, likeType("Sub Program"), false),
-      projects: await codesWhere(tenantId, likeType("Project"), false),
-      subAgencies: await codesWhere(tenantId, likeType("Sub Agency"), false),
-      sources: await codesWhere(tenantId, likeType("Source"), false),
-      budgetTypes: await codesWhere(tenantId, likeType("Budget Type"), false),
-      accounts: await codesWhere(tenantId, likeType("Account"), false),
+      publicBodies: await codesWhere(tenantId, anyType("Public Body", "Public_Body"), false),
+      programs: await codesWhere(tenantId, anyType("Program", "ፕሮግራም"), false),
+      subPrograms: await codesWhere(tenantId, anyType("Sub Program", "Sub_Program"), false),
+      projects: await codesWhere(tenantId, anyType("Project"), false),
+      subAgencies: await codesWhere(tenantId, anyType("Sub Agency", "Sub_Agency"), false),
+      sources: await codesWhere(tenantId, anyType("Source", "Source_Of_Finance", "ምንጭ"), false),
+      budgetTypes: await codesWhere(tenantId, anyType("Budget Type", "Budget_Type", "የበጀት ዓይነት"), false),
+      accounts: await codesWhere(tenantId, anyType("Account", "Account_Code", "Expense"), false),
     };
   }
   if (page === "setup") {
@@ -169,9 +219,18 @@ export async function financeLookups(tenantId: number, page: "budget" | "setup" 
       .orderBy(desc(mehi161Cards.fiscalYear));
     return {
       page,
-      programs: await codesWhere(tenantId, or(likeType("Program"), likeType("ፕሮግራም"))!, false),
-      budgetTypes: await codesWhere(tenantId, or(likeType("Budget Type"), likeType("የበጀት ዓይነት"))!, false),
-      sources: await codesWhere(tenantId, or(likeType("Source"), likeType("ምንጭ"))!, false),
+      programs: mergeCodeOptions(
+        await codesWhere(tenantId, anyType("Program", "ፕሮግራም"), false),
+        await codesOnCards(tenantId, mehi161Cards.programCodeId),
+      ),
+      budgetTypes: mergeCodeOptions(
+        await codesWhere(tenantId, anyType("Budget Type", "Budget_Type", "የበጀት ዓይነት"), false),
+        await codesOnCards(tenantId, mehi161Cards.budgetTypeId),
+      ),
+      sources: mergeCodeOptions(
+        await codesWhere(tenantId, anyType("Source", "Source_Of_Finance", "ምንጭ"), false),
+        await codesOnCards(tenantId, mehi161Cards.sourceCodeId),
+      ),
       years: years.map((row) => row.fiscalYear),
     };
   }
@@ -179,9 +238,9 @@ export async function financeLookups(tenantId: number, page: "budget" | "setup" 
   return {
     page,
     fiscalYear,
-    accounts: await codesWhere(tenantId, or(likeType("Account"), likeType("Expense"))!, false),
-    budgetTypes: await codesWhere(tenantId, likeType("Budget Type"), false),
-    sources: await codesWhere(tenantId, likeType("Source"), false),
+    accounts: await codesWhere(tenantId, anyType("Account", "Account_Code", "Expense"), false),
+    budgetTypes: await codesWhere(tenantId, anyType("Budget Type", "Budget_Type", "የበጀት ዓይነት"), false),
+    sources: await codesWhere(tenantId, anyType("Source", "Source_Of_Finance", "ምንጭ"), false),
     cards: await listMehi17Cards(tenantId, fiscalYear),
   };
 }
@@ -415,11 +474,16 @@ export async function listLedgerCards(
       fiscalYear: mehi161Cards.fiscalYear,
       pageNo: mehi161Cards.pageNo,
       accountCode: account.codeNumber,
-      accountName: account.codeNameAm,
-      publicBodyName: pb.codeNameAm,
-      programName: program.codeNameAm,
-      budgetTypeName: budgetType.codeNameAm,
-      sourceName: source.codeNameAm,
+      accountNameAm: account.codeNameAm,
+      accountNameEn: account.codeNameEn,
+      publicBodyNameAm: pb.codeNameAm,
+      publicBodyNameEn: pb.codeNameEn,
+      programNameAm: program.codeNameAm,
+      programNameEn: program.codeNameEn,
+      budgetTypeNameAm: budgetType.codeNameAm,
+      budgetTypeNameEn: budgetType.codeNameEn,
+      sourceNameAm: source.codeNameAm,
+      sourceNameEn: source.codeNameEn,
       initialBudget,
       totalExpenditure,
       currentBalance,
@@ -438,11 +502,11 @@ export async function listLedgerCards(
     fiscalYear: row.fiscalYear,
     pageNo: row.pageNo,
     accountCode: row.accountCode ?? "",
-    accountName: row.accountName ?? "",
-    publicBodyName: row.publicBodyName ?? "",
-    programName: row.programName ?? "",
-    budgetTypeName: row.budgetTypeName ?? "",
-    sourceName: row.sourceName ?? "",
+    accountName: displayCodeName(row.accountNameAm, row.accountNameEn),
+    publicBodyName: displayCodeName(row.publicBodyNameAm, row.publicBodyNameEn),
+    programName: displayCodeName(row.programNameAm, row.programNameEn),
+    budgetTypeName: displayCodeName(row.budgetTypeNameAm, row.budgetTypeNameEn),
+    sourceName: displayCodeName(row.sourceNameAm, row.sourceNameEn),
     initialBudget: num(row.initialBudget),
     totalExpenditure: num(row.totalExpenditure),
     currentBalance: num(row.currentBalance),
@@ -481,8 +545,12 @@ export async function deleteLedgerCard(tenantId: number, cardId: number) {
   });
 }
 
-function codePair(code: string | null, name: string | null): { code: string; name: string } {
-  return { code: code ?? "", name: name ?? "" };
+function codePair(
+  code: string | null,
+  nameAm: string | null,
+  nameEn: string | null = null,
+): { code: string; name: string } {
+  return { code: code ?? "", name: displayCodeName(nameAm, nameEn) };
 }
 
 export async function ledgerCardDetail(tenantId: number, requestedId: number | null) {
@@ -513,21 +581,29 @@ export async function ledgerCardDetail(tenantId: number, requestedId: number | n
       fiscalYear: mehi161Cards.fiscalYear,
       pageNo: mehi161Cards.pageNo,
       publicBodyCode: pb.codeNumber,
-      publicBodyName: pb.codeNameAm,
+      publicBodyNameAm: pb.codeNameAm,
+      publicBodyNameEn: pb.codeNameEn,
       programCode: program.codeNumber,
-      programName: program.codeNameAm,
+      programNameAm: program.codeNameAm,
+      programNameEn: program.codeNameEn,
       subProgramCode: subProgram.codeNumber,
-      subProgramName: subProgram.codeNameAm,
+      subProgramNameAm: subProgram.codeNameAm,
+      subProgramNameEn: subProgram.codeNameEn,
       subAgencyCode: subAgency.codeNumber,
-      subAgencyName: subAgency.codeNameAm,
+      subAgencyNameAm: subAgency.codeNameAm,
+      subAgencyNameEn: subAgency.codeNameEn,
       projectCode: project.codeNumber,
-      projectName: project.codeNameAm,
+      projectNameAm: project.codeNameAm,
+      projectNameEn: project.codeNameEn,
       accountCode: account.codeNumber,
-      accountName: account.codeNameAm,
+      accountNameAm: account.codeNameAm,
+      accountNameEn: account.codeNameEn,
       budgetTypeCode: budgetType.codeNumber,
-      budgetTypeName: budgetType.codeNameAm,
+      budgetTypeNameAm: budgetType.codeNameAm,
+      budgetTypeNameEn: budgetType.codeNameEn,
       sourceCode: source.codeNumber,
-      sourceName: source.codeNameAm,
+      sourceNameAm: source.codeNameAm,
+      sourceNameEn: source.codeNameEn,
     })
     .from(mehi161Cards)
     .leftJoin(pb, joinCode(mehi161Cards.publicBodyCodeId, pb))
@@ -551,14 +627,14 @@ export async function ledgerCardDetail(tenantId: number, requestedId: number | n
       id: card.id,
       fiscalYear: card.fiscalYear,
       pageNo: card.pageNo,
-      publicBody: codePair(card.publicBodyCode, card.publicBodyName),
-      program: codePair(card.programCode, card.programName),
-      subProgram: codePair(card.subProgramCode, card.subProgramName),
-      subAgency: codePair(card.subAgencyCode, card.subAgencyName),
-      project: codePair(card.projectCode, card.projectName),
-      account: codePair(card.accountCode, card.accountName),
-      budgetType: codePair(card.budgetTypeCode, card.budgetTypeName),
-      source: codePair(card.sourceCode, card.sourceName),
+      publicBody: codePair(card.publicBodyCode, card.publicBodyNameAm, card.publicBodyNameEn),
+      program: codePair(card.programCode, card.programNameAm, card.programNameEn),
+      subProgram: codePair(card.subProgramCode, card.subProgramNameAm, card.subProgramNameEn),
+      subAgency: codePair(card.subAgencyCode, card.subAgencyNameAm, card.subAgencyNameEn),
+      project: codePair(card.projectCode, card.projectNameAm, card.projectNameEn),
+      account: codePair(card.accountCode, card.accountNameAm, card.accountNameEn),
+      budgetType: codePair(card.budgetTypeCode, card.budgetTypeNameAm, card.budgetTypeNameEn),
+      source: codePair(card.sourceCode, card.sourceNameAm, card.sourceNameEn),
     },
     lines: lines.map((line) => ({
       id: line.transId,

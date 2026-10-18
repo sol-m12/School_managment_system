@@ -1,29 +1,73 @@
 import { useEffect } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Alert, Spinner } from "@/components/ui";
-import { birr, birrOrBlank, financeErrorText, useMehi16Card, type CodePair } from "./financeApi";
+import {
+  birr,
+  birrOrBlank,
+  financeErrorText,
+  useLedgerCards,
+  useMehi16Card,
+  type CodePair,
+} from "./financeApi";
 
 export function Mehi16Page() {
   const { t } = useTranslation(["store", "errors", "common"]);
+  const navigate = useNavigate();
   const [params] = useSearchParams();
   const raw = Number(params.get("cardId"));
   const cardId = Number.isInteger(raw) && raw > 0 ? raw : null;
   const detail = useMehi16Card(cardId);
+  const cards = useLedgerCards({ search: "", fiscalYear: "", programId: 0, budgetTypeId: 0, sourceCodeId: 0 });
 
   useEffect(() => {
     if (params.get("print") === "1" && detail.data) window.print();
   }, [params, detail.data]);
 
-  if (detail.isPending) return <div className="flex justify-center py-10"><Spinner size="lg" label={t("common:loading")} /></div>;
-  if (detail.isError || !detail.data) return <Alert tone="danger">{financeErrorText(t, detail.error)}</Alert>;
+  if (detail.isPending || cards.isPending) {
+    return <div className="flex justify-center py-10"><Spinner size="lg" label={t("common:loading")} /></div>;
+  }
+
+  if (detail.isError || !detail.data) {
+    return (
+      <div className="-m-3 min-h-full bg-[#f1f5f9] p-4 sm:-m-4 md:-m-6">
+        <Alert tone="danger">{financeErrorText(t, detail.error)}</Alert>
+        <p className="mt-3 text-sm text-[#64748b]">
+          {t("store:mehi16EmptyHint")}{" "}
+          <Link to="/store/ledger-cards" className="font-bold text-[#0d6efd] underline">{t("store:backToCards")}</Link>
+          {" · "}
+          <Link to="/store/budget" className="font-bold text-[#0d6efd] underline">{t("store:newBudget")}</Link>
+        </p>
+      </div>
+    );
+  }
 
   const card = detail.data.card;
+  const cardOptions = cards.data?.cards ?? [];
+
   return (
     <div className="-m-3 min-h-full bg-[#f1f5f9] p-3 font-serif text-black sm:-m-4 md:-m-6 print:m-0 print:bg-white print:p-0">
-      <div className="mb-3 flex items-center justify-between print:hidden">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2 print:hidden">
         <Link to="/store/ledger-cards" className="rounded border border-[#0f172a] px-3 py-2 font-bold">{t("store:backToCards")}</Link>
-        <button type="button" className="rounded bg-[#0d6efd] px-4 py-2 font-bold text-white shadow-sm" onClick={() => window.print()}>{t("store:printAction")}</button>
+        <div className="flex flex-wrap items-center gap-2">
+          {cardOptions.length > 0 ? (
+            <label className="flex items-center gap-2 text-sm font-sans font-bold">
+              <span>{t("store:chooseCard")}</span>
+              <select
+                className="rounded border border-[#cbd5e1] bg-white px-3 py-2 font-normal"
+                value={card.id}
+                onChange={(event) => navigate(`/store/mehi-16?cardId=${event.target.value}`)}
+              >
+                {cardOptions.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.accountCode} — {option.accountName || option.budgetTypeName || option.fiscalYear}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : null}
+          <button type="button" className="rounded bg-[#0d6efd] px-4 py-2 font-bold text-white shadow-sm" onClick={() => window.print()}>{t("store:printAction")}</button>
+        </div>
       </div>
       <article className="mx-auto max-w-[1400px] rounded border border-[#cbd5e1] bg-white p-6 shadow print:border-0 print:p-0 print:shadow-none">
         <div className="mb-3 grid grid-cols-3 items-start">

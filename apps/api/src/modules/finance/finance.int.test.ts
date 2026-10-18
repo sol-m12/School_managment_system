@@ -57,6 +57,24 @@ describe("store finance API", () => {
     await request(app).get(`/store/finance/cards/${cardId}`).set("Authorization", bearer(seed.tenantB.id)).expect(404);
     const detail = await request(app).get(`/store/finance/cards/${cardId}`).set("Authorization", bearer(seed.tenantA.id)).expect(200);
     expect(detail.body.lines[0].balance).toBe(1000);
+
+    const lookups = await request(app)
+      .get("/store/finance/lookups")
+      .query({ page: "ledger" })
+      .set("Authorization", bearer(seed.tenantA.id))
+      .expect(200);
+    expect(lookups.body.programs.some((code: { id: number }) => code.id === programId)).toBe(true);
+    expect(lookups.body.budgetTypes.some((code: { id: number }) => code.id === budgetTypeId)).toBe(true);
+    expect(lookups.body.sources.some((code: { id: number }) => code.id === sourceId)).toBe(true);
+    expect(lookups.body.years).toContain("2018");
+
+    const hiddenLookups = await request(app)
+      .get("/store/finance/lookups")
+      .query({ page: "ledger" })
+      .set("Authorization", bearer(seed.tenantB.id))
+      .expect(200);
+    expect(hiddenLookups.body.programs).toEqual([]);
+    expect(hiddenLookups.body.years).toEqual([]);
   });
 
   it("keeps a Mehi 17 card and a Mehi 7 payment inside that school", async () => {
