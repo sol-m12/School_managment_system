@@ -673,4 +673,51 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noResultsYet => 'No results published yet';
+
+  @override
+  String enrolledStudents(int count) {
+    return '$count enrolled students';
+  }
+
+  @override
+  String get markAllPresent => 'Mark all present';
+
+  @override
+  String get searchStudent => 'Search name or ID';
+
+  @override
+  String get excusedCount => 'Excused';
+
+  @override
+  String get borrowedBooks => 'Borrowed books';
+
+  @override
+  String get noBorrowedBooks => 'No borrowed books';
+
+  @override
+  String get documentRequests => 'Document requests';
+
+  @override
+  String get noDocumentRequests => 'No document requests';
+
+  @override
+  String get readyStatus => 'Ready';
+
+  @override
+  String get inReviewStatus => 'In review';
+
+  @override
+  String get overdueStatus => 'Overdue';
+
+  @override
+  String get returnedStatus => 'Returned';
+
+  @override
+  String get openStudent360 => 'Open profile';
+
+  @override
+  String get attendanceSummary => 'Attendance';
+
+  @override
+  String get averageScore => 'Average';
 }

@@ -1363,6 +1363,96 @@ abstract class AppLocalizations {
   /// In am, this message translates to:
   /// **'ውጤት ገና አልወጣም'**
   String get noResultsYet;
+
+  /// No description provided for @enrolledStudents.
+  ///
+  /// In am, this message translates to:
+  /// **'{count} የተመዘገቡ ተማሪዎች'**
+  String enrolledStudents(int count);
+
+  /// No description provided for @markAllPresent.
+  ///
+  /// In am, this message translates to:
+  /// **'ሁሉንም ተገኝተዋል አድርግ'**
+  String get markAllPresent;
+
+  /// No description provided for @searchStudent.
+  ///
+  /// In am, this message translates to:
+  /// **'ስም ወይም መለያ ፈልግ'**
+  String get searchStudent;
+
+  /// No description provided for @excusedCount.
+  ///
+  /// In am, this message translates to:
+  /// **'በፍቃድ'**
+  String get excusedCount;
+
+  /// No description provided for @borrowedBooks.
+  ///
+  /// In am, this message translates to:
+  /// **'የተበደሩ መጻሕፍት'**
+  String get borrowedBooks;
+
+  /// No description provided for @noBorrowedBooks.
+  ///
+  /// In am, this message translates to:
+  /// **'የተበደረ መጽሐፍ የለም'**
+  String get noBorrowedBooks;
+
+  /// No description provided for @documentRequests.
+  ///
+  /// In am, this message translates to:
+  /// **'የሰነድ ጥያቄዎች'**
+  String get documentRequests;
+
+  /// No description provided for @noDocumentRequests.
+  ///
+  /// In am, this message translates to:
+  /// **'የሰነድ ጥያቄ የለም'**
+  String get noDocumentRequests;
+
+  /// No description provided for @readyStatus.
+  ///
+  /// In am, this message translates to:
+  /// **'ዝግጁ'**
+  String get readyStatus;
+
+  /// No description provided for @inReviewStatus.
+  ///
+  /// In am, this message translates to:
+  /// **'በግምገማ ላይ'**
+  String get inReviewStatus;
+
+  /// No description provided for @overdueStatus.
+  ///
+  /// In am, this message translates to:
+  /// **'ጊዜው አልፏል'**
+  String get overdueStatus;
+
+  /// No description provided for @returnedStatus.
+  ///
+  /// In am, this message translates to:
+  /// **'ተመልሷል'**
+  String get returnedStatus;
+
+  /// No description provided for @openStudent360.
+  ///
+  /// In am, this message translates to:
+  /// **'መገለጫ ክፈት'**
+  String get openStudent360;
+
+  /// No description provided for @attendanceSummary.
+  ///
+  /// In am, this message translates to:
+  /// **'መገኘት'**
+  String get attendanceSummary;
+
+  /// No description provided for @averageScore.
+  ///
+  /// In am, this message translates to:
+  /// **'አማካይ'**
+  String get averageScore;
 }
 
 class _AppLocalizationsDelegate

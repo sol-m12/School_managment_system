@@ -280,5 +280,25 @@
   "absenceLogs": "Attendance log",
   "goodStanding": "Good standing",
   "enrolledSubjects": "Enrolled subjects",
-  "noResultsYet": "No results published yet"
+  "noResultsYet": "No results published yet",
+  "enrolledStudents": "{count} enrolled students",
+  "@enrolledStudents": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "markAllPresent": "Mark all present",
+  "searchStudent": "Search name or ID",
+  "excusedCount": "Excused",
+  "borrowedBooks": "Borrowed books",
+  "noBorrowedBooks": "No borrowed books",
+  "documentRequests": "Document requests",
+  "noDocumentRequests": "No document requests",
+  "readyStatus": "Ready",
+  "inReviewStatus": "In review",
+  "overdueStatus": "Overdue",
+  "returnedStatus": "Returned",
+  "openStudent360": "Open profile",
+  "attendanceSummary": "Attendance",
+  "averageScore": "Average"
 }

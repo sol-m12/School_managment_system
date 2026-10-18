@@ -669,4 +669,51 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get noResultsYet => 'ውጤት ገና አልወጣም';
+
+  @override
+  String enrolledStudents(int count) {
+    return '$count የተመዘገቡ ተማሪዎች';
+  }
+
+  @override
+  String get markAllPresent => 'ሁሉንም ተገኝተዋል አድርግ';
+
+  @override
+  String get searchStudent => 'ስም ወይም መለያ ፈልግ';
+
+  @override
+  String get excusedCount => 'በፍቃድ';
+
+  @override
+  String get borrowedBooks => 'የተበደሩ መጻሕፍት';
+
+  @override
+  String get noBorrowedBooks => 'የተበደረ መጽሐፍ የለም';
+
+  @override
+  String get documentRequests => 'የሰነድ ጥያቄዎች';
+
+  @override
+  String get noDocumentRequests => 'የሰነድ ጥያቄ የለም';
+
+  @override
+  String get readyStatus => 'ዝግጁ';
+
+  @override
+  String get inReviewStatus => 'በግምገማ ላይ';
+
+  @override
+  String get overdueStatus => 'ጊዜው አልፏል';
+
+  @override
+  String get returnedStatus => 'ተመልሷል';
+
+  @override
+  String get openStudent360 => 'መገለጫ ክፈት';
+
+  @override
+  String get attendanceSummary => 'መገኘት';
+
+  @override
+  String get averageScore => 'አማካይ';
 }

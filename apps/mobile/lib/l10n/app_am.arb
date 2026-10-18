@@ -280,5 +280,25 @@
   "absenceLogs": "የመገኘት መዝገብ",
   "goodStanding": "ጥሩ ሁኔታ",
   "enrolledSubjects": "የተመዘገቡ ትምህርቶች",
-  "noResultsYet": "ውጤት ገና አልወጣም"
+  "noResultsYet": "ውጤት ገና አልወጣም",
+  "enrolledStudents": "{count} የተመዘገቡ ተማሪዎች",
+  "@enrolledStudents": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "markAllPresent": "ሁሉንም ተገኝተዋል አድርግ",
+  "searchStudent": "ስም ወይም መለያ ፈልግ",
+  "excusedCount": "በፍቃድ",
+  "borrowedBooks": "የተበደሩ መጻሕፍት",
+  "noBorrowedBooks": "የተበደረ መጽሐፍ የለም",
+  "documentRequests": "የሰነድ ጥያቄዎች",
+  "noDocumentRequests": "የሰነድ ጥያቄ የለም",
+  "readyStatus": "ዝግጁ",
+  "inReviewStatus": "በግምገማ ላይ",
+  "overdueStatus": "ጊዜው አልፏል",
+  "returnedStatus": "ተመልሷል",
+  "openStudent360": "መገለጫ ክፈት",
+  "attendanceSummary": "መገኘት",
+  "averageScore": "አማካይ"
 }

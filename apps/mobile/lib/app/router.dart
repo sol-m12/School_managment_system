@@ -12,8 +12,11 @@ import '../features/student/screens/digital_id_screen.dart';
 import '../features/student/screens/notifications_screen.dart';
 import '../features/student/screens/student_screens.dart';
 import '../features/student/student_shell.dart';
+import '../features/student/screens/services_screens.dart';
+import '../features/teacher/screens/homeroom_attendance_screen.dart';
 import '../features/teacher/screens/offline_attendance_screen.dart';
 import '../features/teacher/screens/scan_id_screen.dart';
+import '../features/teacher/screens/student_360_screen.dart';
 import '../features/teacher/screens/teacher_screens.dart';
 import '../features/teacher/teacher_shell.dart';
 import '../l10n/app_localizations.dart';
@@ -249,25 +252,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: 'library',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return StudentJsonRoute(
-                        title: l10n.library,
-                        cacheKey: 'student_library',
-                        path: '/student/desk/library',
-                      );
-                    },
+                    builder: (context, state) => const StudentLibraryScreen(),
                   ),
                   GoRoute(
                     path: 'documents',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return StudentJsonRoute(
-                        title: l10n.documents,
-                        cacheKey: 'student_documents',
-                        path: '/student/desk/documents',
-                      );
-                    },
+                    builder: (context, state) =>
+                        const StudentDocumentsScreen(),
                   ),
                   GoRoute(
                     path: 'helpdesk',
@@ -360,14 +350,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: 'homeroom',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return TeacherJsonRoute(
-                        title: l10n.homeroomAttendance,
-                        cacheKey: 'teacher_attendance_homeroom',
-                        path: '/teacher/attendance/homeroom',
-                      );
-                    },
+                    builder: (context, state) =>
+                        const HomeroomAttendanceScreen(),
                   ),
                   GoRoute(
                     path: 'subject',
@@ -418,25 +402,16 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'student-360',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return TeacherJsonRoute(
-                        title: l10n.student360,
-                        cacheKey: 'teacher_student_360',
-                        path: '/teacher/office/student-360',
-                      );
-                    },
+                    builder: (context, state) => const Student360ListScreen(),
                     routes: [
                       GoRoute(
                         path: ':id',
                         builder: (context, state) {
-                          final l10n = AppLocalizations.of(context);
-                          final id = state.pathParameters['id'] ?? '';
-                          return TeacherJsonRoute(
-                            title: l10n.student360,
-                            cacheKey: 'teacher_student_360_$id',
-                            path: '/teacher/office/student-360/$id',
-                          );
+                          final id = int.tryParse(
+                                state.pathParameters['id'] ?? '',
+                              ) ??
+                              0;
+                          return Student360DetailScreen(studentId: id);
                         },
                       ),
                     ],

@@ -9,6 +9,7 @@ import '../../../core/widgets/auth_profile_photo.dart';
 import '../../../core/widgets/last_updated_label.dart';
 import '../../../core/widgets/offline_banner.dart';
 import '../../../l10n/app_localizations.dart';
+import '../widgets/student_chrome.dart';
 
 class DigitalIdScreen extends ConsumerStatefulWidget {
   const DigitalIdScreen({super.key});
@@ -83,35 +84,51 @@ class _DigitalIdScreenState extends ConsumerState<DigitalIdScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final user = ref.watch(authControllerProvider).user;
+    final schoolName = (user?.tenantName.trim().isNotEmpty ?? false)
+        ? user!.tenantName
+        : l10n.appName;
+
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.digitalId)),
-      body: Column(
-        children: [
-          const OfflineBanner(),
-          LastUpdatedLabel(updatedAt: _updatedAt),
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: () => _load(force: true),
-              child: ListView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16),
-                children: [_body(l10n)],
+      backgroundColor: AppColors.loginCanvas,
+      body: SafeArea(
+        child: Column(
+          children: [
+            const OfflineBanner(),
+            StudentTopBar(
+              fullName: _data?['fullName']?.toString(),
+              hasPhoto: (_data?['photo']?.toString().isNotEmpty ?? false) &&
+                  _data?['photo'] != 'default_profile.png',
+              academicYear: _data?['academicYear']?.toString(),
+            ),
+            LastUpdatedLabel(updatedAt: _updatedAt),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () => _load(force: true),
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                  children: [_body(l10n, schoolName)],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _body(AppLocalizations l10n) {
+  Widget _body(AppLocalizations l10n, String schoolName) {
     if (_loading) return Center(child: Text(l10n.loading));
     if (_error != null && _data == null) {
       return Column(
         children: [
           Text(l10n.errorGeneric),
           const SizedBox(height: 12),
-          FilledButton(onPressed: () => _load(force: true), child: Text(l10n.retry)),
+          FilledButton(
+            onPressed: () => _load(force: true),
+            child: Text(l10n.retry),
+          ),
         ],
       );
     }
@@ -124,63 +141,136 @@ class _DigitalIdScreenState extends ConsumerState<DigitalIdScreen> {
     final section = data['section']?.toString() ?? '';
     final year = data['academicYear']?.toString() ?? '';
     final username = data['username']?.toString() ?? '';
-    final gender = data['gender']?.toString();
     final photo = data['photo']?.toString();
     final hasPhoto = photo != null &&
         photo.isNotEmpty &&
         photo != 'default_profile.png';
 
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            AuthProfilePhoto(
-              size: 88,
-              fullName: name,
-              hasPhoto: hasPhoto,
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [AppColors.brand700, AppColors.brand800],
             ),
-            const SizedBox(height: 16),
-            if (code.isNotEmpty)
-              QrImageView(
-                data: code,
-                version: QrVersions.auto,
-                size: 200,
-                backgroundColor: Colors.white,
-              )
-            else
-              Text(l10n.emptyState),
-            const SizedBox(height: 16),
-            Text(
-              name,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w700,
-                color: AppColors.brand700,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.brand900.withValues(alpha: 0.2),
+                blurRadius: 16,
+                offset: const Offset(0, 8),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text('${l10n.studentCode}: $code'),
-            Text('$grade$section · $year'),
-            if (gender != null) Text(gender),
-            if (username.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.badge_outlined, size: 18, color: AppColors.inkMuted),
-                    const SizedBox(width: 6),
-                    Text(username, style: const TextStyle(color: AppColors.inkMuted)),
-                  ],
+            ],
+          ),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.verified, color: AppColors.success, size: 16),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      schoolName,
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    l10n.digitalId,
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.85),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  AuthProfilePhoto(
+                    size: 72,
+                    fullName: name,
+                    hasPhoto: hasPhoto,
+                    borderColor: Colors.white,
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name.isEmpty ? l10n.studentRoleLabel : name,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          [
+                            if (code.isNotEmpty) code,
+                            if (grade != null) '$grade$section',
+                          ].join(' • '),
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.85),
+                            fontSize: 12,
+                          ),
+                        ),
+                        if (year.isNotEmpty)
+                          Text(
+                            l10n.academicYearLabel(year),
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.7),
+                              fontSize: 11,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              if (code.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: QrImageView(
+                    data: code,
+                    version: QrVersions.auto,
+                    size: 160,
+                    backgroundColor: Colors.white,
+                  ),
                 ),
-              ),
-          ],
+              ],
+            ],
+          ),
         ),
-      ),
+        if (username.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          StudentSectionCard(
+            child: Row(
+              children: [
+                const Icon(Icons.badge_outlined, color: AppColors.inkMuted),
+                const SizedBox(width: 8),
+                Text(
+                  username,
+                  style: const TextStyle(color: AppColors.inkMuted),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
     );
   }
 }
