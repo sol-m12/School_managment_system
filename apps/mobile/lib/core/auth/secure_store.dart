@@ -1,4 +1,4 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class SecureStore {
   Future<void> write(String key, String? value);
@@ -6,22 +6,44 @@ abstract class SecureStore {
   Future<void> delete(String key);
 }
 
-class FlutterSecureStore implements SecureStore {
-  FlutterSecureStore([FlutterSecureStorage? storage])
-      : _storage = storage ?? const FlutterSecureStorage();
+/// Token storage via SharedPreferences.
+///
+/// Used instead of flutter_secure_storage so Windows desktop builds do not
+/// require Visual Studio ATL headers (atlbase.h / atlstr.h).
+class PrefsSecureStore implements SecureStore {
+  PrefsSecureStore([SharedPreferences? prefs]) : _prefs = prefs;
 
-  final FlutterSecureStorage _storage;
+  SharedPreferences? _prefs;
+
+  Future<SharedPreferences> _ensure() async {
+    return _prefs ??= await SharedPreferences.getInstance();
+  }
 
   @override
-  Future<void> write(String key, String? value) =>
-      _storage.write(key: key, value: value);
+  Future<void> write(String key, String? value) async {
+    final prefs = await _ensure();
+    if (value == null) {
+      await prefs.remove(key);
+    } else {
+      await prefs.setString(key, value);
+    }
+  }
 
   @override
-  Future<String?> read(String key) => _storage.read(key: key);
+  Future<String?> read(String key) async {
+    final prefs = await _ensure();
+    return prefs.getString(key);
+  }
 
   @override
-  Future<void> delete(String key) => _storage.delete(key: key);
+  Future<void> delete(String key) async {
+    final prefs = await _ensure();
+    await prefs.remove(key);
+  }
 }
+
+/// Back-compat name used by TokenStore / older call sites.
+typedef FlutterSecureStore = PrefsSecureStore;
 
 class MemorySecureStore implements SecureStore {
   final Map<String, String> _map = {};
