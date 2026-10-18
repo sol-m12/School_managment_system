@@ -144,6 +144,15 @@ describe("student API", () => {
     expect(homeA.body.studentId).toBe(seed.tenantA.studentId);
     expect(homeB.body.studentId).toBe(seed.tenantB.studentId);
     expect(typeof homeA.body.hasPhoto).toBe("boolean");
+    expect(Array.isArray(homeA.body.todayPeriods)).toBe(true);
+    expect(homeA.body.attendance).toEqual(
+      expect.objectContaining({
+        present: expect.any(Number),
+        absent: expect.any(Number),
+        late: expect.any(Number),
+        total: expect.any(Number),
+      }),
+    );
     expect(JSON.stringify(homeB.body)).not.toContain("Student A");
 
     const quizA = await request(app)

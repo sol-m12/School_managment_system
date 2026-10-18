@@ -1129,6 +1129,240 @@ abstract class AppLocalizations {
   /// In am, this message translates to:
   /// **'{count} መዝገቦች ለአካባቢያዊ ማስማማት በመጠባበቅ ላይ'**
   String syncRecordsPending(int count);
+
+  /// No description provided for @semesterLabel.
+  ///
+  /// In am, this message translates to:
+  /// **'ሴሚስተር {n}'**
+  String semesterLabel(String n);
+
+  /// No description provided for @askTeacher.
+  ///
+  /// In am, this message translates to:
+  /// **'መምህር ጠይቅ'**
+  String get askTeacher;
+
+  /// No description provided for @feeStatus.
+  ///
+  /// In am, this message translates to:
+  /// **'ሰነዶች'**
+  String get feeStatus;
+
+  /// No description provided for @todaySummary.
+  ///
+  /// In am, this message translates to:
+  /// **'ዛሬ'**
+  String get todaySummary;
+
+  /// No description provided for @todaySummaryAm.
+  ///
+  /// In am, this message translates to:
+  /// **'የዛሬው ማጠቃለያ'**
+  String get todaySummaryAm;
+
+  /// No description provided for @activeNow.
+  ///
+  /// In am, this message translates to:
+  /// **'አሁን በሂደት ላይ'**
+  String get activeNow;
+
+  /// No description provided for @attendanceTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'ተሳትፎ'**
+  String get attendanceTitle;
+
+  /// No description provided for @attendanceTitleAm.
+  ///
+  /// In am, this message translates to:
+  /// **'ተሳትፎ'**
+  String get attendanceTitleAm;
+
+  /// No description provided for @academicTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'ውጤት'**
+  String get academicTitle;
+
+  /// No description provided for @academicTitleAm.
+  ///
+  /// In am, this message translates to:
+  /// **'ውጤት'**
+  String get academicTitleAm;
+
+  /// No description provided for @deadlinesTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'የሚጠበቁ ስራዎች'**
+  String get deadlinesTitle;
+
+  /// No description provided for @deadlinesTitleAm.
+  ///
+  /// In am, this message translates to:
+  /// **'የሚጠበቁ ስራዎች'**
+  String get deadlinesTitleAm;
+
+  /// No description provided for @noticeFeedTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'ማሳሰቢያዎች'**
+  String get noticeFeedTitle;
+
+  /// No description provided for @noticeFeedTitleAm.
+  ///
+  /// In am, this message translates to:
+  /// **'ማሳሰቢያዎች'**
+  String get noticeFeedTitleAm;
+
+  /// No description provided for @studyFocusTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'የጥናት እቅድ'**
+  String get studyFocusTitle;
+
+  /// No description provided for @studyFocusTitleAm.
+  ///
+  /// In am, this message translates to:
+  /// **'የጥናት እቅድ'**
+  String get studyFocusTitleAm;
+
+  /// No description provided for @overallRate.
+  ///
+  /// In am, this message translates to:
+  /// **'አጠቃላይ ተሳትፎ'**
+  String get overallRate;
+
+  /// No description provided for @overallRateAm.
+  ///
+  /// In am, this message translates to:
+  /// **'አጠቃላይ ተሳትፎ'**
+  String get overallRateAm;
+
+  /// No description provided for @presentCount.
+  ///
+  /// In am, this message translates to:
+  /// **'ተገኝተዋል'**
+  String get presentCount;
+
+  /// No description provided for @absentCount.
+  ///
+  /// In am, this message translates to:
+  /// **'ቀርተዋል'**
+  String get absentCount;
+
+  /// No description provided for @tardyCount.
+  ///
+  /// In am, this message translates to:
+  /// **'ዘግይተዋል'**
+  String get tardyCount;
+
+  /// No description provided for @noAttendanceYet.
+  ///
+  /// In am, this message translates to:
+  /// **'የመገኘት መዝገብ የለም'**
+  String get noAttendanceYet;
+
+  /// No description provided for @noScheduleToday.
+  ///
+  /// In am, this message translates to:
+  /// **'ለዛሬ የተመደበ ትምህርት የለም'**
+  String get noScheduleToday;
+
+  /// No description provided for @semesterAverage.
+  ///
+  /// In am, this message translates to:
+  /// **'የሴሚስተር አማካይ'**
+  String get semesterAverage;
+
+  /// No description provided for @classRank.
+  ///
+  /// In am, this message translates to:
+  /// **'ደረጃ {rank}'**
+  String classRank(String rank);
+
+  /// No description provided for @editProfile.
+  ///
+  /// In am, this message translates to:
+  /// **'መገለጫ አርትዕ'**
+  String get editProfile;
+
+  /// No description provided for @tenantSession.
+  ///
+  /// In am, this message translates to:
+  /// **'የትምህርት ቤት መለያ'**
+  String get tenantSession;
+
+  /// No description provided for @studentAccount.
+  ///
+  /// In am, this message translates to:
+  /// **'የተማሪ መለያ'**
+  String get studentAccount;
+
+  /// No description provided for @signOutSession.
+  ///
+  /// In am, this message translates to:
+  /// **'ከመለያ ውጣ'**
+  String get signOutSession;
+
+  /// No description provided for @learningHub.
+  ///
+  /// In am, this message translates to:
+  /// **'መማሪያ'**
+  String get learningHub;
+
+  /// No description provided for @learningHubAm.
+  ///
+  /// In am, this message translates to:
+  /// **'መማሪያ'**
+  String get learningHubAm;
+
+  /// No description provided for @launchSimulation.
+  ///
+  /// In am, this message translates to:
+  /// **'ሲሙሌሽን ጀምር'**
+  String get launchSimulation;
+
+  /// No description provided for @noResourcesYet.
+  ///
+  /// In am, this message translates to:
+  /// **'የመምህር ፋይል የለም'**
+  String get noResourcesYet;
+
+  /// No description provided for @noGroupsYet.
+  ///
+  /// In am, this message translates to:
+  /// **'የጥናት ቡድን የለም'**
+  String get noGroupsYet;
+
+  /// No description provided for @subjectBreakdown.
+  ///
+  /// In am, this message translates to:
+  /// **'የትምህርት ዓይነቶች ተሳትፎ'**
+  String get subjectBreakdown;
+
+  /// No description provided for @absenceLogs.
+  ///
+  /// In am, this message translates to:
+  /// **'የመገኘት መዝገብ'**
+  String get absenceLogs;
+
+  /// No description provided for @goodStanding.
+  ///
+  /// In am, this message translates to:
+  /// **'ጥሩ ሁኔታ'**
+  String get goodStanding;
+
+  /// No description provided for @enrolledSubjects.
+  ///
+  /// In am, this message translates to:
+  /// **'የተመዘገቡ ትምህርቶች'**
+  String get enrolledSubjects;
+
+  /// No description provided for @noResultsYet.
+  ///
+  /// In am, this message translates to:
+  /// **'ውጤት ገና አልወጣም'**
+  String get noResultsYet;
 }
 
 class _AppLocalizationsDelegate

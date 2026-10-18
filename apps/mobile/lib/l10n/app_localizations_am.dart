@@ -548,4 +548,125 @@ class AppLocalizationsAm extends AppLocalizations {
   String syncRecordsPending(int count) {
     return '$count መዝገቦች ለአካባቢያዊ ማስማማት በመጠባበቅ ላይ';
   }
+
+  @override
+  String semesterLabel(String n) {
+    return 'ሴሚስተር $n';
+  }
+
+  @override
+  String get askTeacher => 'መምህር ጠይቅ';
+
+  @override
+  String get feeStatus => 'ሰነዶች';
+
+  @override
+  String get todaySummary => 'ዛሬ';
+
+  @override
+  String get todaySummaryAm => 'የዛሬው ማጠቃለያ';
+
+  @override
+  String get activeNow => 'አሁን በሂደት ላይ';
+
+  @override
+  String get attendanceTitle => 'ተሳትፎ';
+
+  @override
+  String get attendanceTitleAm => 'ተሳትፎ';
+
+  @override
+  String get academicTitle => 'ውጤት';
+
+  @override
+  String get academicTitleAm => 'ውጤት';
+
+  @override
+  String get deadlinesTitle => 'የሚጠበቁ ስራዎች';
+
+  @override
+  String get deadlinesTitleAm => 'የሚጠበቁ ስራዎች';
+
+  @override
+  String get noticeFeedTitle => 'ማሳሰቢያዎች';
+
+  @override
+  String get noticeFeedTitleAm => 'ማሳሰቢያዎች';
+
+  @override
+  String get studyFocusTitle => 'የጥናት እቅድ';
+
+  @override
+  String get studyFocusTitleAm => 'የጥናት እቅድ';
+
+  @override
+  String get overallRate => 'አጠቃላይ ተሳትፎ';
+
+  @override
+  String get overallRateAm => 'አጠቃላይ ተሳትፎ';
+
+  @override
+  String get presentCount => 'ተገኝተዋል';
+
+  @override
+  String get absentCount => 'ቀርተዋል';
+
+  @override
+  String get tardyCount => 'ዘግይተዋል';
+
+  @override
+  String get noAttendanceYet => 'የመገኘት መዝገብ የለም';
+
+  @override
+  String get noScheduleToday => 'ለዛሬ የተመደበ ትምህርት የለም';
+
+  @override
+  String get semesterAverage => 'የሴሚስተር አማካይ';
+
+  @override
+  String classRank(String rank) {
+    return 'ደረጃ $rank';
+  }
+
+  @override
+  String get editProfile => 'መገለጫ አርትዕ';
+
+  @override
+  String get tenantSession => 'የትምህርት ቤት መለያ';
+
+  @override
+  String get studentAccount => 'የተማሪ መለያ';
+
+  @override
+  String get signOutSession => 'ከመለያ ውጣ';
+
+  @override
+  String get learningHub => 'መማሪያ';
+
+  @override
+  String get learningHubAm => 'መማሪያ';
+
+  @override
+  String get launchSimulation => 'ሲሙሌሽን ጀምር';
+
+  @override
+  String get noResourcesYet => 'የመምህር ፋይል የለም';
+
+  @override
+  String get noGroupsYet => 'የጥናት ቡድን የለም';
+
+  @override
+  String get subjectBreakdown => 'የትምህርት ዓይነቶች ተሳትፎ';
+
+  @override
+  String get absenceLogs => 'የመገኘት መዝገብ';
+
+  @override
+  String get goodStanding => 'ጥሩ ሁኔታ';
+
+  @override
+  String get enrolledSubjects => 'የተመዘገቡ ትምህርቶች';
+
+  @override
+  String get noResultsYet => 'ውጤት ገና አልወጣም';
 }

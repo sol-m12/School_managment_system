@@ -231,5 +231,54 @@
     "placeholders": {
       "count": { "type": "int" }
     }
-  }
+  },
+  "semesterLabel": "Semester {n}",
+  "@semesterLabel": {
+    "placeholders": {
+      "n": { "type": "String" }
+    }
+  },
+  "askTeacher": "Ask teacher",
+  "feeStatus": "Documents",
+  "todaySummary": "Today",
+  "todaySummaryAm": "የዛሬው ማጠቃለያ",
+  "activeNow": "Active now",
+  "attendanceTitle": "Attendance",
+  "attendanceTitleAm": "ተሳትፎ",
+  "academicTitle": "Academic",
+  "academicTitleAm": "ውጤት",
+  "deadlinesTitle": "Deadlines",
+  "deadlinesTitleAm": "የሚጠበቁ ስራዎች",
+  "noticeFeedTitle": "Notice feed",
+  "noticeFeedTitleAm": "ማሳሰቢያዎች",
+  "studyFocusTitle": "Study focus",
+  "studyFocusTitleAm": "የጥናት እቅድ",
+  "overallRate": "Overall rate",
+  "overallRateAm": "አጠቃላይ ተሳትፎ",
+  "presentCount": "Present",
+  "absentCount": "Absent",
+  "tardyCount": "Tardy",
+  "noAttendanceYet": "No attendance records yet",
+  "noScheduleToday": "No classes scheduled for today",
+  "semesterAverage": "Semester average",
+  "classRank": "Rank {rank}",
+  "@classRank": {
+    "placeholders": {
+      "rank": { "type": "String" }
+    }
+  },
+  "editProfile": "Edit profile",
+  "tenantSession": "School session",
+  "studentAccount": "Student account",
+  "signOutSession": "Sign out of session",
+  "learningHub": "Learning hub",
+  "learningHubAm": "መማሪያ",
+  "launchSimulation": "Launch simulation",
+  "noResourcesYet": "No teacher files yet",
+  "noGroupsYet": "No study groups yet",
+  "subjectBreakdown": "Subject breakdown",
+  "absenceLogs": "Attendance log",
+  "goodStanding": "Good standing",
+  "enrolledSubjects": "Enrolled subjects",
+  "noResultsYet": "No results published yet"
 }

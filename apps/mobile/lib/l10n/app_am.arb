@@ -231,5 +231,54 @@
     "placeholders": {
       "count": { "type": "int" }
     }
-  }
+  },
+  "semesterLabel": "ሴሚስተር {n}",
+  "@semesterLabel": {
+    "placeholders": {
+      "n": { "type": "String" }
+    }
+  },
+  "askTeacher": "መምህር ጠይቅ",
+  "feeStatus": "ሰነዶች",
+  "todaySummary": "ዛሬ",
+  "todaySummaryAm": "የዛሬው ማጠቃለያ",
+  "activeNow": "አሁን በሂደት ላይ",
+  "attendanceTitle": "ተሳትፎ",
+  "attendanceTitleAm": "ተሳትፎ",
+  "academicTitle": "ውጤት",
+  "academicTitleAm": "ውጤት",
+  "deadlinesTitle": "የሚጠበቁ ስራዎች",
+  "deadlinesTitleAm": "የሚጠበቁ ስራዎች",
+  "noticeFeedTitle": "ማሳሰቢያዎች",
+  "noticeFeedTitleAm": "ማሳሰቢያዎች",
+  "studyFocusTitle": "የጥናት እቅድ",
+  "studyFocusTitleAm": "የጥናት እቅድ",
+  "overallRate": "አጠቃላይ ተሳትፎ",
+  "overallRateAm": "አጠቃላይ ተሳትፎ",
+  "presentCount": "ተገኝተዋል",
+  "absentCount": "ቀርተዋል",
+  "tardyCount": "ዘግይተዋል",
+  "noAttendanceYet": "የመገኘት መዝገብ የለም",
+  "noScheduleToday": "ለዛሬ የተመደበ ትምህርት የለም",
+  "semesterAverage": "የሴሚስተር አማካይ",
+  "classRank": "ደረጃ {rank}",
+  "@classRank": {
+    "placeholders": {
+      "rank": { "type": "String" }
+    }
+  },
+  "editProfile": "መገለጫ አርትዕ",
+  "tenantSession": "የትምህርት ቤት መለያ",
+  "studentAccount": "የተማሪ መለያ",
+  "signOutSession": "ከመለያ ውጣ",
+  "learningHub": "መማሪያ",
+  "learningHubAm": "መማሪያ",
+  "launchSimulation": "ሲሙሌሽን ጀምር",
+  "noResourcesYet": "የመምህር ፋይል የለም",
+  "noGroupsYet": "የጥናት ቡድን የለም",
+  "subjectBreakdown": "የትምህርት ዓይነቶች ተሳትፎ",
+  "absenceLogs": "የመገኘት መዝገብ",
+  "goodStanding": "ጥሩ ሁኔታ",
+  "enrolledSubjects": "የተመዘገቡ ትምህርቶች",
+  "noResultsYet": "ውጤት ገና አልወጣም"
 }

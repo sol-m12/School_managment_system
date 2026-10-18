@@ -20,6 +20,14 @@ String _gradeSection(AppLocalizations l10n, Object? grade, Object? section) {
   return l10n.gradeSection(g, s.isEmpty ? '' : s);
 }
 
+List<Map<String, dynamic>> _maps(Object? raw) {
+  if (raw is! List) return const [];
+  return raw
+      .whereType<Map>()
+      .map((e) => Map<String, dynamic>.from(e))
+      .toList();
+}
+
 class StudentHomeScreen extends ConsumerWidget {
   const StudentHomeScreen({super.key});
 
@@ -41,121 +49,105 @@ class StudentHomeScreen extends ConsumerWidget {
             final studentId = _str(map['studentId']);
             final stream = _str(map['stream']);
             final year = _str(map['academicYear']);
-            final today = _str(map['today']);
-            final simCount = (map['simulationCount'] as num?)?.toInt() ?? 0;
-            final greeting = switch (map['greeting'] as String?) {
-              'morning' => l10n.greetingMorning,
-              'afternoon' => l10n.greetingAfternoon,
-              'evening' => l10n.greetingEvening,
-              _ => l10n.navHome,
-            };
+            final semester = _str(map['semester']);
             final user = ref.watch(authControllerProvider).user;
             final schoolName = (user?.tenantName.trim().isNotEmpty ?? false)
                 ? user!.tenantName
                 : l10n.appName;
-            final sims = map['simulations'];
-            final simRows = sims is List
-                ? sims
-                    .whereType<Map>()
-                    .map((e) => Map<String, dynamic>.from(e))
-                    .toList()
-                : <Map<String, dynamic>>[];
+            final att = map['attendance'] is Map
+                ? Map<String, dynamic>.from(map['attendance'] as Map)
+                : <String, dynamic>{};
+            final attPercent = (att['percent'] as num?)?.toDouble();
+            final periods = _maps(map['todayPeriods']);
+            final sims = _maps(map['simulations']);
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                StudentTopBar(fullName: fullName, hasPhoto: hasPhoto),
+                StudentTopBar(
+                  fullName: fullName,
+                  hasPhoto: hasPhoto,
+                  academicYear: year,
+                  semester: semester,
+                ),
                 const SizedBox(height: 8),
                 StudentSectionCard(
-                  color: AppColors.brand50,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        schoolName,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 15,
-                          color: AppColors.brand700,
-                        ),
+                      Row(
+                        children: [
+                          const Icon(Icons.shield_outlined,
+                              size: 16, color: AppColors.brand700),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              schoolName,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 12,
+                                color: AppColors.brand700,
+                              ),
+                            ),
+                          ),
+                          if (attPercent != null)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.success.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                '${attPercent.toStringAsFixed(attPercent % 1 == 0 ? 0 : 1)}%',
+                                style: const TextStyle(
+                                  color: AppColors.success,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 11,
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        [
-                          if (year.isNotEmpty) l10n.academicYearLabel(year),
-                          if (today.isNotEmpty) today,
-                        ].join(' · '),
-                        style: const TextStyle(
-                          color: AppColors.inkMuted,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: AppColors.brand700,
-                    borderRadius: BorderRadius.circular(18),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.brand900.withValues(alpha: 0.2),
-                        blurRadius: 18,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
+                      const SizedBox(height: 14),
                       Row(
                         children: [
                           AuthProfilePhoto(
                             size: 64,
                             fullName: fullName,
                             hasPhoto: hasPhoto,
-                            borderColor: Colors.white,
                           ),
                           const SizedBox(width: 14),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                if (studentId.isNotEmpty)
-                                  Text(
-                                    l10n.studentIdLabel(studentId),
-                                    style: TextStyle(
-                                      color: Colors.white.withValues(alpha: 0.8),
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                const SizedBox(height: 4),
                                 Text(
-                                  fullName.isEmpty ? l10n.studentRoleLabel : fullName,
+                                  fullName.isEmpty
+                                      ? l10n.studentRoleLabel
+                                      : fullName,
                                   style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
                                     fontWeight: FontWeight.w800,
-                                    height: 1.2,
+                                    fontSize: 18,
+                                    color: AppColors.inkStrong,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   [
-                                    greeting,
                                     _gradeSection(
                                       l10n,
                                       map['gradeLevel'],
                                       map['section'],
                                     ),
-                                    if (stream.isNotEmpty)
-                                      l10n.streamLabel(stream),
-                                  ].where((s) => s.isNotEmpty).join(' · '),
-                                  style: TextStyle(
-                                    color: Colors.white.withValues(alpha: 0.85),
+                                    if (stream.isNotEmpty) stream,
+                                    if (studentId.isNotEmpty)
+                                      l10n.studentIdLabel(studentId),
+                                  ].where((s) => s.isNotEmpty).join(' • '),
+                                  style: const TextStyle(
+                                    color: AppColors.inkMuted,
                                     fontSize: 12,
                                   ),
                                 ),
@@ -164,94 +156,819 @@ class StudentHomeScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 16),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                StudentQuickActionRow(
+                  actions: [
+                    StudentQuickAction(
+                      label: l10n.digitalId,
+                      icon: Icons.badge_outlined,
+                      onTap: () => context.push('/student/services/id'),
+                    ),
+                    StudentQuickAction(
+                      label: l10n.timetable,
+                      icon: Icons.calendar_month_outlined,
+                      onTap: () =>
+                          context.push('/student/academics/timetable'),
+                    ),
+                    StudentQuickAction(
+                      label: l10n.askTeacher,
+                      icon: Icons.chat_bubble_outline,
+                      color: AppColors.info,
+                      onTap: () =>
+                          context.push('/student/services/helpdesk'),
+                    ),
+                    StudentQuickAction(
+                      label: l10n.feeStatus,
+                      icon: Icons.receipt_long_outlined,
+                      color: AppColors.warning,
+                      onTap: () =>
+                          context.push('/student/services/documents'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 18),
+                StudentBilingualHeader(
+                  amharic: l10n.todaySummaryAm,
+                  english: l10n.todaySummary,
+                ),
+                const SizedBox(height: 8),
+                if (periods.isEmpty)
+                  StudentSectionCard(
+                    child: Text(
+                      l10n.noScheduleToday,
+                      style: const TextStyle(color: AppColors.inkMuted),
+                    ),
+                  )
+                else
+                  ...periods.take(3).toList().asMap().entries.map((entry) {
+                    final i = entry.key;
+                    final row = entry.value;
+                    final subject = _str(row['subject']);
+                    final teacher = _str(row['teacher']);
+                    final start = _str(row['start']);
+                    final end = _str(row['end']);
+                    final period = _str(row['period']);
+                    final active = i == 0;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: StudentSectionCard(
+                        color: active
+                            ? AppColors.brand50
+                            : AppColors.surface,
+                        padding: const EdgeInsets.all(14),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    [
+                                      if (start.isNotEmpty && end.isNotEmpty)
+                                        '$start – $end',
+                                      if (period.isNotEmpty)
+                                        '${l10n.timetable} $period',
+                                    ].join(' • '),
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: AppColors.inkMuted,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                                if (active)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 3,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.brand700,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      l10n.activeNow,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              subject.isEmpty ? l10n.timetable : subject,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 15,
+                                color: AppColors.inkStrong,
+                              ),
+                            ),
+                            if (teacher.isNotEmpty)
+                              Text(
+                                teacher,
+                                style: const TextStyle(
+                                  color: AppColors.inkMuted,
+                                  fontSize: 12,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: StudentSectionCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${l10n.attendanceTitleAm} • ${l10n.attendanceTitle}',
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.inkMuted,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              attPercent == null
+                                  ? '—'
+                                  : '${attPercent.toStringAsFixed(attPercent % 1 == 0 ? 0 : 1)}%',
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.brand700,
+                              ),
+                            ),
+                            Text(
+                              '${_str(att['present'])}/${_str(att['total'])}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: AppColors.inkMuted,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: StudentSectionCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${l10n.academicTitleAm} • ${l10n.academicTitle}',
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.inkMuted,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              l10n.results,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.brand700,
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () =>
+                                  context.push('/student/academics/results'),
+                              style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                                minimumSize: Size.zero,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              ),
+                              child: Text(l10n.openItem),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                if (sims.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  StudentBilingualHeader(
+                    amharic: l10n.studyFocusTitleAm,
+                    english: l10n.studyFocusTitle,
+                    trailing: TextButton(
+                      onPressed: () =>
+                          context.push('/student/learning/simulations'),
+                      child: Text(l10n.viewAll),
+                    ),
+                  ),
+                  ...sims.take(2).map((row) {
+                    final title = _str(row['title']).isEmpty
+                        ? _str(row['subjectName'])
+                        : _str(row['title']);
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: StudentSectionCard(
+                        padding: const EdgeInsets.all(12),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.science_outlined,
+                                color: AppColors.brand700),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                title.isEmpty ? l10n.simulations : title,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+                ],
+                const SizedBox(height: 8),
+                TextButton.icon(
+                  onPressed: () =>
+                      context.push('/student/more/notifications'),
+                  icon: const Icon(Icons.campaign_outlined),
+                  label: Text(
+                    '${l10n.noticeFeedTitleAm} | ${l10n.noticeFeedTitle}',
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class AcademicsHubScreen extends StatelessWidget {
+  const AcademicsHubScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      backgroundColor: AppColors.loginCanvas,
+      body: SafeArea(
+        child: JsonScreen(
+          title: l10n.navAcademics,
+          cacheKey: 'student_results',
+          path: '/student/results',
+          builder: (context, data) {
+            if (data is! Map) return JsonBody(data: data);
+            final map = Map<String, dynamic>.from(data);
+            final fullName = _str(map['fullName']);
+            final year = _str(map['academicYear']);
+            final semester = _str(map['semester']);
+            final avg = (map['semesterAverage'] as num?)?.toDouble();
+            final yearly = (map['yearlyAverage'] as num?)?.toDouble();
+            final rank = map['semesterRank'];
+            final hideRank = map['hideSemesterRank'] == true;
+            final locked = _maps(map['locked']);
+            final draft = _maps(map['draft']);
+            final subjects = locked.isNotEmpty ? locked : draft;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                StudentTopBar(
+                  fullName: fullName,
+                  academicYear: year,
+                  semester: semester,
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.brand700,
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _gradeSection(
+                          l10n,
+                          map['gradeLevel'],
+                          map['section'],
+                        ),
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.85),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
                       Row(
                         children: [
-                          _StatChip(
-                            label: l10n.simulationsCount(simCount),
-                          ),
-                          const SizedBox(width: 8),
-                          _StatChip(
-                            label: _gradeSection(
-                              l10n,
-                              map['gradeLevel'],
-                              map['section'],
+                          Expanded(
+                            child: _Metric(
+                              label: l10n.semesterAverage,
+                              value: avg == null
+                                  ? '—'
+                                  : avg.toStringAsFixed(1),
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          _StatChip(
-                            label: l10n.studentRoleLabel,
+                          Expanded(
+                            child: _Metric(
+                              label: l10n.results,
+                              value: yearly == null
+                                  ? '—'
+                                  : yearly.toStringAsFixed(1),
+                            ),
+                          ),
+                          Expanded(
+                            child: _Metric(
+                              label: l10n.classRank(
+                                hideRank || rank == null
+                                    ? '—'
+                                    : rank.toString(),
+                              ),
+                              value: hideRank || rank == null
+                                  ? '—'
+                                  : '#$rank',
+                            ),
                           ),
                         ],
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 18),
-                Text(
-                  l10n.quickActions,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 15,
-                    color: AppColors.inkStrong,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                StudentQuickActionGrid(
+                const SizedBox(height: 12),
+                StudentQuickActionRow(
                   actions: [
-                    StudentQuickAction(
-                      label: l10n.results,
-                      icon: Icons.bar_chart,
-                      onTap: () => context.push('/student/academics/results'),
-                    ),
                     StudentQuickAction(
                       label: l10n.timetable,
                       icon: Icons.calendar_month,
-                      onTap: () => context.push('/student/academics/timetable'),
+                      onTap: () =>
+                          context.push('/student/academics/timetable'),
                     ),
                     StudentQuickAction(
-                      label: l10n.attendance,
-                      icon: Icons.how_to_reg,
-                      onTap: () => context.push('/student/attendance/status'),
+                      label: l10n.exams,
+                      icon: Icons.laptop,
+                      onTap: () => context.push('/student/academics/exams'),
                     ),
+                    StudentQuickAction(
+                      label: l10n.assignments,
+                      icon: Icons.assignment,
+                      onTap: () =>
+                          context.push('/student/academics/assignments'),
+                    ),
+                    StudentQuickAction(
+                      label: l10n.quiz,
+                      icon: Icons.emoji_events,
+                      onTap: () => context.push('/student/academics/quiz'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  l10n.enrolledSubjects,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 15,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                if (subjects.isEmpty)
+                  StudentSectionCard(
+                    child: Text(
+                      l10n.noResultsYet,
+                      style: const TextStyle(color: AppColors.inkMuted),
+                    ),
+                  )
+                else
+                  ...subjects.map((row) {
+                    final subject = _str(row['subject']);
+                    final earned = (row['earned'] as num?)?.toDouble();
+                    final maxScore = (row['maxScore'] as num?)?.toDouble();
+                    final pct = (earned != null &&
+                            maxScore != null &&
+                            maxScore > 0)
+                        ? (earned / maxScore) * 100
+                        : null;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: StudentSectionCard(
+                        padding: const EdgeInsets.all(14),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    subject.isEmpty
+                                        ? l10n.results
+                                        : subject,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  pct == null
+                                      ? '—'
+                                      : '${pct.toStringAsFixed(0)}%',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    color: AppColors.brand700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            if (pct != null) ...[
+                              const SizedBox(height: 8),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(4),
+                                child: LinearProgressIndicator(
+                                  value: (pct / 100).clamp(0, 1),
+                                  minHeight: 6,
+                                  backgroundColor: AppColors.brand50,
+                                  color: AppColors.brand700,
+                                ),
+                              ),
+                            ],
+                            if (earned != null && maxScore != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 6),
+                                child: Text(
+                                  '${earned.toStringAsFixed(0)} / ${maxScore.toStringAsFixed(0)}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.inkMuted,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _Metric extends StatelessWidget {
+  const _Metric({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w800,
+          ),
+        ),
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.white.withValues(alpha: 0.75),
+            fontSize: 10,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class AttendanceHubScreen extends StatelessWidget {
+  const AttendanceHubScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      backgroundColor: AppColors.loginCanvas,
+      body: SafeArea(
+        child: JsonScreen(
+          title: l10n.navAttendance,
+          cacheKey: 'student_attendance',
+          path: '/student/desk/attendance',
+          builder: (context, data) {
+            if (data is! Map) return JsonBody(data: data);
+            final map = Map<String, dynamic>.from(data);
+            final present = (map['present'] as num?)?.toInt() ?? 0;
+            final absent = (map['absent'] as num?)?.toInt() ?? 0;
+            final tardy = (map['tardy'] as num?)?.toInt() ?? 0;
+            final total = present + absent + tardy;
+            final percent =
+                total > 0 ? (present / total) * 100 : null;
+            final rows = _maps(map['rows']);
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const StudentTopBar(),
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [AppColors.brand700, AppColors.brand800],
+                    ),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${l10n.overallRateAm} • ${l10n.overallRate}',
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.85),
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              percent == null
+                                  ? '—'
+                                  : '${percent.toStringAsFixed(1)}%',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 36,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            Text(
+                              percent != null && percent >= 85
+                                  ? l10n.goodStanding
+                                  : l10n.attendance,
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.8),
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        '$present/$total',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    _CountPill(
+                      count: present,
+                      label: l10n.presentCount,
+                      color: AppColors.success,
+                    ),
+                    const SizedBox(width: 8),
+                    _CountPill(
+                      count: absent,
+                      label: l10n.absentCount,
+                      color: AppColors.danger,
+                    ),
+                    const SizedBox(width: 8),
+                    _CountPill(
+                      count: tardy,
+                      label: l10n.tardyCount,
+                      color: AppColors.warning,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  l10n.absenceLogs,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 15,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                if (rows.isEmpty)
+                  StudentSectionCard(
+                    child: Text(
+                      l10n.noAttendanceYet,
+                      style: const TextStyle(color: AppColors.inkMuted),
+                    ),
+                  )
+                else
+                  ...rows.take(20).map((row) {
+                    final status = _str(row['status']);
+                    final date = _str(row['date']);
+                    final subject = _str(row['subject']);
+                    final color = switch (status) {
+                      'P' => AppColors.success,
+                      'A' => AppColors.danger,
+                      'T' => AppColors.warning,
+                      _ => AppColors.inkMuted,
+                    };
+                    final label = switch (status) {
+                      'P' => l10n.presentCount,
+                      'A' => l10n.absentCount,
+                      'T' => l10n.tardyCount,
+                      _ => status,
+                    };
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: StudentSectionCard(
+                        padding: const EdgeInsets.all(12),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 10,
+                              height: 10,
+                              decoration: BoxDecoration(
+                                color: color,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    date,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  if (subject.isNotEmpty)
+                                    Text(
+                                      subject,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: AppColors.inkMuted,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                            Text(
+                              label,
+                              style: TextStyle(
+                                color: color,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+                const SizedBox(height: 8),
+                OutlinedButton(
+                  onPressed: () =>
+                      context.push('/student/attendance/discipline'),
+                  child: Text(l10n.discipline),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _CountPill extends StatelessWidget {
+  const _CountPill({
+    required this.count,
+    required this.label,
+    required this.color,
+  });
+
+  final int count;
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: StudentSectionCard(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        child: Column(
+          children: [
+            Text(
+              '$count',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: color,
+              ),
+            ),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 10, color: AppColors.inkMuted),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class LearningHubScreen extends StatelessWidget {
+  const LearningHubScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      backgroundColor: AppColors.loginCanvas,
+      body: SafeArea(
+        child: JsonScreen(
+          title: l10n.navLearning,
+          cacheKey: 'student_simulations',
+          path: '/student/simulations',
+          builder: (context, data) {
+            if (data is! Map) return JsonBody(data: data);
+            final map = Map<String, dynamic>.from(data);
+            final rows = _maps(map['rows']);
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const StudentTopBar(),
+                const SizedBox(height: 8),
+                StudentBilingualHeader(
+                  amharic: l10n.learningHubAm,
+                  english: l10n.learningHub,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  _gradeSection(l10n, map['gradeLevel'], map['section']),
+                  style: const TextStyle(color: AppColors.inkMuted),
+                ),
+                const SizedBox(height: 12),
+                StudentQuickActionRow(
+                  actions: [
                     StudentQuickAction(
                       label: l10n.resources,
                       icon: Icons.folder_open,
-                      onTap: () => context.push('/student/learning/resources'),
+                      onTap: () =>
+                          context.push('/student/learning/resources'),
                     ),
                     StudentQuickAction(
-                      label: l10n.digitalId,
-                      icon: Icons.badge,
-                      onTap: () => context.push('/student/services/id'),
+                      label: l10n.virtualLab,
+                      icon: Icons.biotech,
+                      onTap: () => context.push('/student/learning/labs'),
                     ),
                     StudentQuickAction(
-                      label: l10n.notifications,
-                      icon: Icons.notifications_outlined,
-                      onTap: () => context.push('/student/more/notifications'),
+                      label: l10n.groups,
+                      icon: Icons.groups,
+                      onTap: () =>
+                          context.push('/student/learning/groups'),
+                    ),
+                    StudentQuickAction(
+                      label: l10n.planner,
+                      icon: Icons.psychology,
+                      onTap: () =>
+                          context.push('/student/learning/planner'),
                     ),
                   ],
                 ),
-                const SizedBox(height: 18),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        l10n.todaySimulations,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 15,
-                          color: AppColors.inkStrong,
-                        ),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () =>
-                          context.push('/student/learning/simulations'),
-                      child: Text(l10n.viewAll),
-                    ),
-                  ],
+                const SizedBox(height: 16),
+                Text(
+                  l10n.simulations,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 15,
+                  ),
                 ),
-                if (simRows.isEmpty)
+                const SizedBox(height: 8),
+                if (rows.isEmpty)
                   StudentSectionCard(
                     child: Text(
                       l10n.noSimulationsYet,
@@ -259,7 +976,7 @@ class StudentHomeScreen extends ConsumerWidget {
                     ),
                   )
                 else
-                  ...simRows.take(4).map((row) {
+                  ...rows.map((row) {
                     final title = _str(row['title']).isEmpty
                         ? _str(row['subjectName'])
                         : _str(row['title']);
@@ -267,50 +984,31 @@ class StudentHomeScreen extends ConsumerWidget {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: StudentSectionCard(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 12,
-                        ),
-                        child: Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: AppColors.brand50,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Icon(
-                                Icons.science_outlined,
-                                color: AppColors.brand700,
+                            Text(
+                              title.isEmpty ? l10n.simulations : title,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w800,
                               ),
                             ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    title.isEmpty ? l10n.simulations : title,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      color: AppColors.inkStrong,
-                                    ),
-                                  ),
-                                  if (subject.isNotEmpty)
-                                    Text(
-                                      subject,
-                                      style: const TextStyle(
-                                        color: AppColors.inkMuted,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                ],
+                            if (subject.isNotEmpty)
+                              Text(
+                                subject,
+                                style: const TextStyle(
+                                  color: AppColors.inkMuted,
+                                  fontSize: 12,
+                                ),
                               ),
-                            ),
-                            const Icon(
-                              Icons.chevron_right,
-                              color: AppColors.inkMuted,
+                            const SizedBox(height: 10),
+                            SizedBox(
+                              width: double.infinity,
+                              child: FilledButton(
+                                onPressed: () => context
+                                    .push('/student/learning/simulations'),
+                                child: Text(l10n.launchSimulation),
+                              ),
                             ),
                           ],
                         ),
@@ -326,217 +1024,98 @@ class StudentHomeScreen extends ConsumerWidget {
   }
 }
 
-class _StatChip extends StatelessWidget {
-  const _StatChip({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    if (label.isEmpty) return const SizedBox.shrink();
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Text(
-          label,
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 10,
-            fontWeight: FontWeight.w700,
-            height: 1.2,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class AcademicsHubScreen extends StatelessWidget {
-  const AcademicsHubScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return _StudentHubScaffold(
-      title: l10n.navAcademics,
-      child: StudentQuickActionGrid(
-        actions: [
-          StudentQuickAction(
-            label: l10n.results,
-            icon: Icons.bar_chart,
-            onTap: () => context.push('/student/academics/results'),
-          ),
-          StudentQuickAction(
-            label: l10n.timetable,
-            icon: Icons.calendar_month,
-            onTap: () => context.push('/student/academics/timetable'),
-          ),
-          StudentQuickAction(
-            label: l10n.exams,
-            icon: Icons.laptop,
-            onTap: () => context.push('/student/academics/exams'),
-          ),
-          StudentQuickAction(
-            label: l10n.quiz,
-            icon: Icons.emoji_events,
-            onTap: () => context.push('/student/academics/quiz'),
-          ),
-          StudentQuickAction(
-            label: l10n.assignments,
-            icon: Icons.assignment,
-            onTap: () => context.push('/student/academics/assignments'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class AttendanceHubScreen extends StatelessWidget {
-  const AttendanceHubScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return _StudentHubScaffold(
-      title: l10n.navAttendance,
-      child: StudentQuickActionGrid(
-        actions: [
-          StudentQuickAction(
-            label: l10n.attendance,
-            icon: Icons.how_to_reg,
-            onTap: () => context.push('/student/attendance/status'),
-          ),
-          StudentQuickAction(
-            label: l10n.discipline,
-            icon: Icons.gavel,
-            onTap: () => context.push('/student/attendance/discipline'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class LearningHubScreen extends StatelessWidget {
-  const LearningHubScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return _StudentHubScaffold(
-      title: l10n.navLearning,
-      child: StudentQuickActionGrid(
-        actions: [
-          StudentQuickAction(
-            label: l10n.resources,
-            icon: Icons.folder_open,
-            onTap: () => context.push('/student/learning/resources'),
-          ),
-          StudentQuickAction(
-            label: l10n.simulations,
-            icon: Icons.science,
-            onTap: () => context.push('/student/learning/simulations'),
-          ),
-          StudentQuickAction(
-            label: l10n.virtualLab,
-            icon: Icons.biotech,
-            onTap: () => context.push('/student/learning/labs'),
-          ),
-          StudentQuickAction(
-            label: l10n.groups,
-            icon: Icons.groups,
-            onTap: () => context.push('/student/learning/groups'),
-          ),
-          StudentQuickAction(
-            label: l10n.planner,
-            icon: Icons.psychology,
-            onTap: () => context.push('/student/learning/planner'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class ServicesHubScreen extends StatelessWidget {
   const ServicesHubScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return _StudentHubScaffold(
-      title: l10n.navServices,
-      child: StudentQuickActionGrid(
-        actions: [
-          StudentQuickAction(
-            label: l10n.library,
-            icon: Icons.local_library,
-            onTap: () => context.push('/student/services/library'),
-          ),
-          StudentQuickAction(
-            label: l10n.documents,
-            icon: Icons.description,
-            onTap: () => context.push('/student/services/documents'),
-          ),
-          StudentQuickAction(
-            label: l10n.helpdesk,
-            icon: Icons.support_agent,
-            onTap: () => context.push('/student/services/helpdesk'),
-          ),
-          StudentQuickAction(
-            label: l10n.vocational,
-            icon: Icons.handyman,
-            onTap: () => context.push('/student/services/vocational'),
-          ),
-          StudentQuickAction(
-            label: l10n.digitalId,
-            icon: Icons.badge,
-            onTap: () => context.push('/student/services/id'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StudentHubScaffold extends StatelessWidget {
-  const _StudentHubScaffold({required this.title, required this.child});
-
-  final String title;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.loginCanvas,
       body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const StudentTopBar(),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  color: AppColors.inkStrong,
-                ),
-              ),
-            ),
             Expanded(
               child: ListView(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                children: [child],
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                children: [
+                  Text(
+                    l10n.navServices,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  StudentSectionCard(
+                    color: AppColors.brand700,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          l10n.digitalId,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          l10n.openItem,
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.85),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        FilledButton(
+                          style: FilledButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: AppColors.brand700,
+                          ),
+                          onPressed: () =>
+                              context.push('/student/services/id'),
+                          child: Text(l10n.digitalId),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  StudentQuickActionGrid(
+                    actions: [
+                      StudentQuickAction(
+                        label: l10n.library,
+                        icon: Icons.local_library,
+                        onTap: () =>
+                            context.push('/student/services/library'),
+                      ),
+                      StudentQuickAction(
+                        label: l10n.documents,
+                        icon: Icons.description,
+                        onTap: () =>
+                            context.push('/student/services/documents'),
+                      ),
+                      StudentQuickAction(
+                        label: l10n.helpdesk,
+                        icon: Icons.support_agent,
+                        onTap: () =>
+                            context.push('/student/services/helpdesk'),
+                      ),
+                      StudentQuickAction(
+                        label: l10n.vocational,
+                        icon: Icons.handyman,
+                        onTap: () =>
+                            context.push('/student/services/vocational'),
+                      ),
+                      StudentQuickAction(
+                        label: l10n.digitalId,
+                        icon: Icons.badge,
+                        onTap: () => context.push('/student/services/id'),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ],
@@ -603,7 +1182,9 @@ class _MoreHubScreenState extends ConsumerState<MoreHubScreen> {
     final fullName = _str(_home?['fullName']);
     final hasPhoto = _home?['hasPhoto'] == true;
     final studentId = _str(_home?['studentId']);
+    final stream = _str(_home?['stream']);
     final year = _str(_home?['academicYear']);
+    final semester = _str(_home?['semester']);
     final schoolName = (user?.tenantName.trim().isNotEmpty ?? false)
         ? user!.tenantName
         : l10n.appName;
@@ -614,79 +1195,143 @@ class _MoreHubScreenState extends ConsumerState<MoreHubScreen> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
           children: [
-            StudentTopBar(fullName: fullName, hasPhoto: hasPhoto),
+            StudentTopBar(
+              fullName: fullName,
+              hasPhoto: hasPhoto,
+              academicYear: year,
+              semester: semester,
+            ),
             const SizedBox(height: 8),
             StudentSectionCard(
-              child: Row(
+              child: Column(
                 children: [
-                  AuthProfilePhoto(
-                    size: 72,
-                    fullName: fullName.isEmpty ? user?.username : fullName,
-                    hasPhoto: hasPhoto,
+                  Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      AuthProfilePhoto(
+                        size: 88,
+                        fullName:
+                            fullName.isEmpty ? user?.username : fullName,
+                        hasPhoto: hasPhoto,
+                      ),
+                      if (_gradeSection(
+                            l10n,
+                            _home?['gradeLevel'],
+                            _home?['section'],
+                          )
+                              .isNotEmpty)
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 2, right: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.brand700,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            '${_str(_home?['gradeLevel'])}${_str(_home?['section'])}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          fullName.isEmpty
-                              ? (user?.username ?? l10n.studentRoleLabel)
-                              : fullName,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w800,
-                            fontSize: 18,
-                            color: AppColors.inkStrong,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          l10n.studentRoleLabel,
-                          style: const TextStyle(
-                            color: AppColors.inkMuted,
-                            fontSize: 13,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          [
-                            schoolName,
-                            if (studentId.isNotEmpty)
-                              l10n.studentIdLabel(studentId),
-                          ].join(' · '),
-                          style: const TextStyle(
-                            color: AppColors.inkMuted,
-                            fontSize: 12,
-                          ),
-                        ),
-                        if (year.isNotEmpty) ...[
-                          const SizedBox(height: 6),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.brand50,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              l10n.academicYearLabel(year),
-                              style: const TextStyle(
-                                color: AppColors.brand700,
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
+                  const SizedBox(height: 12),
+                  Text(
+                    fullName.isEmpty
+                        ? (user?.username ?? l10n.studentRoleLabel)
+                        : fullName,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 20,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.brand50,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      schoolName,
+                      style: const TextStyle(
+                        color: AppColors.brand700,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    [
+                      if (studentId.isNotEmpty)
+                        l10n.studentIdLabel(studentId),
+                      if (stream.isNotEmpty) stream,
+                    ].join(' • '),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: AppColors.inkMuted,
+                      fontSize: 12,
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
+            StudentSectionCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l10n.tenantSession,
+                    style: const TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    [
+                      if (year.isNotEmpty) l10n.academicYearLabel(year),
+                      if (semester.isNotEmpty) l10n.semesterLabel(semester),
+                      l10n.studentAccount,
+                    ].join(' • '),
+                    style: const TextStyle(
+                      color: AppColors.inkMuted,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              l10n.language,
+              style: const TextStyle(fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 8),
+            StudentSectionCard(
+              child: SegmentedButton<String>(
+                segments: [
+                  ButtonSegment(value: 'am', label: Text(l10n.languageAmharic)),
+                  ButtonSegment(value: 'en', label: Text(l10n.languageEnglish)),
+                ],
+                selected: {locale.languageCode},
+                onSelectionChanged: (values) {
+                  ref
+                      .read(localeControllerProvider.notifier)
+                      .setLocale(Locale(values.first));
+                },
+              ),
+            ),
+            const SizedBox(height: 12),
             StudentSectionCard(
               padding: EdgeInsets.zero,
               child: Column(
@@ -695,90 +1340,28 @@ class _MoreHubScreenState extends ConsumerState<MoreHubScreen> {
                     leading: const Icon(Icons.notifications_outlined),
                     title: Text(l10n.notifications),
                     trailing: const Icon(Icons.chevron_right),
-                    onTap: () => context.push('/student/more/notifications'),
+                    onTap: () =>
+                        context.push('/student/more/notifications'),
                   ),
                   const Divider(height: 1),
                   ListTile(
-                    leading: const Icon(Icons.badge_outlined),
-                    title: Text(l10n.digitalId),
+                    leading: const Icon(Icons.fingerprint),
+                    title: Text(l10n.biometricUnlock),
+                    subtitle: Text(
+                      !_biometricAvailable
+                          ? l10n.biometricsUnavailable
+                          : (_biometricEnabled
+                              ? l10n.biometricActive
+                              : l10n.biometricOff),
+                    ),
+                  ),
+                  const Divider(height: 1),
+                  ListTile(
+                    leading: const Icon(Icons.support_agent),
+                    title: Text(l10n.helpdesk),
                     trailing: const Icon(Icons.chevron_right),
-                    onTap: () => context.push('/student/services/id'),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.language,
-              style: const TextStyle(
-                fontWeight: FontWeight.w800,
-                color: AppColors.inkStrong,
-              ),
-            ),
-            const SizedBox(height: 8),
-            StudentSectionCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    l10n.schoolPortal,
-                    style: const TextStyle(
-                      color: AppColors.inkMuted,
-                      fontSize: 12,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  SegmentedButton<String>(
-                    segments: [
-                      ButtonSegment(
-                        value: 'am',
-                        label: Text(l10n.languageAmharic),
-                      ),
-                      ButtonSegment(
-                        value: 'en',
-                        label: Text(l10n.languageEnglish),
-                      ),
-                    ],
-                    selected: {locale.languageCode},
-                    onSelectionChanged: (values) {
-                      ref
-                          .read(localeControllerProvider.notifier)
-                          .setLocale(Locale(values.first));
-                    },
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            StudentSectionCard(
-              child: Row(
-                children: [
-                  const Icon(Icons.fingerprint, color: AppColors.brand700),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          l10n.biometricUnlock,
-                          style: const TextStyle(fontWeight: FontWeight.w700),
-                        ),
-                        Text(
-                          !_biometricAvailable
-                              ? l10n.biometricsUnavailable
-                              : (_biometricEnabled
-                                  ? l10n.biometricActive
-                                  : l10n.biometricOff),
-                          style: TextStyle(
-                            color: _biometricEnabled
-                                ? AppColors.success
-                                : AppColors.inkMuted,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
+                    onTap: () =>
+                        context.push('/student/services/helpdesk'),
                   ),
                 ],
               ),
@@ -797,7 +1380,7 @@ class _MoreHubScreenState extends ConsumerState<MoreHubScreen> {
                   ),
                 ),
                 child: Text(
-                  '${l10n.logout} / ${l10n.signOutBilingual}',
+                  '${l10n.signOutSession} • ${l10n.logout}',
                   style: const TextStyle(fontWeight: FontWeight.w800),
                 ),
               ),

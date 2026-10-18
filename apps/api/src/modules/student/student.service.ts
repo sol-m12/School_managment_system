@@ -5,6 +5,7 @@ import { db } from "../../db/index.js";
 import {
   attendance,
   classes,
+  classSchedule,
   examResultsOnline,
   fileShares,
   grades,
@@ -187,27 +188,116 @@ function hasStoredPhoto(photo: string | null): boolean {
   return true;
 }
 
+function weekdayInAddis(date = new Date()): string {
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    timeZone: "Africa/Addis_Ababa",
+  }).format(date);
+}
+
 export async function studentHome(tenantId: number, userId: number) {
   const me = await learner(tenantId, userId);
-  const rows = await classSims(tenantId, me.gradeLevel, me.section);
+  const [rows, semester, schoolAcademicYear, classId] = await Promise.all([
+    classSims(tenantId, me.gradeLevel, me.section),
+    schoolSemester(tenantId),
+    schoolYear(tenantId),
+    classIdFor(tenantId, me),
+  ]);
   const today = new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
     timeZone: "Africa/Addis_Ababa",
   }).format(new Date());
+  const todayWeekday = weekdayInAddis();
+
+  let todayPeriods: Array<{
+    id: number;
+    period: number | null;
+    start: string;
+    end: string;
+    subject: string;
+    teacher: string;
+    type: string | null;
+  }> = [];
+  if (classId) {
+    const slots = await db
+      .select({
+        id: classSchedule.timetableId,
+        day: classSchedule.dayOfWeek,
+        period: classSchedule.periodNumber,
+        start: classSchedule.startTime,
+        end: classSchedule.endTime,
+        type: classSchedule.type,
+        subject: subjects.subjectName,
+        firstName: staff.firstName,
+        lastName: staff.lastName,
+      })
+      .from(classSchedule)
+      .leftJoin(subjects, and(eq(subjects.subjectId, classSchedule.subjectId), eq(subjects.tenantId, tenantId)))
+      .leftJoin(staff, and(eq(staff.staffId, classSchedule.teacherStaffId), eq(staff.tenantId, tenantId)))
+      .where(
+        scoped(
+          classSchedule,
+          tenantId,
+          and(eq(classSchedule.classId, classId), eq(classSchedule.academicYear, me.academicYear)),
+        ),
+      )
+      .orderBy(asc(classSchedule.periodNumber));
+    todayPeriods = slots
+      .filter((row) => row.day === todayWeekday)
+      .map((row) => ({
+        id: row.id,
+        period: row.period,
+        start: String(row.start).slice(0, 5),
+        end: String(row.end).slice(0, 5),
+        subject: row.subject ?? "",
+        teacher: [row.firstName, row.lastName].filter(Boolean).join(" "),
+        type: row.type,
+      }));
+  }
+
+  const [att] = await db
+    .select({
+      present: sql<number>`sum(case when ${attendance.status} = 'P' then 1 else 0 end)`,
+      absent: sql<number>`sum(case when ${attendance.status} = 'A' then 1 else 0 end)`,
+      late: sql<number>`sum(case when ${attendance.status} = 'T' then 1 else 0 end)`,
+      total: sql<number>`count(*)`,
+    })
+    .from(attendance)
+    .where(
+      scoped(
+        attendance,
+        tenantId,
+        and(eq(attendance.studentId, me.studentId), eq(attendance.approvalStatus, "Approved")),
+      ),
+    );
+  const present = num(att?.present);
+  const totalDays = num(att?.total);
+
   return {
     studentId: me.studentId,
     fullName: me.fullName,
     gradeLevel: me.gradeLevel,
     section: me.section,
     stream: me.stream,
-    academicYear: me.academicYear,
+    academicYear: me.academicYear || schoolAcademicYear,
+    schoolAcademicYear,
+    semester,
     hasPhoto: hasStoredPhoto(me.photo),
     greeting: greetingPart(),
     today,
+    todayWeekday,
+    todayPeriods,
     simulationCount: rows.length,
     simulations: rows.map(simRow),
+    attendance: {
+      present,
+      absent: num(att?.absent),
+      late: num(att?.late),
+      total: totalDays,
+      percent: totalDays > 0 ? Math.round((present / totalDays) * 1000) / 10 : null,
+    },
   };
 }
 

@@ -552,4 +552,125 @@ class AppLocalizationsEn extends AppLocalizations {
   String syncRecordsPending(int count) {
     return '$count records pending local sync';
   }
+
+  @override
+  String semesterLabel(String n) {
+    return 'Semester $n';
+  }
+
+  @override
+  String get askTeacher => 'Ask teacher';
+
+  @override
+  String get feeStatus => 'Documents';
+
+  @override
+  String get todaySummary => 'Today';
+
+  @override
+  String get todaySummaryAm => 'የዛሬው ማጠቃለያ';
+
+  @override
+  String get activeNow => 'Active now';
+
+  @override
+  String get attendanceTitle => 'Attendance';
+
+  @override
+  String get attendanceTitleAm => 'ተሳትፎ';
+
+  @override
+  String get academicTitle => 'Academic';
+
+  @override
+  String get academicTitleAm => 'ውጤት';
+
+  @override
+  String get deadlinesTitle => 'Deadlines';
+
+  @override
+  String get deadlinesTitleAm => 'የሚጠበቁ ስራዎች';
+
+  @override
+  String get noticeFeedTitle => 'Notice feed';
+
+  @override
+  String get noticeFeedTitleAm => 'ማሳሰቢያዎች';
+
+  @override
+  String get studyFocusTitle => 'Study focus';
+
+  @override
+  String get studyFocusTitleAm => 'የጥናት እቅድ';
+
+  @override
+  String get overallRate => 'Overall rate';
+
+  @override
+  String get overallRateAm => 'አጠቃላይ ተሳትፎ';
+
+  @override
+  String get presentCount => 'Present';
+
+  @override
+  String get absentCount => 'Absent';
+
+  @override
+  String get tardyCount => 'Tardy';
+
+  @override
+  String get noAttendanceYet => 'No attendance records yet';
+
+  @override
+  String get noScheduleToday => 'No classes scheduled for today';
+
+  @override
+  String get semesterAverage => 'Semester average';
+
+  @override
+  String classRank(String rank) {
+    return 'Rank $rank';
+  }
+
+  @override
+  String get editProfile => 'Edit profile';
+
+  @override
+  String get tenantSession => 'School session';
+
+  @override
+  String get studentAccount => 'Student account';
+
+  @override
+  String get signOutSession => 'Sign out of session';
+
+  @override
+  String get learningHub => 'Learning hub';
+
+  @override
+  String get learningHubAm => 'መማሪያ';
+
+  @override
+  String get launchSimulation => 'Launch simulation';
+
+  @override
+  String get noResourcesYet => 'No teacher files yet';
+
+  @override
+  String get noGroupsYet => 'No study groups yet';
+
+  @override
+  String get subjectBreakdown => 'Subject breakdown';
+
+  @override
+  String get absenceLogs => 'Attendance log';
+
+  @override
+  String get goodStanding => 'Good standing';
+
+  @override
+  String get enrolledSubjects => 'Enrolled subjects';
+
+  @override
+  String get noResultsYet => 'No results published yet';
 }
