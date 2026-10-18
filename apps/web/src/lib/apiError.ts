@@ -155,7 +155,18 @@ export type ErrorKey =
   | "alreadyLinked"
   | "codeInvalid"
   | "noStudentAccount"
-  | "notParent";
+  | "notParent"
+  | "councilExists"
+  | "staffNotFound"
+  | "studentNotFound"
+  | "charterBlocked"
+  | "alreadyMember"
+  | "notPatron"
+  | "notCouncil"
+  | "electionClosed"
+  | "alreadyVoted"
+  | "badCandidate"
+  | "noVotes";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -312,6 +323,17 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   NOT_PARENT: "notParent",
   FORBIDDEN: "forbidden",
   STUDENT_TENANT: "forbidden",
+  COUNCIL_EXISTS: "councilExists",
+  STAFF_NOT_FOUND: "staffNotFound",
+  STUDENT_NOT_FOUND: "studentNotFound",
+  CHARTER_BLOCKED: "charterBlocked",
+  ALREADY_MEMBER: "alreadyMember",
+  NOT_PATRON: "notPatron",
+  NOT_COUNCIL: "notCouncil",
+  ELECTION_CLOSED: "electionClosed",
+  ALREADY_VOTED: "alreadyVoted",
+  BAD_CANDIDATE: "badCandidate",
+  NO_VOTES: "noVotes",
 };
 
 function readCode(data: unknown): string | null {

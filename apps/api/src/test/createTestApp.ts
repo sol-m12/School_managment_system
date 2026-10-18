@@ -22,6 +22,7 @@ import { principalRouter } from "../modules/principal/principal.routes.js";
 import { viceRouter } from "../modules/vice/vice.routes.js";
 import { platformRouter } from "../modules/platform/platform.routes.js";
 import { parentAdminRouter, parentRouter } from "../modules/parent/parent.routes.js";
+import { clubsRouter } from "../modules/clubs/clubs.routes.js";
 
 /** Minimal Express app for integration tests (no listen). */
 export function createTestApp(): Express {
@@ -52,6 +53,7 @@ export function createTestApp(): Express {
   app.use("/secretary", secretaryRouter);
   app.use("/parent", parentRouter);
   app.use("/operations/parents", parentAdminRouter);
+  app.use("/clubs", clubsRouter);
   app.get("/public/tenders", publicTenderList);
   return app;
 }

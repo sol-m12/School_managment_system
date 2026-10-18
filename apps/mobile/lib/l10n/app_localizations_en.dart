@@ -789,4 +789,60 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get averageScore => 'Average';
+
+  @override
+  String get dayMon => 'Mon';
+
+  @override
+  String get dayTue => 'Tue';
+
+  @override
+  String get dayWed => 'Wed';
+
+  @override
+  String get dayThu => 'Thu';
+
+  @override
+  String get dayFri => 'Fri';
+
+  @override
+  String get daySat => 'Sat';
+
+  @override
+  String get daySun => 'Sun';
+
+  @override
+  String periodBadge(String n) {
+    return 'P$n';
+  }
+
+  @override
+  String get upcomingStatus => 'Upcoming';
+
+  @override
+  String get completedStatus => 'Completed';
+
+  @override
+  String get myTimetable => 'My classes';
+
+  @override
+  String get schoolTimetable => 'School';
+
+  @override
+  String get substitutionsSection => 'Substitutions';
+
+  @override
+  String get noClassesThisDay => 'No classes on this day';
+
+  @override
+  String get weeklySchedule => 'Weekly schedule';
+
+  @override
+  String get weeklyScheduleAm => 'ሳምንታዊ የጊዜ ሰሌዳ';
+
+  @override
+  String get examScheduleSection => 'Exam schedule';
+
+  @override
+  String get assignedClasses => 'Assigned classes';
 }

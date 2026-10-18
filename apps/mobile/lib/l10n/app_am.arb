@@ -345,5 +345,28 @@
   "returnedStatus": "ተመልሷል",
   "openStudent360": "መገለጫ ክፈት",
   "attendanceSummary": "መገኘት",
-  "averageScore": "አማካይ"
+  "averageScore": "አማካይ",
+  "dayMon": "ሰኞ",
+  "dayTue": "ማክሰ",
+  "dayWed": "ረቡዕ",
+  "dayThu": "ሐሙስ",
+  "dayFri": "አርብ",
+  "daySat": "ቅዳሜ",
+  "daySun": "እሑድ",
+  "periodBadge": "ፒ{n}",
+  "@periodBadge": {
+    "placeholders": {
+      "n": { "type": "String" }
+    }
+  },
+  "upcomingStatus": "ይመጣል",
+  "completedStatus": "ተጠናቋል",
+  "myTimetable": "የእኔ ክፍሎች",
+  "schoolTimetable": "ትምህርት ቤት",
+  "substitutionsSection": "ተተኪዎች",
+  "noClassesThisDay": "በዚህ ቀን ክፍል የለም",
+  "weeklySchedule": "ሳምንታዊ የጊዜ ሰሌዳ",
+  "weeklyScheduleAm": "ሳምንታዊ የጊዜ ሰሌዳ",
+  "examScheduleSection": "የፈተና ሰሌዳ",
+  "assignedClasses": "የተመደቡ ክፍሎች"
 }

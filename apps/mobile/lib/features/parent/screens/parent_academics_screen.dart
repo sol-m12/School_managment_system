@@ -122,6 +122,43 @@ class _ResultsPreview extends StatelessWidget {
   }
 }
 
+(String, String) _deadlineBits(String deadline) {
+  final trimmed = deadline.trim();
+  if (trimmed.isEmpty) return ('—', '·');
+  // Prefer ISO / yyyy-mm-dd
+  final iso = RegExp(r'(\d{4})-(\d{2})-(\d{2})').firstMatch(trimmed);
+  if (iso != null) {
+    const months = [
+      'JAN',
+      'FEB',
+      'MAR',
+      'APR',
+      'MAY',
+      'JUN',
+      'JUL',
+      'AUG',
+      'SEP',
+      'OCT',
+      'NOV',
+      'DEC',
+    ];
+    final month = int.tryParse(iso.group(2)!) ?? 1;
+    final day = iso.group(3)!;
+    return (months[(month - 1).clamp(0, 11)], day);
+  }
+  final parts = trimmed.split(RegExp(r'[\s/,-]+'));
+  if (parts.length >= 2) {
+    return (
+      parts[0].length > 3 ? parts[0].substring(0, 3).toUpperCase() : parts[0],
+      parts[1],
+    );
+  }
+  return (
+    trimmed.length > 3 ? trimmed.substring(0, 3).toUpperCase() : trimmed,
+    '·',
+  );
+}
+
 class _HomeworkPreview extends StatelessWidget {
   const _HomeworkPreview({required this.data, required this.l10n});
 
@@ -151,12 +188,50 @@ class _HomeworkPreview extends StatelessWidget {
           'pending' => l10n.parentIndicatorPending,
           _ => null,
         };
+        final deadline = row['deadline']?.toString() ?? '';
+        final dateBits = _deadlineBits(deadline);
+        final accent = indicator == 'done'
+            ? AppColors.success
+            : indicator == 'missing'
+                ? AppColors.danger
+                : AppColors.brand700;
         return Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: StudentSectionCard(
             padding: const EdgeInsets.all(12),
             child: Row(
               children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: accent.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        dateBits.$1,
+                        style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w800,
+                          color: accent,
+                        ),
+                      ),
+                      Text(
+                        dateBits.$2,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w800,
+                          color: accent,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,9 +242,9 @@ class _HomeworkPreview extends StatelessWidget {
                             l10n.parentHomework,
                         style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
-                      if ((row['deadline']?.toString() ?? '').isNotEmpty)
+                      if (deadline.isNotEmpty)
                         Text(
-                          row['deadline'].toString(),
+                          deadline,
                           style: const TextStyle(
                             fontSize: 12,
                             color: AppColors.inkMuted,
@@ -183,12 +258,7 @@ class _HomeworkPreview extends StatelessWidget {
                     padding:
                         const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: (indicator == 'done'
-                              ? AppColors.success
-                              : indicator == 'missing'
-                                  ? AppColors.danger
-                                  : AppColors.warning)
-                          .withValues(alpha: 0.12),
+                      color: accent.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
@@ -196,11 +266,7 @@ class _HomeworkPreview extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
-                        color: indicator == 'done'
-                            ? AppColors.success
-                            : indicator == 'missing'
-                                ? AppColors.danger
-                                : AppColors.warning,
+                        color: accent,
                       ),
                     ),
                   ),

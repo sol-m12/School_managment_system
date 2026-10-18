@@ -345,5 +345,28 @@
   "returnedStatus": "Returned",
   "openStudent360": "Open profile",
   "attendanceSummary": "Attendance",
-  "averageScore": "Average"
+  "averageScore": "Average",
+  "dayMon": "Mon",
+  "dayTue": "Tue",
+  "dayWed": "Wed",
+  "dayThu": "Thu",
+  "dayFri": "Fri",
+  "daySat": "Sat",
+  "daySun": "Sun",
+  "periodBadge": "P{n}",
+  "@periodBadge": {
+    "placeholders": {
+      "n": { "type": "String" }
+    }
+  },
+  "upcomingStatus": "Upcoming",
+  "completedStatus": "Completed",
+  "myTimetable": "My classes",
+  "schoolTimetable": "School",
+  "substitutionsSection": "Substitutions",
+  "noClassesThisDay": "No classes on this day",
+  "weeklySchedule": "Weekly schedule",
+  "weeklyScheduleAm": "ሳምንታዊ የጊዜ ሰሌዳ",
+  "examScheduleSection": "Exam schedule",
+  "assignedClasses": "Assigned classes"
 }

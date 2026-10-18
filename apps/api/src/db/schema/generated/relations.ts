@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { tenants, accountTypes, adminTasks, announcements, annualLessonPlan, assignmentSubmissions, attendance, auditLog, backupRuns, binCardLedger, budgetNotifications, budgetNotificationItems, classes, classSchedule, committeesClubs, committeeMembers, communicationGroups, departmentHeads, evaluationCriteria, evaluationDetails, onlineExams, examQuestions, examResultsOnline, students, expenses, externalInquiries, fileShares, financeCodes, foreignPartners, grades, users, groupsInfo, subjects, groupChats, groupMembers, groupMessages, groupResponses, groupTasks, groupSubmissions, studentGroups, income, issueModel22, itemCategories, items, lbBadges, lbIntake, lbLiteracy, lbPatronLog, lbReminders, lbReservations, lbResources, libraryAttendance, libraryBooks, libraryBorrowing, libraryHandovers, liveQuizQuestions, liveQuizSessions, loginAttempts, mehi161Cards, mehi161Transactions, mehi17Cards, mehi17Transactions, mehi7Items, mehi7Vouchers, model19Grn, model19Items, outboundNotices, parentIdentities, parentAppointmentRequests, parentGuardian, parentMessages, parentStudentLinks, payroll, peerAssessments, periodSettings, poApprovals, poAwards, poBids, poBudgets, poChecks, poOrders, poTenders, poVendors, principalApprovalNotes, principalDocuments, principalIncidents, principalMessages, principalPolicies, principalReportDefs, principalTraining, principalTransfers, requisitionsModel20, roAccessLog, roAlumni, roArchives, roArchiveRows, roDocuments, roFiles, roImports, roLocks, roRequests, roStaffRecords, schoolNews, schoolPlans, schoolSettings, schoolStats, secAppointments, secCleanupRuns, secDocuments, secNotices, secOcrScans, secRenewals, secTickets, simulations, skAlerts, skAssets, skDisposals, skLoans, skPurchaseRequests, staff, staffFiles, staffFolders, stockLedgerCard, studentAssessments, studentFinalReports, stCommendations, stDocumentRequests, stTaskWork, subjectWeightings, suppliers, supportTickets, systemSettings, tcBookRecommendations, tcExamStandards, tcGradeReviews, tcIncidents, tcLeaveRequests, tcPapers, tcPaperItems, tcParticipation, tcPerformance, tcPerformanceScores, tcQuestions, tcRequisitions, tcSubstitutions, tcSwaps, tcTopicCoverage, teacherAssignments, teacherEvaluations, teacherRoleCredits, vocationalRequests, vpExamSessions, vpHearings, vpInvigilators, vpPenalties, vpPlacements, vpPrograms, vpReferrals } from "./schema.js";
+import { tenants, accountTypes, adminTasks, announcements, annualLessonPlan, assignmentSubmissions, attendance, auditLog, backupRuns, binCardLedger, budgetNotifications, budgetNotificationItems, classes, classSchedule, clubActivityReports, clubElections, clubElectionCandidates, clubMeetings, clubVotes, committeesClubs, committeeMembers, communicationGroups, departmentHeads, evaluationCriteria, evaluationDetails, onlineExams, examQuestions, examResultsOnline, students, expenses, externalInquiries, fileShares, financeCodes, foreignPartners, grades, users, groupsInfo, subjects, groupChats, groupMembers, groupMessages, groupResponses, groupTasks, groupSubmissions, studentGroups, income, issueModel22, itemCategories, items, lbBadges, lbIntake, lbLiteracy, lbPatronLog, lbReminders, lbReservations, lbResources, libraryAttendance, libraryBooks, libraryBorrowing, libraryHandovers, liveQuizQuestions, liveQuizSessions, loginAttempts, mehi161Cards, mehi161Transactions, mehi17Cards, mehi17Transactions, mehi7Items, mehi7Vouchers, model19Grn, model19Items, outboundNotices, parentIdentities, parentAppointmentRequests, parentGuardian, parentMessages, parentStudentLinks, payroll, peerAssessments, periodSettings, poApprovals, poAwards, poBids, poBudgets, poChecks, poOrders, poTenders, poVendors, principalApprovalNotes, principalDocuments, principalIncidents, principalMessages, principalPolicies, principalReportDefs, principalTraining, principalTransfers, requisitionsModel20, roAccessLog, roAlumni, roArchives, roArchiveRows, roDocuments, roFiles, roImports, roLocks, roRequests, roStaffRecords, schoolNews, schoolPlans, schoolSettings, schoolStats, secAppointments, secCleanupRuns, secDocuments, secNotices, secOcrScans, secRenewals, secTickets, simulations, skAlerts, skAssets, skDisposals, skLoans, skPurchaseRequests, staff, staffFiles, staffFolders, stockLedgerCard, studentAssessments, studentFinalReports, stCommendations, stDocumentRequests, stTaskWork, subjectWeightings, suppliers, supportTickets, systemSettings, tcBookRecommendations, tcExamStandards, tcGradeReviews, tcIncidents, tcLeaveRequests, tcPapers, tcPaperItems, tcParticipation, tcPerformance, tcPerformanceScores, tcQuestions, tcRequisitions, tcSubstitutions, tcSwaps, tcTopicCoverage, teacherAssignments, teacherEvaluations, teacherRoleCredits, vocationalRequests, vpExamSessions, vpHearings, vpInvigilators, vpPenalties, vpPlacements, vpPrograms, vpReferrals } from "./schema.js";
 
 export const accountTypesRelations = relations(accountTypes, ({one, many}) => ({
 	tenant: one(tenants, {
@@ -23,6 +23,11 @@ export const tenantsRelations = relations(tenants, ({many}) => ({
 	budgetNotificationItems: many(budgetNotificationItems),
 	classes: many(classes),
 	classSchedules: many(classSchedule),
+	clubActivityReports: many(clubActivityReports),
+	clubElections: many(clubElections),
+	clubElectionCandidates: many(clubElectionCandidates),
+	clubMeetings: many(clubMeetings),
+	clubVotes: many(clubVotes),
 	committeesClubs: many(committeesClubs),
 	committeeMembers: many(committeeMembers),
 	communicationGroups: many(communicationGroups),
@@ -254,6 +259,41 @@ export const classesRelations = relations(classes, ({one, many}) => ({
 export const classScheduleRelations = relations(classSchedule, ({one}) => ({
 	tenant: one(tenants, {
 		fields: [classSchedule.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const clubActivityReportsRelations = relations(clubActivityReports, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [clubActivityReports.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const clubElectionsRelations = relations(clubElections, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [clubElections.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const clubElectionCandidatesRelations = relations(clubElectionCandidates, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [clubElectionCandidates.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const clubMeetingsRelations = relations(clubMeetings, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [clubMeetings.tenantId],
+		references: [tenants.id]
+	}),
+}));
+
+export const clubVotesRelations = relations(clubVotes, ({one}) => ({
+	tenant: one(tenants, {
+		fields: [clubVotes.tenantId],
 		references: [tenants.id]
 	}),
 }));

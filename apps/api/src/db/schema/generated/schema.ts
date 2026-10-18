@@ -199,6 +199,81 @@ export const classSchedule = mysqlTable("class_schedule", {
 	index("idx_class_schedule_tenant_id").on(table.tenantId),
 ]);
 
+export const clubActivityReports = mysqlTable("club_activity_reports", {
+	reportId: int("report_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	structureId: int("structure_id").notNull(),
+	title: varchar({ length: 255 }).notNull(),
+	body: varchar({ length: 4000 }).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	reportDate: date("report_date", { mode: 'string' }).notNull(),
+	createdByStaffId: int("created_by_staff_id").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_club_activity_reports_tenant_id").on(table.tenantId),
+	index("idx_club_activity_reports_structure").on(table.tenantId, table.structureId),
+]);
+
+export const clubElections = mysqlTable("club_elections", {
+	electionId: int("election_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	structureId: int("structure_id").notNull(),
+	title: varchar({ length: 255 }).notNull(),
+	status: mysqlEnum(['Open','Closed','Announced']).default('Open').notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	opensOn: date("opens_on", { mode: 'string' }).notNull(),
+	// you can use { mode: 'date' }, if you want to have Date as type for this column
+	closesOn: date("closes_on", { mode: 'string' }).notNull(),
+	announcedWinnerStudentId: int("announced_winner_student_id"),
+	createdBy: int("created_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_club_elections_tenant_id").on(table.tenantId),
+	index("idx_club_elections_structure").on(table.tenantId, table.structureId),
+]);
+
+export const clubElectionCandidates = mysqlTable("club_election_candidates", {
+	candidateId: int("candidate_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	electionId: int("election_id").notNull(),
+	studentId: int("student_id").notNull(),
+},
+(table) => [
+	index("idx_club_election_candidates_tenant_id").on(table.tenantId),
+	unique("uq_club_election_candidates").on(table.tenantId, table.electionId, table.studentId),
+]);
+
+export const clubMeetings = mysqlTable("club_meetings", {
+	meetingId: int("meeting_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	structureId: int("structure_id").notNull(),
+	title: varchar({ length: 255 }).notNull(),
+	meetsOn: datetime("meets_on", { mode: 'string'}).notNull(),
+	location: varchar({ length: 255 }).default("").notNull(),
+	notes: varchar({ length: 1000 }).default("").notNull(),
+	createdByStaffId: int("created_by_staff_id").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_club_meetings_tenant_id").on(table.tenantId),
+	index("idx_club_meetings_structure").on(table.tenantId, table.structureId),
+]);
+
+export const clubVotes = mysqlTable("club_votes", {
+	voteId: int("vote_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	electionId: int("election_id").notNull(),
+	voterStudentId: int("voter_student_id").notNull(),
+	candidateStudentId: int("candidate_student_id").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_club_votes_tenant_id").on(table.tenantId),
+	unique("uq_club_votes_voter").on(table.tenantId, table.electionId, table.voterStudentId),
+]);
+
 export const committeesClubs = mysqlTable("committees_clubs", {
 	structureId: int("structure_id").autoincrement().notNull(),
 	name: varchar({ length: 150 }).notNull(),
@@ -207,10 +282,16 @@ export const committeesClubs = mysqlTable("committees_clubs", {
 	year: varchar({ length: 10 }),
 	isActive: tinyint("is_active").default(1).notNull(),
 	createdBy: int("created_by"),
+	patronStaffId: int("patron_staff_id"),
+	presidentStudentId: int("president_student_id"),
+	charterStatus: mysqlEnum("charter_status", ['Draft','Pending','Approved','Suspended']).default('Draft').notNull(),
+	isStudentCouncil: tinyint("is_student_council").default(0).notNull(),
 	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
 	index("idx_committees_clubs_tenant_id").on(table.tenantId),
+	index("idx_committees_clubs_charter").on(table.tenantId, table.charterStatus),
+	index("idx_committees_clubs_council").on(table.tenantId, table.isStudentCouncil),
 	unique("uq_committees_clubs_tenant_name").on(table.tenantId, table.name),
 ]);
 
@@ -221,10 +302,12 @@ export const committeeMembers = mysqlTable("committee_members", {
 	studentId: int("student_id"),
 	parentPgId: int("parent_pg_id"),
 	roleInStructure: varchar("role_in_structure", { length: 100 }),
+	status: mysqlEnum(['Pending','Active','Rejected','Withdrawn']).default('Pending').notNull(),
 	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
 },
 (table) => [
 	index("idx_committee_members_tenant_id").on(table.tenantId),
+	unique("uq_committee_members_student").on(table.tenantId, table.structureId, table.studentId),
 ]);
 
 export const communicationGroups = mysqlTable("communication_groups", {

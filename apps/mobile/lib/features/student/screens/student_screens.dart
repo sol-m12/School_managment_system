@@ -8,6 +8,7 @@ import '../../../core/providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/auth_profile_photo.dart';
 import '../../../core/widgets/json_screen.dart';
+import '../../../core/widgets/timetable_widgets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../widgets/student_chrome.dart';
 
@@ -196,92 +197,15 @@ class StudentHomeScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 8),
                 if (periods.isEmpty)
-                  StudentSectionCard(
-                    child: Text(
-                      l10n.noScheduleToday,
-                      style: const TextStyle(color: AppColors.inkMuted),
-                    ),
-                  )
+                  TimetableEmptyCard(message: l10n.noScheduleToday)
                 else
-                  ...periods.take(3).toList().asMap().entries.map((entry) {
-                    final i = entry.key;
-                    final row = entry.value;
-                    final subject = _str(row['subject']);
-                    final teacher = _str(row['teacher']);
-                    final start = _str(row['start']);
-                    final end = _str(row['end']);
-                    final period = _str(row['period']);
-                    final active = i == 0;
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: StudentSectionCard(
-                        color: active
-                            ? AppColors.brand50
-                            : AppColors.surface,
-                        padding: const EdgeInsets.all(14),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    [
-                                      if (start.isNotEmpty && end.isNotEmpty)
-                                        '$start – $end',
-                                      if (period.isNotEmpty)
-                                        '${l10n.timetable} $period',
-                                    ].join(' • '),
-                                    style: const TextStyle(
-                                      fontSize: 11,
-                                      color: AppColors.inkMuted,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                                if (active)
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 3,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.brand700,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Text(
-                                      l10n.activeNow,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              subject.isEmpty ? l10n.timetable : subject,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 15,
-                                color: AppColors.inkStrong,
-                              ),
-                            ),
-                            if (teacher.isNotEmpty)
-                              Text(
-                                teacher,
-                                style: const TextStyle(
-                                  color: AppColors.inkMuted,
-                                  fontSize: 12,
-                                ),
-                              ),
-                          ],
+                  ...periods.take(4).map(
+                        (row) => TimetablePeriodCard.fromMap(
+                          row,
+                          l10n: l10n,
+                          isToday: true,
                         ),
                       ),
-                    );
-                  }),
                 const SizedBox(height: 10),
                 Row(
                   children: [

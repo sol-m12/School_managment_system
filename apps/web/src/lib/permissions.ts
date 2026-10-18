@@ -84,6 +84,11 @@ export const PERMISSIONS = [
 
   "parent.desk",
   "parents.manage",
+
+  "clubs.manage",
+  "clubs.student",
+  "clubs.patron",
+  "clubs.oversee",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];

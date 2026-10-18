@@ -12,11 +12,13 @@ import '../features/parent/screens/parent_screens.dart';
 import '../features/student/screens/digital_id_screen.dart';
 import '../features/student/screens/notifications_screen.dart';
 import '../features/student/screens/student_screens.dart';
+import '../features/student/screens/timetable_screen.dart';
 import '../features/student/student_shell.dart';
 import '../features/student/screens/services_screens.dart';
 import '../features/teacher/screens/homeroom_attendance_screen.dart';
 import '../features/teacher/screens/offline_attendance_screen.dart';
 import '../features/teacher/screens/scan_id_screen.dart';
+import '../features/teacher/screens/schedule_screens.dart';
 import '../features/teacher/screens/student_360_screen.dart';
 import '../features/teacher/screens/subject_attendance_screen.dart';
 import '../features/teacher/screens/teacher_screens.dart';
@@ -103,14 +105,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'timetable',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return StudentJsonRoute(
-                        title: l10n.timetable,
-                        cacheKey: 'student_timetable',
-                        path: '/student/desk/timetable',
-                      );
-                    },
+                    builder: (context, state) =>
+                        const StudentTimetableScreen(),
                   ),
                   GoRoute(
                     path: 'exams',
@@ -320,14 +316,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: 'schedule',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return TeacherJsonRoute(
-                        title: l10n.teacherSchedule,
-                        cacheKey: 'teacher_schedule',
-                        path: '/teacher/schedule',
-                      );
-                    },
+                    builder: (context, state) =>
+                        const TeacherScheduleScreen(),
                   ),
                   GoRoute(
                     path: 'profile',
@@ -533,14 +523,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: 'timetable',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return TeacherJsonRoute(
-                        title: l10n.timetable,
-                        cacheKey: 'teacher_timetable',
-                        path: '/teacher/office/timetable',
-                      );
-                    },
+                    builder: (context, state) =>
+                        const TeacherOfficeTimetableScreen(),
                   ),
                   GoRoute(
                     path: 'leave',

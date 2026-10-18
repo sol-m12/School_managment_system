@@ -16,7 +16,11 @@ export type TenantIsolationOps = {
   /** Delete a row; must not delete the other tenant's row. */
   delete: (tenantId: number, id: number) => Promise<void>;
   /** Resolve the seeded resource id for each tenant after seed. */
-  resourceId: (seed: IsolationSeed) => { aId: number; bId: number };
+  resourceId: (
+    seed: IsolationSeed,
+  ) =>
+    | { aId: number; bId: number }
+    | Promise<{ aId: number; bId: number }>;
 };
 
 /**
@@ -45,7 +49,7 @@ export function describeTenantIsolation(
 
     beforeAll(async () => {
       seed = await seedTwoTenants();
-      const ids = ops.resourceId(seed);
+      const ids = await ops.resourceId(seed);
       aId = ids.aId;
       bId = ids.bId;
     });

@@ -783,4 +783,60 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get averageScore => 'አማካይ';
+
+  @override
+  String get dayMon => 'ሰኞ';
+
+  @override
+  String get dayTue => 'ማክሰ';
+
+  @override
+  String get dayWed => 'ረቡዕ';
+
+  @override
+  String get dayThu => 'ሐሙስ';
+
+  @override
+  String get dayFri => 'አርብ';
+
+  @override
+  String get daySat => 'ቅዳሜ';
+
+  @override
+  String get daySun => 'እሑድ';
+
+  @override
+  String periodBadge(String n) {
+    return 'ፒ$n';
+  }
+
+  @override
+  String get upcomingStatus => 'ይመጣል';
+
+  @override
+  String get completedStatus => 'ተጠናቋል';
+
+  @override
+  String get myTimetable => 'የእኔ ክፍሎች';
+
+  @override
+  String get schoolTimetable => 'ትምህርት ቤት';
+
+  @override
+  String get substitutionsSection => 'ተተኪዎች';
+
+  @override
+  String get noClassesThisDay => 'በዚህ ቀን ክፍል የለም';
+
+  @override
+  String get weeklySchedule => 'ሳምንታዊ የጊዜ ሰሌዳ';
+
+  @override
+  String get weeklyScheduleAm => 'ሳምንታዊ የጊዜ ሰሌዳ';
+
+  @override
+  String get examScheduleSection => 'የፈተና ሰሌዳ';
+
+  @override
+  String get assignedClasses => 'የተመደቡ ክፍሎች';
 }

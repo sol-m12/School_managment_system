@@ -1567,6 +1567,114 @@ abstract class AppLocalizations {
   /// In am, this message translates to:
   /// **'አማካይ'**
   String get averageScore;
+
+  /// No description provided for @dayMon.
+  ///
+  /// In am, this message translates to:
+  /// **'ሰኞ'**
+  String get dayMon;
+
+  /// No description provided for @dayTue.
+  ///
+  /// In am, this message translates to:
+  /// **'ማክሰ'**
+  String get dayTue;
+
+  /// No description provided for @dayWed.
+  ///
+  /// In am, this message translates to:
+  /// **'ረቡዕ'**
+  String get dayWed;
+
+  /// No description provided for @dayThu.
+  ///
+  /// In am, this message translates to:
+  /// **'ሐሙስ'**
+  String get dayThu;
+
+  /// No description provided for @dayFri.
+  ///
+  /// In am, this message translates to:
+  /// **'አርብ'**
+  String get dayFri;
+
+  /// No description provided for @daySat.
+  ///
+  /// In am, this message translates to:
+  /// **'ቅዳሜ'**
+  String get daySat;
+
+  /// No description provided for @daySun.
+  ///
+  /// In am, this message translates to:
+  /// **'እሑድ'**
+  String get daySun;
+
+  /// No description provided for @periodBadge.
+  ///
+  /// In am, this message translates to:
+  /// **'ፒ{n}'**
+  String periodBadge(String n);
+
+  /// No description provided for @upcomingStatus.
+  ///
+  /// In am, this message translates to:
+  /// **'ይመጣል'**
+  String get upcomingStatus;
+
+  /// No description provided for @completedStatus.
+  ///
+  /// In am, this message translates to:
+  /// **'ተጠናቋል'**
+  String get completedStatus;
+
+  /// No description provided for @myTimetable.
+  ///
+  /// In am, this message translates to:
+  /// **'የእኔ ክፍሎች'**
+  String get myTimetable;
+
+  /// No description provided for @schoolTimetable.
+  ///
+  /// In am, this message translates to:
+  /// **'ትምህርት ቤት'**
+  String get schoolTimetable;
+
+  /// No description provided for @substitutionsSection.
+  ///
+  /// In am, this message translates to:
+  /// **'ተተኪዎች'**
+  String get substitutionsSection;
+
+  /// No description provided for @noClassesThisDay.
+  ///
+  /// In am, this message translates to:
+  /// **'በዚህ ቀን ክፍል የለም'**
+  String get noClassesThisDay;
+
+  /// No description provided for @weeklySchedule.
+  ///
+  /// In am, this message translates to:
+  /// **'ሳምንታዊ የጊዜ ሰሌዳ'**
+  String get weeklySchedule;
+
+  /// No description provided for @weeklyScheduleAm.
+  ///
+  /// In am, this message translates to:
+  /// **'ሳምንታዊ የጊዜ ሰሌዳ'**
+  String get weeklyScheduleAm;
+
+  /// No description provided for @examScheduleSection.
+  ///
+  /// In am, this message translates to:
+  /// **'የፈተና ሰሌዳ'**
+  String get examScheduleSection;
+
+  /// No description provided for @assignedClasses.
+  ///
+  /// In am, this message translates to:
+  /// **'የተመደቡ ክፍሎች'**
+  String get assignedClasses;
 }
 
 class _AppLocalizationsDelegate

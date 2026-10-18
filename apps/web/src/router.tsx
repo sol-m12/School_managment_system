@@ -185,6 +185,10 @@ import {
   Student360Page,
 } from "@/features/teacher/DutyOfficePages";
 import { AnnouncementsPage } from "@/features/technician/AnnouncementsPage";
+import { ClubsManagePage } from "@/features/clubs/ClubsManagePage";
+import { ClubsStudentPage } from "@/features/clubs/ClubsStudentPage";
+import { ClubsPatronPage } from "@/features/clubs/ClubsPatronPage";
+import { ClubsOverseePage } from "@/features/clubs/ClubsOverseePage";
 import { AuditPage, DutiesPage, HealthPage, IdentityPage, ImportPage, TicketsPage } from "@/features/operations/OperationsPages";
 import { ParentsPage } from "@/features/operations/ParentsPage";
 import { StaffRegistrationPage } from "@/features/technician/StaffRegistrationPage";
@@ -227,6 +231,10 @@ const BUILT_ITEMS: readonly NavItemKey[] = [
   "simulations",
   "studentReports",
   "announcements",
+  "clubsManage",
+  "studentClubs",
+  "teacherClubs",
+  "viceClubs",
   "staffRegistration",
   "accountManagement",
   "parentAccounts",
@@ -473,6 +481,7 @@ export const router = createBrowserRouter([
       { path: "teacher/timetable", element: <ProtectedRoute permission="teacher.subject"><TimetablePage /></ProtectedRoute> },
       { path: "teacher/incidents", element: <ProtectedRoute permission="teacher.subject"><TeacherIncidentsPage /></ProtectedRoute> },
       { path: "teacher/leave", element: <ProtectedRoute permission="teacher.subject"><LeavePage /></ProtectedRoute> },
+      { path: "teacher/clubs", element: <ProtectedRoute permission="clubs.patron"><ClubsPatronPage /></ProtectedRoute> },
       { path: "teacher/library", element: <ProtectedRoute permission="teacher.subject"><LibraryPage /></ProtectedRoute> },
       { path: "teacher/question-bank", element: <ProtectedRoute permission="teacher.subject"><QuestionBankPage /></ProtectedRoute> },
       { path: "teacher/participation", element: <ProtectedRoute permission="teacher.subject"><ParticipationPage /></ProtectedRoute> },
@@ -483,6 +492,7 @@ export const router = createBrowserRouter([
       { path: "teacher/coverage", element: <ProtectedRoute permission="teacher.department"><CoveragePage /></ProtectedRoute> },
       { path: "teacher/evaluation", element: <ProtectedRoute permission="teacher.department"><EvaluationPage /></ProtectedRoute> },
       { path: "system/announcements", element: <ProtectedRoute permission="announcements.manage"><AnnouncementsPage /></ProtectedRoute> },
+      { path: "system/clubs", element: <ProtectedRoute permission="clubs.manage"><ClubsManagePage /></ProtectedRoute> },
       { path: "system/staff-registration", element: <ProtectedRoute permission="staffRegistration.manage"><StaffRegistrationPage /></ProtectedRoute> },
       { path: "account/manage", element: <ProtectedRoute permission="accounts.manage"><StudentIdPage /></ProtectedRoute> },
       { path: "student/results", element: <ProtectedRoute permission="results.readOwn"><ResultsPage /></ProtectedRoute> },
@@ -505,6 +515,7 @@ export const router = createBrowserRouter([
       { path: "student/helpdesk", element: <ProtectedRoute permission="student.desk"><StudentHelpdeskPage /></ProtectedRoute> },
       { path: "student/planner", element: <ProtectedRoute permission="student.desk"><StudyPlannerPage /></ProtectedRoute> },
       { path: "student/id", element: <ProtectedRoute permission="student.desk"><DigitalIdPage /></ProtectedRoute> },
+      { path: "student/clubs", element: <ProtectedRoute permission="clubs.student"><ClubsStudentPage /></ProtectedRoute> },
       { path: "principal/executive", element: <ProtectedRoute permission="principal.office"><ExecutivePage /></ProtectedRoute> },
       { path: "principal/trends", element: <ProtectedRoute permission="principal.office"><TrendsPage /></ProtectedRoute> },
       { path: "principal/communications", element: <ProtectedRoute permission="principal.office"><HubPage /></ProtectedRoute> },
@@ -569,6 +580,7 @@ export const router = createBrowserRouter([
       { path: "secretary/id-cards", element: <ProtectedRoute permission="secretary.office"><IdCardsPage /></ProtectedRoute> },
       { path: "secretary/ocr", element: <ProtectedRoute permission="secretary.office"><OcrPage /></ProtectedRoute> },
       { path: "vice/vocational", element: <ProtectedRoute permission="vice.office"><VocationalPage /></ProtectedRoute> },
+      { path: "vice/clubs", element: <ProtectedRoute permission="clubs.oversee"><ClubsOverseePage /></ProtectedRoute> },
       { path: "vice/behavior", element: <ProtectedRoute permission="vice.office"><BehaviorPage /></ProtectedRoute> },
       { path: "vice/invigilation", element: <ProtectedRoute permission="vice.office"><InvigilationPage /></ProtectedRoute> },
       ...placeholderRoutes,

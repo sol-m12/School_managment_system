@@ -89,6 +89,11 @@ export const PERMISSIONS = [
 
   "parent.desk",
   "parents.manage",
+
+  "clubs.manage",
+  "clubs.student",
+  "clubs.patron",
+  "clubs.oversee",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
@@ -176,6 +181,11 @@ const GRANTS: Record<Permission, readonly Role[]> = {
 
   "parent.desk": ["Parent"],
   "parents.manage": ["Technician"],
+
+  "clubs.manage": ["Technician"],
+  "clubs.student": ["Student"],
+  "clubs.patron": ["Teacher"],
+  "clubs.oversee": ["V_Principal"],
 };
 
 export function hasPermission(role: Role, permission: Permission): boolean {

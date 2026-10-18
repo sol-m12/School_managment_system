@@ -11,6 +11,41 @@ import '../../student/widgets/student_chrome.dart';
 import '../parent_child_controller.dart';
 import '../parent_dashboard_controller.dart';
 
+(String, String) _parentDeadlineBits(String deadline) {
+  final trimmed = deadline.trim();
+  if (trimmed.isEmpty) return ('—', '·');
+  final iso = RegExp(r'(\d{4})-(\d{2})-(\d{2})').firstMatch(trimmed);
+  if (iso != null) {
+    const months = [
+      'JAN',
+      'FEB',
+      'MAR',
+      'APR',
+      'MAY',
+      'JUN',
+      'JUL',
+      'AUG',
+      'SEP',
+      'OCT',
+      'NOV',
+      'DEC',
+    ];
+    final month = int.tryParse(iso.group(2)!) ?? 1;
+    return (months[(month - 1).clamp(0, 11)], iso.group(3)!);
+  }
+  final parts = trimmed.split(RegExp(r'[\s/,-]+'));
+  if (parts.length >= 2) {
+    return (
+      parts[0].length > 3 ? parts[0].substring(0, 3).toUpperCase() : parts[0],
+      parts[1],
+    );
+  }
+  return (
+    trimmed.length > 3 ? trimmed.substring(0, 3).toUpperCase() : trimmed,
+    '·',
+  );
+}
+
 class ParentHomeScreen extends ConsumerWidget {
   const ParentHomeScreen({super.key});
 
@@ -704,31 +739,76 @@ class _AcademicsSummaryCard extends StatelessWidget {
                   'pending' => l10n.parentIndicatorPending,
                   _ => null,
                 };
+                final accent = indicator == 'done'
+                    ? AppColors.success
+                    : indicator == 'missing'
+                        ? AppColors.danger
+                        : AppColors.brand700;
+                final bits = _parentDeadlineBits(deadline);
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
+                  padding: const EdgeInsets.only(bottom: 8),
                   child: Row(
                     children: [
+                      Container(
+                        width: 44,
+                        height: 44,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: accent.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              bits.$1,
+                              style: TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w800,
+                                color: accent,
+                              ),
+                            ),
+                            Text(
+                              bits.$2,
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w800,
+                                color: accent,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 10),
                       Expanded(
-                        child: Text(
-                          [
-                            title,
-                            if (deadline.isNotEmpty) deadline,
-                          ].join(' · '),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontSize: 13),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            if (deadline.isNotEmpty)
+                              Text(
+                                deadline,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: AppColors.inkMuted,
+                                ),
+                              ),
+                          ],
                         ),
                       ),
                       if (badge != null) ...[
                         const SizedBox(width: 8),
-                        _Chip(
-                          label: badge,
-                          color: indicator == 'done'
-                              ? AppColors.success
-                              : indicator == 'missing'
-                                  ? AppColors.danger
-                                  : AppColors.warning,
-                        ),
+                        _Chip(label: badge, color: accent),
                       ],
                     ],
                   ),

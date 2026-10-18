@@ -27,6 +27,7 @@ import { procurementRouter, publicTenderList, vendorRouter } from "./modules/pro
 import { secretaryRouter } from "./modules/secretary/secretary.routes.js";
 import { platformRouter } from "./modules/platform/platform.routes.js";
 import { parentAdminRouter, parentRouter } from "./modules/parent/parent.routes.js";
+import { clubsRouter } from "./modules/clubs/clubs.routes.js";
 
 const app = express();
 
@@ -104,6 +105,7 @@ app.use("/vendor", vendorRouter);
 app.use("/secretary", secretaryRouter);
 app.use("/parent", parentRouter);
 app.use("/operations/parents", parentAdminRouter);
+app.use("/clubs", clubsRouter);
 app.get("/public/tenders", publicTenderList);
 
 if (process.env.NODE_ENV !== "test" && process.env.VITEST !== "true") {

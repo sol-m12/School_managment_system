@@ -8,6 +8,7 @@ import '../../../core/providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/auth_profile_photo.dart';
 import '../../../core/widgets/json_screen.dart';
+import '../../../core/widgets/timetable_widgets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../widgets/teacher_chrome.dart';
 
@@ -269,77 +270,15 @@ class TeacherHomeScreen extends ConsumerWidget {
                   ],
                 ),
                 if (todayPeriods.isEmpty)
-                  TeacherSectionCard(
-                    child: Text(
-                      l10n.noPeriodsToday,
-                      style: const TextStyle(color: AppColors.inkMuted),
-                    ),
-                  )
+                  TimetableEmptyCard(message: l10n.noPeriodsToday)
                 else
-                  ...todayPeriods.map((row) {
-                    final subject = _str(row['subjectName']);
-                    final grade = _str(row['gradeLevel']);
-                    final section = _str(row['section']);
-                    final start = _str(row['startTime']);
-                    final end = _str(row['endTime']);
-                    final classLabel = [
-                      if (grade.isNotEmpty) grade,
-                      if (section.isNotEmpty) section,
-                    ].join('');
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: TeacherSectionCard(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 12,
-                        ),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: AppColors.brand50,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Icon(
-                                Icons.schedule,
-                                color: AppColors.brand700,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    classLabel.isEmpty
-                                        ? (subject.isEmpty
-                                            ? l10n.teacherSchedule
-                                            : subject)
-                                        : l10n.gradeSection(grade, section),
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      color: AppColors.inkStrong,
-                                    ),
-                                  ),
-                                  Text(
-                                    [
-                                      if (subject.isNotEmpty) subject,
-                                      if (start.isNotEmpty && end.isNotEmpty)
-                                        '$start – $end',
-                                    ].join(' · '),
-                                    style: const TextStyle(
-                                      color: AppColors.inkMuted,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                  ...todayPeriods.asMap().entries.map((entry) {
+                    final row = Map<String, dynamic>.from(entry.value);
+                    row['period'] ??= entry.key + 1;
+                    return TimetablePeriodCard.fromMap(
+                      row,
+                      l10n: l10n,
+                      isToday: true,
                     );
                   }),
                 const SizedBox(height: 8),

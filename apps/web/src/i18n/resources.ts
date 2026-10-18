@@ -20,6 +20,7 @@ import amTeacher from "@/locales/am/teacher.json";
 import amTechnician from "@/locales/am/technician.json";
 import amPlatform from "@/locales/am/platform.json";
 import amParents from "@/locales/am/parents.json";
+import amClubs from "@/locales/am/clubs.json";
 import enAdmin from "@/locales/en/admin.json";
 import enAuth from "@/locales/en/auth.json";
 import enCommon from "@/locales/en/common.json";
@@ -42,8 +43,9 @@ import enTeacher from "@/locales/en/teacher.json";
 import enTechnician from "@/locales/en/technician.json";
 import enPlatform from "@/locales/en/platform.json";
 import enParents from "@/locales/en/parents.json";
+import enClubs from "@/locales/en/clubs.json";
 
-export const NAMESPACES = ["common", "auth", "nav", "dashboard", "subjects", "admin", "errors", "home", "teacher", "technician", "student", "store", "operations", "principal", "vice", "office", "records", "library", "procurement", "secretary", "platform", "parents"] as const;
+export const NAMESPACES = ["common", "auth", "nav", "dashboard", "subjects", "admin", "errors", "home", "teacher", "technician", "student", "store", "operations", "principal", "vice", "office", "records", "library", "procurement", "secretary", "platform", "parents", "clubs"] as const;
 
 export const resources = {
   am: {
@@ -69,6 +71,7 @@ export const resources = {
     secretary: amSecretary,
     platform: amPlatform,
     parents: amParents,
+    clubs: amClubs,
   },
   en: {
     common: enCommon,
@@ -93,6 +96,7 @@ export const resources = {
     secretary: enSecretary,
     platform: enPlatform,
     parents: enParents,
+    clubs: enClubs,
   },
 } as const;
 

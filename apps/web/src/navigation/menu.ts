@@ -181,6 +181,7 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "documentRequest", path: "/student/documents", icon: FileText, group: "studentDesk", permission: "student.desk" },
   { key: "helpdesk", path: "/student/helpdesk", icon: LifeBuoy, group: "studentDesk", permission: "student.desk" },
   { key: "studyPlanner", path: "/student/planner", icon: Brain, group: "studentDesk", permission: "student.desk" },
+  { key: "studentClubs", path: "/student/clubs", icon: Trophy, group: "studentDesk", permission: "clubs.student" },
   { key: "digitalId", path: "/student/id", icon: QrCode, group: "studentDesk", permission: "student.desk" },
 
   { key: "requestItem", path: "/teacher/store-requests", icon: Link, group: "administration", permission: "storeRequests.create" },
@@ -218,6 +219,7 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "recordOverrides", path: "/principal/record-overrides", icon: LockKeyhole, group: "principalOffice", permission: "records.override" },
 
   { key: "vocationalTraining", path: "/vice/vocational", icon: Wrench, group: "viceOffice", permission: "vice.office" },
+  { key: "viceClubs", path: "/vice/clubs", icon: Trophy, group: "viceOffice", permission: "clubs.oversee" },
   { key: "behaviorOffice", path: "/vice/behavior", icon: Scale, group: "viceOffice", permission: "vice.office" },
   { key: "examInvigilation", path: "/vice/invigilation", icon: ClipboardCheck, group: "viceOffice", permission: "vice.office" },
 
@@ -238,6 +240,7 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "globalTimetable", path: "/teacher/timetable", icon: CalendarDays, group: "subjectTeacher", permission: "teacher.subject" },
   { key: "incidentReports", path: "/teacher/incidents", icon: Megaphone, group: "subjectTeacher", permission: "teacher.subject" },
   { key: "leaveRequest", path: "/teacher/leave", icon: CalendarOff, group: "subjectTeacher", permission: "teacher.subject" },
+  { key: "teacherClubs", path: "/teacher/clubs", icon: Trophy, group: "subjectTeacher", permission: "clubs.patron" },
   { key: "teacherLibrary", path: "/teacher/library", icon: Library, group: "subjectTeacher", permission: "teacher.subject" },
   { key: "questionBank", path: "/teacher/question-bank", icon: BookOpen, group: "subjectTeacher", permission: "teacher.subject" },
   { key: "participationTracker", path: "/teacher/participation", icon: Hand, group: "subjectTeacher", permission: "teacher.subject" },
@@ -250,6 +253,7 @@ export const MENU_ITEMS: readonly MenuItem[] = [
 
   // Technician (Technician.png)
   { key: "announcements", path: "/system/announcements", icon: Megaphone, group: "techRegistration", permission: "announcements.manage" },
+  { key: "clubsManage", path: "/system/clubs", icon: Trophy, group: "techRegistration", permission: "clubs.manage" },
   { key: "staffRegistration", path: "/system/staff-registration", icon: IdCard, group: "techRegistration", permission: "staffRegistration.manage" },
   { key: "accountManagement", path: "/account/manage", icon: KeyRound, group: "techRegistration", permission: "accounts.manage" },
 

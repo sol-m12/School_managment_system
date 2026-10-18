@@ -155,5 +155,16 @@
   "alreadyLinked": "That parent is already linked to this student.",
   "codeInvalid": "No parent was found for that code.",
   "noStudentAccount": "This student does not have a login account yet.",
-  "notParent": "This account is not a parent account."
+  "notParent": "This account is not a parent account.",
+  "councilExists": "This school already has a Student Council for that year.",
+  "staffNotFound": "That teacher was not found.",
+  "studentNotFound": "That student was not found.",
+  "charterBlocked": "This club charter is not open for that action.",
+  "alreadyMember": "You already applied to or joined this club.",
+  "notPatron": "You are not the patron of this club.",
+  "notCouncil": "Approve a Student Council club before opening an election.",
+  "electionClosed": "This election is not open for voting.",
+  "alreadyVoted": "You already voted in this election.",
+  "badCandidate": "That candidate is not on this ballot.",
+  "noVotes": "No votes were cast, so a winner cannot be announced."
 }
