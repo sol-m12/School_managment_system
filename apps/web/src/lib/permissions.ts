@@ -89,6 +89,18 @@ export const PERMISSIONS = [
   "clubs.student",
   "clubs.patron",
   "clubs.oversee",
+
+  "lostfound.post",
+  "lostfound.moderate",
+
+  "forum.student",
+  "forum.moderate",
+  "forum.filter",
+
+  "scholarships.records",
+  "scholarships.student",
+  "scholarships.post",
+  "scholarships.recommend",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];

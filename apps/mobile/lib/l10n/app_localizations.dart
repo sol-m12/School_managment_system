@@ -1675,6 +1675,252 @@ abstract class AppLocalizations {
   /// In am, this message translates to:
   /// **'የተመደቡ ክፍሎች'**
   String get assignedClasses;
+
+  /// No description provided for @clubsTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'ክለቦች'**
+  String get clubsTitle;
+
+  /// No description provided for @patronTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'የእኔ የክለብ አስተዳደር'**
+  String get patronTitle;
+
+  /// No description provided for @searchClubs.
+  ///
+  /// In am, this message translates to:
+  /// **'ክለቦችን ፈልግ'**
+  String get searchClubs;
+
+  /// No description provided for @emptyCatalog.
+  ///
+  /// In am, this message translates to:
+  /// **'ከፍለጋው ጋር የሚስማማ ጸድቆ የወጣ ክለብ የለም።'**
+  String get emptyCatalog;
+
+  /// No description provided for @joinClub.
+  ///
+  /// In am, this message translates to:
+  /// **'ለመቀላቀል ጠይቅ'**
+  String get joinClub;
+
+  /// No description provided for @joinRequested.
+  ///
+  /// In am, this message translates to:
+  /// **'የአባልነት ጥያቄዎ ተልኳል።'**
+  String get joinRequested;
+
+  /// No description provided for @myClubs.
+  ///
+  /// In am, this message translates to:
+  /// **'የእኔ አባልነቶች'**
+  String get myClubs;
+
+  /// No description provided for @emptyMine.
+  ///
+  /// In am, this message translates to:
+  /// **'እስካሁን ክለብ አልተቀላቀሉም።'**
+  String get emptyMine;
+
+  /// No description provided for @president.
+  ///
+  /// In am, this message translates to:
+  /// **'የክለብ ፕሬዚዳንት'**
+  String get president;
+
+  /// No description provided for @patron.
+  ///
+  /// In am, this message translates to:
+  /// **'የክለብ መምህር'**
+  String get patron;
+
+  /// No description provided for @memberPending.
+  ///
+  /// In am, this message translates to:
+  /// **'በመጠባበቅ ላይ'**
+  String get memberPending;
+
+  /// No description provided for @memberActive.
+  ///
+  /// In am, this message translates to:
+  /// **'ንቁ'**
+  String get memberActive;
+
+  /// No description provided for @memberRejected.
+  ///
+  /// In am, this message translates to:
+  /// **'ጥያቄው ውድቅ ሆኗል።'**
+  String get memberRejected;
+
+  /// No description provided for @memberWithdrawn.
+  ///
+  /// In am, this message translates to:
+  /// **'ተሰርዟል'**
+  String get memberWithdrawn;
+
+  /// No description provided for @withdraw.
+  ///
+  /// In am, this message translates to:
+  /// **'ጥያቄ ሰርዝ'**
+  String get withdraw;
+
+  /// No description provided for @withdrawn.
+  ///
+  /// In am, this message translates to:
+  /// **'ጥያቄው ተሰርዟል።'**
+  String get withdrawn;
+
+  /// No description provided for @upcomingMeetings.
+  ///
+  /// In am, this message translates to:
+  /// **'መጪ ስብሰባዎች'**
+  String get upcomingMeetings;
+
+  /// No description provided for @noMeetings.
+  ///
+  /// In am, this message translates to:
+  /// **'መጪ ስብሰባ የለም።'**
+  String get noMeetings;
+
+  /// No description provided for @elections.
+  ///
+  /// In am, this message translates to:
+  /// **'ምርጫዎች'**
+  String get elections;
+
+  /// No description provided for @emptyElections.
+  ///
+  /// In am, this message translates to:
+  /// **'ክፍት ምርጫ የለም።'**
+  String get emptyElections;
+
+  /// No description provided for @voteFor.
+  ///
+  /// In am, this message translates to:
+  /// **'ለ{name} ድምጽ ስጥ'**
+  String voteFor(String name);
+
+  /// No description provided for @voteCast.
+  ///
+  /// In am, this message translates to:
+  /// **'ድምጽዎ ተመዝግቧል።'**
+  String get voteCast;
+
+  /// No description provided for @alreadyVoted.
+  ///
+  /// In am, this message translates to:
+  /// **'በዚህ ምርጫ አስቀድመው ድምጽ ሰጥተዋል።'**
+  String get alreadyVoted;
+
+  /// No description provided for @emptyPatron.
+  ///
+  /// In am, this message translates to:
+  /// **'ለማንኛውም ክለብ እንደ መምህር አልተመደቡም።'**
+  String get emptyPatron;
+
+  /// No description provided for @pendingMembers.
+  ///
+  /// In am, this message translates to:
+  /// **'በመጠባበቅ ላይ ያሉ አባላት'**
+  String get pendingMembers;
+
+  /// No description provided for @noPending.
+  ///
+  /// In am, this message translates to:
+  /// **'በመጠባበቅ ላይ ያለ ጥያቄ የለም።'**
+  String get noPending;
+
+  /// No description provided for @approve.
+  ///
+  /// In am, this message translates to:
+  /// **'አጽድቅ'**
+  String get approve;
+
+  /// No description provided for @reject.
+  ///
+  /// In am, this message translates to:
+  /// **'ውድቅ አድርግ'**
+  String get reject;
+
+  /// No description provided for @memberApproved.
+  ///
+  /// In am, this message translates to:
+  /// **'አባሉ ጸድቋል።'**
+  String get memberApproved;
+
+  /// No description provided for @scheduleMeeting.
+  ///
+  /// In am, this message translates to:
+  /// **'ስብሰባ መርሐግብር'**
+  String get scheduleMeeting;
+
+  /// No description provided for @meetingTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'የስብሰባ ርዕስ'**
+  String get meetingTitle;
+
+  /// No description provided for @meetsOn.
+  ///
+  /// In am, this message translates to:
+  /// **'ቀን እና ሰዓት'**
+  String get meetsOn;
+
+  /// No description provided for @location.
+  ///
+  /// In am, this message translates to:
+  /// **'ቦታ'**
+  String get location;
+
+  /// No description provided for @saveMeeting.
+  ///
+  /// In am, this message translates to:
+  /// **'ስብሰባ አስቀምጥ'**
+  String get saveMeeting;
+
+  /// No description provided for @meetingSaved.
+  ///
+  /// In am, this message translates to:
+  /// **'ስብሰባው ተቀምጧል።'**
+  String get meetingSaved;
+
+  /// No description provided for @activityReport.
+  ///
+  /// In am, this message translates to:
+  /// **'የእንቅስቃሴ ሪፖርት'**
+  String get activityReport;
+
+  /// No description provided for @reportTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'የሪፖርት ርዕስ'**
+  String get reportTitle;
+
+  /// No description provided for @reportDate.
+  ///
+  /// In am, this message translates to:
+  /// **'የሪፖርት ቀን'**
+  String get reportDate;
+
+  /// No description provided for @reportBody.
+  ///
+  /// In am, this message translates to:
+  /// **'የሪፖርት ጽሑፍ'**
+  String get reportBody;
+
+  /// No description provided for @saveReport.
+  ///
+  /// In am, this message translates to:
+  /// **'ሪፖርት አስቀምጥ'**
+  String get saveReport;
+
+  /// No description provided for @reportSaved.
+  ///
+  /// In am, this message translates to:
+  /// **'ሪፖርቱ ተቀምጧል።'**
+  String get reportSaved;
 }
 
 class _AppLocalizationsDelegate

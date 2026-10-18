@@ -93,6 +93,13 @@ class ApiClient {
   }) =>
       _dio.post<T>(path, data: data, queryParameters: queryParameters);
 
+  Future<Response<T>> delete<T>(
+    String path, {
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+  }) =>
+      _dio.delete<T>(path, data: data, queryParameters: queryParameters);
+
   Future<String> refreshAccessToken() {
     _refreshInFlight ??= _doRefresh().whenComplete(() {
       _refreshInFlight = null;

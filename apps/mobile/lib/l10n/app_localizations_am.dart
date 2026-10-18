@@ -839,4 +839,129 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get assignedClasses => 'የተመደቡ ክፍሎች';
+
+  @override
+  String get clubsTitle => 'ክለቦች';
+
+  @override
+  String get patronTitle => 'የእኔ የክለብ አስተዳደር';
+
+  @override
+  String get searchClubs => 'ክለቦችን ፈልግ';
+
+  @override
+  String get emptyCatalog => 'ከፍለጋው ጋር የሚስማማ ጸድቆ የወጣ ክለብ የለም።';
+
+  @override
+  String get joinClub => 'ለመቀላቀል ጠይቅ';
+
+  @override
+  String get joinRequested => 'የአባልነት ጥያቄዎ ተልኳል።';
+
+  @override
+  String get myClubs => 'የእኔ አባልነቶች';
+
+  @override
+  String get emptyMine => 'እስካሁን ክለብ አልተቀላቀሉም።';
+
+  @override
+  String get president => 'የክለብ ፕሬዚዳንት';
+
+  @override
+  String get patron => 'የክለብ መምህር';
+
+  @override
+  String get memberPending => 'በመጠባበቅ ላይ';
+
+  @override
+  String get memberActive => 'ንቁ';
+
+  @override
+  String get memberRejected => 'ጥያቄው ውድቅ ሆኗል።';
+
+  @override
+  String get memberWithdrawn => 'ተሰርዟል';
+
+  @override
+  String get withdraw => 'ጥያቄ ሰርዝ';
+
+  @override
+  String get withdrawn => 'ጥያቄው ተሰርዟል።';
+
+  @override
+  String get upcomingMeetings => 'መጪ ስብሰባዎች';
+
+  @override
+  String get noMeetings => 'መጪ ስብሰባ የለም።';
+
+  @override
+  String get elections => 'ምርጫዎች';
+
+  @override
+  String get emptyElections => 'ክፍት ምርጫ የለም።';
+
+  @override
+  String voteFor(String name) {
+    return 'ለ$name ድምጽ ስጥ';
+  }
+
+  @override
+  String get voteCast => 'ድምጽዎ ተመዝግቧል።';
+
+  @override
+  String get alreadyVoted => 'በዚህ ምርጫ አስቀድመው ድምጽ ሰጥተዋል።';
+
+  @override
+  String get emptyPatron => 'ለማንኛውም ክለብ እንደ መምህር አልተመደቡም።';
+
+  @override
+  String get pendingMembers => 'በመጠባበቅ ላይ ያሉ አባላት';
+
+  @override
+  String get noPending => 'በመጠባበቅ ላይ ያለ ጥያቄ የለም።';
+
+  @override
+  String get approve => 'አጽድቅ';
+
+  @override
+  String get reject => 'ውድቅ አድርግ';
+
+  @override
+  String get memberApproved => 'አባሉ ጸድቋል።';
+
+  @override
+  String get scheduleMeeting => 'ስብሰባ መርሐግብር';
+
+  @override
+  String get meetingTitle => 'የስብሰባ ርዕስ';
+
+  @override
+  String get meetsOn => 'ቀን እና ሰዓት';
+
+  @override
+  String get location => 'ቦታ';
+
+  @override
+  String get saveMeeting => 'ስብሰባ አስቀምጥ';
+
+  @override
+  String get meetingSaved => 'ስብሰባው ተቀምጧል።';
+
+  @override
+  String get activityReport => 'የእንቅስቃሴ ሪፖርት';
+
+  @override
+  String get reportTitle => 'የሪፖርት ርዕስ';
+
+  @override
+  String get reportDate => 'የሪፖርት ቀን';
+
+  @override
+  String get reportBody => 'የሪፖርት ጽሑፍ';
+
+  @override
+  String get saveReport => 'ሪፖርት አስቀምጥ';
+
+  @override
+  String get reportSaved => 'ሪፖርቱ ተቀምጧል።';
 }

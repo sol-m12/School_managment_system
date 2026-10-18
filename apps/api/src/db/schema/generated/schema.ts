@@ -474,6 +474,61 @@ export const foreignPartners = mysqlTable("foreign_partners", {
 	index("idx_foreign_partners_tenant_id").on(table.tenantId),
 ]);
 
+export const forumAnswers = mysqlTable("forum_answers", {
+	answerId: int("answer_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	questionId: int("question_id").notNull(),
+	studentId: int("student_id").notNull(),
+	body: varchar({ length: 4000 }).notNull(),
+	status: mysqlEnum(['Open','Hidden','Deleted']).default('Open').notNull(),
+	isEndorsed: tinyint("is_endorsed").default(0).notNull(),
+	endorsedByStaffId: int("endorsed_by_staff_id"),
+	points: int().default(0).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_forum_answers_tenant_id").on(table.tenantId),
+	index("idx_forum_answers_question").on(table.tenantId, table.questionId),
+]);
+
+export const forumProfanityWords = mysqlTable("forum_profanity_words", {
+	wordId: int("word_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	word: varchar({ length: 100 }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_forum_profanity_tenant_id").on(table.tenantId),
+	unique("uq_forum_profanity").on(table.tenantId, table.word),
+]);
+
+export const forumQuestions = mysqlTable("forum_questions", {
+	questionId: int("question_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	studentId: int("student_id").notNull(),
+	title: varchar({ length: 255 }).notNull(),
+	body: varchar({ length: 4000 }).notNull(),
+	status: mysqlEnum(['Open','Hidden','Deleted']).default('Open').notNull(),
+	points: int().default(0).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_forum_questions_tenant_id").on(table.tenantId),
+	index("idx_forum_questions_status").on(table.tenantId, table.status),
+]);
+
+export const forumVotes = mysqlTable("forum_votes", {
+	voteId: int("vote_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	answerId: int("answer_id").notNull(),
+	studentId: int("student_id").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_forum_votes_tenant_id").on(table.tenantId),
+	unique("uq_forum_votes").on(table.tenantId, table.answerId, table.studentId),
+]);
+
 export const grades = mysqlTable("grades", {
 	gradeEntryId: int("grade_entry_id").autoincrement().notNull(),
 	studentId: int("student_id").notNull(),
@@ -897,6 +952,25 @@ export const loginAttempts = mysqlTable("login_attempts", {
 (table) => [
 	index("idx_login_attempts_tenant_id").on(table.tenantId),
 	index("idx_login_attempts_tenant_time").on(table.tenantId, table.createdAt),
+]);
+
+export const lostFoundItems = mysqlTable("lost_found_items", {
+	itemId: int("item_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	kind: mysqlEnum(['Lost','Found']).notNull(),
+	title: varchar({ length: 255 }).notNull(),
+	description: varchar({ length: 2000 }).default("").notNull(),
+	locationText: varchar("location_text", { length: 255 }).default("").notNull(),
+	contactText: varchar("contact_text", { length: 255 }).default("").notNull(),
+	status: mysqlEnum(['Pending','Approved','Resolved','Rejected']).default('Pending').notNull(),
+	postedByUserId: int("posted_by_user_id").notNull(),
+	moderatedByUserId: int("moderated_by_user_id"),
+	moderatedAt: datetime("moderated_at", { mode: 'string'}),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_lost_found_tenant_id").on(table.tenantId),
+	index("idx_lost_found_status").on(table.tenantId, table.status),
 ]);
 
 export const mehi161Cards = mysqlTable("mehi_16_1_cards", {
@@ -1666,6 +1740,77 @@ export const schemaMigrations = mysqlTable("schema_migrations", {
 },
 (table) => [
 	unique("schema_migrations_filename_unique").on(table.filename),
+]);
+
+export const scholarshipApplications = mysqlTable("scholarship_applications", {
+	applicationId: int("application_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	opportunityId: int("opportunity_id").notNull(),
+	studentId: int("student_id").notNull(),
+	status: mysqlEnum(['Draft','Submitted','LetterRequested','LetterReady','Closed']).default('Submitted').notNull(),
+	note: varchar({ length: 1000 }).default("").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_scholarship_applications_tenant_id").on(table.tenantId),
+	unique("uq_scholarship_applications").on(table.tenantId, table.opportunityId, table.studentId),
+]);
+
+export const scholarshipOpportunities = mysqlTable("scholarship_opportunities", {
+	opportunityId: int("opportunity_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	title: varchar({ length: 255 }).notNull(),
+	url: varchar({ length: 500 }).default("").notNull(),
+	guidelines: varchar({ length: 4000 }).default("").notNull(),
+	isActive: tinyint("is_active").default(1).notNull(),
+	postedBy: int("posted_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_scholarship_opportunities_tenant_id").on(table.tenantId),
+]);
+
+export const scholarshipRecommendations = mysqlTable("scholarship_recommendations", {
+	recommendationId: int("recommendation_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	applicationId: int("application_id").notNull(),
+	authorUserId: int("author_user_id").notNull(),
+	body: varchar({ length: 4000 }).notNull(),
+	status: mysqlEnum(['Draft','Signed']).default('Draft').notNull(),
+	signedAt: datetime("signed_at", { mode: 'string'}),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_scholarship_recommendations_tenant_id").on(table.tenantId),
+	index("idx_scholarship_recommendations_app").on(table.tenantId, table.applicationId),
+]);
+
+export const scholarshipScores = mysqlTable("scholarship_scores", {
+	scoreId: int("score_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	studentId: int("student_id").notNull(),
+	academicYear: varchar("academic_year", { length: 10 }).notNull(),
+	nationalScore: decimal("national_score", { precision: 8, scale: 2 }).notNull(),
+	transcriptRef: varchar("transcript_ref", { length: 255 }).default("").notNull(),
+	importedBy: int("imported_by").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').notNull(),
+},
+(table) => [
+	index("idx_scholarship_scores_tenant_id").on(table.tenantId),
+	unique("uq_scholarship_scores_student_year").on(table.tenantId, table.studentId, table.academicYear),
+]);
+
+export const scholarshipSettings = mysqlTable("scholarship_settings", {
+	settingId: int("setting_id").autoincrement().notNull(),
+	tenantId: int("tenant_id").notNull().references(() => tenants.id, { onDelete: "restrict", onUpdate: "restrict" } ),
+	academicYear: varchar("academic_year", { length: 10 }).notNull(),
+	cutoffScore: decimal("cutoff_score", { precision: 8, scale: 2 }).default('0.00').notNull(),
+	updatedBy: int("updated_by").notNull(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).default('CURRENT_TIMESTAMP').onUpdateNow().notNull(),
+},
+(table) => [
+	index("idx_scholarship_settings_tenant_id").on(table.tenantId),
+	unique("uq_scholarship_settings_year").on(table.tenantId, table.academicYear),
 ]);
 
 export const schoolNews = mysqlTable("school_news", {

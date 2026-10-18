@@ -845,4 +845,129 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get assignedClasses => 'Assigned classes';
+
+  @override
+  String get clubsTitle => 'Clubs';
+
+  @override
+  String get patronTitle => 'My club patronage';
+
+  @override
+  String get searchClubs => 'Search clubs';
+
+  @override
+  String get emptyCatalog => 'No approved clubs match this search.';
+
+  @override
+  String get joinClub => 'Apply to join';
+
+  @override
+  String get joinRequested => 'Your membership request was sent.';
+
+  @override
+  String get myClubs => 'My memberships';
+
+  @override
+  String get emptyMine => 'You have not joined a club yet.';
+
+  @override
+  String get president => 'Student president';
+
+  @override
+  String get patron => 'Teacher patron';
+
+  @override
+  String get memberPending => 'Pending';
+
+  @override
+  String get memberActive => 'Active';
+
+  @override
+  String get memberRejected => 'The application was rejected.';
+
+  @override
+  String get memberWithdrawn => 'Withdrawn';
+
+  @override
+  String get withdraw => 'Withdraw request';
+
+  @override
+  String get withdrawn => 'The request was withdrawn.';
+
+  @override
+  String get upcomingMeetings => 'Upcoming meetings';
+
+  @override
+  String get noMeetings => 'No upcoming meetings.';
+
+  @override
+  String get elections => 'Elections';
+
+  @override
+  String get emptyElections => 'No elections are open.';
+
+  @override
+  String voteFor(String name) {
+    return 'Vote for $name';
+  }
+
+  @override
+  String get voteCast => 'Your vote was recorded.';
+
+  @override
+  String get alreadyVoted => 'You already voted in this election.';
+
+  @override
+  String get emptyPatron => 'You are not assigned as patron of any club.';
+
+  @override
+  String get pendingMembers => 'Pending members';
+
+  @override
+  String get noPending => 'No pending applications.';
+
+  @override
+  String get approve => 'Approve';
+
+  @override
+  String get reject => 'Reject';
+
+  @override
+  String get memberApproved => 'The member was approved.';
+
+  @override
+  String get scheduleMeeting => 'Schedule a meeting';
+
+  @override
+  String get meetingTitle => 'Meeting title';
+
+  @override
+  String get meetsOn => 'Date and time';
+
+  @override
+  String get location => 'Location';
+
+  @override
+  String get saveMeeting => 'Save meeting';
+
+  @override
+  String get meetingSaved => 'The meeting was saved.';
+
+  @override
+  String get activityReport => 'Activity report';
+
+  @override
+  String get reportTitle => 'Report title';
+
+  @override
+  String get reportDate => 'Report date';
+
+  @override
+  String get reportBody => 'Report text';
+
+  @override
+  String get saveReport => 'Save report';
+
+  @override
+  String get reportSaved => 'The report was saved.';
 }

@@ -1033,6 +1033,11 @@ class ServicesHubScreen extends StatelessWidget {
                             context.push('/student/services/vocational'),
                       ),
                       StudentQuickAction(
+                        label: l10n.clubsTitle,
+                        icon: Icons.emoji_events_outlined,
+                        onTap: () => context.push('/student/services/clubs'),
+                      ),
+                      StudentQuickAction(
                         label: l10n.digitalId,
                         icon: Icons.badge,
                         onTap: () => context.push('/student/services/id'),

@@ -9,12 +9,14 @@ import '../features/parent/parent_shell.dart';
 import '../features/parent/screens/parent_academics_screen.dart';
 import '../features/parent/screens/parent_home_screen.dart';
 import '../features/parent/screens/parent_screens.dart';
+import '../features/student/screens/clubs_screen.dart';
 import '../features/student/screens/digital_id_screen.dart';
 import '../features/student/screens/notifications_screen.dart';
 import '../features/student/screens/student_screens.dart';
 import '../features/student/screens/timetable_screen.dart';
 import '../features/student/student_shell.dart';
 import '../features/student/screens/services_screens.dart';
+import '../features/teacher/screens/clubs_patron_screen.dart';
 import '../features/teacher/screens/homeroom_attendance_screen.dart';
 import '../features/teacher/screens/offline_attendance_screen.dart';
 import '../features/teacher/screens/scan_id_screen.dart';
@@ -282,6 +284,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'id',
                     builder: (context, state) => const DigitalIdScreen(),
+                  ),
+                  GoRoute(
+                    path: 'clubs',
+                    builder: (context, state) => const StudentClubsScreen(),
                   ),
                 ],
               ),
@@ -573,6 +579,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   GoRoute(
                     path: 'scan-id',
                     builder: (context, state) => const ScanDigitalIdScreen(),
+                  ),
+                  GoRoute(
+                    path: 'clubs',
+                    builder: (context, state) =>
+                        const TeacherClubsPatronScreen(),
                   ),
                 ],
               ),

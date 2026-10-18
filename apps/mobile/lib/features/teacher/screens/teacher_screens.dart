@@ -513,6 +513,11 @@ class TeacherOfficeHubScreen extends StatelessWidget {
             icon: Icons.qr_code_scanner,
             onTap: () => context.push('/teacher/office/scan-id'),
           ),
+          TeacherQuickAction(
+            label: l10n.clubsTitle,
+            icon: Icons.emoji_events_outlined,
+            onTap: () => context.push('/teacher/office/clubs'),
+          ),
         ],
       ),
     );

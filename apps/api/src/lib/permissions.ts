@@ -94,6 +94,18 @@ export const PERMISSIONS = [
   "clubs.student",
   "clubs.patron",
   "clubs.oversee",
+
+  "lostfound.post",
+  "lostfound.moderate",
+
+  "forum.student",
+  "forum.moderate",
+  "forum.filter",
+
+  "scholarships.records",
+  "scholarships.student",
+  "scholarships.post",
+  "scholarships.recommend",
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
@@ -186,6 +198,18 @@ const GRANTS: Record<Permission, readonly Role[]> = {
   "clubs.student": ["Student"],
   "clubs.patron": ["Teacher"],
   "clubs.oversee": ["V_Principal"],
+
+  "lostfound.post": ["Student", "Teacher", "Parent"],
+  "lostfound.moderate": ["Secretary", "Registrar"],
+
+  "forum.student": ["Student"],
+  "forum.moderate": ["Teacher"],
+  "forum.filter": ["Technician"],
+
+  "scholarships.records": ["Registrar"],
+  "scholarships.student": ["Student"],
+  "scholarships.post": ["V_Principal", "Counselor"],
+  "scholarships.recommend": ["Teacher", "Principal"],
 };
 
 export function hasPermission(role: Role, permission: Permission): boolean {
