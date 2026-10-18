@@ -159,5 +159,48 @@
   "parentPreferredTime": "የሚመረጥ ሰዓት",
   "parentIndicatorDone": "ተሰርቷል",
   "parentIndicatorMissing": "ጎድሏል",
-  "parentIndicatorPending": "በመጠባበቅ ላይ"
+  "parentIndicatorPending": "በመጠባበቅ ላይ",
+  "synced": "ተሰምሯል",
+  "offlineBannerShort": "ከመስመር ውጭ",
+  "studentIdLabel": "መለያ፡ {id}",
+  "@studentIdLabel": {
+    "placeholders": {
+      "id": { "type": "String" }
+    }
+  },
+  "gradeSection": "ክፍል {grade}{section}",
+  "@gradeSection": {
+    "placeholders": {
+      "grade": { "type": "String" },
+      "section": { "type": "String" }
+    }
+  },
+  "academicYearLabel": "የትምህርት ዘመን {year}",
+  "@academicYearLabel": {
+    "placeholders": {
+      "year": { "type": "String" }
+    }
+  },
+  "quickActions": "ፈጣን እርምጃዎች",
+  "todaySimulations": "የዛሬ ሲሙሌሽኖች",
+  "simulationsCount": "{count} ሲሙሌሽኖች",
+  "@simulationsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "streamLabel": "የትምህርት አቅጣጫ፡ {stream}",
+  "@streamLabel": {
+    "placeholders": {
+      "stream": { "type": "String" }
+    }
+  },
+  "studentRoleLabel": "ተማሪ",
+  "biometricUnlock": "ባዮሜትሪክ መክፈቻ",
+  "biometricActive": "ነቅቷል",
+  "biometricOff": "ጠፍቷል",
+  "signOutBilingual": "ውጣ",
+  "schoolPortal": "የትምህርት ቤት ፖርታል",
+  "noSimulationsYet": "ለክፍልዎ ሲሙሌሽን የለም",
+  "viewAll": "ሁሉንም ይመልከቱ"
 }

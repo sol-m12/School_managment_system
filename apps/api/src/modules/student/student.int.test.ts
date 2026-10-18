@@ -141,6 +141,9 @@ describe("student API", () => {
       .expect(200);
     expect(homeA.body.fullName).toBe("Student A");
     expect(homeB.body.fullName).toBe("Student B");
+    expect(homeA.body.studentId).toBe(seed.tenantA.studentId);
+    expect(homeB.body.studentId).toBe(seed.tenantB.studentId);
+    expect(typeof homeA.body.hasPhoto).toBe("boolean");
     expect(JSON.stringify(homeB.body)).not.toContain("Student A");
 
     const quizA = await request(app)

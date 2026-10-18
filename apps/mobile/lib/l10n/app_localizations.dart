@@ -973,6 +973,108 @@ abstract class AppLocalizations {
   /// In am, this message translates to:
   /// **'በመጠባበቅ ላይ'**
   String get parentIndicatorPending;
+
+  /// No description provided for @synced.
+  ///
+  /// In am, this message translates to:
+  /// **'ተሰምሯል'**
+  String get synced;
+
+  /// No description provided for @offlineBannerShort.
+  ///
+  /// In am, this message translates to:
+  /// **'ከመስመር ውጭ'**
+  String get offlineBannerShort;
+
+  /// No description provided for @studentIdLabel.
+  ///
+  /// In am, this message translates to:
+  /// **'መለያ፡ {id}'**
+  String studentIdLabel(String id);
+
+  /// No description provided for @gradeSection.
+  ///
+  /// In am, this message translates to:
+  /// **'ክፍል {grade}{section}'**
+  String gradeSection(String grade, String section);
+
+  /// No description provided for @academicYearLabel.
+  ///
+  /// In am, this message translates to:
+  /// **'የትምህርት ዘመን {year}'**
+  String academicYearLabel(String year);
+
+  /// No description provided for @quickActions.
+  ///
+  /// In am, this message translates to:
+  /// **'ፈጣን እርምጃዎች'**
+  String get quickActions;
+
+  /// No description provided for @todaySimulations.
+  ///
+  /// In am, this message translates to:
+  /// **'የዛሬ ሲሙሌሽኖች'**
+  String get todaySimulations;
+
+  /// No description provided for @simulationsCount.
+  ///
+  /// In am, this message translates to:
+  /// **'{count} ሲሙሌሽኖች'**
+  String simulationsCount(int count);
+
+  /// No description provided for @streamLabel.
+  ///
+  /// In am, this message translates to:
+  /// **'የትምህርት አቅጣጫ፡ {stream}'**
+  String streamLabel(String stream);
+
+  /// No description provided for @studentRoleLabel.
+  ///
+  /// In am, this message translates to:
+  /// **'ተማሪ'**
+  String get studentRoleLabel;
+
+  /// No description provided for @biometricUnlock.
+  ///
+  /// In am, this message translates to:
+  /// **'ባዮሜትሪክ መክፈቻ'**
+  String get biometricUnlock;
+
+  /// No description provided for @biometricActive.
+  ///
+  /// In am, this message translates to:
+  /// **'ነቅቷል'**
+  String get biometricActive;
+
+  /// No description provided for @biometricOff.
+  ///
+  /// In am, this message translates to:
+  /// **'ጠፍቷል'**
+  String get biometricOff;
+
+  /// No description provided for @signOutBilingual.
+  ///
+  /// In am, this message translates to:
+  /// **'ውጣ'**
+  String get signOutBilingual;
+
+  /// No description provided for @schoolPortal.
+  ///
+  /// In am, this message translates to:
+  /// **'የትምህርት ቤት ፖርታል'**
+  String get schoolPortal;
+
+  /// No description provided for @noSimulationsYet.
+  ///
+  /// In am, this message translates to:
+  /// **'ለክፍልዎ ሲሙሌሽን የለም'**
+  String get noSimulationsYet;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In am, this message translates to:
+  /// **'ሁሉንም ይመልከቱ'**
+  String get viewAll;
 }
 
 class _AppLocalizationsDelegate

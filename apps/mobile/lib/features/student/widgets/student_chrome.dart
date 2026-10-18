@@ -12,7 +12,7 @@ class StudentTopBar extends ConsumerWidget {
   const StudentTopBar({
     super.key,
     this.fullName,
-    this.hasPhoto = false,
+    this.hasPhoto = true,
     this.schoolCode,
   });
 

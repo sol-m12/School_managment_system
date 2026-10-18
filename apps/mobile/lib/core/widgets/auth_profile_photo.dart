@@ -84,12 +84,14 @@ class _AuthProfilePhotoState extends ConsumerState<AuthProfilePhoto> {
   String get _initials {
     final name = (widget.fullName ?? '').trim();
     if (name.isEmpty) return '?';
-    final parts = name.split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+    final parts =
+        name.split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
     if (parts.length == 1) {
-      return parts.first.characters.take(2).toString().toUpperCase();
+      final s = parts.first;
+      return (s.length <= 2 ? s : s.substring(0, 2)).toUpperCase();
     }
-    final a = parts.first.characters.first;
-    final b = parts[1].characters.first;
+    final a = parts[0].substring(0, 1);
+    final b = parts[1].substring(0, 1);
     return ('$a$b').toUpperCase();
   }
 

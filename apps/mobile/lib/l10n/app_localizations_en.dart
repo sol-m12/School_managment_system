@@ -456,4 +456,65 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get parentIndicatorPending => 'Pending';
+
+  @override
+  String get synced => 'Synced';
+
+  @override
+  String get offlineBannerShort => 'Offline';
+
+  @override
+  String studentIdLabel(String id) {
+    return 'ID: $id';
+  }
+
+  @override
+  String gradeSection(String grade, String section) {
+    return 'Grade $grade$section';
+  }
+
+  @override
+  String academicYearLabel(String year) {
+    return 'Academic year $year';
+  }
+
+  @override
+  String get quickActions => 'Quick actions';
+
+  @override
+  String get todaySimulations => 'Today\'s simulations';
+
+  @override
+  String simulationsCount(int count) {
+    return '$count simulations';
+  }
+
+  @override
+  String streamLabel(String stream) {
+    return 'Stream: $stream';
+  }
+
+  @override
+  String get studentRoleLabel => 'Student';
+
+  @override
+  String get biometricUnlock => 'Biometric unlock';
+
+  @override
+  String get biometricActive => 'Active';
+
+  @override
+  String get biometricOff => 'Off';
+
+  @override
+  String get signOutBilingual => 'Sign Out';
+
+  @override
+  String get schoolPortal => 'School portal';
+
+  @override
+  String get noSimulationsYet => 'No simulations for your class yet';
+
+  @override
+  String get viewAll => 'View all';
 }

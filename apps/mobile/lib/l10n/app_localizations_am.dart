@@ -452,4 +452,65 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get parentIndicatorPending => 'በመጠባበቅ ላይ';
+
+  @override
+  String get synced => 'ተሰምሯል';
+
+  @override
+  String get offlineBannerShort => 'ከመስመር ውጭ';
+
+  @override
+  String studentIdLabel(String id) {
+    return 'መለያ፡ $id';
+  }
+
+  @override
+  String gradeSection(String grade, String section) {
+    return 'ክፍል $grade$section';
+  }
+
+  @override
+  String academicYearLabel(String year) {
+    return 'የትምህርት ዘመን $year';
+  }
+
+  @override
+  String get quickActions => 'ፈጣን እርምጃዎች';
+
+  @override
+  String get todaySimulations => 'የዛሬ ሲሙሌሽኖች';
+
+  @override
+  String simulationsCount(int count) {
+    return '$count ሲሙሌሽኖች';
+  }
+
+  @override
+  String streamLabel(String stream) {
+    return 'የትምህርት አቅጣጫ፡ $stream';
+  }
+
+  @override
+  String get studentRoleLabel => 'ተማሪ';
+
+  @override
+  String get biometricUnlock => 'ባዮሜትሪክ መክፈቻ';
+
+  @override
+  String get biometricActive => 'ነቅቷል';
+
+  @override
+  String get biometricOff => 'ጠፍቷል';
+
+  @override
+  String get signOutBilingual => 'ውጣ';
+
+  @override
+  String get schoolPortal => 'የትምህርት ቤት ፖርታል';
+
+  @override
+  String get noSimulationsYet => 'ለክፍልዎ ሲሙሌሽን የለም';
+
+  @override
+  String get viewAll => 'ሁሉንም ይመልከቱ';
 }

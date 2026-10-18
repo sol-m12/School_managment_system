@@ -159,5 +159,48 @@
   "parentPreferredTime": "Preferred time",
   "parentIndicatorDone": "Done",
   "parentIndicatorMissing": "Missing",
-  "parentIndicatorPending": "Pending"
+  "parentIndicatorPending": "Pending",
+  "synced": "Synced",
+  "offlineBannerShort": "Offline",
+  "studentIdLabel": "ID: {id}",
+  "@studentIdLabel": {
+    "placeholders": {
+      "id": { "type": "String" }
+    }
+  },
+  "gradeSection": "Grade {grade}{section}",
+  "@gradeSection": {
+    "placeholders": {
+      "grade": { "type": "String" },
+      "section": { "type": "String" }
+    }
+  },
+  "academicYearLabel": "Academic year {year}",
+  "@academicYearLabel": {
+    "placeholders": {
+      "year": { "type": "String" }
+    }
+  },
+  "quickActions": "Quick actions",
+  "todaySimulations": "Today's simulations",
+  "simulationsCount": "{count} simulations",
+  "@simulationsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "streamLabel": "Stream: {stream}",
+  "@streamLabel": {
+    "placeholders": {
+      "stream": { "type": "String" }
+    }
+  },
+  "studentRoleLabel": "Student",
+  "biometricUnlock": "Biometric unlock",
+  "biometricActive": "Active",
+  "biometricOff": "Off",
+  "signOutBilingual": "Sign Out",
+  "schoolPortal": "School portal",
+  "noSimulationsYet": "No simulations for your class yet",
+  "viewAll": "View all"
 }

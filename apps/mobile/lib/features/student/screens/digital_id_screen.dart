@@ -5,6 +5,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../../../core/api/api_exception.dart';
 import '../../../core/providers.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/auth_profile_photo.dart';
 import '../../../core/widgets/last_updated_label.dart';
 import '../../../core/widgets/offline_banner.dart';
 import '../../../l10n/app_localizations.dart';
@@ -124,6 +125,10 @@ class _DigitalIdScreenState extends ConsumerState<DigitalIdScreen> {
     final year = data['academicYear']?.toString() ?? '';
     final username = data['username']?.toString() ?? '';
     final gender = data['gender']?.toString();
+    final photo = data['photo']?.toString();
+    final hasPhoto = photo != null &&
+        photo.isNotEmpty &&
+        photo != 'default_profile.png';
 
     return Card(
       elevation: 2,
@@ -132,6 +137,12 @@ class _DigitalIdScreenState extends ConsumerState<DigitalIdScreen> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
+            AuthProfilePhoto(
+              size: 88,
+              fullName: name,
+              hasPhoto: hasPhoto,
+            ),
+            const SizedBox(height: 16),
             if (code.isNotEmpty)
               QrImageView(
                 data: code,
