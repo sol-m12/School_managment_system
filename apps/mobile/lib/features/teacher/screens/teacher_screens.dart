@@ -212,10 +212,22 @@ class TeacherHomeScreen extends ConsumerWidget {
                 TeacherQuickActionGrid(
                   actions: [
                     TeacherQuickAction(
-                      label: l10n.takeRoll,
-                      icon: Icons.fact_check_outlined,
+                      label: l10n.homeroomAttendance,
+                      icon: Icons.how_to_reg,
                       onTap: () =>
                           context.push('/teacher/attendance/homeroom'),
+                    ),
+                    TeacherQuickAction(
+                      label: l10n.subjectAttendance,
+                      icon: Icons.edit_calendar,
+                      onTap: () =>
+                          context.push('/teacher/attendance/subject'),
+                    ),
+                    TeacherQuickAction(
+                      label: l10n.student360,
+                      icon: Icons.travel_explore,
+                      onTap: () =>
+                          context.push('/teacher/classes/student-360'),
                     ),
                     TeacherQuickAction(
                       label: l10n.examResults,
@@ -230,20 +242,9 @@ class TeacherHomeScreen extends ConsumerWidget {
                           context.push('/teacher/teaching/lessons'),
                     ),
                     TeacherQuickAction(
-                      label: l10n.leaveRequest,
-                      icon: Icons.event_busy,
-                      onTap: () => context.push('/teacher/office/leave'),
-                    ),
-                    TeacherQuickAction(
-                      label: l10n.incidents,
-                      icon: Icons.warning_amber_outlined,
-                      onTap: () => context.push('/teacher/office/incidents'),
-                    ),
-                    TeacherQuickAction(
-                      label: l10n.courseFiles,
-                      icon: Icons.folder_open,
-                      onTap: () =>
-                          context.push('/teacher/teaching/files'),
+                      label: l10n.classRoster,
+                      icon: Icons.groups_outlined,
+                      onTap: () => context.push('/teacher/classes/roster'),
                     ),
                   ],
                 ),

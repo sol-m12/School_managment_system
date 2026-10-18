@@ -95,6 +95,10 @@
   "homeroomAttendance": "የክፍል መገኘት",
   "subjectAttendance": "የትምህርት መገኘት",
   "offlineAttendance": "ከመስመር ውጭ መገኘት",
+  "notHomeroomTeacher": "እርስዎ ለምንም ክፍል የቤት ክፍል መምህር አይደሉም",
+  "noAssignedClasses": "ለዚህ ዓመት የተመደበ ትምህርት የለም",
+  "selectClassAndSubject": "ክፍል እና ትምህርት ይምረጡ",
+  "attendanceLocked": "መገኘት ተቆልፏል፤ መቀየር አይቻልም",
   "pendingSync": "የሚጠባቀ ስርኻት ({count})",
   "@pendingSync": {
     "placeholders": {

@@ -116,8 +116,9 @@ class _Student360ListScreenState extends ConsumerState<Student360ListScreen> {
                             children: [
                               Text(
                                 _error == 'NOT_HOMEROOM'
-                                    ? l10n.roleNotSupported
+                                    ? l10n.notHomeroomTeacher
                                     : l10n.errorGeneric,
+                                textAlign: TextAlign.center,
                               ),
                               const SizedBox(height: 12),
                               FilledButton(
@@ -266,7 +267,15 @@ class _Student360DetailScreenState
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(l10n.errorGeneric),
+                      Text(
+                        _error == 'NOT_HOMEROOM'
+                            ? l10n.notHomeroomTeacher
+                            : _error == 'NOT_FOUND'
+                                ? l10n.emptyState
+                                : l10n.errorGeneric,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 12),
                       FilledButton(
                         onPressed: _load,
                         child: Text(l10n.retry),

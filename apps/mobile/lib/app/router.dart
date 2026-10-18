@@ -18,6 +18,7 @@ import '../features/teacher/screens/homeroom_attendance_screen.dart';
 import '../features/teacher/screens/offline_attendance_screen.dart';
 import '../features/teacher/screens/scan_id_screen.dart';
 import '../features/teacher/screens/student_360_screen.dart';
+import '../features/teacher/screens/subject_attendance_screen.dart';
 import '../features/teacher/screens/teacher_screens.dart';
 import '../features/teacher/teacher_shell.dart';
 import '../l10n/app_localizations.dart';
@@ -356,14 +357,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'subject',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return TeacherJsonRoute(
-                        title: l10n.subjectAttendance,
-                        cacheKey: 'teacher_attendance_subject',
-                        path: '/teacher/attendance/subject',
-                      );
-                    },
+                    builder: (context, state) =>
+                        const SubjectAttendanceScreen(),
                   ),
                   GoRoute(
                     path: 'offline',

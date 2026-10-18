@@ -626,6 +626,30 @@ abstract class AppLocalizations {
   /// **'ከመስመር ውጭ መገኘት'**
   String get offlineAttendance;
 
+  /// No description provided for @notHomeroomTeacher.
+  ///
+  /// In am, this message translates to:
+  /// **'እርስዎ ለምንም ክፍል የቤት ክፍል መምህር አይደሉም'**
+  String get notHomeroomTeacher;
+
+  /// No description provided for @noAssignedClasses.
+  ///
+  /// In am, this message translates to:
+  /// **'ለዚህ ዓመት የተመደበ ትምህርት የለም'**
+  String get noAssignedClasses;
+
+  /// No description provided for @selectClassAndSubject.
+  ///
+  /// In am, this message translates to:
+  /// **'ክፍል እና ትምህርት ይምረጡ'**
+  String get selectClassAndSubject;
+
+  /// No description provided for @attendanceLocked.
+  ///
+  /// In am, this message translates to:
+  /// **'መገኘት ተቆልፏል፤ መቀየር አይቻልም'**
+  String get attendanceLocked;
+
   /// No description provided for @pendingSync.
   ///
   /// In am, this message translates to:

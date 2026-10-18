@@ -278,6 +278,18 @@ class AppLocalizationsAm extends AppLocalizations {
   String get offlineAttendance => 'ከመስመር ውጭ መገኘት';
 
   @override
+  String get notHomeroomTeacher => 'እርስዎ ለምንም ክፍል የቤት ክፍል መምህር አይደሉም';
+
+  @override
+  String get noAssignedClasses => 'ለዚህ ዓመት የተመደበ ትምህርት የለም';
+
+  @override
+  String get selectClassAndSubject => 'ክፍል እና ትምህርት ይምረጡ';
+
+  @override
+  String get attendanceLocked => 'መገኘት ተቆልፏል፤ መቀየር አይቻልም';
+
+  @override
   String pendingSync(int count) {
     return 'የሚጠባቀ ስርኻት ($count)';
   }

@@ -95,6 +95,10 @@
   "homeroomAttendance": "Homeroom attendance",
   "subjectAttendance": "Subject attendance",
   "offlineAttendance": "Offline attendance",
+  "notHomeroomTeacher": "You are not assigned as a homeroom teacher for any class",
+  "noAssignedClasses": "No teaching assignments for this year yet",
+  "selectClassAndSubject": "Select a class and subject",
+  "attendanceLocked": "Attendance is locked and cannot be changed",
   "pendingSync": "Pending sync ({count})",
   "@pendingSync": {
     "placeholders": {

@@ -113,9 +113,11 @@ class _HomeroomAttendanceScreenState
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _message = e is ApiException && e.code == 'ATTENDANCE_LOCKED'
-            ? l10n.errorValidation
-            : (e is ApiException ? e.code : l10n.errorGeneric);
+                    _message = e is ApiException && e.code == 'ATTENDANCE_LOCKED'
+                        ? l10n.attendanceLocked
+                        : e is ApiException && e.code == 'NOT_ASSIGNED'
+                            ? l10n.notHomeroomTeacher
+                            : (e is ApiException ? e.code : l10n.errorGeneric);
       });
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -224,6 +226,19 @@ class _HomeroomAttendanceScreenState
                         child: Text(l10n.retry),
                       ),
                     ],
+                  ),
+                ),
+              )
+            else if (_classes().isEmpty)
+              Expanded(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24),
+                    child: Text(
+                      l10n.notHomeroomTeacher,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: AppColors.inkMuted),
+                    ),
                   ),
                 ),
               )

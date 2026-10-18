@@ -282,6 +282,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get offlineAttendance => 'Offline attendance';
 
   @override
+  String get notHomeroomTeacher =>
+      'You are not assigned as a homeroom teacher for any class';
+
+  @override
+  String get noAssignedClasses => 'No teaching assignments for this year yet';
+
+  @override
+  String get selectClassAndSubject => 'Select a class and subject';
+
+  @override
+  String get attendanceLocked => 'Attendance is locked and cannot be changed';
+
+  @override
   String pendingSync(int count) {
     return 'Pending sync ($count)';
   }
