@@ -850,7 +850,7 @@ class AppLocalizationsAm extends AppLocalizations {
   String get searchClubs => 'ክለቦችን ፈልግ';
 
   @override
-  String get emptyCatalog => 'ከፍለጋው ጋር የሚስማማ ጸድቆ የወጣ ክለብ የለም።';
+  String get emptyCatalog => 'እስካሁን የተመዘገበ ነገር የለም።';
 
   @override
   String get joinClub => 'ለመቀላቀል ጠይቅ';
@@ -1045,4 +1045,38 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get paperGenerated => 'ወረቀቱ ተዘጋጅቷል።';
+
+  @override
+  String get opacTitle => 'መዝገብ';
+
+  @override
+  String get opacHelp =>
+      'ርዕስ የሚያዙት ሁሉም ቅጂ ሲወጣ ብቻ ነው። በመደርደሪያ ያለ ቅጂ በቤተ መጻሕፍት ዴስክ ይበደራል።';
+
+  @override
+  String get searchBooks => 'ፈልግ';
+
+  @override
+  String get searchBooksHint => 'ርዕስ፣ ደራሲ ወይም መዝገብ ቁጥር';
+
+  @override
+  String get author => 'ደራሲ';
+
+  @override
+  String get freeCopies => 'በመደርደሪያ';
+
+  @override
+  String get reserveBook => 'ያዝ';
+
+  @override
+  String get bookReserved => 'ተይዟል';
+
+  @override
+  String get teacherShelf => 'የመምህራን መደርደሪያ';
+
+  @override
+  String get bookNote => 'ማስታወሻ';
+
+  @override
+  String get librarySaved => 'ተቀምጧል።';
 }

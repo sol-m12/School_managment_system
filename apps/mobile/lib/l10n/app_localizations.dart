@@ -1697,7 +1697,7 @@ abstract class AppLocalizations {
   /// No description provided for @emptyCatalog.
   ///
   /// In am, this message translates to:
-  /// **'ከፍለጋው ጋር የሚስማማ ጸድቆ የወጣ ክለብ የለም።'**
+  /// **'እስካሁን የተመዘገበ ነገር የለም።'**
   String get emptyCatalog;
 
   /// No description provided for @joinClub.
@@ -2083,6 +2083,72 @@ abstract class AppLocalizations {
   /// In am, this message translates to:
   /// **'ወረቀቱ ተዘጋጅቷል።'**
   String get paperGenerated;
+
+  /// No description provided for @opacTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'መዝገብ'**
+  String get opacTitle;
+
+  /// No description provided for @opacHelp.
+  ///
+  /// In am, this message translates to:
+  /// **'ርዕስ የሚያዙት ሁሉም ቅጂ ሲወጣ ብቻ ነው። በመደርደሪያ ያለ ቅጂ በቤተ መጻሕፍት ዴስክ ይበደራል።'**
+  String get opacHelp;
+
+  /// No description provided for @searchBooks.
+  ///
+  /// In am, this message translates to:
+  /// **'ፈልግ'**
+  String get searchBooks;
+
+  /// No description provided for @searchBooksHint.
+  ///
+  /// In am, this message translates to:
+  /// **'ርዕስ፣ ደራሲ ወይም መዝገብ ቁጥር'**
+  String get searchBooksHint;
+
+  /// No description provided for @author.
+  ///
+  /// In am, this message translates to:
+  /// **'ደራሲ'**
+  String get author;
+
+  /// No description provided for @freeCopies.
+  ///
+  /// In am, this message translates to:
+  /// **'በመደርደሪያ'**
+  String get freeCopies;
+
+  /// No description provided for @reserveBook.
+  ///
+  /// In am, this message translates to:
+  /// **'ያዝ'**
+  String get reserveBook;
+
+  /// No description provided for @bookReserved.
+  ///
+  /// In am, this message translates to:
+  /// **'ተይዟል'**
+  String get bookReserved;
+
+  /// No description provided for @teacherShelf.
+  ///
+  /// In am, this message translates to:
+  /// **'የመምህራን መደርደሪያ'**
+  String get teacherShelf;
+
+  /// No description provided for @bookNote.
+  ///
+  /// In am, this message translates to:
+  /// **'ማስታወሻ'**
+  String get bookNote;
+
+  /// No description provided for @librarySaved.
+  ///
+  /// In am, this message translates to:
+  /// **'ተቀምጧል።'**
+  String get librarySaved;
 }
 
 class _AppLocalizationsDelegate

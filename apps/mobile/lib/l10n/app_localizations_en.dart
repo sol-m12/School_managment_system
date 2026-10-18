@@ -856,7 +856,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchClubs => 'Search clubs';
 
   @override
-  String get emptyCatalog => 'No approved clubs match this search.';
+  String get emptyCatalog => 'Nothing is recorded yet.';
 
   @override
   String get joinClub => 'Apply to join';
@@ -1051,4 +1051,38 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get paperGenerated => 'The paper was generated.';
+
+  @override
+  String get opacTitle => 'Catalog';
+
+  @override
+  String get opacHelp =>
+      'Reserve a title only when every copy is out. A copy on the shelf is borrowed at the library desk.';
+
+  @override
+  String get searchBooks => 'Search';
+
+  @override
+  String get searchBooksHint => 'Title, author, or accession';
+
+  @override
+  String get author => 'Author';
+
+  @override
+  String get freeCopies => 'On the shelf';
+
+  @override
+  String get reserveBook => 'Reserve';
+
+  @override
+  String get bookReserved => 'Reserved';
+
+  @override
+  String get teacherShelf => 'Teacher shelf';
+
+  @override
+  String get bookNote => 'Note';
+
+  @override
+  String get librarySaved => 'Saved.';
 }

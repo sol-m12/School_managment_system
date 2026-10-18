@@ -442,5 +442,17 @@
   "addExamQuestion": "ጥያቄ ጨምር",
   "examCreated": "ፈተናው ተፈጥሯል።",
   "questionSaved": "ጥያቄው ተጨምሯል።",
-  "paperGenerated": "ወረቀቱ ተዘጋጅቷል።"
+  "paperGenerated": "ወረቀቱ ተዘጋጅቷል።",
+  "opacTitle": "መዝገብ",
+  "opacHelp": "ርዕስ የሚያዙት ሁሉም ቅጂ ሲወጣ ብቻ ነው። በመደርደሪያ ያለ ቅጂ በቤተ መጻሕፍት ዴስክ ይበደራል።",
+  "searchBooks": "ፈልግ",
+  "searchBooksHint": "ርዕስ፣ ደራሲ ወይም መዝገብ ቁጥር",
+  "author": "ደራሲ",
+  "freeCopies": "በመደርደሪያ",
+  "reserveBook": "ያዝ",
+  "bookReserved": "ተይዟል",
+  "teacherShelf": "የመምህራን መደርደሪያ",
+  "bookNote": "ማስታወሻ",
+  "librarySaved": "ተቀምጧል።",
+  "emptyCatalog": "እስካሁን የተመዘገበ ነገር የለም።"
 }

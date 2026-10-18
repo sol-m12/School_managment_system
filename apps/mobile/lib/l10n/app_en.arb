@@ -442,5 +442,17 @@
   "addExamQuestion": "Add question",
   "examCreated": "The exam was created.",
   "questionSaved": "The question was added.",
-  "paperGenerated": "The paper was generated."
+  "paperGenerated": "The paper was generated.",
+  "opacTitle": "Catalog",
+  "opacHelp": "Reserve a title only when every copy is out. A copy on the shelf is borrowed at the library desk.",
+  "searchBooks": "Search",
+  "searchBooksHint": "Title, author, or accession",
+  "author": "Author",
+  "freeCopies": "On the shelf",
+  "reserveBook": "Reserve",
+  "bookReserved": "Reserved",
+  "teacherShelf": "Teacher shelf",
+  "bookNote": "Note",
+  "librarySaved": "Saved.",
+  "emptyCatalog": "Nothing is recorded yet."
 }
