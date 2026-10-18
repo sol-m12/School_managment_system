@@ -964,4 +964,85 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get reportSaved => 'ሪፖርቱ ተቀምጧል።';
+
+  @override
+  String get subject => 'ትምህርት';
+
+  @override
+  String get section => 'ሴክሽን';
+
+  @override
+  String get topic => 'ርዕስ';
+
+  @override
+  String get questionStem => 'ጥያቄ';
+
+  @override
+  String get correctOption => 'ትክክለኛው ምርጫ';
+
+  @override
+  String get pointsLabel => 'ነጥብ';
+
+  @override
+  String get addQuestion => 'ጥያቄ ጨምር';
+
+  @override
+  String get saveQuestion => 'ጥያቄ አስቀምጥ';
+
+  @override
+  String get generatePaper => 'ወረቀት አዘጋጅ';
+
+  @override
+  String get paperTitle => 'የወረቀት ርዕስ';
+
+  @override
+  String get questionCount => 'የጥያቄ ብዛት';
+
+  @override
+  String get emptyQuestionsBank => 'በባንኩ ውስጥ ጥያቄ የለም።';
+
+  @override
+  String get papers => 'ወረቀቶች';
+
+  @override
+  String get createExam => 'ፈተናውን ፍጠር';
+
+  @override
+  String get examTitle => 'የፈተናው መጠሪያ (Exam Title)';
+
+  @override
+  String get gradePick => 'ክፍል (Grade)';
+
+  @override
+  String get noSubjectsAssigned => 'እስካሁን የተመደበ ትምህርት የለዎትም።';
+
+  @override
+  String get noSections => 'ለዚህ ክፍል ሴክሽን የለም።';
+
+  @override
+  String get examPassword => 'ሚስጥር ቁጥር (Exam Password)';
+
+  @override
+  String get durationMinutes => 'የፈተና ቆይታ (ደቂቃ)';
+
+  @override
+  String get emptyExams => 'ፈተና የለም።';
+
+  @override
+  String get publishExam => 'ልቀቅ';
+
+  @override
+  String get closeExam => 'ቆልፍ';
+
+  @override
+  String get addExamQuestion => 'ጥያቄ ጨምር';
+
+  @override
+  String get examCreated => 'ፈተናው ተፈጥሯል።';
+
+  @override
+  String get questionSaved => 'ጥያቄው ተጨምሯል።';
+
+  @override
+  String get paperGenerated => 'ወረቀቱ ተዘጋጅቷል።';
 }

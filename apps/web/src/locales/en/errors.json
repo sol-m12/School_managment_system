@@ -166,5 +166,8 @@
   "electionClosed": "This election is not open for voting.",
   "alreadyVoted": "You already voted in this election.",
   "badCandidate": "That candidate is not on this ballot.",
-  "noVotes": "No votes were cast, so a winner cannot be announced."
+  "noVotes": "No votes were cast, so a winner cannot be announced.",
+  "profanity": "That text contains a blocked word. Change it and try again.",
+  "notEligible": "Your national exam score is below the scholarship cut-off.",
+  "alreadyApplied": "You already applied to this scholarship."
 }

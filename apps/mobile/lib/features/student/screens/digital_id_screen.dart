@@ -6,6 +6,7 @@ import '../../../core/api/api_exception.dart';
 import '../../../core/providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/auth_profile_photo.dart';
+import '../../../core/widgets/keyt_app_bar.dart';
 import '../../../core/widgets/last_updated_label.dart';
 import '../../../core/widgets/offline_banner.dart';
 import '../../../l10n/app_localizations.dart';
@@ -91,6 +92,7 @@ class _DigitalIdScreenState extends ConsumerState<DigitalIdScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.loginCanvas,
+      appBar: KeytAppBar(title: l10n.digitalId),
       body: SafeArea(
         child: Column(
           children: [

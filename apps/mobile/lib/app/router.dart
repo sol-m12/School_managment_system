@@ -19,6 +19,8 @@ import '../features/student/screens/services_screens.dart';
 import '../features/teacher/screens/clubs_patron_screen.dart';
 import '../features/teacher/screens/homeroom_attendance_screen.dart';
 import '../features/teacher/screens/offline_attendance_screen.dart';
+import '../features/teacher/screens/online_exams_screen.dart';
+import '../features/teacher/screens/question_bank_screen.dart';
 import '../features/teacher/screens/scan_id_screen.dart';
 import '../features/teacher/screens/schedule_screens.dart';
 import '../features/teacher/screens/student_360_screen.dart';
@@ -453,14 +455,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'exams',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return TeacherJsonRoute(
-                        title: l10n.exams,
-                        cacheKey: 'teacher_exams',
-                        path: '/teacher/exams',
-                      );
-                    },
+                    builder: (context, state) => const OnlineExamsScreen(),
                   ),
                   GoRoute(
                     path: 'exam-results',
@@ -508,14 +503,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'questions',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return TeacherJsonRoute(
-                        title: l10n.questionBank,
-                        cacheKey: 'teacher_questions',
-                        path: '/teacher/office/questions',
-                      );
-                    },
+                    builder: (context, state) => const QuestionBankScreen(),
                   ),
                 ],
               ),

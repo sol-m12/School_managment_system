@@ -8,6 +8,7 @@ import '../../../core/providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/auth_profile_photo.dart';
 import '../../../core/widgets/json_screen.dart';
+import '../../../core/widgets/keyt_app_bar.dart';
 import '../../../core/widgets/timetable_widgets.dart';
 import '../../../l10n/app_localizations.dart';
 import '../widgets/teacher_chrome.dart';
@@ -810,7 +811,7 @@ class TeacherJsonRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.loginCanvas,
-      appBar: AppBar(title: Text(title)),
+      appBar: KeytAppBar(title: title),
       body: JsonScreen(
         title: title,
         cacheKey: cacheKey,

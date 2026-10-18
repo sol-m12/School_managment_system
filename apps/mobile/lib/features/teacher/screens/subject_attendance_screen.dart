@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_exception.dart';
 import '../../../core/providers.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/keyt_app_bar.dart';
 import '../../../core/widgets/offline_banner.dart';
 import '../../../l10n/app_localizations.dart';
 import '../widgets/teacher_chrome.dart';
@@ -203,6 +204,7 @@ class _SubjectAttendanceScreenState
 
     return Scaffold(
       backgroundColor: AppColors.loginCanvas,
+      appBar: KeytAppBar(title: l10n.subjectAttendance),
       body: SafeArea(
         child: Column(
           children: [
@@ -212,15 +214,7 @@ class _SubjectAttendanceScreenState
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
               child: Row(
                 children: [
-                  Expanded(
-                    child: Text(
-                      l10n.subjectAttendance,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
+                  const Spacer(),
                   if (_data?['date'] != null)
                     Container(
                       padding: const EdgeInsets.symmetric(

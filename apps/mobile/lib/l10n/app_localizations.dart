@@ -1921,6 +1921,168 @@ abstract class AppLocalizations {
   /// In am, this message translates to:
   /// **'ሪፖርቱ ተቀምጧል።'**
   String get reportSaved;
+
+  /// No description provided for @subject.
+  ///
+  /// In am, this message translates to:
+  /// **'ትምህርት'**
+  String get subject;
+
+  /// No description provided for @section.
+  ///
+  /// In am, this message translates to:
+  /// **'ሴክሽን'**
+  String get section;
+
+  /// No description provided for @topic.
+  ///
+  /// In am, this message translates to:
+  /// **'ርዕስ'**
+  String get topic;
+
+  /// No description provided for @questionStem.
+  ///
+  /// In am, this message translates to:
+  /// **'ጥያቄ'**
+  String get questionStem;
+
+  /// No description provided for @correctOption.
+  ///
+  /// In am, this message translates to:
+  /// **'ትክክለኛው ምርጫ'**
+  String get correctOption;
+
+  /// No description provided for @pointsLabel.
+  ///
+  /// In am, this message translates to:
+  /// **'ነጥብ'**
+  String get pointsLabel;
+
+  /// No description provided for @addQuestion.
+  ///
+  /// In am, this message translates to:
+  /// **'ጥያቄ ጨምር'**
+  String get addQuestion;
+
+  /// No description provided for @saveQuestion.
+  ///
+  /// In am, this message translates to:
+  /// **'ጥያቄ አስቀምጥ'**
+  String get saveQuestion;
+
+  /// No description provided for @generatePaper.
+  ///
+  /// In am, this message translates to:
+  /// **'ወረቀት አዘጋጅ'**
+  String get generatePaper;
+
+  /// No description provided for @paperTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'የወረቀት ርዕስ'**
+  String get paperTitle;
+
+  /// No description provided for @questionCount.
+  ///
+  /// In am, this message translates to:
+  /// **'የጥያቄ ብዛት'**
+  String get questionCount;
+
+  /// No description provided for @emptyQuestionsBank.
+  ///
+  /// In am, this message translates to:
+  /// **'በባንኩ ውስጥ ጥያቄ የለም።'**
+  String get emptyQuestionsBank;
+
+  /// No description provided for @papers.
+  ///
+  /// In am, this message translates to:
+  /// **'ወረቀቶች'**
+  String get papers;
+
+  /// No description provided for @createExam.
+  ///
+  /// In am, this message translates to:
+  /// **'ፈተናውን ፍጠር'**
+  String get createExam;
+
+  /// No description provided for @examTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'የፈተናው መጠሪያ (Exam Title)'**
+  String get examTitle;
+
+  /// No description provided for @gradePick.
+  ///
+  /// In am, this message translates to:
+  /// **'ክፍል (Grade)'**
+  String get gradePick;
+
+  /// No description provided for @noSubjectsAssigned.
+  ///
+  /// In am, this message translates to:
+  /// **'እስካሁን የተመደበ ትምህርት የለዎትም።'**
+  String get noSubjectsAssigned;
+
+  /// No description provided for @noSections.
+  ///
+  /// In am, this message translates to:
+  /// **'ለዚህ ክፍል ሴክሽን የለም።'**
+  String get noSections;
+
+  /// No description provided for @examPassword.
+  ///
+  /// In am, this message translates to:
+  /// **'ሚስጥር ቁጥር (Exam Password)'**
+  String get examPassword;
+
+  /// No description provided for @durationMinutes.
+  ///
+  /// In am, this message translates to:
+  /// **'የፈተና ቆይታ (ደቂቃ)'**
+  String get durationMinutes;
+
+  /// No description provided for @emptyExams.
+  ///
+  /// In am, this message translates to:
+  /// **'ፈተና የለም።'**
+  String get emptyExams;
+
+  /// No description provided for @publishExam.
+  ///
+  /// In am, this message translates to:
+  /// **'ልቀቅ'**
+  String get publishExam;
+
+  /// No description provided for @closeExam.
+  ///
+  /// In am, this message translates to:
+  /// **'ቆልፍ'**
+  String get closeExam;
+
+  /// No description provided for @addExamQuestion.
+  ///
+  /// In am, this message translates to:
+  /// **'ጥያቄ ጨምር'**
+  String get addExamQuestion;
+
+  /// No description provided for @examCreated.
+  ///
+  /// In am, this message translates to:
+  /// **'ፈተናው ተፈጥሯል።'**
+  String get examCreated;
+
+  /// No description provided for @questionSaved.
+  ///
+  /// In am, this message translates to:
+  /// **'ጥያቄው ተጨምሯል።'**
+  String get questionSaved;
+
+  /// No description provided for @paperGenerated.
+  ///
+  /// In am, this message translates to:
+  /// **'ወረቀቱ ተዘጋጅቷል።'**
+  String get paperGenerated;
 }
 
 class _AppLocalizationsDelegate

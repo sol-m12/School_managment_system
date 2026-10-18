@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/keyt_app_bar.dart';
 import '../../../core/widgets/json_screen.dart';
 import '../../../core/widgets/timetable_widgets.dart';
 import '../../../l10n/app_localizations.dart';
@@ -32,7 +33,7 @@ class _StudentTimetableScreenState extends State<StudentTimetableScreen> {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.loginCanvas,
-      appBar: AppBar(title: Text(l10n.timetable)),
+      appBar: KeytAppBar(title: l10n.timetable),
       body: JsonScreen(
         title: l10n.timetable,
         cacheKey: 'student_timetable',

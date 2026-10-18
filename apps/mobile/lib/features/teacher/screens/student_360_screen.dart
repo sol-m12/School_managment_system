@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/api/api_exception.dart';
 import '../../../core/providers.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/keyt_app_bar.dart';
 import '../../../core/widgets/offline_banner.dart';
 import '../../../l10n/app_localizations.dart';
 import '../widgets/teacher_chrome.dart';
@@ -75,21 +76,12 @@ class _Student360ListScreenState extends ConsumerState<Student360ListScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.loginCanvas,
+      appBar: KeytAppBar(title: l10n.student360),
       body: SafeArea(
         child: Column(
           children: [
             const OfflineBanner(),
             const TeacherTopBar(),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-              child: Text(
-                l10n.student360,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: TextField(
@@ -259,7 +251,7 @@ class _Student360DetailScreenState
 
     return Scaffold(
       backgroundColor: AppColors.loginCanvas,
-      appBar: AppBar(title: Text(l10n.student360)),
+      appBar: KeytAppBar(title: l10n.student360),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : (_error != null && _data == null)

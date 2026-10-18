@@ -7,6 +7,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../core/id/keyt_id_code.dart';
 import '../../../core/providers.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/keyt_app_bar.dart';
 import '../../../l10n/app_localizations.dart';
 
 class ScanDigitalIdScreen extends ConsumerStatefulWidget {
@@ -74,7 +75,7 @@ class _ScanDigitalIdScreenState extends ConsumerState<ScanDigitalIdScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.scanDigitalId)),
+      appBar: KeytAppBar(title: l10n.scanDigitalId),
       body: !_cameraSupported
           ? Center(
               child: Padding(

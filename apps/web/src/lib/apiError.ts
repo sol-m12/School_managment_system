@@ -166,7 +166,10 @@ export type ErrorKey =
   | "electionClosed"
   | "alreadyVoted"
   | "badCandidate"
-  | "noVotes";
+  | "noVotes"
+  | "profanity"
+  | "notEligible"
+  | "alreadyApplied";
 
 const CODE_TO_KEY: Record<string, ErrorKey> = {
   AUTH_INVALID_CREDENTIALS: "invalidCredentials",
@@ -334,6 +337,10 @@ const CODE_TO_KEY: Record<string, ErrorKey> = {
   ALREADY_VOTED: "alreadyVoted",
   BAD_CANDIDATE: "badCandidate",
   NO_VOTES: "noVotes",
+  PROFANITY: "profanity",
+  NOT_ELIGIBLE: "notEligible",
+  ALREADY_APPLIED: "alreadyApplied",
+  VALIDATION: "validation",
 };
 
 function readCode(data: unknown): string | null {

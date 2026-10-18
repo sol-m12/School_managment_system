@@ -7,6 +7,7 @@ import '../../../core/locale/locale_controller.dart';
 import '../../../core/providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/json_screen.dart';
+import '../../../core/widgets/keyt_app_bar.dart';
 import '../../../core/widgets/last_updated_label.dart';
 import '../../../core/widgets/offline_banner.dart';
 import '../../../l10n/app_localizations.dart';
@@ -312,7 +313,7 @@ class ParentServicesHubScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.loginCanvas,
-      appBar: AppBar(title: Text(l10n.parentNavServices)),
+      appBar: KeytAppBar(title: l10n.parentNavServices),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         children: [
@@ -741,7 +742,7 @@ class _ParentNotificationsScreenState
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.notifications)),
+      appBar: KeytAppBar(title: l10n.notifications),
       body: Column(
         children: [
           const OfflineBanner(),
@@ -1071,7 +1072,7 @@ class _ParentAppointmentsScreenState
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.parentAppointments)),
+      appBar: KeytAppBar(title: l10n.parentAppointments),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _bookAppointment,
         icon: const Icon(Icons.event_available),
@@ -1175,7 +1176,7 @@ class ParentMoreScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: AppColors.loginCanvas,
-      appBar: AppBar(title: Text(l10n.parentNavMore)),
+      appBar: KeytAppBar(title: l10n.parentNavMore),
       body: ListView(
         padding: const EdgeInsets.only(bottom: 24),
         children: [

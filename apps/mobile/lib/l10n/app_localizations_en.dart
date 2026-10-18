@@ -970,4 +970,85 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reportSaved => 'The report was saved.';
+
+  @override
+  String get subject => 'Subject';
+
+  @override
+  String get section => 'Section';
+
+  @override
+  String get topic => 'Topic';
+
+  @override
+  String get questionStem => 'Question';
+
+  @override
+  String get correctOption => 'Correct option';
+
+  @override
+  String get pointsLabel => 'Points';
+
+  @override
+  String get addQuestion => 'Add question';
+
+  @override
+  String get saveQuestion => 'Save question';
+
+  @override
+  String get generatePaper => 'Generate paper';
+
+  @override
+  String get paperTitle => 'Paper title';
+
+  @override
+  String get questionCount => 'Questions';
+
+  @override
+  String get emptyQuestionsBank => 'No questions in the bank yet.';
+
+  @override
+  String get papers => 'Papers';
+
+  @override
+  String get createExam => 'Create exam';
+
+  @override
+  String get examTitle => 'Exam title';
+
+  @override
+  String get gradePick => 'Grade';
+
+  @override
+  String get noSubjectsAssigned => 'No subjects are assigned.';
+
+  @override
+  String get noSections => 'No sections found.';
+
+  @override
+  String get examPassword => 'Exam password';
+
+  @override
+  String get durationMinutes => 'Duration (minutes)';
+
+  @override
+  String get emptyExams => 'No exams yet.';
+
+  @override
+  String get publishExam => 'Publish';
+
+  @override
+  String get closeExam => 'Close';
+
+  @override
+  String get addExamQuestion => 'Add question';
+
+  @override
+  String get examCreated => 'The exam was created.';
+
+  @override
+  String get questionSaved => 'The question was added.';
+
+  @override
+  String get paperGenerated => 'The paper was generated.';
 }

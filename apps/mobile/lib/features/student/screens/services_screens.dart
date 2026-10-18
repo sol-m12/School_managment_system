@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/json_screen.dart';
+import '../../../core/widgets/keyt_app_bar.dart';
 import '../../../l10n/app_localizations.dart';
 import '../widgets/student_chrome.dart';
 
@@ -14,6 +15,7 @@ class StudentLibraryScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.loginCanvas,
+      appBar: KeytAppBar(title: l10n.library),
       body: SafeArea(
         child: JsonScreen(
           title: l10n.library,
@@ -156,6 +158,7 @@ class StudentDocumentsScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppColors.loginCanvas,
+      appBar: KeytAppBar(title: l10n.documents),
       body: SafeArea(
         child: JsonScreen(
           title: l10n.documents,

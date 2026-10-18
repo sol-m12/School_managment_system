@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/api/api_client.dart';
 import '../../../core/providers.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/keyt_app_bar.dart';
 import '../../../core/widgets/offline_banner.dart';
 import '../../../l10n/app_localizations.dart';
-import '../widgets/teacher_chrome.dart';
 
 /// Teacher club patron: approve/reject joins, schedule meetings, activity reports.
 class TeacherClubsPatronScreen extends ConsumerStatefulWidget {
@@ -111,21 +111,12 @@ class _TeacherClubsPatronScreenState
     final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: const Color(0xFFF3F5FB),
+      appBar: KeytAppBar(title: l10n.patronTitle),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const OfflineBanner(),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-              child: Text(
-                l10n.patronTitle,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 20,
-                ),
-              ),
-            ),
             if (_notice != null)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),

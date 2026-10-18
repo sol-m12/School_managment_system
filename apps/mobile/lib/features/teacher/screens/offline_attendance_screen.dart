@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/outbox/attendance_outbox.dart';
 import '../../../core/providers.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/widgets/keyt_app_bar.dart';
 import '../../../core/widgets/offline_banner.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -144,7 +145,7 @@ class _OfflineAttendanceScreenState
     final options = _optionsFromBoard();
     final pending = ref.watch(pendingOutboxCountProvider).value ?? 0;
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.offlineAttendance)),
+      appBar: KeytAppBar(title: l10n.offlineAttendance),
       body: Column(
         children: [
           const OfflineBanner(),
