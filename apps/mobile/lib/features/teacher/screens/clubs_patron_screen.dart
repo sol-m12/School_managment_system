@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/keyt_app_bar.dart';
 import '../../../core/widgets/offline_banner.dart';
 import '../../../l10n/app_localizations.dart';
+import '../widgets/teacher_chrome.dart';
 
 /// Teacher club patron: approve/reject joins, schedule meetings, activity reports.
 class TeacherClubsPatronScreen extends ConsumerStatefulWidget {
