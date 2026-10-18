@@ -15,16 +15,59 @@ class AppLocalizationsAm extends AppLocalizations {
   String get loginTitle => 'መግቢያ';
 
   @override
-  String get tenantSlug => 'የትምህርት ቤት መለያ';
+  String get loginWelcomeBack => 'እንኳን ደህና መጡ';
 
   @override
-  String get username => 'የተጠቃሚ ስም';
+  String get loginSubtitle => 'ወደ ፖርታልዎ ለመግባት ይግቡ';
+
+  @override
+  String get tenantSlug => 'የትምህርት ቤት መለያ / ኮድ';
+
+  @override
+  String get tenantSlugHint => 'ለምሳሌ SCH-104 ወይም የትምህርት ቤት ኮድ';
+
+  @override
+  String get username => 'የተጠቃሚ ስም ወይም መለያ';
+
+  @override
+  String get usernameHint => 'የተጠቃሚ ስምዎን ወይም መለያዎን ያስገቡ';
 
   @override
   String get password => 'የይለፍ ቃል';
 
   @override
   String get login => 'ግባ';
+
+  @override
+  String get rememberMe => 'አስታውሰኝ';
+
+  @override
+  String get forgotPassword => 'የይለፍ ቃል ረሱ?';
+
+  @override
+  String get forgotPasswordMessage =>
+      'የይለፍ ቃልዎን ለመቀየር የትምህርት ቤት አስተዳዳሪዎን ያነጋግሩ።';
+
+  @override
+  String get loginOr => 'ወይም';
+
+  @override
+  String get signInBiometrics => 'በባዮሜትሪክስ ይግቡ';
+
+  @override
+  String get biometricsUnavailable => 'በባዮሜትሪክስ መግባት ገና አይገኝም';
+
+  @override
+  String get sslEncrypted => '256-ቢት SSL የተመሰጠረ • ኬይት ደህንነት';
+
+  @override
+  String get needAssistance => 'እገዛ ይፈልጋሉ?';
+
+  @override
+  String get contactSupport => 'ድጋፍ ያግኙ';
+
+  @override
+  String get contactSupportMessage => 'ለመግቢያ እገዛ የትምህርት ቤት ቢሮዎን ያነጋግሩ።';
 
   @override
   String get logout => 'ውጣ';

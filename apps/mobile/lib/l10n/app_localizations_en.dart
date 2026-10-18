@@ -15,16 +15,60 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginTitle => 'Sign in';
 
   @override
-  String get tenantSlug => 'School ID';
+  String get loginWelcomeBack => 'Welcome Back';
 
   @override
-  String get username => 'Username';
+  String get loginSubtitle => 'Sign in to access your portal';
+
+  @override
+  String get tenantSlug => 'School ID / Code';
+
+  @override
+  String get tenantSlugHint => 'e.g., SCH-104 or School Code';
+
+  @override
+  String get username => 'Username or ID';
+
+  @override
+  String get usernameHint => 'Enter your username or ID';
 
   @override
   String get password => 'Password';
 
   @override
-  String get login => 'Sign in';
+  String get login => 'Sign In';
+
+  @override
+  String get rememberMe => 'Remember me';
+
+  @override
+  String get forgotPassword => 'Forgot password?';
+
+  @override
+  String get forgotPasswordMessage =>
+      'Contact your school administrator to reset your password.';
+
+  @override
+  String get loginOr => 'OR';
+
+  @override
+  String get signInBiometrics => 'Sign in with Biometrics';
+
+  @override
+  String get biometricsUnavailable => 'Biometric sign-in is not available yet';
+
+  @override
+  String get sslEncrypted => '256-bit SSL Encrypted • Keyt Secure';
+
+  @override
+  String get needAssistance => 'Need assistance?';
+
+  @override
+  String get contactSupport => 'Contact Support';
+
+  @override
+  String get contactSupportMessage =>
+      'Contact your school office for login help.';
 
   @override
   String get logout => 'Sign out';

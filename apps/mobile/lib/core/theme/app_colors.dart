@@ -12,6 +12,9 @@ abstract final class AppColors {
 
   static const shell = Color(0xFF0F172A);
   static const canvas = Color(0xFFF8FAFC);
+  static const loginCanvas = Color(0xFFF3F5FB);
+  static const loginField = Color(0xFFEEF0F8);
+  static const loginLink = Color(0xFF2563EB);
   static const surface = Color(0xFFFFFFFF);
   static const border = Color(0xFFE2E8F0);
   static const ink = Color(0xFF334155);

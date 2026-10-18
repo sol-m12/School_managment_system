@@ -110,17 +110,41 @@ abstract class AppLocalizations {
   /// **'መግቢያ'**
   String get loginTitle;
 
+  /// No description provided for @loginWelcomeBack.
+  ///
+  /// In am, this message translates to:
+  /// **'እንኳን ደህና መጡ'**
+  String get loginWelcomeBack;
+
+  /// No description provided for @loginSubtitle.
+  ///
+  /// In am, this message translates to:
+  /// **'ወደ ፖርታልዎ ለመግባት ይግቡ'**
+  String get loginSubtitle;
+
   /// No description provided for @tenantSlug.
   ///
   /// In am, this message translates to:
-  /// **'የትምህርት ቤት መለያ'**
+  /// **'የትምህርት ቤት መለያ / ኮድ'**
   String get tenantSlug;
+
+  /// No description provided for @tenantSlugHint.
+  ///
+  /// In am, this message translates to:
+  /// **'ለምሳሌ SCH-104 ወይም የትምህርት ቤት ኮድ'**
+  String get tenantSlugHint;
 
   /// No description provided for @username.
   ///
   /// In am, this message translates to:
-  /// **'የተጠቃሚ ስም'**
+  /// **'የተጠቃሚ ስም ወይም መለያ'**
   String get username;
+
+  /// No description provided for @usernameHint.
+  ///
+  /// In am, this message translates to:
+  /// **'የተጠቃሚ ስምዎን ወይም መለያዎን ያስገቡ'**
+  String get usernameHint;
 
   /// No description provided for @password.
   ///
@@ -133,6 +157,66 @@ abstract class AppLocalizations {
   /// In am, this message translates to:
   /// **'ግባ'**
   String get login;
+
+  /// No description provided for @rememberMe.
+  ///
+  /// In am, this message translates to:
+  /// **'አስታውሰኝ'**
+  String get rememberMe;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In am, this message translates to:
+  /// **'የይለፍ ቃል ረሱ?'**
+  String get forgotPassword;
+
+  /// No description provided for @forgotPasswordMessage.
+  ///
+  /// In am, this message translates to:
+  /// **'የይለፍ ቃልዎን ለመቀየር የትምህርት ቤት አስተዳዳሪዎን ያነጋግሩ።'**
+  String get forgotPasswordMessage;
+
+  /// No description provided for @loginOr.
+  ///
+  /// In am, this message translates to:
+  /// **'ወይም'**
+  String get loginOr;
+
+  /// No description provided for @signInBiometrics.
+  ///
+  /// In am, this message translates to:
+  /// **'በባዮሜትሪክስ ይግቡ'**
+  String get signInBiometrics;
+
+  /// No description provided for @biometricsUnavailable.
+  ///
+  /// In am, this message translates to:
+  /// **'በባዮሜትሪክስ መግባት ገና አይገኝም'**
+  String get biometricsUnavailable;
+
+  /// No description provided for @sslEncrypted.
+  ///
+  /// In am, this message translates to:
+  /// **'256-ቢት SSL የተመሰጠረ • ኬይት ደህንነት'**
+  String get sslEncrypted;
+
+  /// No description provided for @needAssistance.
+  ///
+  /// In am, this message translates to:
+  /// **'እገዛ ይፈልጋሉ?'**
+  String get needAssistance;
+
+  /// No description provided for @contactSupport.
+  ///
+  /// In am, this message translates to:
+  /// **'ድጋፍ ያግኙ'**
+  String get contactSupport;
+
+  /// No description provided for @contactSupportMessage.
+  ///
+  /// In am, this message translates to:
+  /// **'ለመግቢያ እገዛ የትምህርት ቤት ቢሮዎን ያነጋግሩ።'**
+  String get contactSupportMessage;
 
   /// No description provided for @logout.
   ///
