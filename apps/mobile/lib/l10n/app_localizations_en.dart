@@ -55,7 +55,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signInBiometrics => 'Sign in with Biometrics';
 
   @override
-  String get biometricsUnavailable => 'Biometric sign-in is not available yet';
+  String get biometricsUnavailable =>
+      'Biometric sign-in is not available on this device';
+
+  @override
+  String get biometricsNotEnrolled =>
+      'Set up fingerprint or Face ID in device settings first';
+
+  @override
+  String get biometricsNoCredentials =>
+      'Sign in with your password once to enable biometric sign-in';
+
+  @override
+  String get biometricsFailed => 'Biometric authentication failed';
+
+  @override
+  String get biometricsPrompt => 'Sign in to Keyt';
+
+  @override
+  String get biometricsEnableTitle => 'Enable biometric sign-in?';
+
+  @override
+  String get biometricsEnableBody =>
+      'Use fingerprint or Face ID next time instead of typing your password.';
+
+  @override
+  String get biometricsEnableConfirm => 'Enable';
+
+  @override
+  String get biometricsEnableSkip => 'Not now';
+
+  @override
+  String get biometricsEnabled => 'Biometric sign-in enabled';
+
+  @override
+  String get faceIdUsage =>
+      'Keyt uses Face ID so you can sign in quickly and securely.';
 
   @override
   String get sslEncrypted => '256-bit SSL Encrypted • Keyt Secure';

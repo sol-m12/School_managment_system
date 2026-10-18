@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/api/api_exception.dart';
+import '../../core/auth/biometric_credentials_store.dart';
+import '../../core/auth/biometric_service.dart';
 import '../../core/locale/locale_controller.dart';
 import '../../core/providers.dart';
 import '../../core/theme/app_colors.dart';
@@ -27,12 +29,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   bool _submitting = false;
   bool _obscurePassword = true;
   bool _rememberMe = false;
+  bool _biometricReady = false;
   String? _error;
 
   @override
   void initState() {
     super.initState();
     _restoreRemembered();
+    _refreshBiometricReady();
   }
 
   Future<void> _restoreRemembered() async {
@@ -46,6 +50,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         _username.text = prefs.getString(_rememberUsernameKey) ?? '';
       }
     });
+  }
+
+  Future<void> _refreshBiometricReady() async {
+    final store = ref.read(biometricCredentialsStoreProvider);
+    final ready = await store.hasCredentials();
+    if (!mounted) return;
+    setState(() => _biometricReady = ready);
   }
 
   Future<void> _persistRemembered() async {
@@ -69,31 +80,139 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     super.dispose();
   }
 
+  String _mapLoginError(Object e, AppLocalizations l10n) {
+    if (e is ApiException) {
+      if (e.code == 'VALIDATION_ERROR') return l10n.errorValidation;
+      if (e.code == 'NETWORK_ERROR') return l10n.errorNetwork;
+      return l10n.errorUnauthorized;
+    }
+    return l10n.errorGeneric;
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() {
       _submitting = true;
       _error = null;
     });
+    final l10n = AppLocalizations.of(context);
+    final tenantSlug = _tenant.text;
+    final username = _username.text;
+    final password = _password.text;
     try {
-      await ref.read(authControllerProvider.notifier).login(
-            tenantSlug: _tenant.text,
-            username: _username.text,
-            password: _password.text,
+      // Establish session first so we can offer biometrics before redirect.
+      final user = await ref.read(authRepositoryProvider).login(
+            tenantSlug: tenantSlug,
+            username: username,
+            password: password,
           );
       await _persistRemembered();
+      await _offerBiometricEnrollment(
+        BiometricCredentials(
+          tenantSlug: tenantSlug,
+          username: username,
+          password: password,
+        ),
+      );
+      if (!mounted) return;
+      ref.read(authControllerProvider.notifier).acceptSession(user);
     } catch (e) {
       if (!mounted) return;
-      final l10n = AppLocalizations.of(context);
-      setState(() {
-        _error = e is ApiException
-            ? (e.code == 'VALIDATION_ERROR'
-                ? l10n.errorValidation
-                : e.code == 'NETWORK_ERROR'
-                    ? l10n.errorNetwork
-                    : l10n.errorUnauthorized)
-            : l10n.errorGeneric;
-      });
+      setState(() => _error = _mapLoginError(e, l10n));
+    } finally {
+      if (mounted) setState(() => _submitting = false);
+    }
+  }
+
+  Future<void> _offerBiometricEnrollment(BiometricCredentials credentials) async {
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
+    final biometric = ref.read(biometricServiceProvider);
+    final store = ref.read(biometricCredentialsStoreProvider);
+    final availability = await biometric.availability();
+    if (availability != BiometricAvailability.available) return;
+
+    if (await store.isEnabled()) {
+      await store.save(credentials);
+      if (mounted) setState(() => _biometricReady = true);
+      return;
+    }
+
+    if (!mounted) return;
+    final enable = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.biometricsEnableTitle),
+        content: Text(l10n.biometricsEnableBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.biometricsEnableSkip),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(l10n.biometricsEnableConfirm),
+          ),
+        ],
+      ),
+    );
+    if (enable != true || !mounted) return;
+
+    final ok = await biometric.authenticate(reason: l10n.biometricsPrompt);
+    if (!ok || !mounted) return;
+
+    await store.save(credentials);
+    if (!mounted) return;
+    setState(() => _biometricReady = true);
+    _showMessage(l10n.biometricsEnabled);
+  }
+
+  Future<void> _signInWithBiometrics() async {
+    final l10n = AppLocalizations.of(context);
+    final biometric = ref.read(biometricServiceProvider);
+    final store = ref.read(biometricCredentialsStoreProvider);
+
+    final availability = await biometric.availability();
+    if (availability == BiometricAvailability.unsupported) {
+      _showMessage(l10n.biometricsUnavailable);
+      return;
+    }
+    if (availability == BiometricAvailability.notEnrolled) {
+      _showMessage(l10n.biometricsNotEnrolled);
+      return;
+    }
+
+    final credentials = await store.read();
+    if (credentials == null) {
+      _showMessage(l10n.biometricsNoCredentials);
+      return;
+    }
+
+    final ok = await biometric.authenticate(reason: l10n.biometricsPrompt);
+    if (!ok) {
+      if (mounted) _showMessage(l10n.biometricsFailed);
+      return;
+    }
+
+    setState(() {
+      _submitting = true;
+      _error = null;
+    });
+    try {
+      await ref.read(authControllerProvider.notifier).login(
+            tenantSlug: credentials.tenantSlug,
+            username: credentials.username,
+            password: credentials.password,
+          );
+    } catch (e) {
+      if (e is ApiException &&
+          (e.code == 'AUTH_UNAUTHORIZED' || e.statusCode == 401)) {
+        await store.clear();
+        if (mounted) setState(() => _biometricReady = false);
+      }
+      if (!mounted) return;
+      setState(() => _error = _mapLoginError(e, l10n));
     } finally {
       if (mounted) setState(() => _submitting = false);
     }
@@ -406,14 +525,23 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               SizedBox(
                                 height: 52,
                                 child: OutlinedButton.icon(
-                                  onPressed: () =>
-                                      _showMessage(l10n.biometricsUnavailable),
-                                  icon: const Icon(Icons.fingerprint, size: 22),
+                                  onPressed:
+                                      _submitting ? null : _signInWithBiometrics,
+                                  icon: Icon(
+                                    Icons.fingerprint,
+                                    size: 22,
+                                    color: _biometricReady
+                                        ? AppColors.brand700
+                                        : AppColors.inkMuted,
+                                  ),
                                   label: Text(
                                     l10n.signInBiometrics,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontWeight: FontWeight.w700,
                                       fontSize: 14,
+                                      color: _biometricReady
+                                          ? AppColors.brand700
+                                          : AppColors.inkMuted,
                                     ),
                                   ),
                                   style: OutlinedButton.styleFrom(

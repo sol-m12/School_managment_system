@@ -4,6 +4,8 @@ import 'api/api_client.dart';
 import 'api/api_config.dart';
 import 'auth/auth_repository.dart';
 import 'auth/auth_user.dart';
+import 'auth/biometric_credentials_store.dart';
+import 'auth/biometric_service.dart';
 import 'auth/token_store.dart';
 import 'cache/cache_database.dart';
 import 'cache/cache_repository.dart';
@@ -32,6 +34,15 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
     api: ref.watch(apiClientProvider),
     tokenStore: ref.watch(tokenStoreProvider),
   );
+});
+
+final biometricServiceProvider = Provider<BiometricService>((ref) {
+  return BiometricService();
+});
+
+final biometricCredentialsStoreProvider =
+    Provider<BiometricCredentialsStore>((ref) {
+  return BiometricCredentialsStore();
 });
 
 final cacheRepositoryProvider = Provider<CacheRepository>((ref) {
@@ -81,7 +92,7 @@ class AuthController extends Notifier<AuthState> {
     }
   }
 
-  Future<void> login({
+  Future<AuthUser> login({
     required String tenantSlug,
     required String username,
     required String password,
@@ -91,6 +102,12 @@ class AuthController extends Notifier<AuthState> {
       username: username,
       password: password,
     );
+    state = AuthState(status: AuthStatus.authenticated, user: user);
+    return user;
+  }
+
+  /// Apply an already-established session (tokens already in [TokenStore]).
+  void acceptSession(AuthUser user) {
     state = AuthState(status: AuthStatus.authenticated, user: user);
   }
 

@@ -191,8 +191,68 @@ abstract class AppLocalizations {
   /// No description provided for @biometricsUnavailable.
   ///
   /// In am, this message translates to:
-  /// **'በባዮሜትሪክስ መግባት ገና አይገኝም'**
+  /// **'በባዮሜትሪክስ መግባት በዚህ መሣሪያ አይገኝም'**
   String get biometricsUnavailable;
+
+  /// No description provided for @biometricsNotEnrolled.
+  ///
+  /// In am, this message translates to:
+  /// **'በመጀመሪያ በመሣሪያ ቅንብሮች የጣት አሻራ ወይም Face ID ያዘጋጁ'**
+  String get biometricsNotEnrolled;
+
+  /// No description provided for @biometricsNoCredentials.
+  ///
+  /// In am, this message translates to:
+  /// **'በባዮሜትሪክስ ለመግባት አንድ ጊዜ በየይለፍ ቃል ይግቡ'**
+  String get biometricsNoCredentials;
+
+  /// No description provided for @biometricsFailed.
+  ///
+  /// In am, this message translates to:
+  /// **'የባዮሜትሪክ ማረጋገጫ አልተሳካም'**
+  String get biometricsFailed;
+
+  /// No description provided for @biometricsPrompt.
+  ///
+  /// In am, this message translates to:
+  /// **'ወደ ኬይት ይግቡ'**
+  String get biometricsPrompt;
+
+  /// No description provided for @biometricsEnableTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'በባዮሜትሪክስ መግባት ይንቃ?'**
+  String get biometricsEnableTitle;
+
+  /// No description provided for @biometricsEnableBody.
+  ///
+  /// In am, this message translates to:
+  /// **'በሚቀጥለው ጊዜ የይለፍ ቃል ከመተየብ ይልቅ የጣት አሻራ ወይም Face ID ይጠቀሙ።'**
+  String get biometricsEnableBody;
+
+  /// No description provided for @biometricsEnableConfirm.
+  ///
+  /// In am, this message translates to:
+  /// **'አንቃ'**
+  String get biometricsEnableConfirm;
+
+  /// No description provided for @biometricsEnableSkip.
+  ///
+  /// In am, this message translates to:
+  /// **'አሁን አይደለም'**
+  String get biometricsEnableSkip;
+
+  /// No description provided for @biometricsEnabled.
+  ///
+  /// In am, this message translates to:
+  /// **'በባዮሜትሪክስ መግባት ነቅቷል'**
+  String get biometricsEnabled;
+
+  /// No description provided for @faceIdUsage.
+  ///
+  /// In am, this message translates to:
+  /// **'ኬይት Face IDን በፍጥነትና በደህንነት ለመግባት ይጠቀማል።'**
+  String get faceIdUsage;
 
   /// No description provided for @sslEncrypted.
   ///

@@ -180,6 +180,13 @@ function simRow(row: {
   };
 }
 
+function hasStoredPhoto(photo: string | null): boolean {
+  if (!photo) return false;
+  if (photo === "default_profile.png") return false;
+  if (photo.includes("/") || photo.includes("\\")) return false;
+  return true;
+}
+
 export async function studentHome(tenantId: number, userId: number) {
   const me = await learner(tenantId, userId);
   const rows = await classSims(tenantId, me.gradeLevel, me.section);
@@ -190,9 +197,13 @@ export async function studentHome(tenantId: number, userId: number) {
     timeZone: "Africa/Addis_Ababa",
   }).format(new Date());
   return {
+    studentId: me.studentId,
     fullName: me.fullName,
     gradeLevel: me.gradeLevel,
     section: me.section,
+    stream: me.stream,
+    academicYear: me.academicYear,
+    hasPhoto: hasStoredPhoto(me.photo),
     greeting: greetingPart(),
     today,
     simulationCount: rows.length,

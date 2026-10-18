@@ -55,7 +55,39 @@ class AppLocalizationsAm extends AppLocalizations {
   String get signInBiometrics => 'በባዮሜትሪክስ ይግቡ';
 
   @override
-  String get biometricsUnavailable => 'በባዮሜትሪክስ መግባት ገና አይገኝም';
+  String get biometricsUnavailable => 'በባዮሜትሪክስ መግባት በዚህ መሣሪያ አይገኝም';
+
+  @override
+  String get biometricsNotEnrolled =>
+      'በመጀመሪያ በመሣሪያ ቅንብሮች የጣት አሻራ ወይም Face ID ያዘጋጁ';
+
+  @override
+  String get biometricsNoCredentials => 'በባዮሜትሪክስ ለመግባት አንድ ጊዜ በየይለፍ ቃል ይግቡ';
+
+  @override
+  String get biometricsFailed => 'የባዮሜትሪክ ማረጋገጫ አልተሳካም';
+
+  @override
+  String get biometricsPrompt => 'ወደ ኬይት ይግቡ';
+
+  @override
+  String get biometricsEnableTitle => 'በባዮሜትሪክስ መግባት ይንቃ?';
+
+  @override
+  String get biometricsEnableBody =>
+      'በሚቀጥለው ጊዜ የይለፍ ቃል ከመተየብ ይልቅ የጣት አሻራ ወይም Face ID ይጠቀሙ።';
+
+  @override
+  String get biometricsEnableConfirm => 'አንቃ';
+
+  @override
+  String get biometricsEnableSkip => 'አሁን አይደለም';
+
+  @override
+  String get biometricsEnabled => 'በባዮሜትሪክስ መግባት ነቅቷል';
+
+  @override
+  String get faceIdUsage => 'ኬይት Face IDን በፍጥነትና በደህንነት ለመግባት ይጠቀማል።';
 
   @override
   String get sslEncrypted => '256-ቢት SSL የተመሰጠረ • ኬይት ደህንነት';
