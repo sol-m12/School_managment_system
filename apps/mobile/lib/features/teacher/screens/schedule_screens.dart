@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/api/api_client.dart';
+import '../../../core/providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/keyt_app_bar.dart';
 import '../../../core/widgets/json_screen.dart';
@@ -204,19 +207,55 @@ class _TeacherScheduleScreenState extends State<TeacherScheduleScreen> {
   }
 }
 
-/// Global teacher office timetable (mine / school / substitutions).
-class TeacherOfficeTimetableScreen extends StatefulWidget {
+/// Global teacher office timetable (mine / school / substitutions + swap).
+class TeacherOfficeTimetableScreen extends ConsumerStatefulWidget {
   const TeacherOfficeTimetableScreen({super.key});
 
   @override
-  State<TeacherOfficeTimetableScreen> createState() =>
+  ConsumerState<TeacherOfficeTimetableScreen> createState() =>
       _TeacherOfficeTimetableScreenState();
 }
 
 class _TeacherOfficeTimetableScreenState
-    extends State<TeacherOfficeTimetableScreen> {
+    extends ConsumerState<TeacherOfficeTimetableScreen> {
   String _selectedDay = weekdayToday();
   int _tab = 0; // 0 mine, 1 school
+  final _leftId = TextEditingController();
+  final _rightId = TextEditingController();
+  bool _swapBusy = false;
+  String? _swapNotice;
+  String? _swapError;
+
+  @override
+  void dispose() {
+    _leftId.dispose();
+    _rightId.dispose();
+    super.dispose();
+  }
+
+  Future<void> _swap() async {
+    final left = int.tryParse(_leftId.text.trim());
+    final right = int.tryParse(_rightId.text.trim());
+    if (_swapBusy || left == null || right == null) return;
+    setState(() {
+      _swapBusy = true;
+      _swapError = null;
+      _swapNotice = null;
+    });
+    try {
+      await ref.read(apiClientProvider).post(
+        '/teacher/office/swaps',
+        data: {'leftId': left, 'rightId': right},
+      );
+      if (!mounted) return;
+      setState(() => _swapNotice = AppLocalizations.of(context).savedGeneric);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _swapError = mapDioError(e).code);
+    } finally {
+      if (mounted) setState(() => _swapBusy = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -355,6 +394,32 @@ class _TeacherOfficeTimetableScreenState
                   );
                 }),
               ],
+              const SizedBox(height: 16),
+              Text(
+                l10n.timetable,
+                style: const TextStyle(fontWeight: FontWeight.w800),
+              ),
+              if (_swapNotice != null)
+                Text(_swapNotice!,
+                    style: const TextStyle(
+                        color: AppColors.success, fontWeight: FontWeight.w600)),
+              if (_swapError != null)
+                Text(_swapError!,
+                    style: const TextStyle(color: AppColors.danger)),
+              TextField(
+                controller: _leftId,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'leftId'),
+              ),
+              TextField(
+                controller: _rightId,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'rightId'),
+              ),
+              FilledButton(
+                onPressed: _swapBusy ? null : _swap,
+                child: Text(l10n.savedGeneric),
+              ),
             ],
           );
         },

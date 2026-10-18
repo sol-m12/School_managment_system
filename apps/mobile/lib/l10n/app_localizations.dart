@@ -2149,6 +2149,468 @@ abstract class AppLocalizations {
   /// In am, this message translates to:
   /// **'ተቀምጧል።'**
   String get librarySaved;
+
+  /// No description provided for @lfBoardTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'የጠፋ እና የተገኘ'**
+  String get lfBoardTitle;
+
+  /// No description provided for @lfKind.
+  ///
+  /// In am, this message translates to:
+  /// **'አይነት'**
+  String get lfKind;
+
+  /// No description provided for @lfKindLost.
+  ///
+  /// In am, this message translates to:
+  /// **'ጠፍቷል'**
+  String get lfKindLost;
+
+  /// No description provided for @lfKindFound.
+  ///
+  /// In am, this message translates to:
+  /// **'ተገኝቷል'**
+  String get lfKindFound;
+
+  /// No description provided for @lfTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'ርዕስ'**
+  String get lfTitle;
+
+  /// No description provided for @lfDescription.
+  ///
+  /// In am, this message translates to:
+  /// **'መግለጫ'**
+  String get lfDescription;
+
+  /// No description provided for @lfLocation.
+  ///
+  /// In am, this message translates to:
+  /// **'ቦታ'**
+  String get lfLocation;
+
+  /// No description provided for @lfContact.
+  ///
+  /// In am, this message translates to:
+  /// **'አድራሻ'**
+  String get lfContact;
+
+  /// No description provided for @lfPostItem.
+  ///
+  /// In am, this message translates to:
+  /// **'ልጥፍ'**
+  String get lfPostItem;
+
+  /// No description provided for @lfPosted.
+  ///
+  /// In am, this message translates to:
+  /// **'ልጥፍዎ ለማረጋገጫ ተልኳል።'**
+  String get lfPosted;
+
+  /// No description provided for @lfApprovedBoard.
+  ///
+  /// In am, this message translates to:
+  /// **'ጸድቆ የወጣ ሰሌዳ'**
+  String get lfApprovedBoard;
+
+  /// No description provided for @lfEmptyBoard.
+  ///
+  /// In am, this message translates to:
+  /// **'ጸድቆ የወጣ ነገር የለም።'**
+  String get lfEmptyBoard;
+
+  /// No description provided for @lfMyPosts.
+  ///
+  /// In am, this message translates to:
+  /// **'የእኔ ልጥፎች'**
+  String get lfMyPosts;
+
+  /// No description provided for @lfEmptyMine.
+  ///
+  /// In am, this message translates to:
+  /// **'እስካሁን አልለጠፉም።'**
+  String get lfEmptyMine;
+
+  /// No description provided for @lfStatusPending.
+  ///
+  /// In am, this message translates to:
+  /// **'በመጠባበቅ ላይ'**
+  String get lfStatusPending;
+
+  /// No description provided for @lfStatusApproved.
+  ///
+  /// In am, this message translates to:
+  /// **'ጸድቋል'**
+  String get lfStatusApproved;
+
+  /// No description provided for @lfStatusResolved.
+  ///
+  /// In am, this message translates to:
+  /// **'ተፈቷል'**
+  String get lfStatusResolved;
+
+  /// No description provided for @lfStatusRejected.
+  ///
+  /// In am, this message translates to:
+  /// **'ውድቅ'**
+  String get lfStatusRejected;
+
+  /// No description provided for @lfModerateTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'የጠፋ እና የተገኘ ማረጋገጫ'**
+  String get lfModerateTitle;
+
+  /// No description provided for @lfEmptyQueue.
+  ///
+  /// In am, this message translates to:
+  /// **'ለማረጋገጫ የሚቀርብ ነገር የለም።'**
+  String get lfEmptyQueue;
+
+  /// No description provided for @lfApprove.
+  ///
+  /// In am, this message translates to:
+  /// **'አጽድቅ'**
+  String get lfApprove;
+
+  /// No description provided for @lfReject.
+  ///
+  /// In am, this message translates to:
+  /// **'ውድቅ አድርግ'**
+  String get lfReject;
+
+  /// No description provided for @lfResolve.
+  ///
+  /// In am, this message translates to:
+  /// **'ተፈቷል አድርግ'**
+  String get lfResolve;
+
+  /// No description provided for @lfActionApprove.
+  ///
+  /// In am, this message translates to:
+  /// **'ነገሩ ጸድቋል።'**
+  String get lfActionApprove;
+
+  /// No description provided for @lfActionReject.
+  ///
+  /// In am, this message translates to:
+  /// **'ነገሩ ውድቅ ሆኗል።'**
+  String get lfActionReject;
+
+  /// No description provided for @lfActionResolve.
+  ///
+  /// In am, this message translates to:
+  /// **'ነገሩ ተፈቷል ተብሏል።'**
+  String get lfActionResolve;
+
+  /// No description provided for @forumStudentTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'የትምህርት ጥያቄና መልስ'**
+  String get forumStudentTitle;
+
+  /// No description provided for @forumModerateTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'የጥያቄና መልስ ቁጥጥር'**
+  String get forumModerateTitle;
+
+  /// No description provided for @forumQuestionTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'የጥያቄ ርዕስ'**
+  String get forumQuestionTitle;
+
+  /// No description provided for @forumQuestionBody.
+  ///
+  /// In am, this message translates to:
+  /// **'ጥያቄ'**
+  String get forumQuestionBody;
+
+  /// No description provided for @forumPostQuestion.
+  ///
+  /// In am, this message translates to:
+  /// **'ጥያቄ ለጥፍ'**
+  String get forumPostQuestion;
+
+  /// No description provided for @forumQuestionPosted.
+  ///
+  /// In am, this message translates to:
+  /// **'ጥያቄዎ ተለጥፏል።'**
+  String get forumQuestionPosted;
+
+  /// No description provided for @forumPoints.
+  ///
+  /// In am, this message translates to:
+  /// **'ነጥብ'**
+  String get forumPoints;
+
+  /// No description provided for @forumOpen.
+  ///
+  /// In am, this message translates to:
+  /// **'ክፈት'**
+  String get forumOpen;
+
+  /// No description provided for @forumEmptyQuestions.
+  ///
+  /// In am, this message translates to:
+  /// **'ጥያቄ የለም።'**
+  String get forumEmptyQuestions;
+
+  /// No description provided for @forumYourAnswer.
+  ///
+  /// In am, this message translates to:
+  /// **'መልስዎ'**
+  String get forumYourAnswer;
+
+  /// No description provided for @forumPostAnswer.
+  ///
+  /// In am, this message translates to:
+  /// **'መልስ ለጥፍ'**
+  String get forumPostAnswer;
+
+  /// No description provided for @forumAnswerPosted.
+  ///
+  /// In am, this message translates to:
+  /// **'መልስዎ ተለጥፏል።'**
+  String get forumAnswerPosted;
+
+  /// No description provided for @forumUpvote.
+  ///
+  /// In am, this message translates to:
+  /// **'ድጋፍ ስጥ'**
+  String get forumUpvote;
+
+  /// No description provided for @forumUpvoted.
+  ///
+  /// In am, this message translates to:
+  /// **'ድጋፉ ተመዝግቧል።'**
+  String get forumUpvoted;
+
+  /// No description provided for @forumEndorsed.
+  ///
+  /// In am, this message translates to:
+  /// **'በመምህር ጸድቋል'**
+  String get forumEndorsed;
+
+  /// No description provided for @forumEndorse.
+  ///
+  /// In am, this message translates to:
+  /// **'መምህር ያጽድቅ'**
+  String get forumEndorse;
+
+  /// No description provided for @forumEndorsedSaved.
+  ///
+  /// In am, this message translates to:
+  /// **'መልሱ ጸድቋል።'**
+  String get forumEndorsedSaved;
+
+  /// No description provided for @forumDelete.
+  ///
+  /// In am, this message translates to:
+  /// **'ሰርዝ'**
+  String get forumDelete;
+
+  /// No description provided for @forumDeleted.
+  ///
+  /// In am, this message translates to:
+  /// **'ይዘቱ ተሰርዟል።'**
+  String get forumDeleted;
+
+  /// No description provided for @schStudentTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'ስኮላርሺፖች'**
+  String get schStudentTitle;
+
+  /// No description provided for @schRecommendTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'የምክር ደብዳቤዎች'**
+  String get schRecommendTitle;
+
+  /// No description provided for @schLocked.
+  ///
+  /// In am, this message translates to:
+  /// **'ስኮላርሺፕ የሚከፈተው የብሔራዊ ነጥብዎ የትምህርት ቤቱን መቁረጫ ሲደርስ ነው።'**
+  String get schLocked;
+
+  /// No description provided for @schEligible.
+  ///
+  /// In am, this message translates to:
+  /// **'ተከፍቷል። ነጥብዎ {score} መቁረጫ {cutoff} አሟልቷል።'**
+  String schEligible(int score, int cutoff);
+
+  /// No description provided for @schOpportunities.
+  ///
+  /// In am, this message translates to:
+  /// **'እድሎች'**
+  String get schOpportunities;
+
+  /// No description provided for @schLink.
+  ///
+  /// In am, this message translates to:
+  /// **'አገናኝ'**
+  String get schLink;
+
+  /// No description provided for @schApply.
+  ///
+  /// In am, this message translates to:
+  /// **'አመልክት'**
+  String get schApply;
+
+  /// No description provided for @schApplied.
+  ///
+  /// In am, this message translates to:
+  /// **'ማመልከቻ ተልኳል።'**
+  String get schApplied;
+
+  /// No description provided for @schEmptyOpportunities.
+  ///
+  /// In am, this message translates to:
+  /// **'እድል አልተለጠፈም።'**
+  String get schEmptyOpportunities;
+
+  /// No description provided for @schMyApplications.
+  ///
+  /// In am, this message translates to:
+  /// **'የእኔ ማመልከቻዎች'**
+  String get schMyApplications;
+
+  /// No description provided for @schRequestLetter.
+  ///
+  /// In am, this message translates to:
+  /// **'የምክር ደብዳቤ ጠይቅ'**
+  String get schRequestLetter;
+
+  /// No description provided for @schLetterRequested.
+  ///
+  /// In am, this message translates to:
+  /// **'የምክር ደብዳቤ ተጠይቋል።'**
+  String get schLetterRequested;
+
+  /// No description provided for @schEmptyApplications.
+  ///
+  /// In am, this message translates to:
+  /// **'ማመልከቻ የለም።'**
+  String get schEmptyApplications;
+
+  /// No description provided for @schLetterBody.
+  ///
+  /// In am, this message translates to:
+  /// **'የደብዳቤ ጽሑፍ'**
+  String get schLetterBody;
+
+  /// No description provided for @schSaveDraft.
+  ///
+  /// In am, this message translates to:
+  /// **'ረቂቅ አስቀምጥ'**
+  String get schSaveDraft;
+
+  /// No description provided for @schDraftSaved.
+  ///
+  /// In am, this message translates to:
+  /// **'ረቂቁ ተቀምጧል።'**
+  String get schDraftSaved;
+
+  /// No description provided for @schSignLetter.
+  ///
+  /// In am, this message translates to:
+  /// **'ፈርመህ አድርስ'**
+  String get schSignLetter;
+
+  /// No description provided for @schLetterSigned.
+  ///
+  /// In am, this message translates to:
+  /// **'ደብዳቤው ተፈርሟል።'**
+  String get schLetterSigned;
+
+  /// No description provided for @schEmptyQueue.
+  ///
+  /// In am, this message translates to:
+  /// **'የደብዳቤ ጥያቄ የለም።'**
+  String get schEmptyQueue;
+
+  /// No description provided for @schChooseStudent.
+  ///
+  /// In am, this message translates to:
+  /// **'ተማሪ ይምረጡ'**
+  String get schChooseStudent;
+
+  /// No description provided for @libraryUsageTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'የቤተ መጻሕፍት አጠቃቀም'**
+  String get libraryUsageTitle;
+
+  /// No description provided for @libraryUsageEmpty.
+  ///
+  /// In am, this message translates to:
+  /// **'የቤተ መጻሕፍት ጉብኝት አልተመዘገበም።'**
+  String get libraryUsageEmpty;
+
+  /// No description provided for @libraryUsageDate.
+  ///
+  /// In am, this message translates to:
+  /// **'ቀን'**
+  String get libraryUsageDate;
+
+  /// No description provided for @libraryUsageShift.
+  ///
+  /// In am, this message translates to:
+  /// **'ፈረቃ'**
+  String get libraryUsageShift;
+
+  /// No description provided for @curriculumTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'ሥርዓተ ትምህርት'**
+  String get curriculumTitle;
+
+  /// No description provided for @gradeWorkflowTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'የውጤት ማጽደቅ'**
+  String get gradeWorkflowTitle;
+
+  /// No description provided for @procurementTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'የግዢ ጥያቄ'**
+  String get procurementTitle;
+
+  /// No description provided for @coverageTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'የሥርዓተ ትምህርት ሽፋን'**
+  String get coverageTitle;
+
+  /// No description provided for @evaluationTitle.
+  ///
+  /// In am, this message translates to:
+  /// **'የመምህር ግምገማ'**
+  String get evaluationTitle;
+
+  /// No description provided for @approveAction.
+  ///
+  /// In am, this message translates to:
+  /// **'አጽድቅ'**
+  String get approveAction;
+
+  /// No description provided for @sendAction.
+  ///
+  /// In am, this message translates to:
+  /// **'ላክ'**
+  String get sendAction;
+
+  /// No description provided for @savedGeneric.
+  ///
+  /// In am, this message translates to:
+  /// **'ተቀምጧል።'**
+  String get savedGeneric;
 }
 
 class _AppLocalizationsDelegate

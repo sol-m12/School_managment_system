@@ -1016,6 +1016,12 @@ class ServicesHubScreen extends StatelessWidget {
                             context.push('/student/services/library'),
                       ),
                       StudentQuickAction(
+                        label: l10n.libraryUsageTitle,
+                        icon: Icons.menu_book_outlined,
+                        onTap: () =>
+                            context.push('/student/services/library-usage'),
+                      ),
+                      StudentQuickAction(
                         label: l10n.documents,
                         icon: Icons.description,
                         onTap: () =>
@@ -1037,6 +1043,24 @@ class ServicesHubScreen extends StatelessWidget {
                         label: l10n.clubsTitle,
                         icon: Icons.emoji_events_outlined,
                         onTap: () => context.push('/student/services/clubs'),
+                      ),
+                      StudentQuickAction(
+                        label: l10n.lfBoardTitle,
+                        icon: Icons.search,
+                        onTap: () =>
+                            context.push('/student/services/lost-found'),
+                      ),
+                      StudentQuickAction(
+                        label: l10n.forumStudentTitle,
+                        icon: Icons.forum_outlined,
+                        onTap: () =>
+                            context.push('/student/services/forum'),
+                      ),
+                      StudentQuickAction(
+                        label: l10n.schStudentTitle,
+                        icon: Icons.school_outlined,
+                        onTap: () =>
+                            context.push('/student/services/scholarships'),
                       ),
                       StudentQuickAction(
                         label: l10n.digitalId,

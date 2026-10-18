@@ -10,21 +10,30 @@ import '../features/parent/screens/parent_academics_screen.dart';
 import '../features/parent/screens/parent_home_screen.dart';
 import '../features/parent/screens/parent_screens.dart';
 import '../features/student/screens/clubs_screen.dart';
+import '../features/student/screens/desk_form_screens.dart';
 import '../features/student/screens/digital_id_screen.dart';
+import '../features/student/screens/forum_screen.dart';
+import '../features/student/screens/library_usage_screen.dart';
+import '../features/student/screens/lost_found_screen.dart';
 import '../features/student/screens/notifications_screen.dart';
+import '../features/student/screens/scholarships_screen.dart';
 import '../features/student/screens/student_screens.dart';
 import '../features/student/screens/timetable_screen.dart';
 import '../features/student/student_shell.dart';
 import '../features/student/screens/services_screens.dart';
 import '../features/teacher/screens/clubs_patron_screen.dart';
+import '../features/teacher/screens/department_screens.dart';
+import '../features/teacher/screens/forum_moderate_screen.dart';
 import '../features/teacher/screens/homeroom_attendance_screen.dart';
 import '../features/teacher/screens/offline_attendance_screen.dart';
 import '../features/teacher/screens/online_exams_screen.dart';
 import '../features/teacher/screens/question_bank_screen.dart';
 import '../features/teacher/screens/scan_id_screen.dart';
 import '../features/teacher/screens/schedule_screens.dart';
+import '../features/teacher/screens/scholarships_recommend_screen.dart';
 import '../features/teacher/screens/student_360_screen.dart';
 import '../features/teacher/screens/subject_attendance_screen.dart';
+import '../features/teacher/screens/teacher_form_screens.dart';
 import '../features/teacher/screens/teacher_screens.dart';
 import '../features/teacher/teacher_shell.dart';
 import '../l10n/app_localizations.dart';
@@ -136,14 +145,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'assignments',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return StudentJsonRoute(
-                        title: l10n.assignments,
-                        cacheKey: 'student_assignments',
-                        path: '/student/desk/assignments',
-                      );
-                    },
+                    builder: (context, state) =>
+                        const StudentAssignmentsScreen(),
                   ),
                 ],
               ),
@@ -222,14 +225,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'groups',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return StudentJsonRoute(
-                        title: l10n.groups,
-                        cacheKey: 'student_groups',
-                        path: '/student/groups',
-                      );
-                    },
+                    builder: (context, state) => const StudentGroupsScreen(),
                   ),
                   GoRoute(
                     path: 'planner',
@@ -257,31 +253,38 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     builder: (context, state) => const StudentLibraryScreen(),
                   ),
                   GoRoute(
+                    path: 'library-usage',
+                    builder: (context, state) =>
+                        const StudentLibraryUsageScreen(),
+                  ),
+                  GoRoute(
+                    path: 'lost-found',
+                    builder: (context, state) =>
+                        const StudentLostFoundScreen(),
+                  ),
+                  GoRoute(
+                    path: 'forum',
+                    builder: (context, state) => const StudentForumScreen(),
+                  ),
+                  GoRoute(
+                    path: 'scholarships',
+                    builder: (context, state) =>
+                        const StudentScholarshipsScreen(),
+                  ),
+                  GoRoute(
                     path: 'documents',
                     builder: (context, state) =>
-                        const StudentDocumentsScreen(),
+                        const StudentDocumentsFormScreen(),
                   ),
                   GoRoute(
                     path: 'helpdesk',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return StudentJsonRoute(
-                        title: l10n.helpdesk,
-                        cacheKey: 'student_helpdesk',
-                        path: '/student/desk/helpdesk',
-                      );
-                    },
+                    builder: (context, state) =>
+                        const StudentHelpdeskScreen(),
                   ),
                   GoRoute(
                     path: 'vocational',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return StudentJsonRoute(
-                        title: l10n.vocational,
-                        cacheKey: 'student_vocational',
-                        path: '/student/desk/vocational',
-                      );
-                    },
+                    builder: (context, state) =>
+                        const StudentVocationalScreen(),
                   ),
                   GoRoute(
                     path: 'id',
@@ -444,14 +447,8 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 routes: [
                   GoRoute(
                     path: 'lessons',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return TeacherJsonRoute(
-                        title: l10n.lessonPlans,
-                        cacheKey: 'teacher_lessons',
-                        path: '/teacher/lesson-plans',
-                      );
-                    },
+                    builder: (context, state) =>
+                        const TeacherLessonPlansScreen(),
                   ),
                   GoRoute(
                     path: 'exams',
@@ -470,36 +467,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'files',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return TeacherJsonRoute(
-                        title: l10n.courseFiles,
-                        cacheKey: 'teacher_course_files',
-                        path: '/teacher/course-files',
-                      );
-                    },
+                    builder: (context, state) =>
+                        const TeacherCourseFilesScreen(),
                   ),
                   GoRoute(
                     path: 'simulations',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return TeacherJsonRoute(
-                        title: l10n.simulations,
-                        cacheKey: 'teacher_simulations',
-                        path: '/teacher/simulations',
-                      );
-                    },
+                    builder: (context, state) =>
+                        const TeacherSimulationsFormScreen(),
                   ),
                   GoRoute(
                     path: 'participation',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return TeacherJsonRoute(
-                        title: l10n.participation,
-                        cacheKey: 'teacher_participation',
-                        path: '/teacher/office/participation',
-                      );
-                    },
+                    builder: (context, state) =>
+                        const TeacherParticipationScreen(),
                   ),
                   GoRoute(
                     path: 'questions',
@@ -522,47 +501,22 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                   ),
                   GoRoute(
                     path: 'leave',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return TeacherJsonRoute(
-                        title: l10n.leaveRequest,
-                        cacheKey: 'teacher_leave',
-                        path: '/teacher/office/leave',
-                      );
-                    },
+                    builder: (context, state) => const TeacherLeaveScreen(),
                   ),
                   GoRoute(
                     path: 'incidents',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return TeacherJsonRoute(
-                        title: l10n.incidents,
-                        cacheKey: 'teacher_incidents',
-                        path: '/teacher/office/incidents',
-                      );
-                    },
+                    builder: (context, state) =>
+                        const TeacherIncidentsScreen(),
                   ),
                   GoRoute(
                     path: 'library',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return TeacherJsonRoute(
-                        title: l10n.library,
-                        cacheKey: 'teacher_library',
-                        path: '/teacher/office/library',
-                      );
-                    },
+                    builder: (context, state) =>
+                        const TeacherLibraryRecommendScreen(),
                   ),
                   GoRoute(
                     path: 'store',
-                    builder: (context, state) {
-                      final l10n = AppLocalizations.of(context);
-                      return TeacherJsonRoute(
-                        title: l10n.storeRequests,
-                        cacheKey: 'teacher_store',
-                        path: '/teacher/store-requests',
-                      );
-                    },
+                    builder: (context, state) =>
+                        const TeacherStoreRequestScreen(),
                   ),
                   GoRoute(
                     path: 'scan-id',
@@ -572,6 +526,46 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                     path: 'clubs',
                     builder: (context, state) =>
                         const TeacherClubsPatronScreen(),
+                  ),
+                  GoRoute(
+                    path: 'lost-found',
+                    builder: (context, state) =>
+                        const StudentLostFoundScreen(),
+                  ),
+                  GoRoute(
+                    path: 'forum',
+                    builder: (context, state) =>
+                        const TeacherForumModerateScreen(),
+                  ),
+                  GoRoute(
+                    path: 'scholarships',
+                    builder: (context, state) =>
+                        const TeacherScholarshipsRecommendScreen(),
+                  ),
+                  GoRoute(
+                    path: 'curriculum',
+                    builder: (context, state) =>
+                        const TeacherCurriculumScreen(),
+                  ),
+                  GoRoute(
+                    path: 'grade-workflow',
+                    builder: (context, state) =>
+                        const TeacherGradeWorkflowScreen(),
+                  ),
+                  GoRoute(
+                    path: 'procurement',
+                    builder: (context, state) =>
+                        const TeacherProcurementScreen(),
+                  ),
+                  GoRoute(
+                    path: 'coverage',
+                    builder: (context, state) =>
+                        const TeacherCoverageScreen(),
+                  ),
+                  GoRoute(
+                    path: 'evaluation',
+                    builder: (context, state) =>
+                        const TeacherEvaluationScreen(),
                   ),
                 ],
               ),

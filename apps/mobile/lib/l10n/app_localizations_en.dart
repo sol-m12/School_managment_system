@@ -1085,4 +1085,238 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get librarySaved => 'Saved.';
+
+  @override
+  String get lfBoardTitle => 'Lost and found';
+
+  @override
+  String get lfKind => 'Type';
+
+  @override
+  String get lfKindLost => 'Lost';
+
+  @override
+  String get lfKindFound => 'Found';
+
+  @override
+  String get lfTitle => 'Title';
+
+  @override
+  String get lfDescription => 'Description';
+
+  @override
+  String get lfLocation => 'Location';
+
+  @override
+  String get lfContact => 'Contact';
+
+  @override
+  String get lfPostItem => 'Post item';
+
+  @override
+  String get lfPosted => 'Your post was sent for moderation.';
+
+  @override
+  String get lfApprovedBoard => 'Approved board';
+
+  @override
+  String get lfEmptyBoard => 'No approved items yet.';
+
+  @override
+  String get lfMyPosts => 'My posts';
+
+  @override
+  String get lfEmptyMine => 'You have not posted yet.';
+
+  @override
+  String get lfStatusPending => 'Pending';
+
+  @override
+  String get lfStatusApproved => 'Approved';
+
+  @override
+  String get lfStatusResolved => 'Resolved';
+
+  @override
+  String get lfStatusRejected => 'Rejected';
+
+  @override
+  String get lfModerateTitle => 'Lost and found moderation';
+
+  @override
+  String get lfEmptyQueue => 'No items to moderate.';
+
+  @override
+  String get lfApprove => 'Approve';
+
+  @override
+  String get lfReject => 'Reject';
+
+  @override
+  String get lfResolve => 'Mark resolved';
+
+  @override
+  String get lfActionApprove => 'The item was approved.';
+
+  @override
+  String get lfActionReject => 'The item was rejected.';
+
+  @override
+  String get lfActionResolve => 'The item was marked resolved.';
+
+  @override
+  String get forumStudentTitle => 'Academic Q&A';
+
+  @override
+  String get forumModerateTitle => 'Q&A moderation';
+
+  @override
+  String get forumQuestionTitle => 'Question title';
+
+  @override
+  String get forumQuestionBody => 'Question';
+
+  @override
+  String get forumPostQuestion => 'Post question';
+
+  @override
+  String get forumQuestionPosted => 'Your question was posted.';
+
+  @override
+  String get forumPoints => 'points';
+
+  @override
+  String get forumOpen => 'Open';
+
+  @override
+  String get forumEmptyQuestions => 'No questions yet.';
+
+  @override
+  String get forumYourAnswer => 'Your answer';
+
+  @override
+  String get forumPostAnswer => 'Post answer';
+
+  @override
+  String get forumAnswerPosted => 'Your answer was posted.';
+
+  @override
+  String get forumUpvote => 'Upvote';
+
+  @override
+  String get forumUpvoted => 'Vote recorded.';
+
+  @override
+  String get forumEndorsed => 'Teacher endorsed';
+
+  @override
+  String get forumEndorse => 'Teacher endorse';
+
+  @override
+  String get forumEndorsedSaved => 'Answer endorsed.';
+
+  @override
+  String get forumDelete => 'Delete';
+
+  @override
+  String get forumDeleted => 'Content deleted.';
+
+  @override
+  String get schStudentTitle => 'Scholarships';
+
+  @override
+  String get schRecommendTitle => 'Recommendation letters';
+
+  @override
+  String get schLocked =>
+      'Scholarships unlock when your national score meets the school cut-off.';
+
+  @override
+  String schEligible(int score, int cutoff) {
+    return 'Unlocked. Your score $score meets cut-off $cutoff.';
+  }
+
+  @override
+  String get schOpportunities => 'Opportunities';
+
+  @override
+  String get schLink => 'Link';
+
+  @override
+  String get schApply => 'Apply';
+
+  @override
+  String get schApplied => 'Application submitted.';
+
+  @override
+  String get schEmptyOpportunities => 'No opportunities posted yet.';
+
+  @override
+  String get schMyApplications => 'My applications';
+
+  @override
+  String get schRequestLetter => 'Request recommendation';
+
+  @override
+  String get schLetterRequested => 'Recommendation requested.';
+
+  @override
+  String get schEmptyApplications => 'No applications yet.';
+
+  @override
+  String get schLetterBody => 'Letter text';
+
+  @override
+  String get schSaveDraft => 'Save draft';
+
+  @override
+  String get schDraftSaved => 'Draft saved.';
+
+  @override
+  String get schSignLetter => 'Sign and deliver';
+
+  @override
+  String get schLetterSigned => 'Letter signed.';
+
+  @override
+  String get schEmptyQueue => 'No letter requests.';
+
+  @override
+  String get schChooseStudent => 'Choose a student';
+
+  @override
+  String get libraryUsageTitle => 'Library usage';
+
+  @override
+  String get libraryUsageEmpty => 'No library visits recorded yet.';
+
+  @override
+  String get libraryUsageDate => 'Date';
+
+  @override
+  String get libraryUsageShift => 'Shift';
+
+  @override
+  String get curriculumTitle => 'Curriculum';
+
+  @override
+  String get gradeWorkflowTitle => 'Grade collection';
+
+  @override
+  String get procurementTitle => 'Purchase request';
+
+  @override
+  String get coverageTitle => 'Syllabus coverage';
+
+  @override
+  String get evaluationTitle => 'Teacher evaluation';
+
+  @override
+  String get approveAction => 'Approve';
+
+  @override
+  String get sendAction => 'Send';
+
+  @override
+  String get savedGeneric => 'Saved.';
 }

@@ -519,6 +519,46 @@ class TeacherOfficeHubScreen extends StatelessWidget {
             icon: Icons.emoji_events_outlined,
             onTap: () => context.push('/teacher/office/clubs'),
           ),
+          TeacherQuickAction(
+            label: l10n.lfBoardTitle,
+            icon: Icons.search,
+            onTap: () => context.push('/teacher/office/lost-found'),
+          ),
+          TeacherQuickAction(
+            label: l10n.forumModerateTitle,
+            icon: Icons.forum_outlined,
+            onTap: () => context.push('/teacher/office/forum'),
+          ),
+          TeacherQuickAction(
+            label: l10n.schRecommendTitle,
+            icon: Icons.school_outlined,
+            onTap: () => context.push('/teacher/office/scholarships'),
+          ),
+          TeacherQuickAction(
+            label: l10n.curriculumTitle,
+            icon: Icons.book_outlined,
+            onTap: () => context.push('/teacher/office/curriculum'),
+          ),
+          TeacherQuickAction(
+            label: l10n.gradeWorkflowTitle,
+            icon: Icons.fact_check_outlined,
+            onTap: () => context.push('/teacher/office/grade-workflow'),
+          ),
+          TeacherQuickAction(
+            label: l10n.procurementTitle,
+            icon: Icons.shopping_cart_outlined,
+            onTap: () => context.push('/teacher/office/procurement'),
+          ),
+          TeacherQuickAction(
+            label: l10n.coverageTitle,
+            icon: Icons.stacked_line_chart,
+            onTap: () => context.push('/teacher/office/coverage'),
+          ),
+          TeacherQuickAction(
+            label: l10n.evaluationTitle,
+            icon: Icons.star_outline,
+            onTap: () => context.push('/teacher/office/evaluation'),
+          ),
         ],
       ),
     );

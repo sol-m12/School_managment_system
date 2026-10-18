@@ -1079,4 +1079,237 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get librarySaved => 'ተቀምጧል።';
+
+  @override
+  String get lfBoardTitle => 'የጠፋ እና የተገኘ';
+
+  @override
+  String get lfKind => 'አይነት';
+
+  @override
+  String get lfKindLost => 'ጠፍቷል';
+
+  @override
+  String get lfKindFound => 'ተገኝቷል';
+
+  @override
+  String get lfTitle => 'ርዕስ';
+
+  @override
+  String get lfDescription => 'መግለጫ';
+
+  @override
+  String get lfLocation => 'ቦታ';
+
+  @override
+  String get lfContact => 'አድራሻ';
+
+  @override
+  String get lfPostItem => 'ልጥፍ';
+
+  @override
+  String get lfPosted => 'ልጥፍዎ ለማረጋገጫ ተልኳል።';
+
+  @override
+  String get lfApprovedBoard => 'ጸድቆ የወጣ ሰሌዳ';
+
+  @override
+  String get lfEmptyBoard => 'ጸድቆ የወጣ ነገር የለም።';
+
+  @override
+  String get lfMyPosts => 'የእኔ ልጥፎች';
+
+  @override
+  String get lfEmptyMine => 'እስካሁን አልለጠፉም።';
+
+  @override
+  String get lfStatusPending => 'በመጠባበቅ ላይ';
+
+  @override
+  String get lfStatusApproved => 'ጸድቋል';
+
+  @override
+  String get lfStatusResolved => 'ተፈቷል';
+
+  @override
+  String get lfStatusRejected => 'ውድቅ';
+
+  @override
+  String get lfModerateTitle => 'የጠፋ እና የተገኘ ማረጋገጫ';
+
+  @override
+  String get lfEmptyQueue => 'ለማረጋገጫ የሚቀርብ ነገር የለም።';
+
+  @override
+  String get lfApprove => 'አጽድቅ';
+
+  @override
+  String get lfReject => 'ውድቅ አድርግ';
+
+  @override
+  String get lfResolve => 'ተፈቷል አድርግ';
+
+  @override
+  String get lfActionApprove => 'ነገሩ ጸድቋል።';
+
+  @override
+  String get lfActionReject => 'ነገሩ ውድቅ ሆኗል።';
+
+  @override
+  String get lfActionResolve => 'ነገሩ ተፈቷል ተብሏል።';
+
+  @override
+  String get forumStudentTitle => 'የትምህርት ጥያቄና መልስ';
+
+  @override
+  String get forumModerateTitle => 'የጥያቄና መልስ ቁጥጥር';
+
+  @override
+  String get forumQuestionTitle => 'የጥያቄ ርዕስ';
+
+  @override
+  String get forumQuestionBody => 'ጥያቄ';
+
+  @override
+  String get forumPostQuestion => 'ጥያቄ ለጥፍ';
+
+  @override
+  String get forumQuestionPosted => 'ጥያቄዎ ተለጥፏል።';
+
+  @override
+  String get forumPoints => 'ነጥብ';
+
+  @override
+  String get forumOpen => 'ክፈት';
+
+  @override
+  String get forumEmptyQuestions => 'ጥያቄ የለም።';
+
+  @override
+  String get forumYourAnswer => 'መልስዎ';
+
+  @override
+  String get forumPostAnswer => 'መልስ ለጥፍ';
+
+  @override
+  String get forumAnswerPosted => 'መልስዎ ተለጥፏል።';
+
+  @override
+  String get forumUpvote => 'ድጋፍ ስጥ';
+
+  @override
+  String get forumUpvoted => 'ድጋፉ ተመዝግቧል።';
+
+  @override
+  String get forumEndorsed => 'በመምህር ጸድቋል';
+
+  @override
+  String get forumEndorse => 'መምህር ያጽድቅ';
+
+  @override
+  String get forumEndorsedSaved => 'መልሱ ጸድቋል።';
+
+  @override
+  String get forumDelete => 'ሰርዝ';
+
+  @override
+  String get forumDeleted => 'ይዘቱ ተሰርዟል።';
+
+  @override
+  String get schStudentTitle => 'ስኮላርሺፖች';
+
+  @override
+  String get schRecommendTitle => 'የምክር ደብዳቤዎች';
+
+  @override
+  String get schLocked => 'ስኮላርሺፕ የሚከፈተው የብሔራዊ ነጥብዎ የትምህርት ቤቱን መቁረጫ ሲደርስ ነው።';
+
+  @override
+  String schEligible(int score, int cutoff) {
+    return 'ተከፍቷል። ነጥብዎ $score መቁረጫ $cutoff አሟልቷል።';
+  }
+
+  @override
+  String get schOpportunities => 'እድሎች';
+
+  @override
+  String get schLink => 'አገናኝ';
+
+  @override
+  String get schApply => 'አመልክት';
+
+  @override
+  String get schApplied => 'ማመልከቻ ተልኳል።';
+
+  @override
+  String get schEmptyOpportunities => 'እድል አልተለጠፈም።';
+
+  @override
+  String get schMyApplications => 'የእኔ ማመልከቻዎች';
+
+  @override
+  String get schRequestLetter => 'የምክር ደብዳቤ ጠይቅ';
+
+  @override
+  String get schLetterRequested => 'የምክር ደብዳቤ ተጠይቋል።';
+
+  @override
+  String get schEmptyApplications => 'ማመልከቻ የለም።';
+
+  @override
+  String get schLetterBody => 'የደብዳቤ ጽሑፍ';
+
+  @override
+  String get schSaveDraft => 'ረቂቅ አስቀምጥ';
+
+  @override
+  String get schDraftSaved => 'ረቂቁ ተቀምጧል።';
+
+  @override
+  String get schSignLetter => 'ፈርመህ አድርስ';
+
+  @override
+  String get schLetterSigned => 'ደብዳቤው ተፈርሟል።';
+
+  @override
+  String get schEmptyQueue => 'የደብዳቤ ጥያቄ የለም።';
+
+  @override
+  String get schChooseStudent => 'ተማሪ ይምረጡ';
+
+  @override
+  String get libraryUsageTitle => 'የቤተ መጻሕፍት አጠቃቀም';
+
+  @override
+  String get libraryUsageEmpty => 'የቤተ መጻሕፍት ጉብኝት አልተመዘገበም።';
+
+  @override
+  String get libraryUsageDate => 'ቀን';
+
+  @override
+  String get libraryUsageShift => 'ፈረቃ';
+
+  @override
+  String get curriculumTitle => 'ሥርዓተ ትምህርት';
+
+  @override
+  String get gradeWorkflowTitle => 'የውጤት ማጽደቅ';
+
+  @override
+  String get procurementTitle => 'የግዢ ጥያቄ';
+
+  @override
+  String get coverageTitle => 'የሥርዓተ ትምህርት ሽፋን';
+
+  @override
+  String get evaluationTitle => 'የመምህር ግምገማ';
+
+  @override
+  String get approveAction => 'አጽድቅ';
+
+  @override
+  String get sendAction => 'ላክ';
+
+  @override
+  String get savedGeneric => 'ተቀምጧል።';
 }
