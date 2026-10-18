@@ -806,11 +806,23 @@ abstract class AppLocalizations {
   /// **'መነሻ'**
   String get parentNavHome;
 
+  /// No description provided for @parentNavAcademics.
+  ///
+  /// In am, this message translates to:
+  /// **'ትምህርት'**
+  String get parentNavAcademics;
+
   /// No description provided for @parentNavAttendance.
   ///
   /// In am, this message translates to:
   /// **'መገኘት'**
   String get parentNavAttendance;
+
+  /// No description provided for @parentNavServices.
+  ///
+  /// In am, this message translates to:
+  /// **'አገልግሎቶች'**
+  String get parentNavServices;
 
   /// No description provided for @parentNavHomework.
   ///
@@ -895,6 +907,84 @@ abstract class AppLocalizations {
   /// In am, this message translates to:
   /// **'ልጅ ይምረጡ'**
   String get parentSelectChild;
+
+  /// No description provided for @parentGreeting.
+  ///
+  /// In am, this message translates to:
+  /// **'ሰላም፣ {name}'**
+  String parentGreeting(String name);
+
+  /// No description provided for @parentGreetingAm.
+  ///
+  /// In am, this message translates to:
+  /// **'ሰላም፣ {name}'**
+  String parentGreetingAm(String name);
+
+  /// No description provided for @parentEnrolledChildren.
+  ///
+  /// In am, this message translates to:
+  /// **'{count} የተመዘገቡ ልጆች'**
+  String parentEnrolledChildren(int count);
+
+  /// No description provided for @parentSchoolsCount.
+  ///
+  /// In am, this message translates to:
+  /// **'{count} ትምህርት ቤቶች'**
+  String parentSchoolsCount(int count);
+
+  /// No description provided for @parentVerifiedChildren.
+  ///
+  /// In am, this message translates to:
+  /// **'የተረጋገጡ ልጆች'**
+  String get parentVerifiedChildren;
+
+  /// No description provided for @parentVerifiedChildrenAm.
+  ///
+  /// In am, this message translates to:
+  /// **'የተረጋገጡ ልጆች'**
+  String get parentVerifiedChildrenAm;
+
+  /// No description provided for @parentActiveChild.
+  ///
+  /// In am, this message translates to:
+  /// **'ንቁ'**
+  String get parentActiveChild;
+
+  /// No description provided for @parentSwitchChild.
+  ///
+  /// In am, this message translates to:
+  /// **'ቀይር'**
+  String get parentSwitchChild;
+
+  /// No description provided for @parentReviewingChild.
+  ///
+  /// In am, this message translates to:
+  /// **'የ{name} መዝገብ በ{school} እያዩ ነው።'**
+  String parentReviewingChild(String name, String school);
+
+  /// No description provided for @parentParentCode.
+  ///
+  /// In am, this message translates to:
+  /// **'የወላጅ ኮድ'**
+  String get parentParentCode;
+
+  /// No description provided for @parentNoStudentAccount.
+  ///
+  /// In am, this message translates to:
+  /// **'ይህ ልጅ ገና የተማሪ መለያ የለውም'**
+  String get parentNoStudentAccount;
+
+  /// No description provided for @parentCampusServices.
+  ///
+  /// In am, this message translates to:
+  /// **'የግቢ አገልግሎቶች'**
+  String get parentCampusServices;
+
+  /// No description provided for @parentCampusServicesAm.
+  ///
+  /// In am, this message translates to:
+  /// **'የግቢ አገልግሎቶች'**
+  String get parentCampusServicesAm;
 
   /// No description provided for @parentSendMessage.
   ///

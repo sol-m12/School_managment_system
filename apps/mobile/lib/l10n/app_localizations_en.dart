@@ -374,7 +374,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get parentNavHome => 'Home';
 
   @override
+  String get parentNavAcademics => 'Academics';
+
+  @override
   String get parentNavAttendance => 'Attendance';
+
+  @override
+  String get parentNavServices => 'Services';
 
   @override
   String get parentNavHomework => 'Homework';
@@ -417,6 +423,56 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get parentSelectChild => 'Select a child';
+
+  @override
+  String parentGreeting(String name) {
+    return 'Hello, $name';
+  }
+
+  @override
+  String parentGreetingAm(String name) {
+    return 'ሰላም፣ $name';
+  }
+
+  @override
+  String parentEnrolledChildren(int count) {
+    return '$count enrolled children';
+  }
+
+  @override
+  String parentSchoolsCount(int count) {
+    return '$count schools';
+  }
+
+  @override
+  String get parentVerifiedChildren => 'Verified children';
+
+  @override
+  String get parentVerifiedChildrenAm => 'የተረጋገጡ ልጆች';
+
+  @override
+  String get parentActiveChild => 'Active';
+
+  @override
+  String get parentSwitchChild => 'Switch';
+
+  @override
+  String parentReviewingChild(String name, String school) {
+    return 'Reviewing records for $name at $school.';
+  }
+
+  @override
+  String get parentParentCode => 'Parent code';
+
+  @override
+  String get parentNoStudentAccount =>
+      'This child has no linked student account yet';
+
+  @override
+  String get parentCampusServices => 'Campus services';
+
+  @override
+  String get parentCampusServicesAm => 'የግቢ አገልግሎቶች';
 
   @override
   String get parentSendMessage => 'Send message';

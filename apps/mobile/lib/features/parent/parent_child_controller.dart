@@ -47,6 +47,7 @@ class ParentChildState {
     this.error,
     this.updatedAt,
     this.parentDisplayName,
+    this.parentCode,
   });
 
   final List<ParentChild> children;
@@ -55,6 +56,7 @@ class ParentChildState {
   final String? error;
   final DateTime? updatedAt;
   final String? parentDisplayName;
+  final String? parentCode;
 
   ParentChild? get selected {
     final id = selectedStudentId;
@@ -74,6 +76,7 @@ class ParentChildState {
     bool clearError = false,
     DateTime? updatedAt,
     String? parentDisplayName,
+    String? parentCode,
   }) {
     return ParentChildState(
       children: children ?? this.children,
@@ -83,6 +86,7 @@ class ParentChildState {
       error: clearError ? null : (error ?? this.error),
       updatedAt: updatedAt ?? this.updatedAt,
       parentDisplayName: parentDisplayName ?? this.parentDisplayName,
+      parentCode: parentCode ?? this.parentCode,
     );
   }
 }
@@ -173,6 +177,7 @@ class ParentChildController extends Notifier<ParentChildState> {
       loading: false,
       updatedAt: updatedAt,
       parentDisplayName: parsed.displayName,
+      parentCode: parsed.parentCode,
     );
   }
 
@@ -187,27 +192,36 @@ class ParentChildController extends Notifier<ParentChildState> {
     state = const ParentChildState();
   }
 
-  ({List<ParentChild> children, String? displayName}) _parsePayload(
-    Object? data,
-  ) {
+  ({List<ParentChild> children, String? displayName, String? parentCode})
+      _parsePayload(Object? data) {
     if (data is! Map) {
-      return (children: const [], displayName: null);
+      return (children: const [], displayName: null, parentCode: null);
     }
     final map = Map<String, dynamic>.from(data);
     final parent = map['parent'];
     String? displayName;
+    String? parentCode;
     if (parent is Map) {
       displayName = parent['displayName']?.toString();
+      parentCode = parent['parentCode']?.toString();
     }
     final raw = map['children'];
     if (raw is! List) {
-      return (children: const [], displayName: displayName);
+      return (
+        children: const [],
+        displayName: displayName,
+        parentCode: parentCode,
+      );
     }
     final children = raw
         .whereType<Map>()
         .map((e) => ParentChild.fromJson(Map<String, dynamic>.from(e)))
         .toList();
-    return (children: children, displayName: displayName);
+    return (
+      children: children,
+      displayName: displayName,
+      parentCode: parentCode,
+    );
   }
 }
 

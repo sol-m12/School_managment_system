@@ -132,7 +132,9 @@
   "localNotifyChannelName": "የትምህርት ቤት ማሳወቂያዎች",
   "localNotifyChannelDesc": "አዲስ ማሳወቂያዎች ከትምህርት ቤትዎ",
   "parentNavHome": "መነሻ",
+  "parentNavAcademics": "ትምህርት",
   "parentNavAttendance": "መገኘት",
+  "parentNavServices": "አገልግሎቶች",
   "parentNavHomework": "የቤት ስራ",
   "parentNavLibrary": "ቤተ-መጻሕፍት",
   "parentNavMessages": "መልእክት",
@@ -147,6 +149,45 @@
   "parentSchoolFallback": "ትምህርት ቤት",
   "parentEmptyChildren": "ምንም የተገናኘ ልጅ የለም",
   "parentSelectChild": "ልጅ ይምረጡ",
+  "parentGreeting": "ሰላም፣ {name}",
+  "@parentGreeting": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "parentGreetingAm": "ሰላም፣ {name}",
+  "@parentGreetingAm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "parentEnrolledChildren": "{count} የተመዘገቡ ልጆች",
+  "@parentEnrolledChildren": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "parentSchoolsCount": "{count} ትምህርት ቤቶች",
+  "@parentSchoolsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "parentVerifiedChildren": "የተረጋገጡ ልጆች",
+  "parentVerifiedChildrenAm": "የተረጋገጡ ልጆች",
+  "parentActiveChild": "ንቁ",
+  "parentSwitchChild": "ቀይር",
+  "parentReviewingChild": "የ{name} መዝገብ በ{school} እያዩ ነው።",
+  "@parentReviewingChild": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "school": { "type": "String" }
+    }
+  },
+  "parentParentCode": "የወላጅ ኮድ",
+  "parentNoStudentAccount": "ይህ ልጅ ገና የተማሪ መለያ የለውም",
+  "parentCampusServices": "የግቢ አገልግሎቶች",
+  "parentCampusServicesAm": "የግቢ አገልግሎቶች",
   "parentSendMessage": "መልእክት ላክ",
   "parentBookAppointment": "ቀጠሮ ያስይዙ",
   "parentMessageSent": "መልእክት ተልኳል",

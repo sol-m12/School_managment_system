@@ -6,6 +6,7 @@ import '../core/auth/auth_user.dart';
 import '../core/providers.dart';
 import '../features/auth/login_page.dart';
 import '../features/parent/parent_shell.dart';
+import '../features/parent/screens/parent_academics_screen.dart';
 import '../features/parent/screens/parent_home_screen.dart';
 import '../features/parent/screens/parent_screens.dart';
 import '../features/student/screens/digital_id_screen.dart';
@@ -624,6 +625,25 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
+                path: '/parent/academics',
+                builder: (context, state) => const ParentAcademicsHubScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'results',
+                    builder: (context, state) =>
+                        const ParentResultsRichScreen(),
+                  ),
+                  GoRoute(
+                    path: 'homework',
+                    builder: (context, state) => const ParentHomeworkScreen(),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
                 path: '/parent/attendance',
                 builder: (context, state) => const ParentAttendanceHubScreen(),
                 routes: [
@@ -643,24 +663,23 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/parent/homework',
-                builder: (context, state) => const ParentHomeworkScreen(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/parent/library',
-                builder: (context, state) => const ParentLibraryScreen(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: '/parent/messages',
-                builder: (context, state) => const ParentMessagesScreen(),
+                path: '/parent/services',
+                builder: (context, state) => const ParentServicesHubScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'library',
+                    builder: (context, state) => const ParentLibraryScreen(),
+                  ),
+                  GoRoute(
+                    path: 'messages',
+                    builder: (context, state) => const ParentMessagesScreen(),
+                  ),
+                  GoRoute(
+                    path: 'appointments',
+                    builder: (context, state) =>
+                        const ParentAppointmentsScreen(),
+                  ),
+                ],
               ),
             ],
           ),

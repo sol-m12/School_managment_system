@@ -12,6 +12,7 @@ import '../../../core/widgets/offline_banner.dart';
 import '../../../l10n/app_localizations.dart';
 import '../parent_cache_keys.dart';
 import '../parent_child_controller.dart';
+import 'parent_academics_screen.dart';
 import 'parent_child_data_screen.dart';
 
 class ParentAttendanceHubScreen extends StatelessWidget {
@@ -20,21 +21,23 @@ class ParentAttendanceHubScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.parentNavAttendance)),
-      body: HubListScreen(
-        title: l10n.parentNavAttendance,
-        items: [
-          HubItem(
-            label: l10n.parentAttendance,
-            icon: Icons.how_to_reg,
-            onTap: () => context.push('/parent/attendance/status'),
+    return ParentChildDataScreen(
+      title: l10n.parentNavAttendance,
+      cacheKeyFor: parentAttendanceCacheKey,
+      pathFor: (id) => '/parent/children/$id/attendance',
+      builder: (context, data) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.gavel, color: AppColors.brand700),
+              title: Text(l10n.parentConduct),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push('/parent/attendance/conduct'),
+            ),
           ),
-          HubItem(
-            label: l10n.parentConduct,
-            icon: Icons.gavel,
-            onTap: () => context.push('/parent/attendance/conduct'),
-          ),
+          const SizedBox(height: 12),
+          _AttendanceBody(data: data),
         ],
       ),
     );
@@ -51,7 +54,145 @@ class ParentAttendanceStatusScreen extends StatelessWidget {
       title: l10n.parentAttendance,
       cacheKeyFor: parentAttendanceCacheKey,
       pathFor: (id) => '/parent/children/$id/attendance',
-      builder: (context, data) => JsonBody(data: data),
+      builder: (context, data) => _AttendanceBody(data: data),
+    );
+  }
+}
+
+class _AttendanceBody extends StatelessWidget {
+  const _AttendanceBody({required this.data});
+
+  final Object? data;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    if (data is! Map) return JsonBody(data: data);
+    final map = Map<String, dynamic>.from(data as Map);
+    final present = (map['present'] as num?)?.toInt() ?? 0;
+    final absent = (map['absent'] as num?)?.toInt() ?? 0;
+    final tardy = (map['tardy'] as num?)?.toInt() ?? 0;
+    final total = present + absent + tardy;
+    final percent = total > 0 ? (present / total) * 100 : null;
+    final rows = map['rows'] is List
+        ? (map['rows'] as List)
+            .whereType<Map>()
+            .map((e) => Map<String, dynamic>.from(e))
+            .toList()
+        : <Map<String, dynamic>>[];
+
+    if (total == 0 && rows.isEmpty) {
+      return Text(l10n.noAttendanceYet);
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Text(
+                  percent == null
+                      ? '—'
+                      : '${percent.toStringAsFixed(percent % 1 == 0 ? 0 : 1)}%',
+                  style: const TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.brand700,
+                  ),
+                ),
+                Text(
+                  l10n.overallRate,
+                  style: const TextStyle(color: AppColors.inkMuted),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    _AttStat(label: l10n.presentCount, value: present),
+                    _AttStat(label: l10n.tardyCount, value: tardy),
+                    _AttStat(label: l10n.absentCount, value: absent),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Text(
+          l10n.absenceLogs,
+          style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+        ),
+        const SizedBox(height: 8),
+        if (rows.isEmpty)
+          Text(l10n.noAttendanceYet)
+        else
+          ...rows.map((row) {
+            final status = row['status']?.toString();
+            final label = switch (status) {
+              'P' => l10n.presentCount,
+              'A' => l10n.absentCount,
+              'T' => l10n.tardyCount,
+              _ => status ?? '',
+            };
+            final color = switch (status) {
+              'P' => AppColors.success,
+              'A' => AppColors.danger,
+              'T' => AppColors.warning,
+              _ => AppColors.inkMuted,
+            };
+            return Card(
+              margin: const EdgeInsets.only(bottom: 8),
+              child: ListTile(
+                minVerticalPadding: 12,
+                leading: CircleAvatar(
+                  backgroundColor: color.withValues(alpha: 0.15),
+                  child: Icon(Icons.circle, size: 12, color: color),
+                ),
+                title: Text(label),
+                subtitle: Text(
+                  [
+                    row['date']?.toString() ?? '',
+                    if ((row['subject']?.toString() ?? '').isNotEmpty)
+                      row['subject'].toString(),
+                    if ((row['approval']?.toString() ?? '').isNotEmpty)
+                      row['approval'].toString(),
+                  ].where((s) => s.isNotEmpty).join(' · '),
+                ),
+              ),
+            );
+          }),
+      ],
+    );
+  }
+}
+
+class _AttStat extends StatelessWidget {
+  const _AttStat({required this.label, required this.value});
+
+  final String label;
+  final int value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            '$value',
+            style: const TextStyle(
+              fontWeight: FontWeight.w800,
+              fontSize: 18,
+              color: AppColors.brand700,
+            ),
+          ),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 11, color: AppColors.inkMuted),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -163,6 +304,64 @@ class _HomeworkBody extends StatelessWidget {
   }
 }
 
+class ParentServicesHubScreen extends StatelessWidget {
+  const ParentServicesHubScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Scaffold(
+      backgroundColor: AppColors.loginCanvas,
+      appBar: AppBar(title: Text(l10n.parentNavServices)),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+        children: [
+          Text(
+            l10n.parentCampusServices,
+            style: const TextStyle(
+              fontWeight: FontWeight.w800,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  minVerticalPadding: 14,
+                  leading: const Icon(Icons.local_library_outlined,
+                      color: AppColors.brand700),
+                  title: Text(l10n.parentLibrary),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.push('/parent/services/library'),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  minVerticalPadding: 14,
+                  leading:
+                      const Icon(Icons.mail_outline, color: AppColors.brand700),
+                  title: Text(l10n.parentMessages),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.push('/parent/services/messages'),
+                ),
+                const Divider(height: 1),
+                ListTile(
+                  minVerticalPadding: 14,
+                  leading: const Icon(Icons.event_available_outlined,
+                      color: AppColors.brand700),
+                  title: Text(l10n.parentAppointments),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => context.push('/parent/services/appointments'),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class ParentLibraryScreen extends StatelessWidget {
   const ParentLibraryScreen({super.key});
 
@@ -173,7 +372,97 @@ class ParentLibraryScreen extends StatelessWidget {
       title: l10n.parentLibrary,
       cacheKeyFor: parentLibraryCacheKey,
       pathFor: (id) => '/parent/children/$id/library',
-      builder: (context, data) => JsonBody(data: data),
+      builder: (context, data) => _LibraryBody(data: data),
+    );
+  }
+}
+
+class _LibraryBody extends StatelessWidget {
+  const _LibraryBody({required this.data});
+
+  final Object? data;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    if (data is! Map) return JsonBody(data: data);
+    final map = Map<String, dynamic>.from(data as Map);
+    final loans = map['loans'] is List
+        ? (map['loans'] as List)
+            .whereType<Map>()
+            .map((e) => Map<String, dynamic>.from(e))
+            .toList()
+        : <Map<String, dynamic>>[];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  l10n.borrowedBooks,
+                  style: const TextStyle(fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  [
+                    '${l10n.library}: ${map['borrowed'] ?? 0}',
+                    if ((map['rank']?.toString() ?? '').isNotEmpty)
+                      map['rank'].toString(),
+                    if (map['visits'] != null) '${map['visits']}',
+                  ].join(' · '),
+                  style: const TextStyle(color: AppColors.inkMuted, fontSize: 13),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        if (loans.isEmpty)
+          Text(l10n.noBorrowedBooks)
+        else
+          ...loans.map((row) {
+            final status = row['status']?.toString() ?? '';
+            final late = row['late'] == true;
+            return Card(
+              margin: const EdgeInsets.only(bottom: 8),
+              child: ListTile(
+                leading: const Icon(Icons.menu_book, color: AppColors.brand700),
+                title: Text(
+                  (row['title']?.toString().isNotEmpty ?? false)
+                      ? row['title'].toString()
+                      : l10n.library,
+                ),
+                subtitle: Text(
+                  [
+                    if (row['borrowDate'] != null) '${row['borrowDate']}',
+                    if (row['returnDate'] != null) '→ ${row['returnDate']}',
+                  ].join(' '),
+                ),
+                trailing: Text(
+                  late
+                      ? l10n.overdueStatus
+                      : status == 'Returned'
+                          ? l10n.returnedStatus
+                          : status,
+                  style: TextStyle(
+                    color: late
+                        ? AppColors.danger
+                        : status == 'Returned'
+                            ? AppColors.success
+                            : AppColors.info,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+            );
+          }),
+      ],
     );
   }
 }
@@ -368,15 +657,7 @@ class ParentResultsScreen extends StatelessWidget {
   const ParentResultsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return ParentChildDataScreen(
-      title: l10n.results,
-      cacheKeyFor: parentResultsCacheKey,
-      pathFor: (id) => '/parent/children/$id/results',
-      builder: (context, data) => JsonBody(data: data),
-    );
-  }
+  Widget build(BuildContext context) => const ParentResultsRichScreen();
 }
 
 class ParentNotificationsScreen extends ConsumerStatefulWidget {
@@ -888,10 +1169,111 @@ class ParentMoreScreen extends ConsumerWidget {
     final l10n = AppLocalizations.of(context);
     final user = ref.watch(authControllerProvider).user;
     final locale = ref.watch(localeControllerProvider);
+    final childrenState = ref.watch(parentChildControllerProvider);
+    final parentName = childrenState.parentDisplayName?.trim() ?? '';
+    final parentCode = childrenState.parentCode?.trim() ?? '';
+
     return Scaffold(
+      backgroundColor: AppColors.loginCanvas,
       appBar: AppBar(title: Text(l10n.parentNavMore)),
       body: ListView(
+        padding: const EdgeInsets.only(bottom: 24),
         children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      parentName.isEmpty ? l10n.profile : parentName,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    if (parentCode.isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        '${l10n.parentParentCode}: $parentCode',
+                        style: const TextStyle(color: AppColors.inkMuted),
+                      ),
+                    ],
+                    if (user != null) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        user.username,
+                        style: const TextStyle(
+                          color: AppColors.inkMuted,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 8),
+                    Text(
+                      l10n.parentEnrolledChildren(childrenState.children.length),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.brand700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          if (childrenState.children.isNotEmpty) ...[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+              child: Text(
+                l10n.parentVerifiedChildren,
+                style: const TextStyle(fontWeight: FontWeight.w800),
+              ),
+            ),
+            ...childrenState.children.map((child) {
+              final active =
+                  child.studentId == childrenState.selectedStudentId;
+              final school = child.schoolName.trim().isEmpty
+                  ? l10n.parentSchoolFallback
+                  : child.schoolName.trim();
+              return ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: AppColors.brand100,
+                  child: Text(
+                    child.fullName.isEmpty
+                        ? '?'
+                        : child.fullName.substring(0, 1).toUpperCase(),
+                    style: const TextStyle(
+                      color: AppColors.brand700,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+                title: Text(child.fullName),
+                subtitle: Text(
+                  [
+                    if (child.gradeLevel.isNotEmpty) child.gradeLevel,
+                    if (child.section.isNotEmpty) child.section,
+                    school,
+                  ].join(' · '),
+                ),
+                trailing: active
+                    ? Chip(
+                        label: Text(l10n.parentActiveChild),
+                        visualDensity: VisualDensity.compact,
+                      )
+                    : TextButton(
+                        onPressed: () => ref
+                            .read(parentChildControllerProvider.notifier)
+                            .selectChild(child.studentId),
+                        child: Text(l10n.parentSwitchChild),
+                      ),
+              );
+            }),
+            const Divider(height: 1),
+          ],
           ListTile(
             minVerticalPadding: 16,
             leading: const Icon(Icons.notifications_outlined),
@@ -905,7 +1287,7 @@ class ParentMoreScreen extends ConsumerWidget {
             leading: const Icon(Icons.event_available_outlined),
             title: Text(l10n.parentAppointments),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push('/parent/more/appointments'),
+            onTap: () => context.push('/parent/services/appointments'),
           ),
           const Divider(height: 1),
           ListTile(
@@ -913,18 +1295,7 @@ class ParentMoreScreen extends ConsumerWidget {
             leading: const Icon(Icons.bar_chart),
             title: Text(l10n.results),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push('/parent/more/results'),
-          ),
-          const Divider(height: 1),
-          ListTile(
-            minVerticalPadding: 16,
-            leading: const Icon(Icons.person_outline),
-            title: Text(l10n.profile),
-            subtitle: Text(
-              user == null
-                  ? ''
-                  : '${user.username} · ${user.tenantName} (#${user.tenantId})',
-            ),
+            onTap: () => context.push('/parent/academics/results'),
           ),
           const Divider(height: 1),
           ListTile(

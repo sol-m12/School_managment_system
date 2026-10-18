@@ -132,7 +132,9 @@
   "localNotifyChannelName": "School announcements",
   "localNotifyChannelDesc": "New announcements from your school",
   "parentNavHome": "Home",
+  "parentNavAcademics": "Academics",
   "parentNavAttendance": "Attendance",
+  "parentNavServices": "Services",
   "parentNavHomework": "Homework",
   "parentNavLibrary": "Library",
   "parentNavMessages": "Messages",
@@ -147,6 +149,45 @@
   "parentSchoolFallback": "School",
   "parentEmptyChildren": "No linked children yet",
   "parentSelectChild": "Select a child",
+  "parentGreeting": "Hello, {name}",
+  "@parentGreeting": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "parentGreetingAm": "ሰላም፣ {name}",
+  "@parentGreetingAm": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "parentEnrolledChildren": "{count} enrolled children",
+  "@parentEnrolledChildren": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "parentSchoolsCount": "{count} schools",
+  "@parentSchoolsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "parentVerifiedChildren": "Verified children",
+  "parentVerifiedChildrenAm": "የተረጋገጡ ልጆች",
+  "parentActiveChild": "Active",
+  "parentSwitchChild": "Switch",
+  "parentReviewingChild": "Reviewing records for {name} at {school}.",
+  "@parentReviewingChild": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "school": { "type": "String" }
+    }
+  },
+  "parentParentCode": "Parent code",
+  "parentNoStudentAccount": "This child has no linked student account yet",
+  "parentCampusServices": "Campus services",
+  "parentCampusServicesAm": "የግቢ አገልግሎቶች",
   "parentSendMessage": "Send message",
   "parentBookAppointment": "Book appointment",
   "parentMessageSent": "Message sent",

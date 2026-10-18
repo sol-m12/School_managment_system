@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/theme/app_colors.dart';
 import '../../l10n/app_localizations.dart';
 
 class ParentShell extends StatelessWidget {
@@ -12,8 +13,11 @@ class ParentShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return Scaffold(
+      backgroundColor: AppColors.loginCanvas,
       body: navigationShell,
       bottomNavigationBar: NavigationBar(
+        backgroundColor: Colors.white,
+        indicatorColor: AppColors.brand50,
         selectedIndex: navigationShell.currentIndex,
         onDestinationSelected: navigationShell.goBranch,
         destinations: [
@@ -23,24 +27,19 @@ class ParentShell extends StatelessWidget {
             label: l10n.parentNavHome,
           ),
           NavigationDestination(
+            icon: const Icon(Icons.school_outlined),
+            selectedIcon: const Icon(Icons.school),
+            label: l10n.parentNavAcademics,
+          ),
+          NavigationDestination(
             icon: const Icon(Icons.fact_check_outlined),
             selectedIcon: const Icon(Icons.fact_check),
             label: l10n.parentNavAttendance,
           ),
           NavigationDestination(
-            icon: const Icon(Icons.assignment_outlined),
-            selectedIcon: const Icon(Icons.assignment),
-            label: l10n.parentNavHomework,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.local_library_outlined),
-            selectedIcon: const Icon(Icons.local_library),
-            label: l10n.parentNavLibrary,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.mail_outline),
-            selectedIcon: const Icon(Icons.mail),
-            label: l10n.parentNavMessages,
+            icon: const Icon(Icons.handyman_outlined),
+            selectedIcon: const Icon(Icons.handyman),
+            label: l10n.parentNavServices,
           ),
           NavigationDestination(
             icon: const Icon(Icons.more_horiz),

@@ -370,7 +370,13 @@ class AppLocalizationsAm extends AppLocalizations {
   String get parentNavHome => 'መነሻ';
 
   @override
+  String get parentNavAcademics => 'ትምህርት';
+
+  @override
   String get parentNavAttendance => 'መገኘት';
+
+  @override
+  String get parentNavServices => 'አገልግሎቶች';
 
   @override
   String get parentNavHomework => 'የቤት ስራ';
@@ -413,6 +419,55 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get parentSelectChild => 'ልጅ ይምረጡ';
+
+  @override
+  String parentGreeting(String name) {
+    return 'ሰላም፣ $name';
+  }
+
+  @override
+  String parentGreetingAm(String name) {
+    return 'ሰላም፣ $name';
+  }
+
+  @override
+  String parentEnrolledChildren(int count) {
+    return '$count የተመዘገቡ ልጆች';
+  }
+
+  @override
+  String parentSchoolsCount(int count) {
+    return '$count ትምህርት ቤቶች';
+  }
+
+  @override
+  String get parentVerifiedChildren => 'የተረጋገጡ ልጆች';
+
+  @override
+  String get parentVerifiedChildrenAm => 'የተረጋገጡ ልጆች';
+
+  @override
+  String get parentActiveChild => 'ንቁ';
+
+  @override
+  String get parentSwitchChild => 'ቀይር';
+
+  @override
+  String parentReviewingChild(String name, String school) {
+    return 'የ$name መዝገብ በ$school እያዩ ነው።';
+  }
+
+  @override
+  String get parentParentCode => 'የወላጅ ኮድ';
+
+  @override
+  String get parentNoStudentAccount => 'ይህ ልጅ ገና የተማሪ መለያ የለውም';
+
+  @override
+  String get parentCampusServices => 'የግቢ አገልግሎቶች';
+
+  @override
+  String get parentCampusServicesAm => 'የግቢ አገልግሎቶች';
 
   @override
   String get parentSendMessage => 'መልእክት ላክ';
