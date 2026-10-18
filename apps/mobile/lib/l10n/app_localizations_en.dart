@@ -517,4 +517,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewAll => 'View all';
+
+  @override
+  String get teacherRoleLabel => 'Teacher';
+
+  @override
+  String periodsToday(int count) {
+    return '$count periods today';
+  }
+
+  @override
+  String classesAssigned(int count) {
+    return '$count classes assigned';
+  }
+
+  @override
+  String assignmentsCount(int count) {
+    return '$count subjects';
+  }
+
+  @override
+  String get todaySchedule => 'Today\'s schedule';
+
+  @override
+  String get noPeriodsToday => 'No periods scheduled for today';
+
+  @override
+  String get takeRoll => 'Take roll';
+
+  @override
+  String get offlineReady => 'Offline ready';
+
+  @override
+  String syncRecordsPending(int count) {
+    return '$count records pending local sync';
+  }
 }

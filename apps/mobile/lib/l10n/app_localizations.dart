@@ -1075,6 +1075,60 @@ abstract class AppLocalizations {
   /// In am, this message translates to:
   /// **'ሁሉንም ይመልከቱ'**
   String get viewAll;
+
+  /// No description provided for @teacherRoleLabel.
+  ///
+  /// In am, this message translates to:
+  /// **'መምህር'**
+  String get teacherRoleLabel;
+
+  /// No description provided for @periodsToday.
+  ///
+  /// In am, this message translates to:
+  /// **'ዛሬ {count} ጊዜያት'**
+  String periodsToday(int count);
+
+  /// No description provided for @classesAssigned.
+  ///
+  /// In am, this message translates to:
+  /// **'{count} ክፍሎች ተመድበዋል'**
+  String classesAssigned(int count);
+
+  /// No description provided for @assignmentsCount.
+  ///
+  /// In am, this message translates to:
+  /// **'{count} ትምህርቶች'**
+  String assignmentsCount(int count);
+
+  /// No description provided for @todaySchedule.
+  ///
+  /// In am, this message translates to:
+  /// **'የዛሬ የጊዜ ሰሌዳ'**
+  String get todaySchedule;
+
+  /// No description provided for @noPeriodsToday.
+  ///
+  /// In am, this message translates to:
+  /// **'ለዛሬ የተመደበ ጊዜ የለም'**
+  String get noPeriodsToday;
+
+  /// No description provided for @takeRoll.
+  ///
+  /// In am, this message translates to:
+  /// **'መገኘት ይውሰዱ'**
+  String get takeRoll;
+
+  /// No description provided for @offlineReady.
+  ///
+  /// In am, this message translates to:
+  /// **'ከመስመር ውጭ ዝግጁ'**
+  String get offlineReady;
+
+  /// No description provided for @syncRecordsPending.
+  ///
+  /// In am, this message translates to:
+  /// **'{count} መዝገቦች ለአካባቢያዊ ማስማማት በመጠባበቅ ላይ'**
+  String syncRecordsPending(int count);
 }
 
 class _AppLocalizationsDelegate

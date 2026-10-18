@@ -52,6 +52,7 @@ import {
   courseFileBoard,
   simulationBoard,
   storeBoard,
+  teacherHome,
   teacherProfile,
   subjectAttendance,
   subjectReport,
@@ -102,6 +103,14 @@ function sendError(res: Response, error: unknown): void {
   }
   res.status(500).json({ code: "INTERNAL_ERROR" });
 }
+
+teacherRouter.get("/home", ...requirePermission("assignedWork.read"), async (req, res) => {
+  try {
+    res.json(await teacherHome(tenantOf(req), userOf(req)));
+  } catch (error) {
+    sendError(res, error);
+  }
+});
 
 teacherRouter.get("/schedule", ...requirePermission("assignedWork.read"), async (req, res) => {
   try {

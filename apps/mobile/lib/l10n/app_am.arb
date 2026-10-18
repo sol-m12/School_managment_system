@@ -202,5 +202,34 @@
   "signOutBilingual": "ውጣ",
   "schoolPortal": "የትምህርት ቤት ፖርታል",
   "noSimulationsYet": "ለክፍልዎ ሲሙሌሽን የለም",
-  "viewAll": "ሁሉንም ይመልከቱ"
+  "viewAll": "ሁሉንም ይመልከቱ",
+  "teacherRoleLabel": "መምህር",
+  "periodsToday": "ዛሬ {count} ጊዜያት",
+  "@periodsToday": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "classesAssigned": "{count} ክፍሎች ተመድበዋል",
+  "@classesAssigned": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "assignmentsCount": "{count} ትምህርቶች",
+  "@assignmentsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "todaySchedule": "የዛሬ የጊዜ ሰሌዳ",
+  "noPeriodsToday": "ለዛሬ የተመደበ ጊዜ የለም",
+  "takeRoll": "መገኘት ይውሰዱ",
+  "offlineReady": "ከመስመር ውጭ ዝግጁ",
+  "syncRecordsPending": "{count} መዝገቦች ለአካባቢያዊ ማስማማት በመጠባበቅ ላይ",
+  "@syncRecordsPending": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  }
 }

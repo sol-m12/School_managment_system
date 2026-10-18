@@ -513,4 +513,39 @@ class AppLocalizationsAm extends AppLocalizations {
 
   @override
   String get viewAll => 'ሁሉንም ይመልከቱ';
+
+  @override
+  String get teacherRoleLabel => 'መምህር';
+
+  @override
+  String periodsToday(int count) {
+    return 'ዛሬ $count ጊዜያት';
+  }
+
+  @override
+  String classesAssigned(int count) {
+    return '$count ክፍሎች ተመድበዋል';
+  }
+
+  @override
+  String assignmentsCount(int count) {
+    return '$count ትምህርቶች';
+  }
+
+  @override
+  String get todaySchedule => 'የዛሬ የጊዜ ሰሌዳ';
+
+  @override
+  String get noPeriodsToday => 'ለዛሬ የተመደበ ጊዜ የለም';
+
+  @override
+  String get takeRoll => 'መገኘት ይውሰዱ';
+
+  @override
+  String get offlineReady => 'ከመስመር ውጭ ዝግጁ';
+
+  @override
+  String syncRecordsPending(int count) {
+    return '$count መዝገቦች ለአካባቢያዊ ማስማማት በመጠባበቅ ላይ';
+  }
 }

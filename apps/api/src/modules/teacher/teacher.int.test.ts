@@ -269,6 +269,20 @@ describe("teacher pages", () => {
     expect(profile.body.profile.firstName).toBe("Yonas");
     expect(profile.body.profile.username).toBe(seed.username);
     expect(profile.body.profile.password).toBeUndefined();
+    expect(profile.body.profile.fullName).toContain("Yonas");
+
+    const home = await request(app).get("/teacher/home").set("Authorization", teacherA()).expect(200);
+    expect(home.body.firstName).toBe("Yonas");
+    expect(home.body.fullName).toContain("Yonas");
+    expect(typeof home.body.hasPhoto).toBe("boolean");
+    expect(Array.isArray(home.body.todayPeriods)).toBe(true);
+    expect(Array.isArray(home.body.assignments)).toBe(true);
+
+    const homeOther = await request(app)
+      .get("/teacher/home")
+      .set("Authorization", bearer(seed.tenantB.id, "Teacher", seed.tenantB.userId))
+      .expect(200);
+    expect(JSON.stringify(homeOther.body)).not.toContain("Yonas");
 
     const shared = await request(app)
       .post("/teacher/course-files")

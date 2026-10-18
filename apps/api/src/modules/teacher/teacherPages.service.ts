@@ -26,7 +26,13 @@ import { scoped, withTenant } from "../../lib/tenant.js";
 import { AcademicsError, createStudent } from "../academics/students.service.js";
 import type { StudentBody } from "../academics/academics.schema.js";
 import { loadOfficialRoster } from "./officialRoster.js";
-import { parseClassSelect, TeacherError, loadTeacherContext, type TeacherContext } from "./teacher.service.js";
+import {
+  parseClassSelect,
+  TeacherError,
+  loadTeacherContext,
+  scheduleBoard,
+  type TeacherContext,
+} from "./teacher.service.js";
 
 type Mark = "X" | "A" | "P" | "L";
 type DbStatus = "P" | "A" | "T";
@@ -1137,10 +1143,12 @@ export async function teacherProfile(tenantId: number, userId: number) {
     .where(scoped(staff, tenantId, eq(staff.userId, userId)))
     .limit(1);
   if (!row) throw new TeacherError("NOT_ASSIGNED");
+  const photo = row.photo && row.photo !== "default_profile.png" ? row.photo : null;
   return {
     profile: {
       firstName: row.firstName,
       lastName: row.lastName,
+      fullName: [row.firstName, row.lastName].filter(Boolean).join(" ").trim(),
       gender: row.gender,
       role: row.role,
       jobTitle: row.jobTitle,
@@ -1148,9 +1156,59 @@ export async function teacherProfile(tenantId: number, userId: number) {
       phoneNumber: row.phoneNumber,
       email: row.email,
       hireDate: row.hireDate,
-      photo: row.photo && row.photo !== "default_profile.png" ? row.photo : null,
+      photo,
+      hasPhoto: Boolean(photo),
       username: row.username,
     },
+  };
+}
+
+function weekdayInAddis(date = new Date()): string {
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    timeZone: "Africa/Addis_Ababa",
+  }).format(date);
+}
+
+/** Mobile teacher home: real staff profile + today's schedule from this school. */
+export async function teacherHome(tenantId: number, userId: number) {
+  const schedule = await scheduleBoard(tenantId, userId);
+  let profile: Awaited<ReturnType<typeof teacherProfile>>["profile"] | null = null;
+  try {
+    profile = (await teacherProfile(tenantId, userId)).profile;
+  } catch (error) {
+    if (!(error instanceof TeacherError) || error.code !== "NOT_ASSIGNED") throw error;
+  }
+
+  const todayName = weekdayInAddis();
+  const todayPeriods = schedule.classSchedule.filter((row) => row.day === todayName);
+  const classKeys = new Set(
+    schedule.assignments.map((row) => `${row.gradeLevel}-${row.section || ""}`),
+  );
+
+  const today = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "Africa/Addis_Ababa",
+  }).format(new Date());
+
+  return {
+    fullName: profile?.fullName ?? "",
+    firstName: profile?.firstName ?? "",
+    lastName: profile?.lastName ?? "",
+    username: profile?.username ?? "",
+    jobTitle: profile?.jobTitle ?? "",
+    specialization: profile?.specialization ?? "",
+    hasPhoto: profile?.hasPhoto ?? false,
+    academicYear: schedule.academicYear,
+    today,
+    todayWeekday: todayName,
+    assignmentCount: schedule.assignments.length,
+    classCount: classKeys.size,
+    todayPeriodCount: todayPeriods.length,
+    todayPeriods,
+    assignments: schedule.assignments,
   };
 }
 

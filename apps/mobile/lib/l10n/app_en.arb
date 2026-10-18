@@ -202,5 +202,34 @@
   "signOutBilingual": "Sign Out",
   "schoolPortal": "School portal",
   "noSimulationsYet": "No simulations for your class yet",
-  "viewAll": "View all"
+  "viewAll": "View all",
+  "teacherRoleLabel": "Teacher",
+  "periodsToday": "{count} periods today",
+  "@periodsToday": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "classesAssigned": "{count} classes assigned",
+  "@classesAssigned": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "assignmentsCount": "{count} subjects",
+  "@assignmentsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "todaySchedule": "Today's schedule",
+  "noPeriodsToday": "No periods scheduled for today",
+  "takeRoll": "Take roll",
+  "offlineReady": "Offline ready",
+  "syncRecordsPending": "{count} records pending local sync",
+  "@syncRecordsPending": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  }
 }
