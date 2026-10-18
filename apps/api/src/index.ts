@@ -31,7 +31,38 @@ import { parentAdminRouter, parentRouter } from "./modules/parent/parent.routes.
 const app = express();
 
 app.use(helmet());
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+    const allowed = env.WEB_ORIGINS.split(",").map((value) => value.trim()).filter(Boolean);
+    if (allowed.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+    // Local subdomain testing: http://sunrise.localhost:5173
+    if (/^https?:\/\/[a-z0-9-]+\.localhost(?::\d+)?$/i.test(origin)) {
+      callback(null, true);
+      return;
+    }
+    const base = env.APP_BASE_DOMAIN.trim().toLowerCase();
+    if (base) {
+      try {
+        const host = new URL(origin).hostname.toLowerCase();
+        if (host === base || host.endsWith(`.${base}`)) {
+          callback(null, true);
+          return;
+        }
+      } catch {
+        // ignore invalid Origin
+      }
+    }
+    callback(null, false);
+  },
+  credentials: true,
+}));
 app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser());
 app.use(morgan("dev"));

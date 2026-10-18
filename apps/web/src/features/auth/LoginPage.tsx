@@ -8,10 +8,9 @@ import { FullScreenLoader } from "@/components/layout/FullScreenLoader";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { Alert, Button, Input } from "@/components/ui";
 import { toErrorKey, type ErrorKey } from "@/lib/apiError";
+import { resolveTenantSlug } from "@/lib/tenantSlug";
 import { useAuth } from "./authContext";
 import { isFieldErrorKey, loginSchema, type LoginValues } from "./loginSchema";
-
-const DEFAULT_TENANT_SLUG = "keyit";
 
 function redirectTarget(state: unknown): string {
   if (typeof state === "object" && state !== null && "from" in state) {
@@ -29,7 +28,7 @@ export function LoginPage() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const [errorKey, setErrorKey] = useState<ErrorKey | null>(null);
-  const tenantFromUrl = searchParams.get("tenant")?.trim() || DEFAULT_TENANT_SLUG;
+  const tenantFromUrl = resolveTenantSlug(searchParams);
 
   const {
     register,

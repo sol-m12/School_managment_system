@@ -40,7 +40,8 @@
     "colName": "ስም",
     "colSlug": "የዩአርኤል ኮድ",
     "colStatus": "ሁኔታ",
-    "colLogin": "የትምህርት ቤት መግቢያ"
+    "colLogin": "የትምህርት ቤት መግቢያ",
+    "colSite": "የትምህርት ቤት ጣቢያ"
   },
   "add": {
     "title": "ትምህርት ቤት ገምር",
@@ -49,8 +50,8 @@
     "sectionAdmin": "የመጀመሪያ አስተዳዳሪ",
     "name": "የትምህርት ቤት ስም",
     "slug": "የዩአርኤል ኮድ (slug)",
-    "slugHint": "ሰራተኞች በትምህርት ቤት ኮድ “{{slug}}” ይገባሉ።",
-    "preview": "የመግቢያ መንገድ ቅድመ እይታ፦ /login?tenant={{slug}}",
+    "slugHint": "ይህ subdomain ይሆናል፣ ለምሳሌ {{slug}}.yourdomain.com። ሰራተኞች በትምህርት ቤት ኮድ “{{slug}}”ም ይገባሉ።",
+    "preview": "የትምህርት ቤት ጣቢያ ቅድመ እይታ፦ {{url}}",
     "adminHint": "ይህ ሰው ለዚያ ትምህርት ቤት Technician ነው (አይቲ / ትምህርት ቤት አስተዳዳሪ)፣ የመድረክ ሱፐር አድሚን አይደለም።",
     "adminFirstName": "ስም",
     "adminLastName": "የአባት ስም",
@@ -65,8 +66,9 @@
     "resultSlug": "የዩአርኤል ኮድ",
     "resultAdmin": "የአስተዳዳሪ ስም",
     "resultRole": "ሚና",
+    "resultSite": "የትምህርት ቤት ጣቢያ",
     "resultLogin": "የመግቢያ መንገድ",
-    "copy": "የመግቢያ አገናኝ ቅዳ",
+    "copy": "የጣቢያ አገናኝ ቅዳ",
     "copied": "ወደ ክሊፕቦርድ ተቅድቷል።",
     "backToList": "ትምህርት ቤቶችን ይመልከቱ",
     "addAnother": "ሌላ ገምር"

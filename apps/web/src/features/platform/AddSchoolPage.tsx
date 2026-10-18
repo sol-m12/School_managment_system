@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Alert, Button, Input } from "@/components/ui";
 import { toErrorKey, type ErrorKey } from "@/lib/apiError";
+import { schoolLoginPath, schoolSiteUrl } from "@/lib/tenantSlug";
 import { createPlatformSchool, type CreatedSchool } from "./platformApi";
 import {
   addSchoolSchema,
@@ -81,10 +82,9 @@ export function AddSchoolPage() {
   const nameValue = watch("name");
   const slugRegister = register("slug");
 
-  async function copyLoginPath() {
+  async function copySiteUrl() {
     if (!created) return;
-    const url = `${window.location.origin}${created.loginPath}`;
-    await navigator.clipboard.writeText(url);
+    await navigator.clipboard.writeText(schoolSiteUrl(created.slug));
     setCopied(true);
     window.setTimeout(() => setCopied(false), 2000);
   }
@@ -121,19 +121,32 @@ export function AddSchoolPage() {
               <dd className="font-medium">{created.adminRole}</dd>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <dt className="text-ink-muted">{t("add.resultLogin")}</dt>
+              <dt className="text-ink-muted">{t("add.resultSite")}</dt>
               <dd className="flex items-center gap-2 font-medium">
-                <Link to={created.loginPath} className="text-teal-700 hover:underline">
-                  {created.loginPath}
-                </Link>
+                <a
+                  href={schoolSiteUrl(created.slug)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="break-all text-teal-700 hover:underline"
+                >
+                  {schoolSiteUrl(created.slug)}
+                </a>
                 <button
                   type="button"
-                  onClick={() => void copyLoginPath()}
+                  onClick={() => void copySiteUrl()}
                   className="inline-flex size-9 items-center justify-center rounded-lg border border-border text-ink-muted hover:bg-white"
                   aria-label={t("add.copy")}
                 >
                   <Copy aria-hidden className="size-4" />
                 </button>
+              </dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-ink-muted">{t("add.resultLogin")}</dt>
+              <dd className="font-medium">
+                <Link to={schoolLoginPath(created.slug)} className="text-teal-700 hover:underline">
+                  {schoolLoginPath(created.slug)}
+                </Link>
               </dd>
             </div>
           </dl>
@@ -206,7 +219,9 @@ export function AddSchoolPage() {
             }}
           />
           {nameValue ? (
-            <p className="text-xs text-ink-muted">{t("add.preview", { slug: watch("slug") || "—" })}</p>
+            <p className="text-xs text-ink-muted">
+              {t("add.preview", { url: schoolSiteUrl(watch("slug") || "your-school") })}
+            </p>
           ) : null}
         </fieldset>
 

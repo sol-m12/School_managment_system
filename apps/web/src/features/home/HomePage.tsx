@@ -72,9 +72,10 @@ export function HomePage() {
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof HomeFormValues, HomeFieldError>>>({});
   const [formError, setFormError] = useState<string | null>(null);
 
-  const schoolName = english
-    ? t("home:content.name")
-    : textOr(home.data?.schoolName ?? null, t("home:fallbacks.name"));
+  const schoolName = textOr(
+    home.data?.schoolName ?? null,
+    english ? t("home:content.name") : t("home:fallbacks.name"),
+  );
 
   useEffect(() => {
     document.title = t("home:pageTitle", { name: schoolName });

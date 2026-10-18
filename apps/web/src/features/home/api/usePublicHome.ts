@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
-
-const SCHOOL_SLUG = "keyit";
+import { tenantSlugFromHost } from "@/lib/tenantSlug";
 
 export type PublicLeader = { name: string; photoFile: string | null };
 
@@ -30,11 +29,16 @@ export type InquiryInput = {
   message: string;
 };
 
+function schoolSlug(): string {
+  return tenantSlugFromHost();
+}
+
 export function usePublicHome() {
+  const slug = schoolSlug();
   return useQuery({
-    queryKey: ["public", "home", SCHOOL_SLUG],
+    queryKey: ["public", "home", slug],
     queryFn: async () => {
-      const { data } = await api.get<PublicHome>("/public/home", { params: { slug: SCHOOL_SLUG } });
+      const { data } = await api.get<PublicHome>("/public/home", { params: { slug } });
       return data;
     },
   });
@@ -43,7 +47,7 @@ export function usePublicHome() {
 export function useSendInquiry() {
   return useMutation({
     mutationFn: async (input: InquiryInput) => {
-      await api.post("/public/inquiries", { slug: SCHOOL_SLUG, ...input });
+      await api.post("/public/inquiries", { slug: schoolSlug(), ...input });
     },
   });
 }

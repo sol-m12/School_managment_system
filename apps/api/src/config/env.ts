@@ -13,6 +13,10 @@ const schema = z.object({
   DB_NAME: z.string().min(1),
   JWT_ACCESS_SECRET: z.string().min(32),
   JWT_REFRESH_SECRET: z.string().min(32),
+  /** Comma-separated exact web origins, e.g. http://localhost:5173 */
+  WEB_ORIGINS: z.string().optional().default("http://localhost:5173"),
+  /** Parent domain for school subdomains, e.g. yourdomain.com — allows https://*.yourdomain.com */
+  APP_BASE_DOMAIN: z.string().optional().default(""),
 });
 
 const parsed = schema.safeParse(process.env);

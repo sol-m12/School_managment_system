@@ -40,6 +40,7 @@
     "colName": "Name",
     "colSlug": "URL code",
     "colStatus": "Status",
+    "colSite": "School site",
     "colLogin": "School login"
   },
   "add": {
@@ -49,8 +50,8 @@
     "sectionAdmin": "First admin",
     "name": "School name",
     "slug": "URL code (slug)",
-    "slugHint": "Staff will sign in with school code “{{slug}}”.",
-    "preview": "Login path preview: /login?tenant={{slug}}",
+    "slugHint": "This becomes the subdomain, e.g. {{slug}}.yourdomain.com. Staff can also sign in with school code “{{slug}}”.",
+    "preview": "School site preview: {{url}}",
     "adminHint": "This person is a Technician for that school (IT / school admin), not a platform Super Admin.",
     "adminFirstName": "First name",
     "adminLastName": "Last name",
@@ -65,8 +66,9 @@
     "resultSlug": "URL code",
     "resultAdmin": "Admin username",
     "resultRole": "Role",
+    "resultSite": "School site",
     "resultLogin": "Login path",
-    "copy": "Copy login link",
+    "copy": "Copy school site link",
     "copied": "Copied to clipboard.",
     "backToList": "View schools",
     "addAnother": "Add another"
