@@ -8,7 +8,10 @@ export const studentBodySchema = z.object({
   gender: z.enum(["M", "F"]),
   age: z.number().int().positive(),
   gradeLevel: z.number().int().min(9).max(12),
-  stream: streamText.nullable(),
+  stream: z.preprocess(
+    (value) => (value === "" || value === undefined ? null : value),
+    streamText.nullable(),
+  ),
   registrationType: z.enum(["አዲስ", "ነባር", "አቋራጭ", "ደጋሚ", "መልሶ ቅበላ"]),
   previousSchool: z.string().trim().max(255).optional(),
   kebele: z.string().trim().max(100).optional(),

@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, like, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, like, ne, or, sql } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import {
   clubActivityReports,
@@ -129,6 +129,8 @@ async function syncLeadershipMembers(
   patronStaffId: number,
   presidentStudentId: number,
 ) {
+  // Clear prior Patron/President rows and any existing row for this staff/student
+  // so unique (structure_id, student_id) / staff conflicts do not 500.
   await db
     .delete(committeeMembers)
     .where(
@@ -137,7 +139,11 @@ async function syncLeadershipMembers(
         tenantId,
         and(
           eq(committeeMembers.structureId, structureId),
-          sql`${committeeMembers.roleInStructure} IN ('Patron', 'President')`,
+          or(
+            sql`${committeeMembers.roleInStructure} IN ('Patron', 'President')`,
+            eq(committeeMembers.staffId, patronStaffId),
+            eq(committeeMembers.studentId, presidentStudentId),
+          ),
         ),
       ),
     );
@@ -150,7 +156,8 @@ async function syncLeadershipMembers(
       parentPgId: null,
       roleInStructure: "Patron",
       status: "Active" as const,
-    }, tenantId),  );
+    }, tenantId),
+  );
   await db.insert(committeeMembers).values(
     withTenant({
       structureId,
@@ -159,7 +166,21 @@ async function syncLeadershipMembers(
       parentPgId: null,
       roleInStructure: "President",
       status: "Active" as const,
-    }, tenantId),  );
+    }, tenantId),
+  );
+}
+
+/** HTML datetime-local sends "YYYY-MM-DDTHH:mm"; MySQL prefers "YYYY-MM-DD HH:mm:ss". */
+function normalizeMeetsOn(raw: string): string {
+  const trimmed = raw.trim();
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(trimmed)) {
+    const withSeconds = trimmed.length === 16 ? `${trimmed}:00` : trimmed;
+    return withSeconds.replace("T", " ");
+  }
+  if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test(trimmed)) {
+    return `${trimmed}:00`;
+  }
+  return trimmed;
 }
 
 async function enrichClub(tenantId: number, row: typeof committeesClubs.$inferSelect) {
@@ -614,11 +635,12 @@ export async function addMeeting(tenantId: number, userId: number, clubId: numbe
       withTenant({
         structureId: clubId,
         title: input.title,
-        meetsOn: input.meetsOn,
+        meetsOn: normalizeMeetsOn(input.meetsOn),
         location: input.location,
         notes: input.notes,
         createdByStaffId: context.staffId,
-      }, tenantId),    ),
+      }, tenantId),
+    ),
   );
   return { id };
 }

@@ -13,6 +13,8 @@
   "chooseStudent": "ተማሪ ይምረጡ",
   "noTeachers": "መምህር የለም — መጀመሪያ ሰራተኛ ይመዝገቡ",
   "noStudents": "ተማሪ የለም — መጀመሪያ ተማሪ ይመዝገቡ",
+  "goStaff": "የሰራተኛ ምዝገባ ክፈት",
+  "goStudents": "የተማሪ ምዝገባ ክፈት",
   "studentCouncil": "የተማሪዎች ምክር ቤት",
   "createClub": "ክለብ ፍጠር",
   "updateClub": "ክለብ አዘምን",

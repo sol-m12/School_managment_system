@@ -91,46 +91,48 @@ export function ClubsManagePage() {
             />
             <Select
               label={t("patron")}
+              placeholder={t("choosePatron")}
               value={form.patronStaffId ? String(form.patronStaffId) : ""}
               required
+              options={
+                teachers.length === 0
+                  ? [{ value: "", label: t("noTeachers") }]
+                  : teachers.map((row) => ({ value: String(row.id), label: row.name }))
+              }
               onChange={(event) =>
                 setForm({ ...form, patronStaffId: Number(event.target.value) || 0 })
               }
-            >
-              <option value="">{t("choosePatron")}</option>
-              {teachers.length === 0 ? (
-                <option value="" disabled>
-                  {t("noTeachers")}
-                </option>
-              ) : (
-                teachers.map((row) => (
-                  <option key={row.id} value={row.id}>
-                    {row.name}
-                  </option>
-                ))
-              )}
-            </Select>
+            />
+            {teachers.length === 0 ? (
+              <p className="text-sm text-ink-muted md:col-span-2">
+                {t("noTeachers")}{" "}
+                <a href="/system/staff-registration" className="font-medium text-teal-700 hover:underline">
+                  {t("goStaff")}
+                </a>
+              </p>
+            ) : null}
             <Select
               label={t("president")}
+              placeholder={t("choosePresident")}
               value={form.presidentStudentId ? String(form.presidentStudentId) : ""}
               required
+              options={
+                students.length === 0
+                  ? [{ value: "", label: t("noStudents") }]
+                  : students.map((row) => ({ value: String(row.id), label: row.label }))
+              }
               onChange={(event) =>
                 setForm({ ...form, presidentStudentId: Number(event.target.value) || 0 })
               }
-            >
-              <option value="">{t("choosePresident")}</option>
-              {students.length === 0 ? (
-                <option value="" disabled>
-                  {t("noStudents")}
-                </option>
-              ) : (
-                students.map((row) => (
-                  <option key={row.id} value={row.id}>
-                    {row.label}
-                  </option>
-                ))
-              )}
-            </Select>
+            />
+            {students.length === 0 ? (
+              <p className="text-sm text-ink-muted md:col-span-2">
+                {t("noStudents")}{" "}
+                <a href="/secretary/registration" className="font-medium text-teal-700 hover:underline">
+                  {t("goStudents")}
+                </a>
+              </p>
+            ) : null}
             <Input
               label={t("description")}
               value={form.description ?? ""}

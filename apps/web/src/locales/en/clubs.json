@@ -13,6 +13,8 @@
   "chooseStudent": "Choose a student",
   "noTeachers": "No teachers yet — register staff first",
   "noStudents": "No students yet — register students first",
+  "goStaff": "Open staff registration",
+  "goStudents": "Open student registration",
   "studentCouncil": "Student Council",
   "createClub": "Create club",
   "updateClub": "Update club",

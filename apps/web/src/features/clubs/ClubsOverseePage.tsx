@@ -186,40 +186,38 @@ export function ClubsOverseePage() {
                 />
                 <Select
                   label={t("candidate1")}
+                  placeholder={t("chooseStudent")}
                   value={electionForm.candidateA ? String(electionForm.candidateA) : ""}
                   required
+                  options={
+                    students.length === 0
+                      ? [{ value: "", label: t("noStudents") }]
+                      : students.map((row) => ({ value: String(row.id), label: row.label }))
+                  }
                   onChange={(event) =>
                     setElectionForm({
                       ...electionForm,
                       candidateA: Number(event.target.value) || 0,
                     })
                   }
-                >
-                  <option value="">{t("chooseStudent")}</option>
-                  {students.map((row) => (
-                    <option key={row.id} value={row.id}>
-                      {row.label}
-                    </option>
-                  ))}
-                </Select>
+                />
                 <Select
                   label={t("candidate2")}
+                  placeholder={t("chooseStudent")}
                   value={electionForm.candidateB ? String(electionForm.candidateB) : ""}
                   required
+                  options={
+                    students.length === 0
+                      ? [{ value: "", label: t("noStudents") }]
+                      : students.map((row) => ({ value: String(row.id), label: row.label }))
+                  }
                   onChange={(event) =>
                     setElectionForm({
                       ...electionForm,
                       candidateB: Number(event.target.value) || 0,
                     })
                   }
-                >
-                  <option value="">{t("chooseStudent")}</option>
-                  {students.map((row) => (
-                    <option key={row.id} value={row.id}>
-                      {row.label}
-                    </option>
-                  ))}
-                </Select>
+                />
                 <div className="md:col-span-2">
                   <Button type="submit" loading={openElection.isPending}>
                     {t("openElection")}

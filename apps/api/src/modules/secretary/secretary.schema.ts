@@ -42,7 +42,11 @@ export const appointmentBodySchema = z.object({
   purpose: z.string().trim().min(1).max(500),
   withRole: z.enum(["Principal", "V_Principal", "Registrar", "Technician", "Librarian", "Secretary"]),
   startsOn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  startsAt: z.string().regex(/^\d{2}:\d{2}$/),
+  // Browsers may send HH:mm or HH:mm:ss from <input type="time">
+  startsAt: z
+    .string()
+    .regex(/^\d{2}:\d{2}(:\d{2})?$/)
+    .transform((value) => value.slice(0, 5)),
 });
 
 export const appointmentStatusSchema = z.object({
