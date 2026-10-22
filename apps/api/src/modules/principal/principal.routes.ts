@@ -29,6 +29,7 @@ const STATUS: Record<PrincipalErrorCode, number> = {
   CLEARANCE_INCOMPLETE: 409,
   NOT_READY: 409,
   BOOKS_OUT: 409,
+  VALIDATION: 400,
 };
 
 function sendError(res: Response, error: unknown): void {
@@ -117,6 +118,14 @@ principalRouter.get("/messages", ...guard, async (req, res) => {
   const scope = req.query.scope === "bulk" ? "bulk" : "hub";
   try {
     res.json({ rows: await principal.listMessages(tenantOf(req), scope) });
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+principalRouter.get("/message-options", ...guard, async (req, res) => {
+  try {
+    res.json(await principal.messageAudienceOptions(tenantOf(req)));
   } catch (error) {
     sendError(res, error);
   }

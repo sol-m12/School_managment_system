@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { audienceKeySchema, audiencePickSchema } from "../../lib/audienceOptions.js";
 
 export const REPORT_COLUMNS = [
   "name",
@@ -31,12 +32,15 @@ export const policyStatusSchema = z.object({
   status: z.enum(["Draft", "Active", "Retired"]),
 });
 
-export const messageBodySchema = z.object({
-  kind: z.enum(["announcement", "emergency", "memo", "targeted", "bulk"]),
-  audience: z.string().trim().min(1).max(160),
-  title: z.string().trim().min(1).max(160),
-  body: z.string().trim().min(1).max(4000),
-});
+export const messageAudienceKeySchema = audienceKeySchema;
+
+export const messageBodySchema = audiencePickSchema.and(
+  z.object({
+    kind: z.enum(["announcement", "emergency", "memo", "targeted", "bulk"]),
+    title: z.string().trim().min(1).max(160),
+    body: z.string().trim().min(1).max(4000),
+  }),
+);
 
 export const decideBodySchema = z.object({
   source: z.enum(["store", "registration", "attendance", "staff"]),
@@ -66,14 +70,15 @@ export const clearanceBodySchema = z.object({
   financeClear: z.boolean(),
 });
 
-export const trainingBodySchema = z.object({
-  title: z.string().trim().min(1).max(160),
-  trainer: z.string().trim().min(1).max(160),
-  audience: z.string().trim().min(1).max(160),
-  scheduledOn: dateText,
-  seats: z.number().int().min(1).max(500),
-  notes: z.string().trim().max(2000).default(""),
-});
+export const trainingBodySchema = audiencePickSchema.and(
+  z.object({
+    title: z.string().trim().min(1).max(160),
+    trainer: z.string().trim().min(1).max(160),
+    scheduledOn: dateText,
+    seats: z.number().int().min(1).max(500),
+    notes: z.string().trim().max(2000).default(""),
+  }),
+);
 
 export const incidentBodySchema = z.object({
   title: z.string().trim().min(1).max(160),

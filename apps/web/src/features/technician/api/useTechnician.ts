@@ -16,7 +16,8 @@ export type AnnouncementRow = {
 export type AnnouncementBody = {
   title: string;
   content: string;
-  targetRole: AnnouncementRow["targetRole"];
+  audienceKey: string;
+  personId?: number;
   startDate: string;
   endDate: string | null;
   isUrgent: boolean;

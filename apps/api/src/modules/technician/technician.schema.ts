@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { audiencePickSchema } from "../../lib/audienceOptions.js";
 
 /** Roles that exist on both staff.role and users.role. */
 export const STAFF_ROLES = [
@@ -19,14 +20,15 @@ export const ANNOUNCEMENT_ROLES = ["All", "Staff", "Students", "Parents", "Admin
 
 const dateText = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 
-export const announcementBodySchema = z.object({
-  title: z.string().trim().min(1).max(255),
-  content: z.string().trim().min(1).max(60000),
-  targetRole: z.enum(ANNOUNCEMENT_ROLES),
-  startDate: dateText,
-  endDate: dateText.nullable().optional(),
-  isUrgent: z.boolean(),
-});
+export const announcementBodySchema = audiencePickSchema.and(
+  z.object({
+    title: z.string().trim().min(1).max(255),
+    content: z.string().trim().min(1).max(60000),
+    startDate: dateText,
+    endDate: dateText.nullable().optional(),
+    isUrgent: z.boolean(),
+  }),
+);
 
 export type AnnouncementInput = z.infer<typeof announcementBodySchema>;
 

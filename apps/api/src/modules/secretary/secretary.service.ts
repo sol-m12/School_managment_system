@@ -15,6 +15,7 @@ import {
   systemSettings,
   users,
 } from "../../db/schema/index.js";
+import { AudienceNotFoundError, isPersonAudience, listAudienceOptions, resolveAudiencePick } from "../../lib/audienceOptions.js";
 import { hashPassword } from "../../lib/password.js";
 import { scoped, withTenant } from "../../lib/tenant.js";
 import { AcademicsError, createStudent } from "../academics/students.service.js";
@@ -316,13 +317,28 @@ export async function listNotices(tenantId: number, pendingOnly = false) {
   return { rows };
 }
 
+export async function audienceOptions(tenantId: number) {
+  return listAudienceOptions(tenantId);
+}
+
+async function resolveAudience(tenantId: number, input: { audienceKey: NoticeInput["audienceKey"]; personId?: number }) {
+  try {
+    return await resolveAudiencePick(tenantId, { audienceKey: input.audienceKey, personId: input.personId });
+  } catch (error) {
+    if (error instanceof AudienceNotFoundError) throw new SecretaryError("NOT_FOUND");
+    throw error;
+  }
+}
+
 export async function createNotice(tenantId: number, actorId: number, input: NoticeInput) {
+  const resolved = await resolveAudience(tenantId, input);
+  const content = isPersonAudience(input.audienceKey) ? `[${resolved.audienceLabel}]\n${input.content}` : input.content;
   const inserted = await db.insert(secNotices).values(
     withTenant(
       {
         title: input.title,
-        content: input.content,
-        targetRole: input.targetRole,
+        content,
+        targetRole: resolved.targetRole,
         status: "Pending",
         recordedBy: actorId,
       },
@@ -398,11 +414,12 @@ export async function pendingApprovals(tenantId: number) {
 }
 
 export async function createDocument(tenantId: number, actorId: number, input: DocumentInput) {
+  const resolved = await resolveAudience(tenantId, input);
   const inserted = await db.insert(secDocuments).values(
     withTenant(
       {
         title: input.title,
-        audience: input.audience,
+        audience: resolved.audienceLabel.slice(0, 120),
         fileNote: input.fileNote,
         status: "Pending",
         recordedBy: actorId,

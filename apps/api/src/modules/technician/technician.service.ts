@@ -3,6 +3,7 @@ import { and, asc, desc, eq, like, or, type SQL } from "drizzle-orm";
 import type { ResultSetHeader } from "mysql2";
 import { db } from "../../db/index.js";
 import { announcements, schoolSettings, staff, students, subjects, users } from "../../db/schema/index.js";
+import { AudienceNotFoundError, isPersonAudience, listAudienceOptions, resolveAudiencePick } from "../../lib/audienceOptions.js";
 import { hashPassword } from "../../lib/password.js";
 import { ER_DUP_ENTRY, mysqlErrno } from "../../lib/mysqlError.js";
 import { scoped, withTenant } from "../../lib/tenant.js";
@@ -106,13 +107,28 @@ export async function listAnnouncements(tenantId: number) {
   return rows.map((row) => ({ ...row, isUrgent: row.isUrgent === 1 }));
 }
 
+export async function announcementAudienceOptions(tenantId: number) {
+  return listAudienceOptions(tenantId);
+}
+
+async function resolveAnnouncementAudience(tenantId: number, input: AnnouncementInput) {
+  try {
+    return await resolveAudiencePick(tenantId, { audienceKey: input.audienceKey, personId: input.personId });
+  } catch (error) {
+    if (error instanceof AudienceNotFoundError) throw new TechnicianError("NOT_FOUND");
+    throw error;
+  }
+}
+
 export async function createAnnouncement(tenantId: number, userId: number, input: AnnouncementInput) {
+  const resolved = await resolveAnnouncementAudience(tenantId, input);
+  const content = isPersonAudience(input.audienceKey) ? `[${resolved.audienceLabel}]\n${input.content}` : input.content;
   const inserted = await db.insert(announcements).values(
     withTenant(
       {
         title: input.title,
-        content: input.content,
-        targetRole: input.targetRole,
+        content,
+        targetRole: resolved.targetRole,
         startDate: input.startDate,
         endDate: input.endDate ?? null,
         isUrgent: input.isUrgent ? 1 : 0,
@@ -144,12 +160,14 @@ export async function getAnnouncement(tenantId: number, id: number) {
 }
 
 export async function updateAnnouncement(tenantId: number, id: number, input: AnnouncementInput) {
+  const resolved = await resolveAnnouncementAudience(tenantId, input);
+  const content = isPersonAudience(input.audienceKey) ? `[${resolved.audienceLabel}]\n${input.content}` : input.content;
   const result = await db
     .update(announcements)
     .set({
       title: input.title,
-      content: input.content,
-      targetRole: input.targetRole,
+      content,
+      targetRole: resolved.targetRole,
       startDate: input.startDate,
       endDate: input.endDate ?? null,
       isUrgent: input.isUrgent ? 1 : 0,

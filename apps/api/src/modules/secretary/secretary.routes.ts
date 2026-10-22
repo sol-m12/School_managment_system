@@ -155,6 +155,14 @@ secretaryRouter.get("/pending", ...authorize, async (req, res) => {
   }
 });
 
+secretaryRouter.get("/audience-options", ...office, async (req, res) => {
+  try {
+    res.json(await secretary.audienceOptions(tenantOf(req)));
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
 secretaryRouter.get("/notices", ...office, async (req, res) => {
   try {
     res.json(await secretary.listNotices(tenantOf(req)));

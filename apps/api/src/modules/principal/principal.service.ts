@@ -16,7 +16,9 @@ import {
   requisitionsModel20,
   staff,
   students,
+  systemSettings,
 } from "../../db/schema/index.js";
+import { AudienceNotFoundError, listAudienceOptions, resolveAudiencePick } from "../../lib/audienceOptions.js";
 import { scoped, withTenant } from "../../lib/tenant.js";
 import { buildPicture, projectReport, schoolName, type Picture } from "./principal.analytics.js";
 import {
@@ -34,7 +36,7 @@ import {
   type TransferInput,
 } from "./principal.schema.js";
 
-export type PrincipalErrorCode = "NOT_FOUND" | "NOTE_REQUIRED" | "CLEARANCE_INCOMPLETE" | "NOT_READY" | "BOOKS_OUT";
+export type PrincipalErrorCode = "NOT_FOUND" | "NOTE_REQUIRED" | "CLEARANCE_INCOMPLETE" | "NOT_READY" | "BOOKS_OUT" | "VALIDATION";
 
 export class PrincipalError extends Error {
   readonly code: PrincipalErrorCode;
@@ -229,6 +231,22 @@ export async function moeReport(tenantId: number) {
 const HUB_KINDS = ["announcement", "emergency", "memo"] as const;
 const BULK_KINDS = ["targeted", "bulk"] as const;
 
+export async function messageAudienceOptions(tenantId: number) {
+  return listAudienceOptions(tenantId);
+}
+
+async function resolveAudience(tenantId: number, input: MessageInput) {
+  try {
+    return await resolveAudiencePick(tenantId, {
+      audienceKey: input.audienceKey,
+      personId: input.personId,
+    });
+  } catch (error) {
+    if (error instanceof AudienceNotFoundError) throw new PrincipalError("NOT_FOUND");
+    throw error;
+  }
+}
+
 export async function listMessages(tenantId: number, scope: "hub" | "bulk") {
   const kinds = scope === "hub" ? HUB_KINDS : BULK_KINDS;
   return db
@@ -247,11 +265,12 @@ export async function listMessages(tenantId: number, scope: "hub" | "bulk") {
 }
 
 export async function createMessage(tenantId: number, userId: number, input: MessageInput) {
+  const resolved = await resolveAudience(tenantId, input);
   const result = await db.insert(principalMessages).values(
     withTenant(
       {
         kind: input.kind,
-        audience: input.audience,
+        audience: resolved.audienceLabel.slice(0, 160),
         title: input.title,
         body: input.body,
         recordedBy: userId,
@@ -265,7 +284,7 @@ export async function createMessage(tenantId: number, userId: number, input: Mes
         {
           title: input.title,
           content: input.body,
-          targetRole: "All" as const,
+          targetRole: resolved.targetRole,
           startDate: addisDate(),
           isUrgent: input.kind === "emergency" ? 1 : 0,
           postedBy: userId,
@@ -274,7 +293,7 @@ export async function createMessage(tenantId: number, userId: number, input: Mes
       ),
     );
   }
-  await writeAudit(tenantId, userId, "principal.message", `${input.kind}: ${input.title}`);
+  await writeAudit(tenantId, userId, "principal.message", `${input.kind}: ${input.title} → ${resolved.audienceLabel}`);
   return { id: insertId(result) };
 }
 
@@ -696,12 +715,19 @@ export async function listTraining(tenantId: number) {
 }
 
 export async function createTraining(tenantId: number, userId: number, input: TrainingInput) {
+  let audienceLabel: string;
+  try {
+    audienceLabel = (await resolveAudiencePick(tenantId, { audienceKey: input.audienceKey, personId: input.personId })).audienceLabel;
+  } catch (error) {
+    if (error instanceof AudienceNotFoundError) throw new PrincipalError("NOT_FOUND");
+    throw error;
+  }
   const result = await db.insert(principalTraining).values(
     withTenant(
       {
         title: input.title,
         trainer: input.trainer,
-        audience: input.audience,
+        audience: audienceLabel.slice(0, 160),
         scheduledOn: input.scheduledOn,
         seats: input.seats,
         notes: input.notes || null,

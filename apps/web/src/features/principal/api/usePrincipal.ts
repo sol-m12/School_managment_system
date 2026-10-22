@@ -233,6 +233,13 @@ export function usePremium() {
   });
 }
 
+export type MessageAudienceOptions = {
+  groups: { key: string; labelKey: string }[];
+  students: { id: number; label: string }[];
+  teachers: { id: number; label: string }[];
+  staff: { id: number; label: string }[];
+};
+
 export function useMessages(scope: "hub" | "bulk") {
   const { tenantId } = useTenantKey();
   return useQuery({
@@ -241,10 +248,19 @@ export function useMessages(scope: "hub" | "bulk") {
   });
 }
 
+export function useMessageAudienceOptions() {
+  const { tenantId } = useTenantKey();
+  return useQuery({
+    queryKey: key(tenantId, "message-options"),
+    queryFn: async () => (await api.get<MessageAudienceOptions>("/principal/message-options")).data,
+  });
+}
+
 export function useSendMessage(scope: "hub" | "bulk") {
   const { tenantId, client } = useTenantKey();
   return useMutation({
-    mutationFn: (body: { kind: string; audience: string; title: string; body: string }) => api.post("/principal/messages", body),
+    mutationFn: (body: { kind: string; audienceKey: string; personId?: number; title: string; body: string }) =>
+      api.post("/principal/messages", body),
     onSuccess: () => void client.invalidateQueries({ queryKey: key(tenantId, `messages-${scope}`) }),
   });
 }
@@ -401,8 +417,15 @@ export function useTraining() {
 export function useCreateTraining() {
   const { tenantId, client } = useTenantKey();
   return useMutation({
-    mutationFn: (body: { title: string; trainer: string; audience: string; scheduledOn: string; seats: number; notes: string }) =>
-      api.post("/principal/training", body),
+    mutationFn: (body: {
+      title: string;
+      trainer: string;
+      audienceKey: string;
+      personId?: number;
+      scheduledOn: string;
+      seats: number;
+      notes: string;
+    }) => api.post("/principal/training", body),
     onSuccess: () => void client.invalidateQueries({ queryKey: key(tenantId, "training") }),
   });
 }

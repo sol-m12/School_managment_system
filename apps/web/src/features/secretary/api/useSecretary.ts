@@ -152,11 +152,11 @@ export const useRenew = () =>
     api.post("/secretary/renewals", body),
   );
 export const useCreateNotice = () =>
-  useSend<{ title: string; content: string; targetRole: string }>(async (body) => api.post("/secretary/notices", body));
+  useSend<{ title: string; content: string; audienceKey: string; personId?: number }>(async (body) => api.post("/secretary/notices", body));
 export const useDecideNotice = () =>
   useSend<{ id: number; decision: "approve" | "reject" }>(async (body) => api.post(`/secretary/notices/${body.id}/decide`, { decision: body.decision }));
 export const useCreateDocument = () =>
-  useSend<{ title: string; audience: string; fileNote: string }>(async (body) => api.post("/secretary/documents", body));
+  useSend<{ title: string; fileNote: string; audienceKey: string; personId?: number }>(async (body) => api.post("/secretary/documents", body));
 export const useDecideDocument = () =>
   useSend<{ id: number; decision: "approve" | "reject" }>(async (body) => api.post(`/secretary/documents/${body.id}/decide`, { decision: body.decision }));
 export const useCreateAppointment = () =>

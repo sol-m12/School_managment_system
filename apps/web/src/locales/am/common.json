@@ -53,5 +53,27 @@
     "Student": "ተማሪ",
     "Principal": "ርዕሰ መምህር",
     "Procurement": "የግዢ ክፍል"
-  }
+  },
+  "audience": "ለማን",
+  "audienceAll": "ሁሉም ትምህርት ቤት",
+  "audienceStudents": "ሁሉም ተማሪዎች",
+  "audienceTeachers": "ሁሉም መምህራን",
+  "audienceStaff": "ሁሉም ሰራተኞች",
+  "audienceParents": "ሁሉም ወላጆች",
+  "audienceAdmin": "አስተዳደር ብቻ",
+  "audienceOneStudent": "አንድ ተማሪ",
+  "audienceOneTeacher": "አንድ መምህር",
+  "audienceOneStaff": "አንድ ሰራተኛ",
+  "pickStudent": "ተማሪ",
+  "pickTeacher": "መምህር",
+  "pickStaff": "ሰራተኛ",
+  "choose": "ይምረጡ…",
+  "noStudents": "በዚህ ትምህርት ቤት ተማሪ የለም",
+  "noStudentsHelp": "መጀመሪያ ተማሪዎችን ያክሉ፣ ከዚያ ለአንድ ተማሪ መላክ ይችላሉ።",
+  "goStudents": "ተማሪዎችን ክፈት",
+  "noTeachers": "በዚህ ትምህርት ቤት መምህር የለም",
+  "noTeachersHelp": "መጀመሪያ መምህራንን ይመዝግቡ፣ ከዚያ ለአንድ መምህር መላክ ይችላሉ።",
+  "noStaff": "በዚህ ትምህርት ቤት ሰራተኛ የለም",
+  "noStaffHelp": "መጀመሪያ ሰራተኞችን ይመዝግቡ፣ ከዚያ ለአንድ ሰራተኛ መላክ ይችላሉ።",
+  "goStaff": "የሰራተኛ ምዝገባ ክፈት"
 }

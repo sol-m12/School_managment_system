@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { audiencePickSchema } from "../../lib/audienceOptions.js";
 import { studentBodySchema } from "../academics/academics.schema.js";
 
 export const idParamSchema = z.object({
@@ -21,21 +22,23 @@ export const renewBodySchema = z.object({
   toYear: z.string().trim().min(1).max(10).optional(),
 });
 
-export const noticeBodySchema = z.object({
-  title: z.string().trim().min(1).max(255),
-  content: z.string().trim().min(1).max(5000),
-  targetRole: z.enum(["All", "Staff", "Students", "Parents", "Admin_Only"]).default("All"),
-});
+export const noticeBodySchema = audiencePickSchema.and(
+  z.object({
+    title: z.string().trim().min(1).max(255),
+    content: z.string().trim().min(1).max(5000),
+  }),
+);
 
 export const decideBodySchema = z.object({
   decision: z.enum(["approve", "reject"]),
 });
 
-export const documentBodySchema = z.object({
-  title: z.string().trim().min(1).max(255),
-  audience: z.string().trim().max(120).default(""),
-  fileNote: z.string().trim().max(500).default(""),
-});
+export const documentBodySchema = audiencePickSchema.and(
+  z.object({
+    title: z.string().trim().min(1).max(255),
+    fileNote: z.string().trim().max(500).default(""),
+  }),
+);
 
 export const appointmentBodySchema = z.object({
   visitorName: z.string().trim().min(1).max(255),

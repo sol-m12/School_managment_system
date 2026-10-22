@@ -53,5 +53,27 @@
     "Student": "Student",
     "Principal": "Principal",
     "Procurement": "Procurement Office"
-  }
+  },
+  "audience": "Send to",
+  "audienceAll": "All school",
+  "audienceStudents": "All students",
+  "audienceTeachers": "All teachers",
+  "audienceStaff": "All staff",
+  "audienceParents": "All parents",
+  "audienceAdmin": "Admin only",
+  "audienceOneStudent": "One student",
+  "audienceOneTeacher": "One teacher",
+  "audienceOneStaff": "One staff member",
+  "pickStudent": "Student",
+  "pickTeacher": "Teacher",
+  "pickStaff": "Staff member",
+  "choose": "Choose…",
+  "noStudents": "No students in this school yet",
+  "noStudentsHelp": "Add students first, then you can send to one student.",
+  "goStudents": "Open students",
+  "noTeachers": "No teachers in this school yet",
+  "noTeachersHelp": "Register teachers first, then you can send to one teacher.",
+  "noStaff": "No staff in this school yet",
+  "noStaffHelp": "Register staff first, then you can send to one staff member.",
+  "goStaff": "Open staff registration"
 }

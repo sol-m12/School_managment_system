@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { CalendarDays, IdCard, Megaphone, ScanLine, Sparkles, UserPlus, Wrench } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { AudiencePicker, audiencePickBlocked, readAudiencePick, useAudienceOptions } from "@/components/AudiencePicker";
 import { Alert, Badge, Button, Card, CardBody, CardHeader, EmptyState, Input, PageHeader, Select, Table } from "@/components/ui";
 import { StatCard } from "@/features/dashboard/components/StatCard";
 import { Panel, readForm, textOf, useNotice } from "@/features/principal/officeUi";
@@ -59,7 +60,6 @@ function pickEnum<T extends string>(value: string, allowed: readonly T[]): T | n
 
 const GRADES = [9, 10, 11, 12];
 const TYPES = ["አዲስ", "ነባር", "አቋራጭ", "ደጋሚ", "መልሶ ቅበላ"] as const;
-const TARGETS = ["All", "Staff", "Students", "Parents", "Admin_Only"] as const;
 const MEET = ["Principal", "V_Principal", "Registrar", "Technician", "Librarian", "Secretary"] as const;
 const ROUTES = ["Principal", "V_Principal", "Registrar", "Technician", "Librarian"] as const;
 const STREAMS = ["Common", "Natural", "Social"] as const;
@@ -354,10 +354,12 @@ export function RenewalPage() {
 }
 
 export function NoticesPage() {
-  const { t } = useTranslation(["secretary", "errors"]);
+  const { t } = useTranslation(["secretary", "errors", "common"]);
   const query = useNotices();
+  const options = useAudienceOptions("/secretary/audience-options");
   const create = useCreateNotice();
   const { setNotice, view } = useNotice();
+  const [audienceKey, setAudienceKey] = useState("All");
   return (
     <>
       <PageHeader title={t("noticesTitle")} description={t("noticesHelp")} />
@@ -365,21 +367,22 @@ export function NoticesPage() {
       <Card className="mb-4">
         <CardBody>
           <form
-            className="grid gap-3"
+            className="grid gap-3 md:grid-cols-2"
             onSubmit={(event) => {
               event.preventDefault();
               const data = readForm(event.currentTarget);
-              const targetRole = pickEnum(textOf(data, "targetRole"), TARGETS);
-              if (!targetRole) {
+              const pick = readAudiencePick(event.currentTarget);
+              if (!pick) {
                 setNotice({ tone: "danger", text: t("errors:validation") });
                 return;
               }
               create.mutate(
-                { title: textOf(data, "title"), content: textOf(data, "content"), targetRole },
+                { title: textOf(data, "title"), content: textOf(data, "content"), audienceKey: pick.audienceKey, personId: pick.personId },
                 {
                   onSuccess: () => {
                     saved(setNotice, t("pendingPrincipal"));
                     event.currentTarget.reset();
+                    setAudienceKey("All");
                   },
                   onError: (error) => fail(setNotice, t, error),
                 },
@@ -388,8 +391,14 @@ export function NoticesPage() {
           >
             <Input name="title" label={t("title")} required />
             <Input name="content" label={t("content")} required />
-            <Select name="targetRole" label={t("target")} options={TARGETS.map((value) => ({ value, label: t(`target${value}`) }))} required />
-            <Button type="submit" loading={create.isPending}>
+            <AudiencePicker
+              options={options.data}
+              isError={options.isError}
+              value={{ audienceKey }}
+              onChange={(pick) => setAudienceKey(pick.audienceKey)}
+              label={t("target")}
+            />
+            <Button type="submit" loading={create.isPending} disabled={audiencePickBlocked(options.data, audienceKey)}>
               {t("submitNotice")}
             </Button>
           </form>
@@ -418,10 +427,12 @@ export function NoticesPage() {
 }
 
 export function DocumentsPage() {
-  const { t } = useTranslation(["secretary", "errors"]);
+  const { t } = useTranslation(["secretary", "errors", "common"]);
   const query = useDocuments();
+  const options = useAudienceOptions("/secretary/audience-options");
   const create = useCreateDocument();
   const { setNotice, view } = useNotice();
+  const [audienceKey, setAudienceKey] = useState("All");
   return (
     <>
       <PageHeader title={t("documentsTitle")} description={t("documentsHelp")} />
@@ -429,16 +440,27 @@ export function DocumentsPage() {
       <Card className="mb-4">
         <CardBody>
           <form
-            className="grid gap-3 md:grid-cols-3"
+            className="grid gap-3 md:grid-cols-2"
             onSubmit={(event) => {
               event.preventDefault();
               const data = readForm(event.currentTarget);
+              const pick = readAudiencePick(event.currentTarget);
+              if (!pick) {
+                setNotice({ tone: "danger", text: t("errors:validation") });
+                return;
+              }
               create.mutate(
-                { title: textOf(data, "title"), audience: textOf(data, "audience"), fileNote: textOf(data, "fileNote") },
+                {
+                  title: textOf(data, "title"),
+                  fileNote: textOf(data, "fileNote"),
+                  audienceKey: pick.audienceKey,
+                  personId: pick.personId,
+                },
                 {
                   onSuccess: () => {
                     saved(setNotice, t("pendingPrincipal"));
                     event.currentTarget.reset();
+                    setAudienceKey("All");
                   },
                   onError: (error) => fail(setNotice, t, error),
                 },
@@ -446,9 +468,14 @@ export function DocumentsPage() {
             }}
           >
             <Input name="title" label={t("title")} required />
-            <Input name="audience" label={t("audience")} />
             <Input name="fileNote" label={t("fileNote")} />
-            <Button type="submit" loading={create.isPending}>
+            <AudiencePicker
+              options={options.data}
+              isError={options.isError}
+              value={{ audienceKey }}
+              onChange={(pick) => setAudienceKey(pick.audienceKey)}
+            />
+            <Button type="submit" loading={create.isPending} disabled={audiencePickBlocked(options.data, audienceKey)}>
               {t("submitDocument")}
             </Button>
           </form>

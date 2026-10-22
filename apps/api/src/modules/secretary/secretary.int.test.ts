@@ -62,7 +62,7 @@ describe("secretary office", () => {
     const created = await request(app)
       .post("/secretary/notices")
       .set("Authorization", desk())
-      .send({ title: "Meeting", content: "Staff meeting tomorrow", targetRole: "Staff" })
+      .send({ title: "Meeting", content: "Staff meeting tomorrow", audienceKey: "Staff" })
       .expect(201);
     noticeId = created.body.id as number;
     await request(app)

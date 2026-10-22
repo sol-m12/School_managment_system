@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, Button, Card, CardBody, Input, PageHeader, Select, Spinner, Table } from "@/components/ui";
+import { AudiencePicker, audiencePickBlocked, useAudienceOptions } from "@/components/AudiencePicker";
+import { Alert, Button, Card, CardBody, Input, PageHeader, Spinner, Table } from "@/components/ui";
 import { fieldControlClass, fieldLabelClass } from "@/components/ui/Input";
 import { toErrorKey } from "@/lib/apiError";
 import {
@@ -11,12 +12,11 @@ import {
   type AnnouncementRow,
 } from "./api/useTechnician";
 
-const TARGETS = ["All", "Staff", "Students", "Parents", "Admin_Only"] as const;
-
 const emptyForm = (): AnnouncementBody => ({
   title: "",
   content: "",
-  targetRole: "All",
+  audienceKey: "All",
+  personId: undefined,
   startDate: new Intl.DateTimeFormat("en-CA", { timeZone: "Africa/Addis_Ababa" }).format(new Date()),
   endDate: null,
   isUrgent: false,
@@ -25,6 +25,7 @@ const emptyForm = (): AnnouncementBody => ({
 export function AnnouncementsPage() {
   const { t } = useTranslation(["technician", "errors", "common"]);
   const query = useAnnouncements();
+  const options = useAudienceOptions("/technician/announcement-audience-options");
   const save = useSaveAnnouncement();
   const remove = useDeleteAnnouncement();
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -33,10 +34,12 @@ export function AnnouncementsPage() {
 
   function beginEdit(row: AnnouncementRow) {
     setEditingId(row.id);
+    const content = row.content.replace(/^\[[^\]]+\]\n/, "");
     setForm({
       title: row.title,
-      content: row.content,
-      targetRole: row.targetRole,
+      content,
+      audienceKey: row.targetRole,
+      personId: undefined,
       startDate: row.startDate,
       endDate: row.endDate,
       isUrgent: row.isUrgent,
@@ -45,6 +48,11 @@ export function AnnouncementsPage() {
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const needsPerson = form.audienceKey === "student" || form.audienceKey === "teacher" || form.audienceKey === "staff";
+    if (audiencePickBlocked(options.data, form.audienceKey) || (needsPerson && !form.personId)) {
+      setNotice({ tone: "danger", text: t("errors:validation") });
+      return;
+    }
     save.mutate(
       { id: editingId ?? undefined, body: form },
       {
@@ -75,11 +83,13 @@ export function AnnouncementsPage() {
               required
               onChange={(event) => setForm({ ...form, title: event.target.value })}
             />
-            <Select
+            <AudiencePicker
+              options={options.data}
+              isError={options.isError}
+              formMode={false}
+              value={{ audienceKey: form.audienceKey, personId: form.personId }}
+              onChange={(pick) => setForm({ ...form, audienceKey: pick.audienceKey, personId: pick.personId })}
               label={t("target")}
-              value={form.targetRole}
-              options={TARGETS.map((role) => ({ value: role, label: t(`roles.${role}`) }))}
-              onChange={(event) => setForm({ ...form, targetRole: event.target.value as AnnouncementBody["targetRole"] })}
             />
             <Input
               label={t("startDate")}
@@ -125,7 +135,7 @@ export function AnnouncementsPage() {
                   {t("cancelEdit")}
                 </Button>
               ) : null}
-              <Button type="submit" loading={save.isPending}>
+              <Button type="submit" loading={save.isPending} disabled={audiencePickBlocked(options.data, form.audienceKey)}>
                 {editingId ? t("updateAnnouncement") : t("saveAnnouncement")}
               </Button>
             </div>

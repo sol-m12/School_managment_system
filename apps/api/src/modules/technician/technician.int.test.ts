@@ -76,7 +76,7 @@ describe("technician API", () => {
       .send({
         title: "Tenant A notice",
         content: "Only school A",
-        targetRole: "Staff",
+        audienceKey: "Staff",
         startDate: "2026-10-14",
         endDate: null,
         isUrgent: false,
@@ -90,7 +90,7 @@ describe("technician API", () => {
       .send({
         title: "Stolen",
         content: "Should not save",
-        targetRole: "All",
+        audienceKey: "All",
         startDate: "2026-10-14",
         isUrgent: true,
       })

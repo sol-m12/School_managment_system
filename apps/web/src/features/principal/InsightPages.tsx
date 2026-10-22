@@ -1,6 +1,7 @@
 import { useState, type DragEvent } from "react";
 import { BadgeCheck, Siren, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { AudiencePicker, audiencePickBlocked, readAudiencePick, useAudienceOptions } from "@/components/AudiencePicker";
 import { Badge, Button, Card, CardBody, CardHeader, Input, PageHeader, Select, Table } from "@/components/ui";
 import { StatCard } from "@/features/dashboard/components/StatCard";
 import { toErrorKey } from "@/lib/apiError";
@@ -318,10 +319,12 @@ export function MoePage() {
 }
 
 export function TrainingPage() {
-  const { t } = useTranslation(["principal", "errors"]);
+  const { t } = useTranslation(["principal", "errors", "common"]);
   const query = useTraining();
+  const options = useAudienceOptions("/principal/message-options");
   const create = useCreateTraining();
   const { setNotice, view } = useNotice();
+  const [audienceKey, setAudienceKey] = useState("All");
   return (
     <>
       <PageHeader title={t("trainingTitle")} description={t("trainingHelp")} />
@@ -334,27 +337,48 @@ export function TrainingPage() {
                 <form
                   className="grid gap-3 md:grid-cols-2"
                   onSubmit={(event) => {
+                    event.preventDefault();
                     const form = readForm(event);
+                    const pick = readAudiencePick(event.currentTarget);
+                    if (!pick) {
+                      setNotice({ tone: "danger", text: t("errors:validation") });
+                      return;
+                    }
                     create.mutate(
                       {
                         title: textOf(form, "title"),
                         trainer: textOf(form, "trainer"),
-                        audience: textOf(form, "audience"),
+                        audienceKey: pick.audienceKey,
+                        personId: pick.personId,
                         scheduledOn: textOf(form, "scheduledOn"),
                         seats: Number(textOf(form, "seats")),
                         notes: textOf(form, "notes"),
                       },
-                      { onSuccess: () => { setNotice({ tone: "success", text: t("saved") }); event.currentTarget.reset(); }, onError: (error) => fail(setNotice, t, error) },
+                      {
+                        onSuccess: () => {
+                          setNotice({ tone: "success", text: t("saved") });
+                          event.currentTarget.reset();
+                          setAudienceKey("All");
+                        },
+                        onError: (error) => fail(setNotice, t, error),
+                      },
                     );
                   }}
                 >
                   <Input name="title" label={t("title")} required />
                   <Input name="trainer" label={t("trainer")} required />
-                  <Input name="audience" label={t("audience")} required />
+                  <AudiencePicker
+                    options={options.data}
+                    isError={options.isError}
+                    value={{ audienceKey }}
+                    onChange={(pick) => setAudienceKey(pick.audienceKey)}
+                  />
                   <Input name="scheduledOn" type="date" label={t("scheduledOn")} required />
                   <Input name="seats" type="number" min={1} label={t("seats")} required />
                   <Input name="notes" label={t("notes")} />
-                  <Button type="submit" loading={create.isPending}>{t("save")}</Button>
+                  <Button type="submit" loading={create.isPending} disabled={audiencePickBlocked(options.data, audienceKey)}>
+                    {t("save")}
+                  </Button>
                 </form>
               </CardBody>
             </Card>

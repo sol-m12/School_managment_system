@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { BadgeCheck, Landmark, Megaphone, Shield, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Badge, Button, Card, CardBody, CardHeader, Input, PageHeader, Select, Table } from "@/components/ui";
+import { AudiencePicker, audiencePickBlocked, readAudiencePick, useAudienceOptions } from "@/components/AudiencePicker";
+import { Alert, Badge, Button, Card, CardBody, CardHeader, Input, PageHeader, Select, Table } from "@/components/ui";
 import { StatCard } from "@/features/dashboard/components/StatCard";
 import { toErrorKey } from "@/lib/apiError";
 import {
@@ -248,10 +249,12 @@ export function PremiumPage() {
 }
 
 function MessageBoard({ scope, title, help, kinds }: { scope: "hub" | "bulk"; title: string; help: string; kinds: { value: string; label: string }[] }) {
-  const { t } = useTranslation(["principal", "errors"]);
+  const { t } = useTranslation(["principal", "errors", "common"]);
   const query = useMessages(scope);
+  const options = useAudienceOptions("/principal/message-options");
   const send = useSendMessage(scope);
   const { setNotice, view } = useNotice();
+  const [audienceKey, setAudienceKey] = useState("All");
   return (
     <>
       <PageHeader title={title} description={help} />
@@ -262,16 +265,30 @@ function MessageBoard({ scope, title, help, kinds }: { scope: "hub" | "bulk"; ti
             <Card>
               <CardHeader title={t("messages")} />
               <CardBody>
+                {options.isError ? <Alert tone="danger">{t(`errors:${toErrorKey(options.error)}`)}</Alert> : null}
                 <form
                   className="grid gap-3 md:grid-cols-2"
                   onSubmit={(event) => {
-                    const form = readForm(event);
+                    event.preventDefault();
+                    const form = new FormData(event.currentTarget);
+                    const pick = readAudiencePick(form);
+                    if (!pick) {
+                      setNotice({ tone: "danger", text: t("errors:validation") });
+                      return;
+                    }
                     send.mutate(
-                      { kind: textOf(form, "kind"), audience: textOf(form, "audience"), title: textOf(form, "title"), body: textOf(form, "body") },
+                      {
+                        kind: String(form.get("kind") ?? ""),
+                        audienceKey: pick.audienceKey,
+                        personId: pick.personId,
+                        title: String(form.get("title") ?? "").trim(),
+                        body: String(form.get("body") ?? "").trim(),
+                      },
                       {
                         onSuccess: () => {
                           setNotice({ tone: "success", text: t("sent") });
                           event.currentTarget.reset();
+                          setAudienceKey("All");
                         },
                         onError: (error) => fail(setNotice, t, error),
                       },
@@ -279,10 +296,20 @@ function MessageBoard({ scope, title, help, kinds }: { scope: "hub" | "bulk"; ti
                   }}
                 >
                   <Select name="kind" label={t("kind")} options={kinds} />
-                  <Input name="audience" label={t("audience")} required />
+                  <AudiencePicker
+                    options={options.data}
+                    isError={options.isError}
+                    value={{ audienceKey }}
+                    onChange={(pick) => setAudienceKey(pick.audienceKey)}
+                  />
                   <Input name="title" label={t("title")} required />
                   <Input name="body" label={t("body")} required />
-                  <Button type="submit" loading={send.isPending} leftIcon={<Megaphone className="size-4" />}>
+                  <Button
+                    type="submit"
+                    loading={send.isPending}
+                    leftIcon={<Megaphone className="size-4" />}
+                    disabled={audiencePickBlocked(options.data, audienceKey)}
+                  >
                     {t("save")}
                   </Button>
                 </form>

@@ -57,6 +57,14 @@ function parseId(req: Request, res: Response): number | null {
   return parsed.data.id;
 }
 
+technicianRouter.get("/announcement-audience-options", ...requirePermission("announcements.manage"), async (req, res) => {
+  try {
+    res.json(await technician.announcementAudienceOptions(tenantOf(req)));
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
 technicianRouter.get("/announcements", ...requirePermission("announcements.manage"), async (req, res) => {
   try {
     res.json({ rows: await technician.listAnnouncements(tenantOf(req)) });
