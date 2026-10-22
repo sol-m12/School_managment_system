@@ -35,12 +35,26 @@ import {
   type ParsedForm,
 } from "./api/useSecretary";
 
-function fail(setNotice: (value: { tone: "success" | "danger"; text: string }) => void, t: (key: "errors:server") => string, error: unknown) {
-  setNotice({ tone: "danger", text: t(`errors:${toErrorKey(error)}` as "errors:server") });
+function fail(
+  setNotice: (value: { tone: "success" | "danger"; text: string }) => void,
+  t: (key: string) => string,
+  error: unknown,
+) {
+  setNotice({ tone: "danger", text: t(`errors:${toErrorKey(error)}`) });
 }
 
 function saved(setNotice: (value: { tone: "success" | "danger"; text: string }) => void, text: string) {
   setNotice({ tone: "success", text });
+}
+
+function timeOf(value: string): string {
+  const trimmed = value.trim();
+  const match = /^(\d{2}):(\d{2})/.exec(trimmed);
+  return match ? `${match[1]}:${match[2]}` : trimmed;
+}
+
+function pickEnum<T extends string>(value: string, allowed: readonly T[]): T | null {
+  return (allowed as readonly string[]).includes(value) ? (value as T) : null;
 }
 
 const GRADES = [9, 10, 11, 12];
@@ -48,6 +62,7 @@ const TYPES = ["አዲስ", "ነባር", "አቋራጭ", "ደጋሚ", "መልሶ
 const TARGETS = ["All", "Staff", "Students", "Parents", "Admin_Only"] as const;
 const MEET = ["Principal", "V_Principal", "Registrar", "Technician", "Librarian", "Secretary"] as const;
 const ROUTES = ["Principal", "V_Principal", "Registrar", "Technician", "Librarian"] as const;
+const STREAMS = ["Common", "Natural", "Social"] as const;
 const STATUS_TONE = {
   Draft: "info",
   Pending: "warning",
@@ -114,14 +129,28 @@ export function RegistrationPage() {
   function onRegister(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = readForm(event.currentTarget);
+    const gender = pickEnum(textOf(data, "gender"), ["M", "F"] as const);
+    const registrationType = pickEnum(textOf(data, "registrationType"), TYPES);
+    const streamRaw = textOf(data, "stream");
+    const stream = streamRaw ? pickEnum(streamRaw, STREAMS) : null;
+    const age = Number(textOf(data, "age"));
+    const gradeLevel = Number(textOf(data, "gradeLevel"));
+    if (!gender || !registrationType || !Number.isInteger(age) || age < 1 || !Number.isInteger(gradeLevel)) {
+      setNotice({ tone: "danger", text: t("errors:validation") });
+      return;
+    }
+    if (streamRaw && !stream) {
+      setNotice({ tone: "danger", text: t("errors:validation") });
+      return;
+    }
     register.mutate(
       {
         fullName: textOf(data, "fullName"),
-        gender: textOf(data, "gender") as "M" | "F",
-        age: Number(textOf(data, "age")),
-        gradeLevel: Number(textOf(data, "gradeLevel")),
-        stream: (textOf(data, "stream") || null) as "Common" | "Natural" | "Social" | null,
-        registrationType: textOf(data, "registrationType") as (typeof TYPES)[number],
+        gender,
+        age,
+        gradeLevel,
+        stream,
+        registrationType,
         previousSchool: textOf(data, "previousSchool"),
         kebele: textOf(data, "kebele"),
         gote: textOf(data, "gote"),
@@ -340,8 +369,13 @@ export function NoticesPage() {
             onSubmit={(event) => {
               event.preventDefault();
               const data = readForm(event.currentTarget);
+              const targetRole = pickEnum(textOf(data, "targetRole"), TARGETS);
+              if (!targetRole) {
+                setNotice({ tone: "danger", text: t("errors:validation") });
+                return;
+              }
               create.mutate(
-                { title: textOf(data, "title"), content: textOf(data, "content"), targetRole: textOf(data, "targetRole") },
+                { title: textOf(data, "title"), content: textOf(data, "content"), targetRole },
                 {
                   onSuccess: () => {
                     saved(setNotice, t("pendingPrincipal"));
@@ -449,7 +483,12 @@ export function ApprovalsPage() {
   const decideDocument = useDecideDocument();
   const { setNotice, view } = useNotice();
   if (!can("secretary.authorize")) {
-    return <Alert tone="danger">{t("errors:forbidden")}</Alert>;
+    return (
+      <>
+        <PageHeader title={t("approvalsTitle")} description={t("approvalsHelp")} />
+        <Alert tone="warning">{t("approvalsPrincipalOnly")}</Alert>
+      </>
+    );
   }
   return (
     <>
@@ -568,13 +607,18 @@ export function AppointmentsPage() {
             onSubmit={(event) => {
               event.preventDefault();
               const data = readForm(event.currentTarget);
+              const withRole = pickEnum(textOf(data, "withRole"), MEET);
+              if (!withRole) {
+                setNotice({ tone: "danger", text: t("errors:validation") });
+                return;
+              }
               create.mutate(
                 {
                   visitorName: textOf(data, "visitorName"),
                   purpose: textOf(data, "purpose"),
-                  withRole: textOf(data, "withRole"),
+                  withRole,
                   startsOn: textOf(data, "startsOn"),
-                  startsAt: textOf(data, "startsAt"),
+                  startsAt: timeOf(textOf(data, "startsAt")),
                 },
                 {
                   onSuccess: () => {
@@ -653,8 +697,13 @@ export function HelpdeskPage() {
             onSubmit={(event) => {
               event.preventDefault();
               const data = readForm(event.currentTarget);
+              const routeTo = pickEnum(textOf(data, "routeTo"), ROUTES);
+              if (!routeTo) {
+                setNotice({ tone: "danger", text: t("errors:validation") });
+                return;
+              }
               create.mutate(
-                { subject: textOf(data, "subject"), details: textOf(data, "details"), routeTo: textOf(data, "routeTo") },
+                { subject: textOf(data, "subject"), details: textOf(data, "details"), routeTo },
                 {
                   onSuccess: () => {
                     saved(setNotice, t("saved"));

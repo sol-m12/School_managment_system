@@ -92,7 +92,13 @@ export async function desk(tenantId: number) {
   const [openTickets] = await db
     .select({ total: sql<number>`count(*)` })
     .from(secTickets)
-    .where(scoped(secTickets, tenantId, eq(secTickets.status, "Open")));
+    .where(
+      scoped(
+        secTickets,
+        tenantId,
+        sql`${secTickets.status} IN ('Open', 'Routed')`,
+      ),
+    );
   const [scheduled] = await db
     .select({ total: sql<number>`count(*)` })
     .from(secAppointments)
@@ -611,7 +617,12 @@ export async function registerFromScan(tenantId: number, actorId: number, scanId
     .limit(1);
   if (!row) throw new SecretaryError("NOT_FOUND");
   if (row.studentId) throw new SecretaryError("NOT_READY");
-  const parsed = JSON.parse(row.parsedJson) as ParsedForm;
+  let parsed: ParsedForm;
+  try {
+    parsed = JSON.parse(row.parsedJson) as ParsedForm;
+  } catch {
+    throw new SecretaryError("PARSE_INCOMPLETE");
+  }
   if (!parseReady(parsed) || !parsed.gender || !parsed.age || !parsed.gradeLevel || !parsed.registrationType) {
     throw new SecretaryError("PARSE_INCOMPLETE");
   }
@@ -647,11 +658,29 @@ export async function listScans(tenantId: number) {
     .orderBy(desc(secOcrScans.scanId))
     .limit(50);
   return {
-    rows: rows.map((row) => ({
-      id: row.id,
-      studentId: row.studentId,
-      createdAt: row.createdAt,
-      parsed: JSON.parse(row.parsedJson) as ParsedForm,
-    })),
+    rows: rows.map((row) => {
+      let parsed: ParsedForm;
+      try {
+        parsed = JSON.parse(row.parsedJson) as ParsedForm;
+      } catch {
+        parsed = {
+          fullName: "",
+          gender: null,
+          age: null,
+          gradeLevel: null,
+          registrationType: null,
+          previousSchool: "",
+          kebele: "",
+          gote: "",
+          houseNumber: "",
+        };
+      }
+      return {
+        id: row.id,
+        studentId: row.studentId,
+        createdAt: row.createdAt,
+        parsed,
+      };
+    }),
   };
 }

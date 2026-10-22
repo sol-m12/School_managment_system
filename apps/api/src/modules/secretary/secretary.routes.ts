@@ -16,6 +16,7 @@ import {
   ticketBodySchema,
   ticketStatusSchema,
 } from "./secretary.schema.js";
+import { AcademicsError } from "../academics/students.service.js";
 import { SecretaryError, type SecretaryErrorCode } from "./secretary.service.js";
 import * as secretary from "./secretary.service.js";
 
@@ -39,6 +40,16 @@ function sendError(res: Response, error: unknown): void {
   if (error instanceof SecretaryError) {
     res.status(STATUS[error.code]).json({ code: error.code });
     return;
+  }
+  if (error instanceof AcademicsError) {
+    if (error.code === "USERNAME_TAKEN") {
+      res.status(409).json({ code: "USERNAME_TAKEN" });
+      return;
+    }
+    if (error.code === "NOT_FOUND") {
+      res.status(404).json({ code: "NOT_FOUND" });
+      return;
+    }
   }
   res.status(500).json({ code: "INTERNAL_ERROR" });
 }
