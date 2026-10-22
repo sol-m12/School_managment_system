@@ -352,15 +352,17 @@ export function ScheduleBoardPage() {
         </div>
       </form>
 
-      <div className="mb-6 grid gap-4 print:mb-0 lg:grid-cols-[1fr_320px]">
-        <div className="overflow-x-auto rounded-2xl bg-white shadow-sm print:overflow-visible print:shadow-none">
-          <table className="w-full min-w-[900px] border border-black text-center text-xs print:min-w-0 print:text-[9px]">
+      <div
+        className={`mb-6 grid gap-4 print:mb-0 ${panelOpen && sourceLesson ? "xl:grid-cols-[minmax(0,1fr)_20rem]" : ""}`}
+      >
+        <div className="min-w-0 overflow-x-auto rounded-2xl bg-white shadow-sm print:overflow-visible print:shadow-none">
+          <table className="w-full border-collapse border border-black text-center text-xs print:text-[9px]">
             <thead>
               <tr className="bg-[#1a237e] text-white print:bg-white print:text-black">
-                <th className="px-2 py-2">DAY</th>
-                <th className="px-2 py-2">PERIOD</th>
+                <th className="whitespace-nowrap px-2 py-2">DAY</th>
+                <th className="whitespace-nowrap px-2 py-2">PERIOD</th>
                 {columns.map((room) => (
-                  <th key={room.id} className="px-2 py-2">
+                  <th key={room.id} className="min-w-[4.5rem] whitespace-nowrap px-1 py-2 sm:px-2">
                     {room.gradeLevel}-{room.section}
                   </th>
                 ))}
@@ -604,14 +606,14 @@ export function ScheduleBoardPage() {
                 <p className="mb-4 text-sm">
                   {sheetTitle} · {sheetSubtitle}
                 </p>
-                <div className="overflow-x-auto">
-                  <table className="w-full min-w-[900px] border-collapse border border-black text-center text-[11px]">
+                <div className="min-w-0 overflow-x-auto">
+                  <table className="w-full border-collapse border border-black text-center text-[11px]">
                     <thead>
                       <tr>
-                        <th className="border border-black px-2 py-2">DAY</th>
-                        <th className="border border-black px-2 py-2">PERIOD</th>
+                        <th className="whitespace-nowrap border border-black px-2 py-2">DAY</th>
+                        <th className="whitespace-nowrap border border-black px-2 py-2">PERIOD</th>
                         {columns.map((room) => (
-                          <th key={room.id} className="border border-black px-2 py-2">
+                          <th key={room.id} className="min-w-[4.5rem] whitespace-nowrap border border-black px-2 py-2">
                             {room.gradeLevel}-{room.section}
                           </th>
                         ))}
