@@ -6,7 +6,15 @@ import { useTranslation } from "react-i18next";
 import { Alert, Button, Card, CardBody, CardHeader, Input, PageHeader, Select, Spinner, Table, type TableColumn } from "@/components/ui";
 import { api } from "@/lib/api";
 import { toErrorKey } from "@/lib/apiError";
-import { useBackupCheck, useGradeProtocol, useMonitoring, useRecordNotice, useResetToId, useYearAction } from "@/features/operations/api/useOperations";
+import {
+  useBackupCheck,
+  useDownloadSchoolBackup,
+  useGradeProtocol,
+  useMonitoring,
+  useRecordNotice,
+  useResetToId,
+  useYearAction,
+} from "@/features/operations/api/useOperations";
 import { useSessionUser } from "@/features/auth/authContext";
 import { CourseFilesPage } from "@/features/teacher/CourseFilesPage";
 import { LockedProfilePage } from "@/features/teacher/LockedProfilePage";
@@ -907,6 +915,7 @@ export function RoleModulesPage() {
 export function BackupPage({ restore = false }: { restore?: boolean }) {
   const { t } = useTranslation(["admin", "operations", "errors"]);
   const action = useBackupAction();
+  const downloadBackup = useDownloadSchoolBackup();
   const monitoring = useMonitoring();
   const recordCheck = useBackupCheck();
   const recordNotice = useRecordNotice();
@@ -921,18 +930,35 @@ export function BackupPage({ restore = false }: { restore?: boolean }) {
       ) : null}
       <Card className="mb-4">
         <CardBody>
-          <p className="mb-4 text-sm text-ink-muted">{t("backupBlocked")}</p>
+          <p className="mb-4 text-sm text-ink-muted">
+            {restore ? t("backupBlocked") : t("operations:schoolBackupHelp")}
+          </p>
           <div className="flex flex-wrap gap-2">
-            <Button
-              type="button"
-              onClick={() =>
-                action.mutate(restore ? "/admin/restore" : "/admin/backup", {
-                  onError: (error) => setNotice({ tone: "warning", text: t(`errors:${toErrorKey(error)}`) }),
-                })
-              }
-            >
-              {restore ? t("restoreTitle") : t("backupFull")}
-            </Button>
+            {restore ? (
+              <Button
+                type="button"
+                onClick={() =>
+                  action.mutate("/admin/restore", {
+                    onError: (error) => setNotice({ tone: "warning", text: t(`errors:${toErrorKey(error)}`) }),
+                  })
+                }
+              >
+                {t("restoreTitle")}
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                loading={downloadBackup.isPending}
+                onClick={() =>
+                  downloadBackup.mutate(undefined, {
+                    onSuccess: () => setNotice({ tone: "success", text: t("operations:schoolBackupDone") }),
+                    onError: (error) => setNotice({ tone: "danger", text: t(`errors:${toErrorKey(error)}`) }),
+                  })
+                }
+              >
+                {t("operations:downloadSchoolBackup")}
+              </Button>
+            )}
             <Button
               type="button"
               variant="secondary"

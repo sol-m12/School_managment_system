@@ -161,4 +161,31 @@ describe("platform API", () => {
       .expect(409)
       .expect({ code: "SLUG_TAKEN" });
   });
+
+  it("downloads a SQL backup scoped to one school tenant", async () => {
+    const slug = `bak-${Date.now().toString(36)}`;
+    const created = await request(app)
+      .post("/platform/schools")
+      .set("Authorization", platformBearer())
+      .send({
+        name: "Backup School",
+        slug,
+        adminUsername: `b_${slug.slice(-6)}`,
+        adminPassword: "SchoolAdmin1!",
+      })
+      .expect(201);
+
+    const tenantId = created.body.school.tenantId as number;
+    const res = await request(app)
+      .get(`/platform/schools/${tenantId}/backup`)
+      .set("Authorization", platformBearer())
+      .expect(200);
+
+    const body = String(res.text);
+    expect(body).toContain("keyt-tenant-sql-v1");
+    expect(body).toContain(`tenant_id: ${tenantId}`);
+    expect(body).toContain(`slug: ${slug}`);
+    expect(body).toContain("INSERT INTO `tenants`");
+    expect(body).toContain("SET FOREIGN_KEY_CHECKS=0");
+  });
 });

@@ -41,7 +41,11 @@
     "colSlug": "URL code",
     "colStatus": "Status",
     "colSite": "School site",
-    "colLogin": "School login"
+    "colLogin": "School login",
+    "colBackup": "Backup",
+    "backup": "Download SQL",
+    "backupLoading": "Preparing…",
+    "backupDone": "School backup downloaded. Keep this file safe — it includes password hashes for that school only."
   },
   "add": {
     "title": "Add school",

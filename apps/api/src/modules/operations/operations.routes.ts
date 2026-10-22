@@ -1,5 +1,9 @@
 import { Router, type Request, type Response } from "express";
 import type { ZodType } from "zod";
+import {
+  TenantBackupError,
+  buildTenantBackupSql,
+} from "../../lib/tenantBackup.js";
 import { requirePermission } from "../../middleware/requirePermission.js";
 import {
   auditQuerySchema,
@@ -194,6 +198,33 @@ operationsRouter.post("/backup-checks", ...requirePermission("backup.create"), a
   try {
     res.status(201).json(await operations.recordBackupCheck(tenantOf(req), userOf(req), input));
   } catch (error) {
+    sendError(res, error);
+  }
+});
+
+/** Download SQL backup for the signed-in school only (JWT tenant_id). */
+operationsRouter.get("/backup/export", ...requirePermission("backup.create"), async (req, res) => {
+  try {
+    const tenantId = tenantOf(req);
+    const backup = await buildTenantBackupSql(tenantId);
+    await operations.recordBackupCheck(tenantId, userOf(req), {
+      action: "backup",
+      note: `export ${backup.filename} rows=${backup.rowCount}`,
+    });
+    res.setHeader("Content-Type", "application/sql; charset=utf-8");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${backup.filename}"`,
+    );
+    res.setHeader("X-Backup-Tenant-Id", String(backup.meta.id));
+    res.setHeader("X-Backup-Slug", backup.meta.slug);
+    res.setHeader("X-Backup-Row-Count", String(backup.rowCount));
+    res.send(backup.sql);
+  } catch (error) {
+    if (error instanceof TenantBackupError) {
+      res.status(404).json({ code: error.code });
+      return;
+    }
     sendError(res, error);
   }
 });

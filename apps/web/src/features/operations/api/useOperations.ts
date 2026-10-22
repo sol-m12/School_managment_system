@@ -170,6 +170,41 @@ export function useBackupCheck() {
   });
 }
 
+/** Downloads SQL for the signed-in school only (tenant from JWT). */
+export function useDownloadSchoolBackup() {
+  const { tenantId } = useSessionUser();
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const response = await api.get<Blob>("/operations/backup/export", {
+        responseType: "blob",
+      });
+      const contentType = String(response.headers["content-type"] ?? "");
+      if (contentType.includes("application/json")) {
+        const text = await response.data.text();
+        let code = "INTERNAL_ERROR";
+        try {
+          const parsed = JSON.parse(text) as { code?: string };
+          if (parsed.code) code = parsed.code;
+        } catch {
+          // keep default
+        }
+        throw Object.assign(new Error(code), { response: { data: { code } } });
+      }
+      const header = response.headers["content-disposition"];
+      const match = typeof header === "string" ? /filename="([^"]+)"/i.exec(header) : null;
+      const filename = match?.[1] ?? `school-tenant-${tenantId}-backup.sql`;
+      const url = URL.createObjectURL(response.data);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = filename;
+      anchor.click();
+      URL.revokeObjectURL(url);
+    },
+    onSuccess: () => void client.invalidateQueries({ queryKey: key(tenantId, "monitoring") }),
+  });
+}
+
 export function useImportAccounts() {
   return useMutation({
     mutationFn: (csv: string) =>

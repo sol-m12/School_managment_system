@@ -17,6 +17,10 @@ import {
   platformLoginBodySchema,
 } from "./platform.schema.js";
 import {
+  TenantBackupError,
+  buildTenantBackupSql,
+} from "../../lib/tenantBackup.js";
+import {
   PlatformSchoolError,
   createSchool,
   listTenants,
@@ -148,6 +152,34 @@ platformRouter.post("/schools", authenticatePlatform, async (req, res) => {
     if (error instanceof PlatformSchoolError) {
       const status = error.code === "SLUG_TAKEN" ? 409 : 400;
       res.status(status).json({ code: error.code });
+      return;
+    }
+    res.status(500).json({ code: "INTERNAL_ERROR" });
+  }
+});
+
+/** Download SQL backup for one school (all rows with that tenant_id). */
+platformRouter.get("/schools/:id/backup", authenticatePlatform, async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id) || id < 1) {
+    res.status(400).json({ code: "VALIDATION_ERROR" });
+    return;
+  }
+
+  try {
+    const backup = await buildTenantBackupSql(id);
+    res.setHeader("Content-Type", "application/sql; charset=utf-8");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${backup.filename}"`,
+    );
+    res.setHeader("X-Backup-Tenant-Id", String(backup.meta.id));
+    res.setHeader("X-Backup-Slug", backup.meta.slug);
+    res.setHeader("X-Backup-Row-Count", String(backup.rowCount));
+    res.send(backup.sql);
+  } catch (error) {
+    if (error instanceof TenantBackupError) {
+      res.status(404).json({ code: error.code });
       return;
     }
     res.status(500).json({ code: "INTERNAL_ERROR" });

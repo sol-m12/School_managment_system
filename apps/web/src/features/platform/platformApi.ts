@@ -140,3 +140,41 @@ export async function createPlatformSchool(body: {
   const { data } = await platformApi.post<{ school: CreatedSchool }>("/platform/schools", body);
   return data.school;
 }
+
+function filenameFromDisposition(header: unknown, fallback: string): string {
+  if (typeof header !== "string") return fallback;
+  const match = /filename="([^"]+)"/i.exec(header);
+  return match?.[1] ?? fallback;
+}
+
+/** Downloads a SQL file with only that school's rows (tenant_id). */
+export async function downloadPlatformSchoolBackup(school: {
+  id: number;
+  slug: string;
+}): Promise<void> {
+  const response = await platformApi.get<Blob>(`/platform/schools/${school.id}/backup`, {
+    responseType: "blob",
+  });
+  const contentType = String(response.headers["content-type"] ?? "");
+  if (contentType.includes("application/json")) {
+    const text = await response.data.text();
+    let code = "INTERNAL_ERROR";
+    try {
+      const parsed = JSON.parse(text) as { code?: string };
+      if (parsed.code) code = parsed.code;
+    } catch {
+      // keep default
+    }
+    throw Object.assign(new Error(code), { response: { data: { code } } });
+  }
+  const filename = filenameFromDisposition(
+    response.headers["content-disposition"],
+    `school-${school.slug}-tenant-${school.id}.sql`,
+  );
+  const url = URL.createObjectURL(response.data);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}

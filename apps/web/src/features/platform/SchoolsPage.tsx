@@ -1,18 +1,34 @@
-import { useQuery } from "@tanstack/react-query";
-import { PlusCircle } from "lucide-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Download, PlusCircle } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Alert } from "@/components/ui";
 import { toErrorKey } from "@/lib/apiError";
 import { schoolLoginPath, schoolSiteUrl } from "@/lib/tenantSlug";
-import { listPlatformSchools } from "./platformApi";
+import {
+  downloadPlatformSchoolBackup,
+  listPlatformSchools,
+  type PlatformSchool,
+} from "./platformApi";
 
 export function SchoolsPage() {
   const { t } = useTranslation("platform");
   const { t: tErrors } = useTranslation("errors");
+  const [backupNotice, setBackupNotice] = useState<{
+    tone: "success" | "danger";
+    text: string;
+  } | null>(null);
   const query = useQuery({
     queryKey: ["platform", "schools"],
     queryFn: listPlatformSchools,
+  });
+  const backup = useMutation({
+    mutationFn: (school: PlatformSchool) => downloadPlatformSchoolBackup(school),
+    onSuccess: () =>
+      setBackupNotice({ tone: "success", text: t("schools.backupDone") }),
+    onError: (error) =>
+      setBackupNotice({ tone: "danger", text: tErrors(toErrorKey(error)) }),
   });
 
   return (
@@ -34,6 +50,11 @@ export function SchoolsPage() {
       {query.isError ? (
         <Alert tone="danger">{tErrors(toErrorKey(query.error))}</Alert>
       ) : null}
+      {backupNotice ? (
+        <Alert tone={backupNotice.tone} className="mb-4">
+          {backupNotice.text}
+        </Alert>
+      ) : null}
 
       <div className="overflow-hidden rounded-2xl border border-border bg-white shadow-soft">
         <table className="min-w-full text-left text-sm">
@@ -44,19 +65,20 @@ export function SchoolsPage() {
               <th className="px-4 py-3 font-semibold">{t("schools.colStatus")}</th>
               <th className="px-4 py-3 font-semibold">{t("schools.colSite")}</th>
               <th className="px-4 py-3 font-semibold">{t("schools.colLogin")}</th>
+              <th className="px-4 py-3 font-semibold">{t("schools.colBackup")}</th>
             </tr>
           </thead>
           <tbody>
             {query.isLoading ? (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-ink-muted">
+                <td colSpan={6} className="px-4 py-8 text-ink-muted">
                   {t("schools.loading")}
                 </td>
               </tr>
             ) : null}
             {query.data?.length === 0 ? (
               <tr>
-                <td colSpan={5} className="px-4 py-8 text-ink-muted">
+                <td colSpan={6} className="px-4 py-8 text-ink-muted">
                   {t("schools.empty")}{" "}
                   <Link to="/platform/schools/new" className="font-medium text-teal-700 hover:underline">
                     {t("schools.add")}
@@ -67,6 +89,8 @@ export function SchoolsPage() {
             {query.data?.map((school) => {
               const siteUrl = schoolSiteUrl(school.slug);
               const loginPath = schoolLoginPath(school.slug);
+              const downloading =
+                backup.isPending && backup.variables?.id === school.id;
               return (
                 <tr key={school.id} className="border-t border-border">
                   <td className="px-4 py-3 font-medium text-ink-strong">{school.name}</td>
@@ -90,6 +114,20 @@ export function SchoolsPage() {
                     <Link to={loginPath} className="font-medium text-teal-700 hover:underline">
                       {loginPath}
                     </Link>
+                  </td>
+                  <td className="px-4 py-3">
+                    <button
+                      type="button"
+                      disabled={backup.isPending}
+                      onClick={() => {
+                        setBackupNotice(null);
+                        backup.mutate(school);
+                      }}
+                      className="inline-flex min-h-9 items-center gap-1.5 rounded-control border border-border bg-white px-3 text-xs font-semibold text-teal-800 transition hover:bg-teal-50 disabled:opacity-60"
+                    >
+                      <Download aria-hidden className="size-3.5" />
+                      {downloading ? t("schools.backupLoading") : t("schools.backup")}
+                    </button>
                   </td>
                 </tr>
               );
