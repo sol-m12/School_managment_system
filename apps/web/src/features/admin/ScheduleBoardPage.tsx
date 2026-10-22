@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -33,6 +33,37 @@ type Board = {
   classes: { id: number; gradeLevel: number; section: string; stream: string | null }[];
   lessons: Lesson[];
   heatmap: { staffId: number; name: string; days: Record<(typeof DAYS)[number], number>; total: number; band: "green" | "yellow" | "red" }[];
+};
+
+type MoveOption = {
+  day: (typeof DAYS)[number];
+  period: number;
+  targetId: number | null;
+  ok: boolean;
+  reasons: string[];
+  warnings: string[];
+  rank: number;
+  targetSubjectName: string | null;
+  targetTeacherName: string | null;
+  sourceOffBefore: number;
+  sourceOffAfter: number;
+  partnerOffBefore: number | null;
+  partnerOffAfter: number | null;
+};
+
+type MovesPayload = {
+  source: {
+    id: number;
+    subjectName: string;
+    teacherName: string;
+    day: (typeof DAYS)[number];
+    period: number;
+    classId: number;
+    gradeLevel: number;
+    section: string;
+    offDays: number;
+  };
+  options: MoveOption[];
 };
 
 const bandClass = { green: "bg-[#198754] text-white", yellow: "bg-[#ffc107] text-[#212529]", red: "bg-[#dc3545] text-white" };
@@ -97,6 +128,13 @@ function timetableDocument(options: {
     </body></html>`;
 }
 
+function warnLabel(code: string, t: (key: string) => string): string {
+  if (code === "TEACHER_BUSY") return t("admin:scheduleBusy");
+  if (code === "TEACHER_DAILY") return t("admin:scheduleDailyCap");
+  if (code === "SUBJECT_DAY") return t("admin:scheduleSubjectDay");
+  return code;
+}
+
 export function ScheduleBoardPage() {
   const { t } = useTranslation(["admin", "errors", "common", "auth"]);
   const { tenantId } = useSessionUser();
@@ -104,11 +142,23 @@ export function ScheduleBoardPage() {
   const [shift, setShift] = useState<"Morning" | "Afternoon" | "Both">("Morning");
   const [notice, setNotice] = useState<string | null>(null);
   const [preview, setPreview] = useState(false);
+  const [activeId, setActiveId] = useState<number | null>(null);
+  const [draggingId, setDraggingId] = useState<number | null>(null);
+  const [panelOpen, setPanelOpen] = useState(false);
+
   const query = useQuery({
     queryKey: ["admin", tenantId, "schedule-board", shift],
     queryFn: async () => (await api.get<Board>("/admin/schedule/board", { params: { shift } })).data,
   });
   const refresh = () => client.invalidateQueries({ queryKey: ["admin", tenantId, "schedule-board"] });
+
+  const hintId = draggingId ?? (panelOpen ? activeId : null);
+  const moves = useQuery({
+    queryKey: ["admin", tenantId, "schedule-moves", hintId],
+    queryFn: async () => (await api.get<MovesPayload>("/admin/schedule/moves", { params: { sourceId: hintId } })).data,
+    enabled: hintId != null,
+  });
+
   const generate = useMutation({
     mutationFn: async (body: { shift: string; totalPeriods: number; startTime: string; afternoonStartTime: string; duration: number }) =>
       api.post("/admin/schedule/generate", body),
@@ -116,11 +166,21 @@ export function ScheduleBoardPage() {
   });
   const move = useMutation({
     mutationFn: async (body: { sourceId: number; day: string; period: number }) => api.post("/admin/schedule/move", body),
-    onSuccess: () => void refresh(),
+    onSuccess: () => {
+      void refresh();
+      setPanelOpen(false);
+      setActiveId(null);
+      setDraggingId(null);
+    },
   });
   const swap = useMutation({
     mutationFn: async (body: { sourceId: number; targetId: number }) => api.post("/admin/schedule/swap", body),
-    onSuccess: () => void refresh(),
+    onSuccess: () => {
+      void refresh();
+      setPanelOpen(false);
+      setActiveId(null);
+      setDraggingId(null);
+    },
   });
 
   useEffect(() => {
@@ -132,6 +192,20 @@ export function ScheduleBoardPage() {
     return () => document.removeEventListener("keydown", onKey);
   }, [preview]);
 
+  const optionMap = useMemo(() => {
+    const map = new Map<string, MoveOption>();
+    for (const option of moves.data?.options ?? []) {
+      map.set(`${option.day}:${option.period}`, option);
+    }
+    return map;
+  }, [moves.data]);
+
+  const ranked = useMemo(() => {
+    const list = [...(moves.data?.options ?? [])];
+    list.sort((a, b) => b.rank - a.rank || a.day.localeCompare(b.day) || a.period - b.period);
+    return list.slice(0, 8);
+  }, [moves.data]);
+
   if (query.isPending) {
     return (
       <div className="flex justify-center py-10">
@@ -141,11 +215,14 @@ export function ScheduleBoardPage() {
   }
   if (query.isError || !query.data) return <Alert tone="danger">{t(`errors:${toErrorKey(query.error)}`)}</Alert>;
   const data = query.data;
-  const periods = [...new Map(data.periods.map((period) => [period.period, period])).values()];
+  const periods = [...new Map(data.periods.map((period) => [period.period, period])).values()].sort((a, b) => a.period - b.period);
+  const breakAfter = periods.length > 0 ? Math.ceil(periods.length / 2) : 0;
   const classIds = [...new Set(data.lessons.map((lesson) => lesson.classId))];
+  void breakAfter;
   const columns = data.classes.filter((room) => classIds.length === 0 || classIds.includes(room.id));
   const sheetTitle = t("admin:schedulePrintPreview");
   const sheetSubtitle = `${t("admin:scheduleCenterHint", { year: data.year })} · ${shift}`;
+  const sourceLesson = activeId != null ? data.lessons.find((lesson) => lesson.id === activeId) : null;
 
   function saveTimetable() {
     const html = timetableDocument({
@@ -167,6 +244,32 @@ export function ScheduleBoardPage() {
     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
+  function applyOption(option: MoveOption) {
+    if (!hintId || !option.ok) return;
+    if (option.targetId == null) {
+      move.mutate(
+        { sourceId: hintId, day: option.day, period: option.period },
+        { onError: (error) => setNotice(t(`errors:${toErrorKey(error)}`)) },
+      );
+      return;
+    }
+    swap.mutate(
+      { sourceId: hintId, targetId: option.targetId },
+      { onError: (error) => setNotice(t(`errors:${toErrorKey(error)}`)) },
+    );
+  }
+
+  function cellTone(classId: number, day: (typeof DAYS)[number], period: number): string {
+    if (hintId == null || moves.data?.source.classId !== classId) return "border px-1 py-2";
+    const source = data.lessons.find((item) => item.id === hintId);
+    if (!source || source.classId !== classId) return "border px-1 py-2";
+    if (source.day === day && source.period === period) return "border px-1 py-2 bg-[#e7f1ff] outline outline-2 outline-dashed outline-[#0d6efd]";
+    const option = optionMap.get(`${day}:${period}`);
+    if (!option) return "border px-1 py-2";
+    if (option.ok) return "border px-1 py-2 bg-[#d1e7dd] outline outline-2 outline-[#198754]";
+    return "border px-1 py-2 bg-[#f8d7da]";
+  }
+
   return (
     <div className="bg-[#f8fafc] px-4 py-6 text-black print:bg-white print:p-0">
       <style>{`@media print { @page { size: landscape; margin: 0.4in; } }`}</style>
@@ -174,6 +277,7 @@ export function ScheduleBoardPage() {
         <div>
           <h2 className="text-2xl font-extrabold">{t("admin:scheduleCenter")}</h2>
           <p className="text-sm text-[#6c757d] print:text-black">{t("admin:scheduleCenterHint", { year: data.year })} · {shift}</p>
+          <p className="mt-1 text-xs text-[#6c757d] print:hidden">{t("admin:scheduleDragHint")}</p>
         </div>
         <button type="button" className="rounded-md bg-[#1a237e] px-4 py-2 text-sm font-bold text-white print:hidden" onClick={() => setPreview(true)}>
           {t("admin:schedulePrint")}
@@ -248,78 +352,191 @@ export function ScheduleBoardPage() {
         </div>
       </form>
 
-      <div className="mb-6 overflow-x-auto rounded-2xl bg-white shadow-sm print:mb-0 print:overflow-visible print:shadow-none">
-        <table className="w-full min-w-[900px] border border-black text-center text-xs print:min-w-0 print:text-[9px]">
-          <thead>
-            <tr className="bg-[#1a237e] text-white print:bg-white print:text-black">
-              <th className="px-2 py-2">DAY</th>
-              <th className="px-2 py-2">PERIOD</th>
-              {columns.map((room) => (
-                <th key={room.id} className="px-2 py-2">
-                  {room.gradeLevel}-{room.section}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {DAYS.map((day) =>
-              periods.map((period, index) => (
-                <tr key={`${day}-${period.period}`}>
-                  {index === 0 ? (
-                    <td className="border px-2 py-2 font-bold" rowSpan={periods.length}>
-                      {DAY_SHORT[day]}
-                    </td>
-                  ) : null}
-                  <td className="border px-2 py-2">
-                    P{period.period}
-                    <div>
-                      {period.start.slice(0, 5)}–{period.end.slice(0, 5)}
-                    </div>
-                  </td>
-                  {columns.map((room) => {
-                    const lesson = data.lessons.find((item) => item.classId === room.id && item.day === day && item.period === period.period);
-                    return (
-                      <td
-                        key={room.id}
-                        className="border px-1 py-2"
-                        onDragOver={(event) => event.preventDefault()}
-                        onDrop={(event) => {
-                          const sourceId = Number(event.dataTransfer.getData("text/plain"));
-                          const source = data.lessons.find((item) => item.id === sourceId);
-                          if (!source || source.classId !== room.id) return;
-                          if (!lesson) {
-                            move.mutate(
-                              { sourceId, day, period: period.period },
-                              { onError: (error) => setNotice(t(`errors:${toErrorKey(error)}`)) },
-                            );
-                          } else if (lesson.id !== sourceId) {
-                            swap.mutate(
-                              { sourceId, targetId: lesson.id },
-                              { onError: (error) => setNotice(t(`errors:${toErrorKey(error)}`)) },
-                            );
-                          }
-                        }}
-                      >
-                        {lesson ? (
-                          <div draggable onDragStart={(event) => event.dataTransfer.setData("text/plain", String(lesson.id))} className="cursor-grab rounded bg-[#e7f1ff] px-1 py-1 print:cursor-auto print:bg-white" title={`${lesson.subjectName} / ${lesson.teacherName}`}>
-                            <div className="font-bold print:hidden">{shortSubject(lesson.subjectName)}</div>
-                            <div className="print:hidden">ID {lesson.staffId}</div>
-                            <div className="hidden text-left print:block">
-                              <div className="font-bold">{lesson.subjectName}</div>
-                              <div>{lesson.teacherName}</div>
-                            </div>
-                          </div>
-                        ) : (
-                          "—"
-                        )}
+      <div className="mb-6 grid gap-4 print:mb-0 lg:grid-cols-[1fr_320px]">
+        <div className="overflow-x-auto rounded-2xl bg-white shadow-sm print:overflow-visible print:shadow-none">
+          <table className="w-full min-w-[900px] border border-black text-center text-xs print:min-w-0 print:text-[9px]">
+            <thead>
+              <tr className="bg-[#1a237e] text-white print:bg-white print:text-black">
+                <th className="px-2 py-2">DAY</th>
+                <th className="px-2 py-2">PERIOD</th>
+                {columns.map((room) => (
+                  <th key={room.id} className="px-2 py-2">
+                    {room.gradeLevel}-{room.section}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {DAYS.map((day) =>
+                periods.map((period, index) => (
+                  <tr key={`${day}-${period.period}`}>
+                    {index === 0 ? (
+                      <td className="border px-2 py-2 font-bold align-middle" rowSpan={periods.length}>
+                        {DAY_SHORT[day]}
                       </td>
-                    );
-                  })}
-                </tr>
-              )),
+                    ) : null}
+                    <td className="border px-2 py-2">
+                      <span className="inline-flex size-7 items-center justify-center rounded-full bg-[#cfe2ff] font-bold text-[#084298] print:bg-white print:text-black">
+                        P{period.period}
+                      </span>
+                      <div>
+                        {period.start.slice(0, 5)}–{period.end.slice(0, 5)}
+                      </div>
+                      {period.period === breakAfter ? (
+                        <div className="mt-1 rounded bg-[#ffe8cc] px-1 text-[10px] font-bold text-[#9a3412] print:hidden">
+                          ☕ {t("admin:scheduleTeaBreak")}
+                        </div>
+                      ) : null}
+                    </td>
+                    {columns.map((room) => {
+                      const lesson = data.lessons.find((item) => item.classId === room.id && item.day === day && item.period === period.period);
+                      return (
+                        <td
+                          key={room.id}
+                          className={cellTone(room.id, day, period.period)}
+                          onDragOver={(event) => {
+                            if (draggingId == null) return;
+                            const option = optionMap.get(`${day}:${period.period}`);
+                            if (option?.ok) event.preventDefault();
+                          }}
+                          onDrop={(event) => {
+                            event.preventDefault();
+                            const sourceId = Number(event.dataTransfer.getData("text/plain"));
+                            const source = data.lessons.find((item) => item.id === sourceId);
+                            if (!source || source.classId !== room.id) return;
+                            const option = optionMap.get(`${day}:${period.period}`);
+                            if (!option?.ok) return;
+                            applyOption(option);
+                          }}
+                        >
+                          {lesson ? (
+                            <button
+                              type="button"
+                              draggable
+                              onDragStart={(event) => {
+                                event.dataTransfer.setData("text/plain", String(lesson.id));
+                                event.dataTransfer.effectAllowed = "move";
+                                setDraggingId(lesson.id);
+                                setActiveId(lesson.id);
+                                setPanelOpen(false);
+                              }}
+                              onDragEnd={() => setDraggingId(null)}
+                              onClick={() => {
+                                setActiveId(lesson.id);
+                                setPanelOpen(true);
+                                setDraggingId(null);
+                              }}
+                              className={`w-full cursor-grab rounded px-1 py-1 text-left print:cursor-auto print:bg-white ${
+                                activeId === lesson.id && panelOpen ? "bg-[#cfe2ff] ring-2 ring-[#0d6efd]" : "bg-[#e7f1ff]"
+                              }`}
+                              title={`${lesson.subjectName} / ${lesson.teacherName}`}
+                            >
+                              <div className="font-bold print:hidden">{shortSubject(lesson.subjectName)}</div>
+                              <div className="print:hidden">ID {lesson.staffId}</div>
+                              <div className="hidden text-left print:block">
+                                <div className="font-bold">{lesson.subjectName}</div>
+                                <div>{lesson.teacherName}</div>
+                              </div>
+                            </button>
+                          ) : (
+                            "—"
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                )),
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {panelOpen && sourceLesson ? (
+          <aside className="rounded-2xl border bg-white p-4 shadow-sm print:hidden">
+            <div className="mb-3 flex items-start justify-between gap-2">
+              <div>
+                <h3 className="text-lg font-extrabold">{t("admin:scheduleSmartSwap")}</h3>
+                <p className="text-sm font-semibold text-[#1a237e]">
+                  {sourceLesson.subjectName} · {sourceLesson.teacherName}
+                </p>
+                <p className="text-xs text-[#6c757d]">
+                  {DAY_SHORT[sourceLesson.day]} · Period {sourceLesson.period}
+                </p>
+                <p className="mt-1 text-xs text-[#6c757d]">{t("admin:scheduleSmartSwapHint")}</p>
+              </div>
+              <button type="button" className="rounded border px-2 py-1 text-xs font-bold" onClick={() => setPanelOpen(false)}>
+                {t("admin:scheduleClosePanel")}
+              </button>
+            </div>
+            {moves.isPending ? (
+              <div className="flex justify-center py-8">
+                <Spinner label={t("common:loading")} />
+              </div>
+            ) : moves.isError ? (
+              <Alert tone="danger">{t(`errors:${toErrorKey(moves.error)}`)}</Alert>
+            ) : (
+              <div className="grid gap-2">
+                {ranked.map((option, index) => {
+                  const best = index === 0 && option.ok;
+                  const warnOnly = !option.ok || option.warnings.includes("SOURCE_OFF") || option.warnings.includes("PARTNER_OFF");
+                  return (
+                    <button
+                      key={`${option.day}-${option.period}-${option.targetId ?? "empty"}`}
+                      type="button"
+                      disabled={!option.ok || move.isPending || swap.isPending}
+                      onClick={() => applyOption(option)}
+                      className={`rounded-xl border p-3 text-left ${
+                        best
+                          ? "border-[#198754] bg-[#d1e7dd]"
+                          : warnOnly
+                            ? "border-[#fd7e14] bg-[#fff3cd]"
+                            : "border-[#ced4da] bg-white"
+                      } disabled:opacity-50`}
+                    >
+                      <div className="mb-1 flex items-center justify-between gap-2">
+                        <span className="font-bold">
+                          {DAY_SHORT[option.day]} · Period {option.period}
+                        </span>
+                        {best ? <span className="rounded bg-[#198754] px-2 py-0.5 text-[10px] font-bold text-white">{t("admin:scheduleBest")}</span> : null}
+                      </div>
+                      <p className="text-sm">
+                        {option.targetId == null
+                          ? t("admin:scheduleMoveEmpty")
+                          : t("admin:scheduleSwapWith", {
+                              subject: option.targetSubjectName ?? "",
+                              teacher: option.targetTeacherName ?? "",
+                            })}
+                      </p>
+                      {option.warnings.includes("SOURCE_OFF") ? (
+                        <p className="mt-1 text-xs font-semibold text-[#9a3412]">
+                          {t("admin:scheduleOffLose", {
+                            name: sourceLesson.teacherName,
+                            before: option.sourceOffBefore,
+                            after: option.sourceOffAfter,
+                          })}
+                        </p>
+                      ) : null}
+                      {option.warnings.includes("PARTNER_OFF") && option.targetTeacherName ? (
+                        <p className="mt-1 text-xs font-semibold text-[#9a3412]">
+                          {t("admin:scheduleOffLose", {
+                            name: option.targetTeacherName,
+                            before: option.partnerOffBefore ?? 0,
+                            after: option.partnerOffAfter ?? 0,
+                          })}
+                        </p>
+                      ) : null}
+                      {option.reasons.map((reason) => (
+                        <p key={reason} className="mt-1 text-xs font-semibold text-[#9a3412]">
+                          {warnLabel(reason, t)}
+                        </p>
+                      ))}
+                    </button>
+                  );
+                })}
+              </div>
             )}
-          </tbody>
-        </table>
+          </aside>
+        ) : null}
       </div>
 
       <section className="rounded-2xl bg-white p-4 shadow-sm print:hidden">
@@ -384,7 +601,9 @@ export function ScheduleBoardPage() {
               </div>
               <div className="px-4 py-6">
                 <h1 className="text-xl font-extrabold">{t("auth:schoolName")}</h1>
-                <p className="mb-4 text-sm">{sheetTitle} · {sheetSubtitle}</p>
+                <p className="mb-4 text-sm">
+                  {sheetTitle} · {sheetSubtitle}
+                </p>
                 <div className="overflow-x-auto">
                   <table className="w-full min-w-[900px] border-collapse border border-black text-center text-[11px]">
                     <thead>

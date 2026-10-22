@@ -174,7 +174,6 @@ import {
   OfflineAttendancePage,
   ParticipationPage,
   QuestionBankPage,
-  TimetablePage,
 } from "@/features/teacher/SubjectOfficePages";
 import {
   CoveragePage,
@@ -501,7 +500,6 @@ export const router = createBrowserRouter([
       { path: "teacher/simulations", element: <ProtectedRoute permission="simulations.create"><SimulationsPage /></ProtectedRoute> },
       { path: "teacher/student-reports", element: <ProtectedRoute permission="studentReports.read"><StudentReportsPage /></ProtectedRoute> },
       { path: "teacher/offline-attendance", element: <ProtectedRoute permission="teacher.subject"><OfflineAttendancePage /></ProtectedRoute> },
-      { path: "teacher/timetable", element: <ProtectedRoute permission="teacher.subject"><TimetablePage /></ProtectedRoute> },
       { path: "teacher/incidents", element: <ProtectedRoute permission="teacher.subject"><TeacherIncidentsPage /></ProtectedRoute> },
       { path: "teacher/leave", element: <ProtectedRoute permission="teacher.subject"><LeavePage /></ProtectedRoute> },
       { path: "teacher/clubs", element: <ProtectedRoute permission="clubs.patron"><ClubsPatronPage /></ProtectedRoute> },

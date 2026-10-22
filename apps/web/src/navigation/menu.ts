@@ -201,7 +201,7 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "selectedRoster", path: "/academics/selected-roster", icon: ListChecks, group: "academicAdmin", permission: "selectedRoster.read" },
   { key: "gradeCorrection", path: "/academics/grade-correction", icon: Landmark, group: "academicAdmin", permission: "gradeCorrection.approve" },
   { key: "academicApprovals", path: "/academics/approvals", icon: CheckCheck, group: "academicAdmin", permission: "academicApprovals.manage" },
-  { key: "periodSchedule", path: "/academics/schedule", icon: CalendarDays, group: "academicAdmin", permission: "periodSchedule.manage" },
+  { key: "periodSchedule", path: "/academics/schedule", icon: CalendarDays, group: "academicAdmin", permission: "periodSchedule.manage", roles: ["Principal"] },
   { key: "academicReports", path: "/academics/reports", icon: ChartLine, group: "academicAdmin", permission: "academicReports.read" },
 
   { key: "executiveOffice", path: "/principal/executive", icon: Shield, group: "principalOffice", permission: "principal.office" },
@@ -227,6 +227,7 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "vocationalTraining", path: "/vice/vocational", icon: Wrench, group: "viceOffice", permission: "vice.office" },
   { key: "viceClubs", path: "/vice/clubs", icon: Trophy, group: "viceOffice", permission: "clubs.oversee" },
   { key: "viceScholarships", path: "/vice/scholarships", icon: GraduationCap, group: "viceOffice", permission: "scholarships.post", roles: ["V_Principal"] },
+  { key: "globalTimetable", path: "/academics/schedule", icon: CalendarDays, group: "viceOffice", permission: "periodSchedule.manage", roles: ["V_Principal"] },
   { key: "behaviorOffice", path: "/vice/behavior", icon: Scale, group: "viceOffice", permission: "vice.office" },
   { key: "examInvigilation", path: "/vice/invigilation", icon: ClipboardCheck, group: "viceOffice", permission: "vice.office" },
 
@@ -244,7 +245,6 @@ export const MENU_ITEMS: readonly MenuItem[] = [
   { key: "studentReports", path: "/teacher/student-reports", icon: FileDown, group: "academicTasks", permission: "studentReports.read" },
 
   { key: "offlineAttendance", path: "/teacher/offline-attendance", icon: Wifi, group: "subjectTeacher", permission: "teacher.subject" },
-  { key: "globalTimetable", path: "/teacher/timetable", icon: CalendarDays, group: "subjectTeacher", permission: "teacher.subject" },
   { key: "incidentReports", path: "/teacher/incidents", icon: Megaphone, group: "subjectTeacher", permission: "teacher.subject" },
   { key: "leaveRequest", path: "/teacher/leave", icon: CalendarOff, group: "subjectTeacher", permission: "teacher.subject" },
   { key: "teacherClubs", path: "/teacher/clubs", icon: Trophy, group: "subjectTeacher", permission: "clubs.patron" },

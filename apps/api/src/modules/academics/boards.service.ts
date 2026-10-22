@@ -830,27 +830,96 @@ async function shiftLessons(tenantId: number, year: string, sourceShift: string)
   return { lessons: same, periodCount };
 }
 
+function asEvalRows(lessons: Awaited<ReturnType<typeof lessonRows>>) {
+  return lessons.map((lesson) => ({
+    id: lesson.id,
+    classId: lesson.classId,
+    subjectId: lesson.subjectId ?? 0,
+    staffId: lesson.staffId ?? 0,
+    day: lesson.day,
+    period: lesson.period,
+    creditHours: lesson.creditHours,
+    teacherName: lesson.teacherName,
+    subjectName: lesson.subjectName,
+  }));
+}
+
+function offDaysFromBusy(days: Iterable<Weekday>): number {
+  const busy = new Set(days);
+  return WEEKDAYS.filter((day) => !busy.has(day)).length;
+}
+
+function teacherDays(staffId: number, lessons: ReturnType<typeof asEvalRows>, ignoreIds: Set<number>, extraDay?: Weekday): Weekday[] {
+  const days = lessons.filter((lesson) => !ignoreIds.has(lesson.id) && lesson.staffId === staffId).map((lesson) => lesson.day);
+  if (extraDay) days.push(extraDay);
+  return days;
+}
+
+export async function listMoveOptions(tenantId: number, sourceId: number) {
+  const year = await settingYear(tenantId);
+  const all = year ? await lessonRows(tenantId, year) : [];
+  const source = all.find((lesson) => lesson.id === sourceId);
+  if (!source || !source.shift) throw new AcademicsError("NOT_FOUND");
+  const { lessons, periodCount } = await shiftLessons(tenantId, year, source.shift);
+  const rows = asEvalRows(lessons);
+  const sourceRow = rows.find((lesson) => lesson.id === sourceId);
+  if (!sourceRow) throw new AcademicsError("NOT_FOUND");
+  const options = evalMoves(sourceId, rows, periodCount);
+  const sourceOff = offDaysFromBusy(teacherDays(sourceRow.staffId, rows, new Set()));
+  return {
+    source: {
+      id: source.id,
+      subjectName: source.subjectName,
+      teacherName: source.teacherName,
+      day: source.day,
+      period: source.period,
+      classId: source.classId,
+      gradeLevel: source.gradeLevel,
+      section: source.section,
+      offDays: sourceOff,
+    },
+    options: options.map((option) => {
+      const target = option.targetId != null ? rows.find((lesson) => lesson.id === option.targetId) : null;
+      const ignore = new Set([sourceId, option.targetId].filter((id): id is number => id != null));
+      const nextSourceOff = offDaysFromBusy(teacherDays(sourceRow.staffId, rows, ignore, option.day));
+      const partnerOffBefore = target ? offDaysFromBusy(teacherDays(target.staffId, rows, new Set())) : null;
+      const partnerOffAfter = target ? offDaysFromBusy(teacherDays(target.staffId, rows, ignore, sourceRow.day)) : null;
+      const warnings: string[] = [];
+      if (nextSourceOff < sourceOff) warnings.push("SOURCE_OFF");
+      if (partnerOffBefore != null && partnerOffAfter != null && partnerOffAfter < partnerOffBefore) warnings.push("PARTNER_OFF");
+      for (const reason of option.reasons) warnings.push(reason);
+      const rank =
+        (option.ok ? 100 : 0) +
+        (warnings.includes("SOURCE_OFF") ? -20 : 0) +
+        (warnings.includes("PARTNER_OFF") ? -20 : 0) +
+        (option.targetId == null ? 5 : 0) +
+        nextSourceOff;
+      return {
+        day: option.day,
+        period: option.period,
+        targetId: option.targetId,
+        ok: option.ok,
+        reasons: option.reasons,
+        warnings,
+        rank,
+        targetSubjectName: target?.subjectName ?? null,
+        targetTeacherName: target?.teacherName ?? null,
+        sourceOffBefore: sourceOff,
+        sourceOffAfter: nextSourceOff,
+        partnerOffBefore,
+        partnerOffAfter,
+      };
+    }),
+  };
+}
+
 export async function moveLesson(tenantId: number, input: ScheduleMove) {
   const year = await settingYear(tenantId);
   const all = year ? await lessonRows(tenantId, year) : [];
   const source = all.find((lesson) => lesson.id === input.sourceId);
   if (!source || !source.shift) throw new AcademicsError("NOT_FOUND");
   const { lessons, periodCount } = await shiftLessons(tenantId, year, source.shift);
-  const options = evalMoves(
-    source.id,
-    lessons.map((lesson) => ({
-      id: lesson.id,
-      classId: lesson.classId,
-      subjectId: lesson.subjectId ?? 0,
-      staffId: lesson.staffId ?? 0,
-      day: lesson.day,
-      period: lesson.period,
-      creditHours: lesson.creditHours,
-      teacherName: lesson.teacherName,
-      subjectName: lesson.subjectName,
-    })),
-    periodCount,
-  );
+  const options = evalMoves(source.id, asEvalRows(lessons), periodCount);
   const hit = options.find((option) => option.day === input.day && option.period === input.period && option.targetId == null && option.ok);
   if (!hit) throw new AcademicsError("SCHEDULE_MOVE");
   const [slot] = await db
@@ -871,21 +940,7 @@ export async function swapLessons(tenantId: number, input: ScheduleSwap) {
   const target = all.find((lesson) => lesson.id === input.targetId);
   if (!source || !target || source.shift !== target.shift || source.classId !== target.classId) throw new AcademicsError("SCHEDULE_MOVE");
   const { lessons, periodCount } = await shiftLessons(tenantId, year, source.shift);
-  const options = evalMoves(
-    source.id,
-    lessons.map((lesson) => ({
-      id: lesson.id,
-      classId: lesson.classId,
-      subjectId: lesson.subjectId ?? 0,
-      staffId: lesson.staffId ?? 0,
-      day: lesson.day,
-      period: lesson.period,
-      creditHours: lesson.creditHours,
-      teacherName: lesson.teacherName,
-      subjectName: lesson.subjectName,
-    })),
-    periodCount,
-  );
+  const options = evalMoves(source.id, asEvalRows(lessons), periodCount);
   const hit = options.find((option) => option.targetId === target.id && option.ok);
   if (!hit) throw new AcademicsError("SCHEDULE_MOVE");
   const [sourceSlot] = await db

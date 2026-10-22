@@ -258,6 +258,19 @@ academicsRouter.get("/schedule/board", ...requirePermission("periodSchedule.mana
   }
 });
 
+academicsRouter.get("/schedule/moves", ...requirePermission("periodSchedule.manage"), async (req, res) => {
+  const sourceId = Number(req.query.sourceId);
+  if (!Number.isInteger(sourceId) || sourceId < 1) {
+    res.status(400).json({ error: "VALIDATION" });
+    return;
+  }
+  try {
+    res.json(await boards.listMoveOptions(tenantOf(req), sourceId));
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
 academicsRouter.post("/schedule/generate", ...requirePermission("periodSchedule.manage"), async (req, res) => {
   const input = parseBody(scheduleGenerateSchema, req, res);
   if (!input) return;
