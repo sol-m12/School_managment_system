@@ -153,7 +153,7 @@ function anyType(...fragments: string[]): SQL {
 
 async function codesOnCards(
   tenantId: number,
-  column: typeof mehi161Cards.programCodeId,
+  column: AnyMySqlColumn,
 ): Promise<CodeOption[]> {
   const rows = await db
     .selectDistinct({

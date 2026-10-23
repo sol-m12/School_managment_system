@@ -1,0 +1,60 @@
+# Local Docker stack: MySQL + API + Web
+# Usage:
+#   1. Copy .env.docker.example → .env.docker
+#   2. docker compose up -d --build
+#   3. Open http://localhost:8080  (API http://localhost:4000/health)
+# MySQL is on localhost:3307 (avoids clash with local MAMP/XAMPP on 3306).
+
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-keyt_school}
+      MYSQL_USER: ${DB_USER:-keyt_app}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-keyt_local_pass}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-keyt_root_pass}
+    ports:
+      - "3307:3306"
+    volumes:
+      - keyt_mysql_data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-pkeyt_root_pass"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build:
+      context: ./apps/api
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env.docker
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      PORT: "4000"
+      # http cookies work on localhost
+      NODE_ENV: development
+      WEB_ORIGINS: http://localhost:8080
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./apps/web
+      args:
+        VITE_API_URL: http://localhost:4000
+        VITE_APP_BASE_DOMAIN: ""
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
+volumes:
+  keyt_mysql_data:
